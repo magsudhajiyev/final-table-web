@@ -1,0 +1,24 @@
+{
+  "name": "final-table-landing",
+  "version": "1.0.0",
+  "description": "Landing page for Final Table poker manager app",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000 --open=/",
+    "build": "mkdir -p public && cp index.html styles.css script.js public/ && cp -r assets public/",
+    "serve": "live-server --port=8080"
+  },
+  "keywords": [
+    "poker",
+    "landing-page",
+    "final-table"
+  ],
+  "author": "Final Table Team",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "firebase": "^12.2.1"
+  }
+}
