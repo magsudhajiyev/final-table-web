@@ -956,7 +956,7 @@
 /* ── Tab Bar ── */
 .tp-tabbar-wrap {
     position: absolute;
-    top: 24px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
