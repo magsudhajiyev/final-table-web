@@ -285,8 +285,8 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
 }
 
 .tp-bg-mockup-wrap {
-    height: 92vh;
-    width: 480px;
+    height: 98vh;
+    width: 560px;
     flex-shrink: 0;
     position: relative;
     z-index: 2;
