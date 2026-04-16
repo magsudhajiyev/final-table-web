@@ -168,13 +168,29 @@ function TPBgSection() {
   const [activeTab, setActiveTab] = useState(0)
   const sectionRef = useRef(null)
 
+  // Sync nav link colour with active tab
+  // tabs 0, 2, 3 → dark bg (white links);  tab 1 → light bg (black links)
+  const darkTabs = [0, 2, 3]
+  useEffect(() => {
+    const dark = darkTabs.includes(activeTab)
+    document.body.classList.toggle('bg-section-nav-dark', dark)
+    return () => document.body.classList.remove('bg-section-nav-dark')
+  }, [activeTab])
+
   useEffect(() => {
     const handleScroll = () => {
       const section = sectionRef.current
       if (!section) return
       const rect = section.getBoundingClientRect()
-      const scrolledIn = -rect.top  // px scrolled past the section top
-      if (scrolledIn < 0) return
+      const scrolledIn = -rect.top
+      const scrollableRange = section.offsetHeight - window.innerHeight
+
+      // Remove body class when outside the section
+      if (scrolledIn < 0 || scrolledIn > scrollableRange) {
+        document.body.classList.remove('bg-section-nav-dark')
+        return
+      }
+
       const tabIndex = Math.min(
         Math.floor(scrolledIn / window.innerHeight),
         tabs.length - 1

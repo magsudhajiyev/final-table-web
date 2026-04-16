@@ -62,12 +62,14 @@
 
 /* Dark background: white links */
 .tp-nav-dark .tp-nav-links a,
-.tp-nav-scrolled.tp-nav-dark .tp-nav-links a {
+.tp-nav-scrolled.tp-nav-dark .tp-nav-links a,
+body.bg-section-nav-dark .tp-nav-links a {
     color: rgba(255,255,255,0.8);
 }
 
 .tp-nav-dark .tp-nav-links a:hover,
-.tp-nav-scrolled.tp-nav-dark .tp-nav-links a:hover {
+.tp-nav-scrolled.tp-nav-dark .tp-nav-links a:hover,
+body.bg-section-nav-dark .tp-nav-links a:hover {
     color: #fff;
 }
 
