@@ -27,12 +27,16 @@ const IMG_MORE_ICON2    = "https://www.figma.com/api/mcp/asset/06955dbc-4c1f-409
 function TPNavbar() {
   const [scrolled, setScrolled] = useState(false)
   const [darkBg, setDarkBg] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      if (menuOpen) setMenuOpen(false)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [menuOpen])
 
   useEffect(() => {
     const darkSections = document.querySelectorAll('[data-nav-dark]')
@@ -48,16 +52,14 @@ function TPNavbar() {
   }, [])
 
   return (
-    <header className={`tp-nav-wrap${scrolled ? ' tp-nav-scrolled' : ''}${darkBg ? ' tp-nav-dark' : ''}`}>
+    <header className={`tp-nav-wrap${scrolled ? ' tp-nav-scrolled' : ''}${darkBg ? ' tp-nav-dark' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <div className="tp-nav-logo">
-          <img src="/assets/logo_light.svg" alt="Final Table" className={`tp-nav-logo-img${scrolled ? ' tp-nav-logo-hidden' : ''}`} />
-          <img src="/assets/logo_cion.svg" alt="Final Table" className={`tp-nav-logo-icon-img${scrolled ? '' : ' tp-nav-logo-hidden'}`} />
+          <img src="/assets/Logo_dark.svg" alt="Final Table" className="tp-nav-logo-img" />
         </div>
         <div className="tp-nav-links">
           <a href="#">Features</a>
           <a href="#">Stats</a>
-          <a href="#">Club Mode</a>
           <a href="#">Pricing</a>
           <a href="#">Help</a>
         </div>
@@ -65,7 +67,22 @@ function TPNavbar() {
           <img src="/device-mobile-camera.svg" alt="" className="tp-nav-cta-icon" />
           Get the app
         </a>
+        <button
+          className="tp-nav-hamburger"
+          aria-label="Toggle menu"
+          onClick={() => setMenuOpen(o => !o)}
+        >
+          <span /><span /><span />
+        </button>
       </nav>
+      {/* Mobile dropdown */}
+      <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
+        <a href="#" onClick={() => setMenuOpen(false)}>Features</a>
+        <a href="#" onClick={() => setMenuOpen(false)}>Stats</a>
+        <a href="#" onClick={() => setMenuOpen(false)}>Pricing</a>
+        <a href="#" onClick={() => setMenuOpen(false)}>Help</a>
+        <a href="#" className="tp-nav-mobile-cta" onClick={() => setMenuOpen(false)}>Get the app</a>
+      </div>
     </header>
   )
 }
@@ -208,11 +225,10 @@ function TPBgSection() {
       <section className="tp-bg-section" ref={sectionRef}>
         <div className="tp-bg-sticky">
 
-          {/* Animated background layer — key remount triggers fade */}
+          {/* Static background layer */}
           <div
-            key={`bg-${activeTab}`}
             className="tp-bg-layer"
-            style={{ backgroundImage: `url('${tabs[activeTab].bg}')`, backgroundSize: tabs[activeTab].bgSize }}
+            style={{ backgroundImage: `url('${tabs[0].bg}')`, backgroundSize: tabs[0].bgSize }}
           />
 
           {/* Tab bar */}
@@ -230,15 +246,18 @@ function TPBgSection() {
             </div>
           </div>
 
-          {/* Phone mockup — key remount triggers fadeUp */}
+          {/* Phone mockup — stacked images, opacity crossfade */}
           <div className="tp-bg-mockup-wrap">
-            {activeTab === 0 && <div className="tp-mockup-glow" />}
-            <img
-              key={`mockup-${activeTab}`}
-              src={tabs[activeTab].mockup}
-              alt=""
-              className="tp-bg-section-mockup"
-            />
+            <div className="tp-mockup-glow" />
+            {tabs.map((tab, i) => (
+              <img
+                key={i}
+                src={tab.mockup}
+                alt=""
+                className="tp-bg-section-mockup"
+                style={{ opacity: activeTab === i ? 1 : 0 }}
+              />
+            ))}
           </div>
 
         </div>
@@ -518,7 +537,6 @@ function TPFooter() {
             <p className="tp-footer-col-head">Product</p>
             <a href="#">Features</a>
             <a href="#">Stats Tracking</a>
-            <a href="#">Club Mode</a>
             <a href="#">Pricing</a>
             <a href="#">Changelog</a>
           </div>
@@ -559,10 +577,10 @@ function TPFooter() {
 /*  FIXED TAB BAR                                         */
 /* ────────────────────────────────────────────────────── */
 const tabs = [
-  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', bg: '/bg_6.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
-  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: '/bg_5.png', bgSize: 'cover',   mockup: '/phone_2.png'        },
-  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: '/bg_2.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
-  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: '/bg_2.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_2.png'        },
+  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_5.png' },
+  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
 ]
 
 function TPTabBar() {
