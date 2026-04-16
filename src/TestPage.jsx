@@ -91,7 +91,7 @@ function TPHero() {
   }
 
   return (
-    <section className="tp-hero">
+    <section className="tp-hero" data-nav-dark>
       <div className="tp-hero-content">
         <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
         <p className="tp-hero-sub">
