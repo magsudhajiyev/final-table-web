@@ -181,9 +181,6 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
 
 .tp-hero-content {
