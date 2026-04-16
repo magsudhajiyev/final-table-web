@@ -190,7 +190,7 @@ function TPBgSection() {
   return (
     <>
       <section className="tp-bg-section" ref={sectionRef}>
-        <div className="tp-bg-sticky" style={{ backgroundImage: `url('${tabs[activeTab].bg}')` }}>
+        <div className="tp-bg-sticky" style={{ backgroundImage: `url('${tabs[activeTab].bg}')`, backgroundSize: tabs[activeTab].bgSize }}>
 
           {/* Tab bar — top of sticky container */}
           <div className="tp-tabbar-wrap">
@@ -528,10 +528,10 @@ function TPFooter() {
 /*  FIXED TAB BAR                                         */
 /* ────────────────────────────────────────────────────── */
 const tabs = [
-  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', bg: '/bg_2.png', mockup: '/phone_mockup_1.png' },
-  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: '/bg_3.png', mockup: '/phone_2.png'        },
-  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: '/bg_2.png', mockup: '/phone_mockup_1.png' },
-  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: '/bg_2.png', mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', bg: '/bg_2.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: '/bg_3.png', bgSize: '75%',     mockup: '/phone_2.png'        },
+  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: '/bg_2.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: '/bg_2.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
 ]
 
 function TPTabBar() {
