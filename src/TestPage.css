@@ -278,6 +278,7 @@
     width: auto;
     object-fit: contain;
     display: block;
+    transform: translateX(100px);
 }
 
 /* ── Dark Feature Section ── */
