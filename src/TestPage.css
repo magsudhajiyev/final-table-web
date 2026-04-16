@@ -229,7 +229,7 @@
     overflow: hidden;
 }
 
-/* Cross-fading background images */
+/* Static background — always visible */
 .tp-hero-bg {
     position: absolute;
     inset: 0;
@@ -238,11 +238,24 @@
     object-fit: cover;
     object-position: center top;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.65s ease;
+    z-index: 0;
 }
 
-.tp-hero-bg-active {
+/* Phone mockup — cross-fades per tab, sits on top of background */
+.tp-hero-mockup {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.65s ease;
+    z-index: 1;
+}
+
+.tp-hero-mockup-active {
     opacity: 1;
 }
 
@@ -255,7 +268,7 @@
     height: 160px;
     background: linear-gradient(to bottom, transparent 0%, #05010d 100%);
     pointer-events: none;
-    z-index: 3;
+    z-index: 2;
 }
 
 /* Tab bar — fixed at very bottom of screen */

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import './TestPage.css'
 
-/* ── Figma asset URLs (expire in 7 days) ── */
-const IMG_HERO_BG_1     = "/Frame 9.png"
-const IMG_HERO_BG_2     = "/phone_mockup_2.png"
-const IMG_HERO_BG_3     = "/Frame 9.png"  // replace when ready
-const IMG_HERO_BG_4     = "/Frame 9.png"  // replace when ready
+/* ── Hero assets ── */
+const IMG_HERO_BG       = "/Frame 9.png"   // permanent background
+const IMG_HERO_MOCKUP_1 = "/phone_mockup_1.png"
+const IMG_HERO_MOCKUP_2 = "/phone_mockup_2.png"
+const IMG_HERO_MOCKUP_3 = "/phone_mockup_3.png"  // replace when ready
+const IMG_HERO_MOCKUP_4 = "/phone_mockup_4.png"  // replace when ready
 const IMG_TAB_ICON_1    = "https://www.figma.com/api/mcp/asset/b06a0f07-90e7-4d41-853b-7563bfd312df"
 const IMG_TAB_ICON_2    = "https://www.figma.com/api/mcp/asset/9e339ba7-887d-471a-b651-582988ddd624"
 const IMG_TAB_ICON_3    = "https://www.figma.com/api/mcp/asset/92496d50-0f70-4bdc-a992-65210a9a71c4"
@@ -73,10 +74,10 @@ function TPNavbar() {
 /*  HERO                                                  */
 /* ────────────────────────────────────────────────────── */
 const heroTabs = [
-  { icon: IMG_TAB_ICON_1, label: 'Hand-by-hand logging', bg: IMG_HERO_BG_1 },
-  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: IMG_HERO_BG_2 },
-  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: IMG_HERO_BG_3 },
-  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: IMG_HERO_BG_4 },
+  { icon: IMG_TAB_ICON_1, label: 'Hand-by-hand logging', mockup: IMG_HERO_MOCKUP_1 },
+  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    mockup: IMG_HERO_MOCKUP_2 },
+  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', mockup: IMG_HERO_MOCKUP_3 },
+  { icon: IMG_TAB_ICON_4, label: 'Download',             mockup: IMG_HERO_MOCKUP_4 },
 ]
 
 function TPHero() {
@@ -126,14 +127,17 @@ function TPHero() {
             </p>
           </div>
 
-          {/* Cross-fading background images */}
+          {/* Image area: static background + cross-fading mockup */}
           <div className="tp-hero-image-wrap">
+            {/* Permanent background — never changes */}
+            <img src={IMG_HERO_BG} alt="" className="tp-hero-bg tp-hero-bg-static" aria-hidden="true" />
+            {/* Mockup images — only this layer cross-fades per tab */}
             {heroTabs.map((tab, i) => (
               <img
                 key={i}
-                src={tab.bg}
+                src={tab.mockup}
                 alt=""
-                className={`tp-hero-bg${activeTab === i ? ' tp-hero-bg-active' : ''}`}
+                className={`tp-hero-mockup${activeTab === i ? ' tp-hero-mockup-active' : ''}`}
                 aria-hidden="true"
               />
             ))}
