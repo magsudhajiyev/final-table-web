@@ -265,12 +265,19 @@
 
 /* ── Bg Image Section ── */
 .tp-bg-section {
+    height: 500vh;
+}
+
+.tp-bg-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     width: 100%;
-    min-height: 100vh;
     background: url('/bg_2.png') center center / cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .tp-bg-section-mockup {
@@ -944,6 +951,14 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.tp-tabbar-wrap.tp-tabbar-visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .tp-tabbar {

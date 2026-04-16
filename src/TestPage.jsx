@@ -118,13 +118,62 @@ function TPHero() {
 }
 
 /* ────────────────────────────────────────────────────── */
-/*  BG IMAGE SECTION                                      */
+/*  BG IMAGE SECTION  (scroll-driven tabs)                */
 /* ────────────────────────────────────────────────────── */
 function TPBgSection() {
+  const [activeTab, setActiveTab] = useState(0)
+  const [tabsVisible, setTabsVisible] = useState(false)
+  const sectionRef = useRef(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = sectionRef.current
+      if (!section) return
+      const rect = section.getBoundingClientRect()
+      const scrolledIn = -rect.top
+      const scrollableRange = section.offsetHeight - window.innerHeight
+
+      if (scrolledIn < 0 || scrolledIn > scrollableRange) {
+        setTabsVisible(false)
+        return
+      }
+
+      setTabsVisible(true)
+      const tabIndex = Math.min(
+        Math.floor(scrolledIn / window.innerHeight),
+        tabs.length - 1
+      )
+      setActiveTab(Math.max(0, tabIndex))
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <section className="tp-bg-section">
-      <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
-    </section>
+    <>
+      <section className="tp-bg-section" ref={sectionRef}>
+        <div className="tp-bg-sticky">
+          <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
+        </div>
+      </section>
+
+      {/* Tab bar — fixed at bottom, visible only while in this section */}
+      <div className={`tp-tabbar-wrap${tabsVisible ? ' tp-tabbar-visible' : ''}`}>
+        <div className="tp-tabbar">
+          {tabs.map((tab, i) => (
+            <button
+              key={i}
+              className={`tp-tab${activeTab === i ? ' tp-tab-active' : ''}`}
+            >
+              <img src={tab.icon} alt="" className="tp-tab-icon" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -486,7 +535,6 @@ export default function TestPage() {
         <TPMoreReasons />
       </main>
       <TPFooter />
-      <TPTabBar />
     </div>
   )
 }
