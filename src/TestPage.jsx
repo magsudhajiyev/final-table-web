@@ -164,18 +164,11 @@ const tabCards = [
 /* ────────────────────────────────────────────────────── */
 /*  BG IMAGE SECTION  (scroll-driven tabs, Flighty-style) */
 /* ────────────────────────────────────────────────────── */
+const darkTabs = [0, 2, 3]
+
 function TPBgSection() {
   const [activeTab, setActiveTab] = useState(0)
   const sectionRef = useRef(null)
-
-  // Sync nav link colour with active tab
-  // tabs 0, 2, 3 → dark bg (white links);  tab 1 → light bg (black links)
-  const darkTabs = [0, 2, 3]
-  useEffect(() => {
-    const dark = darkTabs.includes(activeTab)
-    document.body.classList.toggle('bg-section-nav-dark', dark)
-    return () => document.body.classList.remove('bg-section-nav-dark')
-  }, [activeTab])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -185,30 +178,44 @@ function TPBgSection() {
       const scrolledIn = -rect.top
       const scrollableRange = section.offsetHeight - window.innerHeight
 
-      // Remove body class when outside the section
       if (scrolledIn < 0 || scrolledIn > scrollableRange) {
         document.body.classList.remove('bg-section-nav-dark')
         return
       }
 
-      const tabIndex = Math.min(
-        Math.floor(scrolledIn / window.innerHeight),
+      // Tab switches at each 100vh boundary
+      const tabIndex = Math.min(Math.floor(scrolledIn / window.innerHeight), tabs.length - 1)
+      setActiveTab(Math.max(0, tabIndex))
+
+      // Nav colour: 120px lag behind tab switch so it doesn't flip early
+      const navTabIndex = Math.min(
+        Math.floor(Math.max(0, scrolledIn - 120) / window.innerHeight),
         tabs.length - 1
       )
-      setActiveTab(Math.max(0, tabIndex))
+      document.body.classList.toggle('bg-section-nav-dark', darkTabs.includes(navTabIndex))
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.body.classList.remove('bg-section-nav-dark')
+    }
   }, [])
 
   return (
     <>
       <section className="tp-bg-section" ref={sectionRef}>
-        <div className="tp-bg-sticky" style={{ backgroundImage: `url('${tabs[activeTab].bg}')`, backgroundSize: tabs[activeTab].bgSize }}>
+        <div className="tp-bg-sticky">
 
-          {/* Tab bar — top of sticky container */}
+          {/* Animated background layer — key remount triggers fade */}
+          <div
+            key={`bg-${activeTab}`}
+            className="tp-bg-layer"
+            style={{ backgroundImage: `url('${tabs[activeTab].bg}')`, backgroundSize: tabs[activeTab].bgSize }}
+          />
+
+          {/* Tab bar */}
           <div className="tp-tabbar-wrap">
             <div className="tp-tabbar">
               {tabs.map((tab, i) => (
@@ -223,9 +230,17 @@ function TPBgSection() {
             </div>
           </div>
 
+          {/* Phone mockup — key remount triggers fadeUp */}
           <div className="tp-bg-mockup-wrap">
-            <img src={tabs[activeTab].mockup} alt="" className="tp-bg-section-mockup" />
+            {activeTab === 0 && <div className="tp-mockup-glow" />}
+            <img
+              key={`mockup-${activeTab}`}
+              src={tabs[activeTab].mockup}
+              alt=""
+              className="tp-bg-section-mockup"
+            />
           </div>
+
         </div>
       </section>
     </>

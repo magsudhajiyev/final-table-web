@@ -273,15 +273,25 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     top: 0;
     height: 100vh;
     width: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: background-image 0.5s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0;
     overflow: hidden;
+}
+
+/* Animated background layer */
+.tp-bg-layer {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: bgFadeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    z-index: 0;
+}
+
+@keyframes bgFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .tp-bg-mockup-wrap {
@@ -299,6 +309,32 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     object-fit: contain;
     object-position: center bottom;
     display: block;
+    animation: mockupFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes mockupFadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Glow behind phone on tab 1 */
+.tp-mockup-glow {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(162,246,154,0.35) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
 }
 
 
