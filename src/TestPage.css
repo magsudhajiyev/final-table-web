@@ -325,18 +325,18 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(100,180,255,0.45) 0%, transparent 70%);
-    animation: glowPulse 3s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(27,69,175,0.7) 0%, transparent 70%);
+    animation: glowPulse 2.5s ease-in-out infinite;
     z-index: 0;
     pointer-events: none;
 }
 
 @keyframes glowPulse {
-    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50%       { opacity: 1;   transform: translateX(-50%) scale(1.15); }
+    0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+    50%       { opacity: 1;    transform: translateX(-50%) scale(1.2); }
 }
 
 
