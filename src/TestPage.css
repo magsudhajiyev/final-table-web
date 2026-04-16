@@ -179,7 +179,6 @@
 /* ── Hero ── */
 .tp-hero {
     background: #000;
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -190,7 +189,7 @@
 
 .tp-hero-content {
     text-align: center;
-    padding: 140px 40px 120px;
+    padding: 140px 40px 64px;
     max-width: 720px;
     margin: 0 auto;
     display: flex;
