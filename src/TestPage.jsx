@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { FacebookIcon, GithubIcon, InstagramIcon, LinkedinIcon, TwitterIcon, YoutubeIcon } from 'lucide-react'
 import './TestPage.css'
 
 /* ── Hero assets ── */
@@ -26,7 +27,7 @@ const IMG_MORE_ICON2    = "https://www.figma.com/api/mcp/asset/06955dbc-4c1f-409
 /* ────────────────────────────────────────────────────── */
 function TPNavbar() {
   const [scrolled, setScrolled] = useState(false)
-  const [darkBg, setDarkBg] = useState(false)
+  const [theme, setTheme] = useState('dark') // 'dark' | 'light'
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -38,24 +39,30 @@ function TPNavbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [menuOpen])
 
+  // Switch theme based on which section the nav is over
   useEffect(() => {
-    const darkSections = document.querySelectorAll('[data-nav-dark]')
+    const lightSections = document.querySelectorAll('[data-nav-light]')
     const observer = new IntersectionObserver(
       (entries) => {
-        const anyDark = entries.some(e => e.isIntersecting)
-        setDarkBg(anyDark)
+        const overLight = entries.some(e => e.isIntersecting)
+        setTheme(overLight ? 'light' : 'dark')
       },
       { rootMargin: '-56px 0px -90% 0px', threshold: 0 }
     )
-    darkSections.forEach(el => observer.observe(el))
+    lightSections.forEach(el => observer.observe(el))
     return () => observer.disconnect()
   }, [])
 
+  const isLight = theme === 'light'
+  const logo    = isLight ? '/assets/logo_light.svg' : '/assets/Logo_dark.svg'
+  const iconSrc = '/assets/logo_cion.svg'
+
   return (
-    <header className={`tp-nav-wrap${scrolled ? ' tp-nav-scrolled' : ''}${darkBg ? ' tp-nav-dark' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
+    <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <div className="tp-nav-logo">
-          <img src="/assets/Logo_dark.svg" alt="Final Table" className="tp-nav-logo-img" />
+          <img src={logo} alt="Final Table" className={`tp-nav-logo-img${scrolled ? ' tp-nav-logo-hidden' : ''}`} />
+          <img src={iconSrc} alt="Final Table" className={`tp-nav-logo-icon-img${scrolled ? '' : ' tp-nav-logo-hidden'}`} />
         </div>
         <div className="tp-nav-links">
           <a href="#">Features</a>
@@ -75,7 +82,6 @@ function TPNavbar() {
           <span /><span /><span />
         </button>
       </nav>
-      {/* Mobile dropdown */}
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
         <a href="#" onClick={() => setMenuOpen(false)}>Features</a>
         <a href="#" onClick={() => setMenuOpen(false)}>Stats</a>
@@ -108,7 +114,7 @@ function TPHero() {
   }
 
   return (
-    <section className="tp-hero" data-nav-dark>
+    <section className="tp-hero" data-nav-light>
       <div className="tp-hero-content">
         <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
         <p className="tp-hero-sub">
@@ -222,14 +228,9 @@ function TPBgSection() {
 
   return (
     <>
-      <section className="tp-bg-section" ref={sectionRef}>
+      <section className="tp-bg-section" ref={sectionRef} data-nav-light>
         <div className="tp-bg-sticky">
 
-          {/* Static background layer */}
-          <div
-            className="tp-bg-layer"
-            style={{ backgroundImage: `url('${tabs[0].bg}')`, backgroundSize: tabs[0].bgSize }}
-          />
 
           {/* Tab bar */}
           <div className="tp-tabbar-wrap">
@@ -248,7 +249,6 @@ function TPBgSection() {
 
           {/* Phone mockup — stacked images, opacity crossfade */}
           <div className="tp-bg-mockup-wrap">
-            <div className="tp-mockup-glow" />
             {tabs.map((tab, i) => (
               <img
                 key={i}
@@ -263,136 +263,6 @@ function TPBgSection() {
         </div>
       </section>
     </>
-  )
-}
-
-/* ────────────────────────────────────────────────────── */
-/*  DARK FEATURE SECTION                                  */
-/* ────────────────────────────────────────────────────── */
-function TPDarkSection() {
-  return (
-    <section className="tp-dark-section" data-nav-dark>
-      <div className="tp-dark-container">
-        {/* Heading */}
-        <div className="tp-dark-heading">
-          <h2 className="tp-dark-h2">Everything you've ever wanted to<br />know about your game—and more.</h2>
-          <p className="tp-dark-sub">
-            Final Table keeps you sharp by tracking more information about every hand than any
-            other app — like the #1 and #2 leaks destroying your winrate.
-          </p>
-        </div>
-
-        {/* Card grid */}
-        <div className="tp-dark-grid">
-
-          {/* Full-width card */}
-          <div className="tp-dark-card tp-dc-full" style={{ backgroundImage: `url(${IMG_DARK_CARD1_BG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="tp-dc-overlay" />
-            <div className="tp-dc-text">
-              <h3 className="tp-dc-title">See why you're losing.<br />Finally!</h3>
-              <p className="tp-dc-body">
-                Opponents often exploit your leaks before you notice them. Final Table doesn't hide
-                anything. We track your tendencies across every hand — so you can fix leaks before
-                they cost you more.
-              </p>
-            </div>
-            <div className="tp-dc-phone-right">
-              <img src={IMG_DARK_CARD2_INNER} alt="" className="tp-dc-phone-img" />
-            </div>
-            <div className="tp-dc-fade-bottom" />
-            <div className="tp-dc-border" />
-          </div>
-
-          {/* Two-column row */}
-          <div className="tp-dc-row">
-
-            {/* Left card */}
-            <div className="tp-dark-card tp-dc-half" style={{ backgroundImage: `url(${IMG_DARK_CARD2_BG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-              <div className="tp-dc-overlay" />
-              <div className="tp-dc-text-sm">
-                <p className="tp-dc-label">
-                  <strong>Spot bad habits. Long before you notice.</strong>
-                  {' '}
-                  <span>Late players are your #1 opponent. Final Table uses pattern recognition to predict tilt behaviour — up to 6 hands before it shows up in your stats.</span>
-                </p>
-              </div>
-              <div className="tp-dc-fade-bottom" />
-              <div className="tp-dc-border" />
-            </div>
-
-            {/* Right card */}
-            <div className="tp-dark-card tp-dc-half" style={{ backgroundImage: `url(${IMG_DARK_CARD4_BG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-              <div className="tp-dc-atc">
-                <div className="tp-dc-atc-header">
-                  <span>Hand #4,291</span>
-                </div>
-                <div className="tp-dc-atc-row">
-                  <span className="tp-dc-atc-red">⚠ 3-bet % spiking</span>
-                </div>
-                <p className="tp-dc-atc-body">
-                  Mike has 3-bet 4 times in the last 8 hands. Current frequency: 38% — well above
-                  baseline. Probability of bluff squeeze on next orbit: high.
-                </p>
-                <div className="tp-dc-atc-divider" />
-                <div className="tp-dc-atc-row">
-                  <strong>Thunderstorm pattern</strong>
-                </div>
-                <p className="tp-dc-atc-sub">Aggression spike flagged by Final Table AI</p>
-              </div>
-              <div className="tp-dc-text-sm" style={{ position: 'absolute', top: 40, left: 40, right: 28 }}>
-                <p className="tp-dc-label">
-                  <strong>Direct from the felt.</strong>
-                  {' '}
-                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Opponent aggression spikes are the #2 cause of chip loss. Final Table surfaces these and tells you what might impact your stack — ground stops, weather patterns in their play style, or sudden aggression.</span>
-                </p>
-              </div>
-              <div className="tp-dc-border" />
-            </div>
-
-          </div>
-
-          {/* Second two-column row */}
-          <div className="tp-dc-row">
-
-            {/* Left card */}
-            <div className="tp-dark-card tp-dc-half" style={{ backgroundImage: `url(${IMG_DARK_CARD3_BG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-              <div className="tp-dc-overlay" />
-              <div className="tp-dc-text-sm">
-                <p className="tp-dc-label">
-                  <strong>First to know. First to act.</strong>
-                  {' '}
-                  <span>Hear about big hands and betting patterns before the rest of the table. Final Table's alerts are instant, clear, and unfiltered — giving you the earliest signal to adapt.</span>
-                </p>
-              </div>
-              <div className="tp-dc-fade-bottom" />
-              <div className="tp-dc-border" />
-            </div>
-
-            {/* Right card */}
-            <div className="tp-dark-card tp-dc-half">
-              <div className="tp-dc-text-sm">
-                <p className="tp-dc-label">
-                  <strong>Putting the 'Pro' in approachable.</strong>
-                  {' '}
-                  <span>Powerful, coach-grade data that you can actually understand. Get VPIP, PFR, 3-bet, aggression factor, and booking notes — all at a glance. Never stare at a confusing spreadsheet again.</span>
-                </p>
-              </div>
-              <div className="tp-dc-border" />
-            </div>
-
-          </div>
-        </div>
-
-        {/* CTA inside dark section */}
-        <div className="tp-dark-cta">
-          <p className="tp-dark-cta-text">Import your hands in seconds</p>
-          <p className="tp-dark-cta-sub">
-            Works seamlessly with PokerNow, ClubGG, and any CSV export.
-          </p>
-          <a href="#" className="tp-dark-cta-btn">Start logging free →</a>
-        </div>
-      </div>
-    </section>
   )
 }
 
@@ -526,48 +396,72 @@ function TPMoreReasons() {
 /*  FOOTER                                                */
 /* ────────────────────────────────────────────────────── */
 function TPFooter() {
+  const year = new Date().getFullYear()
+
+  const company = [
+    { title: 'About Us',        href: '#' },
+    { title: 'Careers',         href: '#' },
+    { title: 'Brand assets',    href: '#' },
+    { title: 'Privacy Policy',  href: '/privacy.html' },
+    { title: 'Terms of Service',href: '/terms.html' },
+  ]
+
+  const resources = [
+    { title: 'Features',         href: '#' },
+    { title: 'Stats',            href: '#' },
+    { title: 'Pricing',          href: '#' },
+    { title: 'Help',             href: '#' },
+    { title: 'Contact Support',  href: '#' },
+  ]
+
+  const socialLinks = [
+    { label: 'Facebook',  href: '#', icon: <FacebookIcon size={16} /> },
+    { label: 'GitHub',    href: '#', icon: <GithubIcon size={16} /> },
+    { label: 'Instagram', href: '#', icon: <InstagramIcon size={16} /> },
+    { label: 'LinkedIn',  href: '#', icon: <LinkedinIcon size={16} /> },
+    { label: 'Twitter',   href: '#', icon: <TwitterIcon size={16} /> },
+    { label: 'YouTube',   href: '#', icon: <YoutubeIcon size={16} /> },
+  ]
+
   return (
-    <footer className="tp-footer" data-nav-dark>
-      <div className="tp-footer-container">
-        <div className="tp-footer-logo">
-          <div className="tp-footer-logo-icon">♠</div>
-        </div>
-        <div className="tp-footer-cols">
-          <div className="tp-footer-col">
-            <p className="tp-footer-col-head">Product</p>
-            <a href="#">Features</a>
-            <a href="#">Stats Tracking</a>
-            <a href="#">Pricing</a>
-            <a href="#">Changelog</a>
-          </div>
-          <div className="tp-footer-col">
-            <p className="tp-footer-col-head">Compare</p>
-            <a href="#">vs PokerTracker</a>
-            <a href="#">vs Hold'em Manager</a>
-            <a href="#">vs DriveHUD</a>
-            <a href="#">vs Poker Analytics</a>
-          </div>
-          <div className="tp-footer-col">
-            <p className="tp-footer-col-head">Company</p>
-            <a href="#">About</a>
-            <a href="#">Blog</a>
-            <a href="/privacy.html">Privacy Policy</a>
-            <a href="/terms.html">Terms of Service</a>
-          </div>
-          <div className="tp-footer-col">
-            <p className="tp-footer-col-head">Support</p>
-            <a href="#">Help Center</a>
-            <a href="#">Contact Us</a>
-            <div className="tp-footer-social">
-              <a href="#" aria-label="Twitter">𝕏</a>
-              <a href="#" aria-label="Instagram">📷</a>
-              <a href="#" aria-label="Discord">💬</a>
+    <footer className="mf-footer">
+      <div className="mf-inner">
+        <div className="mf-top-border" />
+        <div className="mf-grid">
+          {/* Brand col */}
+          <div className="mf-brand">
+            <a href="#" className="mf-logo">
+              <img src="/assets/Logo_dark.svg" alt="Final Table" className="mf-logo-img" />
+            </a>
+            <p className="mf-tagline">Your poker game, fully tracked.</p>
+            <div className="mf-socials">
+              {socialLinks.map((s, i) => (
+                <a key={i} href={s.href} aria-label={s.label} className="mf-social-btn" target="_blank" rel="noreferrer">
+                  {s.icon}
+                </a>
+              ))}
             </div>
           </div>
+
+          {/* Resources col */}
+          <div className="mf-col">
+            <span className="mf-col-head">Resources</span>
+            {resources.map(({ href, title }, i) => (
+              <a key={i} href={href} className="mf-link">{title}</a>
+            ))}
+          </div>
+
+          {/* Company col */}
+          <div className="mf-col">
+            <span className="mf-col-head">Company</span>
+            {company.map(({ href, title }, i) => (
+              <a key={i} href={href} className="mf-link">{title}</a>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="tp-footer-bottom">
-        <span>Made with ♠ for serious players.</span>
+
+        <div className="mf-bottom-border" />
+        <p className="mf-copy">© Final Table. All rights reserved {year}</p>
       </div>
     </footer>
   )
@@ -577,10 +471,10 @@ function TPFooter() {
 /*  FIXED TAB BAR                                         */
 /* ────────────────────────────────────────────────────── */
 const tabs = [
-  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
-  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_2.png'        },
-  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_5.png' },
-  { icon: IMG_TAB_ICON_4, label: 'Download',             bg: '/bg_new_1.png', bgSize: 'cover',   mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging', mockup: '/phone_mockup_1.png' },
+  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics',    mockup: '/phone_2.png'        },
+  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection', mockup: '/phone_5.png'        },
+  { icon: IMG_TAB_ICON_4, label: 'Download',             mockup: '/phone_mockup_1.png' },
 ]
 
 function TPTabBar() {
@@ -611,6 +505,111 @@ function TPTabBar() {
 /* ────────────────────────────────────────────────────── */
 /*  PAGE ROOT                                             */
 /* ────────────────────────────────────────────────────── */
+/*  FEATURES GRID                                         */
+/* ────────────────────────────────────────────────────── */
+const featuresGrid = [
+  {
+    icon: '👤',
+    title: 'Opponent Profiles',
+    desc: 'Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you\'ve played against them.',
+    size: 'sm',
+  },
+  {
+    icon: '💰',
+    title: 'Bankroll Tracking',
+    desc: 'Set a bankroll goal and watch your progress. Pinch-to-zoom earnings chart shows your cumulative results over time.',
+    size: 'sm',
+    chart: true,
+  },
+  {
+    icon: '⚡',
+    title: 'Quick Session Logger',
+    desc: 'Don\'t want full hand tracking? Just log your buy-in, cash-out, and session duration for a quick profit/loss record.',
+    size: 'sm',
+  },
+  {
+    icon: '🤖',
+    title: 'AI Hand Analysis',
+    desc: 'Get GTO-based feedback on your hands. The AI reviews your decisions and suggests improvements.',
+    size: 'lg',
+    premium: true,
+  },
+  {
+    icon: '🏛️',
+    title: 'Club Management',
+    desc: 'Create or join a poker club. Manage members, roles, tables, and run events — all from the app.',
+    size: 'sm',
+  },
+  {
+    icon: '🏆',
+    title: 'Multi-Table Tournaments',
+    desc: 'Run live tournaments with multiple tables, real-time rankings, final standings, and prize distribution.',
+    size: 'sm',
+  },
+  {
+    icon: '🎙️',
+    title: 'Dealer Mode',
+    desc: 'Dealers can run a table hands-free using voice commands. Players follow along on their own phones in real time.',
+    size: 'sm',
+  },
+  {
+    icon: '📱',
+    title: 'QR Seat Assignments',
+    desc: 'Players scan a QR code to claim their seat. No manual setup, no confusion.',
+    size: 'sm',
+  },
+  {
+    icon: '🔄',
+    title: 'Real-Time Sync',
+    desc: 'Every action broadcasts instantly to all players and spectators via live updates.',
+    size: 'sm',
+  },
+  {
+    icon: '📋',
+    title: 'Cash Game Waitlists',
+    desc: 'Stakes-scoped waitlists let players queue for the game they want. Admins manage seating from the dashboard.',
+    size: 'sm',
+  },
+]
+
+function MiniChart() {
+  const bars = [30, 45, 35, 60, 50, 75, 90]
+  return (
+    <div className="fg-chart">
+      {bars.map((h, i) => (
+        <div key={i} className="fg-chart-bar" style={{ height: `${h}%` }} />
+      ))}
+    </div>
+  )
+}
+
+function TPFeaturesGrid() {
+  return (
+    <section className="fg-section" data-nav-light>
+      <div className="fg-container">
+        <div className="fg-header">
+          <p className="fg-eyebrow">Everything you need</p>
+          <h2 className="fg-title">Built for every kind of player.</h2>
+          <p className="fg-sub">From casual home games to serious grinders — Final Table has the tools to match how you play.</p>
+        </div>
+
+        <div className="fg-grid">
+          {featuresGrid.map((f, i) => (
+            <div key={i} className={`fg-card${f.size === 'lg' ? ' fg-card-lg' : ''}`}>
+              {f.premium && <span className="fg-premium">PREMIUM</span>}
+              <div className="fg-icon">{f.icon}</div>
+              <h3 className="fg-card-title">{f.title}</h3>
+              <p className="fg-card-desc">{f.desc}</p>
+              {f.chart && <MiniChart />}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 export default function TestPage() {
   return (
     <div className="tp-root">
@@ -618,9 +617,7 @@ export default function TestPage() {
       <main>
         <TPHero />
         <TPBgSection />
-        <TPDarkSection />
-        <TPFeatureSection />
-        <TPMoreReasons />
+        <TPFeaturesGrid />
       </main>
       <TPFooter />
     </div>
