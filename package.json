@@ -2,23 +2,22 @@
   "name": "final-table-landing",
   "version": "1.0.0",
   "description": "Landing page for Final Table poker manager app",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "dev": "live-server --port=3000 --open=/",
-    "build": "mkdir -p public && cp index.html styles.css script.js public/ && cp -r assets public/",
-    "serve": "live-server --port=8080"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "poker",
-    "landing-page",
-    "final-table"
-  ],
+  "keywords": ["poker", "landing-page", "final-table"],
   "author": "Final Table Team",
   "license": "MIT",
-  "devDependencies": {
-    "live-server": "^1.2.2"
-  },
   "dependencies": {
-    "firebase": "^12.2.1"
+    "firebase": "^12.2.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
   }
 }
