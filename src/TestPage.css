@@ -282,6 +282,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0;
     overflow: hidden;
 }
 
@@ -290,7 +291,80 @@
     width: auto;
     object-fit: contain;
     display: block;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
     transform: translateX(60px);
+}
+
+/* Notification columns */
+.tp-notif-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 260px;
+}
+
+.tp-notif-left  { left: calc(50% - 460px); }
+.tp-notif-right { right: calc(50% - 460px); }
+
+/* Card entry animation */
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tp-notif-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.08),
+        0 8px 24px rgba(0,0,0,0.06),
+        0 0 0 0.5px rgba(0,0,0,0.04);
+    animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tp-notif-card-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #a2f69a;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.tp-notif-card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1.4;
+    margin: 0 0 2px;
+}
+
+.tp-notif-card-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(0,0,0,0.5);
+    line-height: 1.4;
+    margin: 0;
 }
 
 /* ── Dark Feature Section ── */

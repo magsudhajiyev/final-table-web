@@ -117,8 +117,52 @@ function TPHero() {
   )
 }
 
+/* ── Notification cards per tab ── */
+const tabCards = [
+  {
+    left: [
+      { title: 'Hand #4,291 logged', sub: 'Pot: $340 · You won with two pair' },
+      { title: 'Session started', sub: '6-max · $1/$2 · 9:41 PM' },
+    ],
+    right: [
+      { title: 'New hand recorded', sub: 'Preflop raise → fold by BB' },
+      { title: 'Streak: 3 winning hands', sub: 'Keep it up' },
+    ],
+  },
+  {
+    left: [
+      { title: 'Your VPIP: 24%', sub: 'Up 3% from last session' },
+      { title: '3-bet frequency: 12%', sub: 'Slightly above baseline' },
+    ],
+    right: [
+      { title: 'Aggression factor: 2.4', sub: 'Healthy range · 1.8–3.0' },
+      { title: 'Win rate: +4.2 BB/100', sub: 'Last 300 hands' },
+    ],
+  },
+  {
+    left: [
+      { title: 'Mike → LAG detected', sub: 'VPIP 51% · PFR 38%' },
+      { title: 'Sarah is a Nit', sub: 'Fold to 3-bet: 74%' },
+    ],
+    right: [
+      { title: 'Alex: Calling Station', sub: 'Don\'t bluff · value bet thin' },
+      { title: 'Jordan tagged: TAG', sub: 'Respect his 3-bets' },
+    ],
+  },
+  {
+    left: [
+      { title: 'Final Table', sub: 'Available on iOS & Android' },
+      { title: 'Free to start', sub: 'No credit card required' },
+    ],
+    right: [
+      { title: '2,400+ players tracking', sub: 'Join the community' },
+      { title: 'Sync across devices', sub: 'Your data, everywhere' },
+    ],
+  },
+]
+
 /* ────────────────────────────────────────────────────── */
-/*  BG IMAGE SECTION  (scroll-driven tabs)                */
+/*  BG IMAGE SECTION  (scroll-driven tabs, Flighty-style) */
 /* ────────────────────────────────────────────────────── */
 function TPBgSection() {
   const [activeTab, setActiveTab] = useState(0)
@@ -151,15 +195,46 @@ function TPBgSection() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const cards = tabCards[activeTab]
+
   return (
     <>
       <section className="tp-bg-section" ref={sectionRef}>
         <div className="tp-bg-sticky">
+
+          {/* Left notification cards */}
+          <div className="tp-notif-col tp-notif-left" key={`left-${activeTab}`}>
+            {cards.left.map((c, i) => (
+              <div className="tp-notif-card" key={i} style={{ animationDelay: `${i * 80}ms` }}>
+                <div className="tp-notif-card-dot" />
+                <div>
+                  <p className="tp-notif-card-title">{c.title}</p>
+                  <p className="tp-notif-card-sub">{c.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Centre phone */}
           <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
+
+          {/* Right notification cards */}
+          <div className="tp-notif-col tp-notif-right" key={`right-${activeTab}`}>
+            {cards.right.map((c, i) => (
+              <div className="tp-notif-card" key={i} style={{ animationDelay: `${i * 80}ms` }}>
+                <div className="tp-notif-card-dot" />
+                <div>
+                  <p className="tp-notif-card-title">{c.title}</p>
+                  <p className="tp-notif-card-sub">{c.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
-      {/* Fixed tab bar — only visible while scrolling through this section */}
+      {/* Tab bar — fixed, visible only within this section */}
       <div className={`tp-tabbar-wrap${tabsVisible ? ' tp-tabbar-visible' : ''}`}>
         <div className="tp-tabbar">
           {tabs.map((tab, i) => (
