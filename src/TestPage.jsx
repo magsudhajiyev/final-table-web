@@ -207,7 +207,9 @@ function TPBgSection() {
             </div>
           </div>
 
-          <img src={tabs[activeTab].mockup} alt="" className="tp-bg-section-mockup" />
+          <div className="tp-bg-mockup-wrap">
+            <img src={tabs[activeTab].mockup} alt="" className="tp-bg-section-mockup" />
+          </div>
         </div>
       </section>
     </>
