@@ -944,21 +944,13 @@
     color: rgba(0,0,0,0.55);
 }
 
-/* ── Fixed Tab Bar ── */
+/* ── Tab Bar (sticky inside bg section) ── */
 .tp-tabbar-wrap {
-    position: fixed;
+    position: absolute;
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 200;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.tp-tabbar-wrap.tp-tabbar-visible {
-    opacity: 1;
-    pointer-events: auto;
+    z-index: 10;
 }
 
 .tp-tabbar {
