@@ -26,12 +26,12 @@
     transition: padding 0.65s cubic-bezier(0.87, 0, 0.13, 1);
 }
 
-/* Full-width background strip (default state) */
+/* Full-width background strip — dark mode */
 .tp-nav-wrap::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255,255,255,0.92);
+    background: rgba(0,0,0,0.75);
     backdrop-filter: blur(12px);
     z-index: -1;
     opacity: 1;
@@ -135,7 +135,7 @@
 .tp-nav-links a {
     font-size: 15px;
     font-weight: 500;
-    color: rgba(0,0,0,0.7);
+    color: rgba(255,255,255,0.75);
     text-decoration: none;
     padding: 0 18px;
     letter-spacing: -0.015em;
@@ -143,7 +143,7 @@
 }
 
 .tp-nav-links a:hover {
-    color: #000;
+    color: #fff;
 }
 
 .tp-nav-cta {
@@ -178,54 +178,19 @@
 
 /* ── Hero ── */
 .tp-hero {
-    position: relative;
-    height: 100vh;
     background: #000;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Background images — full cover, cross-fade on tab switch */
-.tp-hero-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0;
-    transition: opacity 0.65s ease;
-}
-
-.tp-hero-bg-active {
-    opacity: 1;
-}
-
-/* Dark gradient at the top so headline is legible over the image */
-.tp-hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 52%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* Hero text — centered in the dark upper zone */
+/* Text block — solid dark, no image behind it */
 .tp-hero-content {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
+    position: relative;
+    z-index: 2;
     text-align: center;
-    padding-top: 120px;
-    width: 100%;
-    max-width: 860px;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding: 100px 40px 48px;
+    background: #000;
 }
 
 .tp-hero-h1 {
@@ -233,7 +198,6 @@
     font-size: clamp(40px, 4vw, 56px);
     font-weight: 400;
     color: #ffffff;
-    letter-spacing: 0;
     line-height: 1.17;
     margin: 0 0 18px;
 }
@@ -242,10 +206,36 @@
     font-family: 'Inter', sans-serif;
     font-size: 18px;
     font-weight: 400;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.7);
     line-height: 1.67;
-    max-width: 567px;
+    max-width: 540px;
     margin: 0 auto;
+}
+
+/* Image block — below the text */
+.tp-hero-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* Cross-fading background images */
+.tp-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.65s ease;
+}
+
+.tp-hero-bg-active {
+    opacity: 1;
 }
 
 /* Bottom gradient into next dark section */
@@ -254,7 +244,7 @@
     bottom: -1px;
     left: 0;
     right: 0;
-    height: 180px;
+    height: 140px;
     background: linear-gradient(to bottom, transparent 0%, #05010d 100%);
     pointer-events: none;
     z-index: 2;

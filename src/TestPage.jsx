@@ -97,17 +97,7 @@ function TPHero() {
   return (
     <>
       <section className="tp-hero" ref={sectionRef}>
-        {/* Cross-fading background images — one per tab */}
-        {heroTabs.map((tab, i) => (
-          <img
-            key={i}
-            src={tab.bg}
-            alt=""
-            className={`tp-hero-bg${activeTab === i ? ' tp-hero-bg-active' : ''}`}
-            aria-hidden="true"
-          />
-        ))}
-
+        {/* Text block — sits in its own dark container above the image */}
         <div className="tp-hero-content">
           <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
           <p className="tp-hero-sub">
@@ -115,6 +105,20 @@ function TPHero() {
             opponent reads, and hand history — all in one place.
           </p>
         </div>
+
+        {/* Image block — comes after the text */}
+        <div className="tp-hero-image-wrap">
+          {heroTabs.map((tab, i) => (
+            <img
+              key={i}
+              src={tab.bg}
+              alt=""
+              className={`tp-hero-bg${activeTab === i ? ' tp-hero-bg-active' : ''}`}
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+
         <div className="tp-hero-gradient" />
       </section>
 
