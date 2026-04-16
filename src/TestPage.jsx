@@ -166,7 +166,6 @@ const tabCards = [
 /* ────────────────────────────────────────────────────── */
 function TPBgSection() {
   const [activeTab, setActiveTab] = useState(0)
-  const [tabsVisible, setTabsVisible] = useState(false)
   const sectionRef = useRef(null)
 
   useEffect(() => {
@@ -174,15 +173,8 @@ function TPBgSection() {
       const section = sectionRef.current
       if (!section) return
       const rect = section.getBoundingClientRect()
-      const scrolledIn = -rect.top
-      const scrollableRange = section.offsetHeight - window.innerHeight
-
-      if (scrolledIn < 0 || scrolledIn > scrollableRange) {
-        setTabsVisible(false)
-        return
-      }
-
-      setTabsVisible(true)
+      const scrolledIn = -rect.top  // px scrolled past the section top
+      if (scrolledIn < 0) return
       const tabIndex = Math.min(
         Math.floor(scrolledIn / window.innerHeight),
         tabs.length - 1
