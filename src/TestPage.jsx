@@ -199,24 +199,25 @@ function TPBgSection() {
     <>
       <section className="tp-bg-section" ref={sectionRef}>
         <div className="tp-bg-sticky">
+
+          {/* Tab bar — top of sticky container */}
+          <div className="tp-tabbar-wrap">
+            <div className="tp-tabbar">
+              {tabs.map((tab, i) => (
+                <button
+                  key={i}
+                  className={`tp-tab${activeTab === i ? ' tp-tab-active' : ''}`}
+                >
+                  <img src={tab.icon} alt="" className="tp-tab-icon" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
         </div>
       </section>
-
-      {/* Tab bar — fixed, visible only within this section */}
-      <div className={`tp-tabbar-wrap${tabsVisible ? ' tp-tabbar-visible' : ''}`}>
-        <div className="tp-tabbar">
-          {tabs.map((tab, i) => (
-            <button
-              key={i}
-              className={`tp-tab${activeTab === i ? ' tp-tab-active' : ''}`}
-            >
-              <img src={tab.icon} alt="" className="tp-tab-icon" />
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
     </>
   )
 }

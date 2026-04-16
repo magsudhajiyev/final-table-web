@@ -955,19 +955,11 @@
 
 /* ── Tab Bar ── */
 .tp-tabbar-wrap {
-    position: fixed;
-    bottom: 24px;
+    position: absolute;
+    top: 24px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 200;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.tp-tabbar-wrap.tp-tabbar-visible {
-    opacity: 1;
-    pointer-events: auto;
+    z-index: 10;
 }
 
 .tp-tabbar {
