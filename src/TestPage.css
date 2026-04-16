@@ -937,6 +937,67 @@
     color: rgba(0,0,0,0.55);
 }
 
+/* ── Fixed Tab Bar ── */
+.tp-tabbar-wrap {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+}
+
+.tp-tabbar {
+    display: flex;
+    align-items: center;
+    background: #191310;
+    border-radius: 120px;
+    padding: 10px;
+    gap: 2px;
+}
+
+.tp-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.25s ease;
+    white-space: nowrap;
+}
+
+.tp-tab-icon {
+    width: 19px;
+    height: 19px;
+    display: block;
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: opacity 0.25s ease, filter 0.25s ease;
+}
+
+.tp-tab span {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c1c0c0;
+    transition: color 0.25s ease;
+}
+
+.tp-tab-active {
+    background: #a2f69a;
+}
+
+.tp-tab-active .tp-tab-icon {
+    opacity: 1;
+    filter: brightness(0);
+}
+
+.tp-tab-active span {
+    color: #000;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
     .tp-nav-links { display: none; }

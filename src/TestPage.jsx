@@ -7,10 +7,10 @@ const IMG_HERO_MOCKUP_1 = "/phone_mockup_1.png"
 const IMG_HERO_MOCKUP_2 = "/phone_mockup_2.png"
 const IMG_HERO_MOCKUP_3 = "/phone_mockup_3.png"  // replace when ready
 const IMG_HERO_MOCKUP_4 = "/phone_mockup_4.png"  // replace when ready
-const IMG_TAB_ICON_1    = "https://www.figma.com/api/mcp/asset/b06a0f07-90e7-4d41-853b-7563bfd312df"
-const IMG_TAB_ICON_2    = "https://www.figma.com/api/mcp/asset/9e339ba7-887d-471a-b651-582988ddd624"
-const IMG_TAB_ICON_3    = "https://www.figma.com/api/mcp/asset/92496d50-0f70-4bdc-a992-65210a9a71c4"
-const IMG_TAB_ICON_4    = "https://www.figma.com/api/mcp/asset/58b9259b-9418-49b3-adc7-3ad6730019d0"
+const IMG_TAB_ICON_1    = "https://www.figma.com/api/mcp/asset/c416dc6e-c330-4b98-b184-6a4328e5edd6"
+const IMG_TAB_ICON_2    = "https://www.figma.com/api/mcp/asset/59fc0826-2748-4f1d-9ed4-0b8f91470509"
+const IMG_TAB_ICON_3    = "https://www.figma.com/api/mcp/asset/f93fdd33-2253-4d45-96c9-38b1e5dee5d2"
+const IMG_TAB_ICON_4    = "https://www.figma.com/api/mcp/asset/ac64f25e-4570-4103-a6bf-adfaa92cbbc6"
 const IMG_DARK_CARD1_BG = "https://www.figma.com/api/mcp/asset/4f0edfce-4d90-486e-a9b7-de268a9d77a4"
 const IMG_DARK_CARD2_BG = "https://www.figma.com/api/mcp/asset/9e4f72ad-d4aa-47af-aed9-8249fb02e938"
 const IMG_DARK_CARD2_INNER = "https://www.figma.com/api/mcp/asset/400339f8-99be-4166-8739-0e235a3bc4ee"
@@ -437,6 +437,41 @@ function TPFooter() {
 }
 
 /* ────────────────────────────────────────────────────── */
+/*  FIXED TAB BAR                                         */
+/* ────────────────────────────────────────────────────── */
+const tabs = [
+  { icon: IMG_TAB_ICON_1, label: 'Hand-by hand logging' },
+  { icon: IMG_TAB_ICON_2, label: '7 Core Statistics' },
+  { icon: IMG_TAB_ICON_3, label: 'Play Style Detection' },
+  { icon: IMG_TAB_ICON_4, label: 'Download' },
+]
+
+function TPTabBar() {
+  const [active, setActive] = useState(0)
+
+  return (
+    <div className="tp-tabbar-wrap">
+      <div className="tp-tabbar">
+        {tabs.map((tab, i) => (
+          <button
+            key={i}
+            className={`tp-tab${active === i ? ' tp-tab-active' : ''}`}
+            onClick={() => setActive(i)}
+          >
+            <img
+              src={tab.icon}
+              alt=""
+              className="tp-tab-icon"
+            />
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  PAGE ROOT                                             */
 /* ────────────────────────────────────────────────────── */
 export default function TestPage() {
@@ -451,6 +486,7 @@ export default function TestPage() {
         <TPMoreReasons />
       </main>
       <TPFooter />
+      <TPTabBar />
     </div>
   )
 }
