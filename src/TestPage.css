@@ -309,6 +309,8 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     object-fit: contain;
     object-position: center bottom;
     display: block;
+    position: relative;
+    z-index: 1;
     animation: mockupFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -323,18 +325,18 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
-    width: 340px;
-    height: 340px;
+    width: 400px;
+    height: 400px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(162,246,154,0.35) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(100,180,255,0.45) 0%, transparent 70%);
     animation: glowPulse 3s ease-in-out infinite;
-    z-index: 1;
+    z-index: 0;
     pointer-events: none;
 }
 
 @keyframes glowPulse {
     0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+    50%       { opacity: 1;   transform: translateX(-50%) scale(1.15); }
 }
 
 
