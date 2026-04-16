@@ -451,8 +451,8 @@ function TPFooter() {
             <p className="tp-footer-col-head">Company</p>
             <a href="#">About</a>
             <a href="#">Blog</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
           </div>
           <div className="tp-footer-col">
             <p className="tp-footer-col-head">Support</p>

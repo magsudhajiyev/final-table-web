@@ -8,8 +8,8 @@ export default function Footer({
     { href: '#download', label: 'Download App' },
   ],
   rightLinks = [
-    { href: '#', label: 'Privacy' },
-    { href: '#', label: 'Terms' },
+    { href: '/privacy.html', label: 'Privacy' },
+    { href: '/terms.html', label: 'Terms' },
   ],
   copyrightText = '© 2026 Final Table. All rights reserved.',
   barCount = 23,
