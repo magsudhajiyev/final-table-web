@@ -10,7 +10,7 @@
     -webkit-font-smoothing: antialiased;
     background: #ffffff;
     color: #000000;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* ── Navbar ── */
