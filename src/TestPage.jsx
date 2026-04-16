@@ -3,7 +3,7 @@ import './TestPage.css'
 
 /* ── Figma asset URLs (expire in 7 days) ── */
 const IMG_HERO_BG_1     = "/Frame 9.png"
-const IMG_HERO_BG_2     = "/Frame 9.png"  // replace when ready
+const IMG_HERO_BG_2     = "/phone_mockup_2.png"
 const IMG_HERO_BG_3     = "/Frame 9.png"  // replace when ready
 const IMG_HERO_BG_4     = "/Frame 9.png"  // replace when ready
 const IMG_TAB_ICON_1    = "https://www.figma.com/api/mcp/asset/b06a0f07-90e7-4d41-853b-7563bfd312df"
@@ -84,52 +84,72 @@ function TPHero() {
   const [tabsVisible, setTabsVisible] = useState(false)
   const sectionRef = useRef(null)
 
-  // Show/hide tab bar based on whether hero is in viewport
+  // Scroll-driven tab switching — each tab occupies 100vh of scroll
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setTabsVisible(entry.isIntersecting),
-      { threshold: 0.1 }
-    )
-    if (sectionRef.current) observer.observe(sectionRef.current)
-    return () => observer.disconnect()
+    const handleScroll = () => {
+      const section = sectionRef.current
+      if (!section) return
+      const rect = section.getBoundingClientRect()
+      const scrolledIn = -rect.top          // px scrolled past section top
+      const scrollableRange = section.offsetHeight - window.innerHeight
+
+      if (scrolledIn < 0 || scrolledIn > scrollableRange) {
+        setTabsVisible(false)
+        return
+      }
+
+      setTabsVisible(true)
+      // Each tab gets exactly 100vh of scroll space
+      const tabIndex = Math.min(
+        Math.floor(scrolledIn / window.innerHeight),
+        heroTabs.length - 1
+      )
+      setActiveTab(Math.max(0, tabIndex))
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // run once on mount
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
     <>
+      {/* Tall section — gives 100vh scroll per tab */}
       <section className="tp-hero" ref={sectionRef}>
-        {/* Text block — sits in its own dark container above the image */}
-        <div className="tp-hero-content">
-          <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
-          <p className="tp-hero-sub">
-            The only app that tells you everything about your game. Real-time stats,
-            opponent reads, and hand history — all in one place.
-          </p>
-        </div>
+        <div className="tp-hero-sticky">
+          {/* Text block — solid dark, above image */}
+          <div className="tp-hero-content">
+            <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
+            <p className="tp-hero-sub">
+              The only app that tells you everything about your game. Real-time stats,
+              opponent reads, and hand history — all in one place.
+            </p>
+          </div>
 
-        {/* Image block — comes after the text */}
-        <div className="tp-hero-image-wrap">
-          {heroTabs.map((tab, i) => (
-            <img
-              key={i}
-              src={tab.bg}
-              alt=""
-              className={`tp-hero-bg${activeTab === i ? ' tp-hero-bg-active' : ''}`}
-              aria-hidden="true"
-            />
-          ))}
-        </div>
+          {/* Cross-fading background images */}
+          <div className="tp-hero-image-wrap">
+            {heroTabs.map((tab, i) => (
+              <img
+                key={i}
+                src={tab.bg}
+                alt=""
+                className={`tp-hero-bg${activeTab === i ? ' tp-hero-bg-active' : ''}`}
+                aria-hidden="true"
+              />
+            ))}
+          </div>
 
-        <div className="tp-hero-gradient" />
+          <div className="tp-hero-gradient" />
+        </div>
       </section>
 
-      {/* Fixed tab bar */}
+      {/* Fixed tab bar — visible only while hero is in scroll range */}
       <div className={`tp-hero-tabbar-wrap${tabsVisible ? ' tp-tabs-visible' : ''}`}>
         <div className="tp-hero-tabbar">
           {heroTabs.map((tab, i) => (
             <div
               key={i}
               className={`tp-hero-tab${activeTab === i ? ' active' : ''}`}
-              onClick={() => setActiveTab(i)}
             >
               <img src={tab.icon} alt="" className="tp-hero-tab-icon" />
               <span>{tab.label}</span>

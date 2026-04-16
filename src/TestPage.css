@@ -177,11 +177,20 @@
 }
 
 /* ── Hero ── */
+/* Tall section — 100vh visible + 100vh per tab = 500vh total */
 .tp-hero {
+    height: 500vh;
     background: #000;
-    overflow: hidden;
+}
+
+/* Sticky frame — pins the visual while the outer section scrolls */
+.tp-hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* Text block — solid dark, no image behind it */
@@ -191,6 +200,7 @@
     text-align: center;
     padding: 100px 40px 48px;
     background: #000;
+    flex-shrink: 0;
 }
 
 .tp-hero-h1 {
@@ -212,13 +222,11 @@
     margin: 0 auto;
 }
 
-/* Image block — below the text */
+/* Image block — fills remaining height below text */
 .tp-hero-image-wrap {
     position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
+    flex: 1;
     overflow: hidden;
-    flex-shrink: 0;
 }
 
 /* Cross-fading background images */
@@ -238,16 +246,16 @@
     opacity: 1;
 }
 
-/* Bottom gradient into next dark section */
+/* Bottom gradient fading into the dark section below */
 .tp-hero-gradient {
     position: absolute;
-    bottom: -1px;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: 140px;
+    height: 160px;
     background: linear-gradient(to bottom, transparent 0%, #05010d 100%);
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
 }
 
 /* Tab bar — fixed at very bottom of screen */
