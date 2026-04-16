@@ -324,7 +324,7 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
     position: absolute;
     bottom: 10%;
     left: 50%;
-    transform: translateX(calc(-50% - 20px));
+    transform: translateX(calc(-50% - 40px));
     width: 900px;
     height: 700px;
     border-radius: 50%;
@@ -335,8 +335,8 @@ body.bg-section-nav-dark .tp-nav-links a:hover {
 }
 
 @keyframes glowPulse {
-    0%, 100% { opacity: 0.55; transform: translateX(calc(-50% - 20px)) scale(1); }
-    50%       { opacity: 1;    transform: translateX(calc(-50% - 20px)) scale(1.2); }
+    0%, 100% { opacity: 0.55; transform: translateX(calc(-50% - 40px)) scale(1); }
+    50%       { opacity: 1;    transform: translateX(calc(-50% - 40px)) scale(1.2); }
 }
 
 /* Ripple rings */
