@@ -123,6 +123,7 @@ function TPHero() {
 function TPBgSection() {
   return (
     <section className="tp-bg-section">
+      <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
     </section>
   )
 }
