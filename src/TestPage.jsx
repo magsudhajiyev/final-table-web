@@ -81,87 +81,49 @@ const heroTabs = [
 ]
 
 function TPHero() {
-  const [activeTab, setActiveTab] = useState(0)
-  const [tabsVisible, setTabsVisible] = useState(false)
-  const sectionRef = useRef(null)
+  const [email, setEmail] = useState('')
 
-  // Scroll-driven tab switching — each tab occupies 100vh of scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current
-      if (!section) return
-      const rect = section.getBoundingClientRect()
-      const scrolledIn = -rect.top          // px scrolled past section top
-      const scrollableRange = section.offsetHeight - window.innerHeight
-
-      if (scrolledIn < 0 || scrolledIn > scrollableRange) {
-        setTabsVisible(false)
-        return
-      }
-
-      setTabsVisible(true)
-      // Each tab gets exactly 100vh of scroll space
-      const tabIndex = Math.min(
-        Math.floor(scrolledIn / window.innerHeight),
-        heroTabs.length - 1
-      )
-      setActiveTab(Math.max(0, tabIndex))
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // run once on mount
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const handleWaitlist = (e) => {
+    e.preventDefault()
+    // TODO: wire up to Firebase waitlist
+    alert(`Thanks! We'll reach out to ${email}`)
+    setEmail('')
+  }
 
   return (
-    <>
-      {/* Tall section — gives 100vh scroll per tab */}
-      <section className="tp-hero" ref={sectionRef}>
-        <div className="tp-hero-sticky">
-          {/* Text block — solid dark, above image */}
-          <div className="tp-hero-content">
-            <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
-            <p className="tp-hero-sub">
-              The only app that tells you everything about your game. Real-time stats,
-              opponent reads, and hand history — all in one place.
-            </p>
-          </div>
+    <section className="tp-hero">
+      <div className="tp-hero-content">
+        <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
+        <p className="tp-hero-sub">
+          The only app that tells you everything about your game. Real-time stats,
+          opponent reads, and hand history — all in one place.
+        </p>
 
-          {/* Image area: static background + cross-fading mockup */}
-          <div className="tp-hero-image-wrap">
-            {/* Permanent background — never changes */}
-            <img src={IMG_HERO_BG} alt="" className="tp-hero-bg tp-hero-bg-static" aria-hidden="true" />
-            {/* Mockup images — only this layer cross-fades per tab */}
-            {heroTabs.map((tab, i) => (
-              <img
-                key={i}
-                src={tab.mockup}
-                alt=""
-                className={`tp-hero-mockup${activeTab === i ? ' tp-hero-mockup-active' : ''}`}
-                aria-hidden="true"
-              />
-            ))}
-          </div>
-
-          <div className="tp-hero-gradient" />
-        </div>
-      </section>
-
-      {/* Fixed tab bar — visible only while hero is in scroll range */}
-      <div className={`tp-hero-tabbar-wrap${tabsVisible ? ' tp-tabs-visible' : ''}`}>
-        <div className="tp-hero-tabbar">
-          {heroTabs.map((tab, i) => (
-            <div
-              key={i}
-              className={`tp-hero-tab${activeTab === i ? ' active' : ''}`}
-            >
-              <img src={tab.icon} alt="" className="tp-hero-tab-icon" />
-              <span>{tab.label}</span>
-            </div>
-          ))}
-        </div>
+        <form className="tp-hero-waitlist" onSubmit={handleWaitlist}>
+          <input
+            type="email"
+            className="tp-hero-email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <button type="submit" className="tp-hero-waitlist-btn">
+            Join the waitlist
+          </button>
+        </form>
       </div>
-    </>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
+/*  BG IMAGE SECTION                                      */
+/* ────────────────────────────────────────────────────── */
+function TPBgSection() {
+  return (
+    <section className="tp-bg-section">
+    </section>
   )
 }
 
@@ -482,6 +444,7 @@ export default function TestPage() {
       <TPNavbar />
       <main>
         <TPHero />
+        <TPBgSection />
         <TPDarkSection />
         <TPFeatureSection />
         <TPMoreReasons />
