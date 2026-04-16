@@ -195,42 +195,11 @@ function TPBgSection() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const cards = tabCards[activeTab]
-
   return (
     <>
       <section className="tp-bg-section" ref={sectionRef}>
         <div className="tp-bg-sticky">
-
-          {/* Left notification cards */}
-          <div className="tp-notif-col tp-notif-left" key={`left-${activeTab}`}>
-            {cards.left.map((c, i) => (
-              <div className="tp-notif-card" key={i} style={{ animationDelay: `${i * 80}ms` }}>
-                <div className="tp-notif-card-dot" />
-                <div>
-                  <p className="tp-notif-card-title">{c.title}</p>
-                  <p className="tp-notif-card-sub">{c.sub}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Centre phone */}
           <img src="/phone_mockup_1.png" alt="" className="tp-bg-section-mockup" />
-
-          {/* Right notification cards */}
-          <div className="tp-notif-col tp-notif-right" key={`right-${activeTab}`}>
-            {cards.right.map((c, i) => (
-              <div className="tp-notif-card" key={i} style={{ animationDelay: `${i * 80}ms` }}>
-                <div className="tp-notif-card-dot" />
-                <div>
-                  <p className="tp-notif-card-title">{c.title}</p>
-                  <p className="tp-notif-card-sub">{c.sub}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
 
