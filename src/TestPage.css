@@ -3,6 +3,8 @@
    node-id 166:710  ·  Final-Table_v1
 ───────────────────────────────────────────────────────── */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter:wght@400;500;600&display=swap');
+
 .tp-root {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -178,22 +180,18 @@
 .tp-hero {
     position: relative;
     height: 100vh;
-    background: #05010d;
+    background: #000;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
 }
 
-/* Background images — anchored to bottom so phone sits in lower 70% */
+/* Background images — full cover, cross-fade on tab switch */
 .tp-hero-bg {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70%;
+    inset: 0;
     width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center center;
     pointer-events: none;
     z-index: 0;
     opacity: 0;
@@ -204,44 +202,49 @@
     opacity: 1;
 }
 
-/* Gradient that blends the top edge of the image into the dark bg */
+/* Dark gradient at the top so headline is legible over the image */
 .tp-hero::before {
     content: '';
     position: absolute;
-    left: 0; right: 0;
-    bottom: 70%;
-    height: 100px;
-    background: linear-gradient(to bottom, #05010d 0%, transparent 100%);
+    top: 0; left: 0; right: 0;
+    height: 52%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
     z-index: 1;
     pointer-events: none;
 }
 
-/* Hero text — sits in the dark area above the image */
+/* Hero text — centered in the dark upper zone */
 .tp-hero-content {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 3;
     text-align: center;
-    padding: 88px 40px 0;
-    max-width: 700px;
-    margin: 0 auto;
+    padding-top: 120px;
     width: 100%;
+    max-width: 860px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 .tp-hero-h1 {
-    font-size: clamp(34px, 4.5vw, 58px);
-    font-weight: 700;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(40px, 4vw, 56px);
+    font-weight: 400;
     color: #ffffff;
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    margin: 0 0 14px;
+    letter-spacing: 0;
+    line-height: 1.17;
+    margin: 0 0 18px;
 }
 
 .tp-hero-sub {
-    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
     font-weight: 400;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.6;
-    max-width: 460px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.67;
+    max-width: 567px;
     margin: 0 auto;
 }
 
