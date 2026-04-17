@@ -42,7 +42,7 @@ export async function submitNicknameClaim(nickname, email) {
   // Save claim
   await addDoc(collection(db, 'nickname_claims'), {
     nickname: normalized,
-    email,
+    email: email.toLowerCase().trim(),
     source: 'final-table-web',
     timestamp: serverTimestamp(),
     status: 'pending'
