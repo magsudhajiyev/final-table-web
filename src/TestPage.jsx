@@ -203,13 +203,15 @@ const darkTabs = [0, 2, 3]
 
 // Cards: final position + how far to translate back toward phone center (ox, oy)
 // ox/oy are the offset applied when hidden — positive ox = card is to the left, needs to slide right to reach phone
+// Positions use calc(50% ± Npx) so cards stay fixed distance from phone centre
+// on any viewport width — phone centre is always at calc(50% + 60px)
 const SESSION_CARDS = [
-  { src: '/session-history/s1.png', w: 220, top: '10%',  left: '25%',  rot: -3, dur: 6.2, fd: 0.00, ox:  280, oy:  160 },
-  { src: '/session-history/s2.png', w: 210, top: '42%',  left: '22%',  rot:  2, dur: 7.0, fd: 0.08, ox:  310, oy:   10 },
-  { src: '/session-history/s3.png', w: 230, bot: '10%',  left: '24%',  rot: -2, dur: 5.8, fd: 0.05, ox:  290, oy: -170 },
-  { src: '/session-history/s5.png', w: 210, top: '14%',  right: '23%', rot:  2, dur: 6.0, fd: 0.12, ox: -240, oy:  130 },
-  { src: '/session-history/s4.png', w: 200, top: '48%',  right: '21%', rot: -2, dur: 6.8, fd: 0.04, ox: -260, oy:   20 },
-  { src: '/session-history/s6.png', w: 200, bot: '10%',  right: '23%', rot:  1, dur: 7.2, fd: 0.09, ox: -250, oy: -160 },
+  { src: '/session-history/s1.png', w: 220, top: '10%',  left: 'calc(50% - 330px)', rot: -3, dur: 6.2, fd: 0.00, ox:  280, oy:  160 },
+  { src: '/session-history/s2.png', w: 210, top: '42%',  left: 'calc(50% - 355px)', rot:  2, dur: 7.0, fd: 0.08, ox:  310, oy:   10 },
+  { src: '/session-history/s3.png', w: 230, bot: '10%',  left: 'calc(50% - 345px)', rot: -2, dur: 5.8, fd: 0.05, ox:  290, oy: -170 },
+  { src: '/session-history/s5.png', w: 210, top: '14%',  right: 'calc(50% - 405px)', rot:  2, dur: 6.0, fd: 0.12, ox: -240, oy:  130 },
+  { src: '/session-history/s4.png', w: 200, top: '48%',  right: 'calc(50% - 420px)', rot: -2, dur: 6.8, fd: 0.04, ox: -260, oy:   20 },
+  { src: '/session-history/s6.png', w: 200, bot: '10%',  right: 'calc(50% - 410px)', rot:  1, dur: 7.2, fd: 0.09, ox: -250, oy: -160 },
 ]
 
 function TPBgSection() {
@@ -838,6 +840,167 @@ function TPContact() {
 }
 
 /* ────────────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────── */
+/*  RESERVE USERNAME                                      */
+/* ────────────────────────────────────────────────────── */
+const FAQS = [
+  {
+    q: 'Can I change my username later?',
+    a: 'Once reserved, your username is locked in. Choose carefully — this becomes your permanent handle in Final Table.',
+  },
+  {
+    q: 'Is reserving free?',
+    a: 'Yes. Reserving your username is completely free. Just enter your email and desired handle below.',
+  },
+  {
+    q: 'What if my username is taken?',
+    a: 'Usernames are first-come, first-served. If your preferred handle is gone, try a variation — underscores and numbers are fair game.',
+  },
+  {
+    q: 'When will the app launch?',
+    a: 'Final Table is in closed beta. Waitlist members get early access before the public launch.',
+  },
+]
+
+function TPReserveUsername() {
+  const [form, setForm]     = useState({ email: '', username: '' })
+  const [status, setStatus] = useState('idle') // idle | sending | done | error
+  const [openFaq, setOpenFaq] = useState(null)
+
+  const handleChange = e => {
+    const { name, value } = e.target
+    if (name === 'username') {
+      setForm(f => ({ ...f, username: value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 16) }))
+    } else {
+      setForm(f => ({ ...f, [name]: value }))
+    }
+  }
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setStatus('sending')
+    try {
+      if (typeof window.submitToWaitlist === 'function') {
+        await window.submitToWaitlist(form.email)
+      }
+      setStatus('done')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <section className="ru-section" id="reserve-username" data-nav-theme="dark">
+      <div className="ru-glow" />
+
+      <div className="ru-inner">
+        {/* Left — copy */}
+        <div className="ru-left">
+          <p className="ru-eyebrow">Early access</p>
+          <h2 className="ru-title">Reserve your username<br />before anyone else does.</h2>
+          <p className="ru-body">
+            Claim your permanent handle ahead of launch. Usernames are first-come, first-served — once it's gone, it's gone.
+          </p>
+
+          {/* Social proof avatars */}
+          <div className="ru-proof">
+            <div className="ru-avatars">
+              {['A','J','K','Q','T'].map((l,i) => (
+                <div key={i} className="ru-avatar" style={{ '--i': i }}>{l}</div>
+              ))}
+            </div>
+            <p className="ru-proof-text"><strong>2,400+</strong> players already on the waitlist</p>
+          </div>
+
+          {/* FAQ */}
+          <div className="ru-faq">
+            {FAQS.map((f, i) => (
+              <div key={i} className={`ru-faq-item${openFaq === i ? ' ru-faq-open' : ''}`}>
+                <button className="ru-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                  <span>{f.q}</span>
+                  <svg className="ru-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+                <div className="ru-faq-a">{f.a}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right — form card */}
+        <div className="ru-right">
+          <div className="ru-card">
+            {status === 'done' ? (
+              <div className="ru-success">
+                <div className="ru-success-chip">✓ Reserved</div>
+                <h3 className="ru-success-title">You're on the list.</h3>
+                <p className="ru-success-body">
+                  <span className="ru-username-preview">@{form.username || 'yourhandle'}</span> is reserved for you. We'll reach out when Final Table opens.
+                </p>
+                <button className="ru-success-reset" onClick={() => { setStatus('idle'); setForm({ email: '', username: '' }) }}>
+                  Reserve another
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="ru-card-header">
+                  <p className="ru-card-title">Claim your handle</p>
+                  <p className="ru-card-sub">Free · Takes 10 seconds</p>
+                </div>
+
+                <form className="ru-form" onSubmit={handleSubmit}>
+                  <div className="ru-field">
+                    <label className="ru-label">Email</label>
+                    <input
+                      className="ru-input"
+                      type="email"
+                      name="email"
+                      placeholder="you@example.com"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                    />
+                    <p className="ru-hint">Your future sign-in email — can't be changed later.</p>
+                  </div>
+
+                  <div className="ru-field">
+                    <label className="ru-label">
+                      Username
+                      <span className="ru-char-count">{form.username.length}/16</span>
+                    </label>
+                    <div className="ru-input-prefix-wrap">
+                      <span className="ru-prefix">@</span>
+                      <input
+                        className="ru-input ru-input-with-prefix"
+                        type="text"
+                        name="username"
+                        placeholder="yourhandle"
+                        value={form.username}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <p className="ru-hint">Letters, numbers and underscores only. Max 16 characters.</p>
+                  </div>
+
+                  {status === 'error' && (
+                    <p className="ru-error">Something went wrong. Please try again.</p>
+                  )}
+
+                  <button className="ru-submit" type="submit" disabled={status === 'sending'}>
+                    {status === 'sending' ? 'Reserving…' : 'Reserve my spot →'}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function TestPage() {
   return (
     <div className="tp-root">
@@ -846,6 +1009,7 @@ export default function TestPage() {
         <TPHero />
         <TPBgSection />
         <TPFeaturesGrid />
+        <TPReserveUsername />
         <TPGetToday />
         <TPContact />
       </main>
