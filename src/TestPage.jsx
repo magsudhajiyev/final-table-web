@@ -200,24 +200,11 @@ const tabCards = [
 /* ────────────────────────────────────────────────────── */
 /*  BG IMAGE SECTION  (scroll-driven tabs, Flighty-style) */
 /* ────────────────────────────────────────────────────── */
-const darkTabs = [0, 2, 3]
+const darkTabs = []
 
-// Cards: final position + how far to translate back toward phone center (ox, oy)
-// ox/oy are the offset applied when hidden — positive ox = card is to the left, needs to slide right to reach phone
-// Positions use calc(50% ± Npx) so cards stay fixed distance from phone centre
-// on any viewport width — phone centre is always at calc(50% + 60px)
-const SESSION_CARDS = [
-  { src: '/session-history/s1.png', w: 220, top: '10%',  left: 'calc(50% - 330px)', rot: -3, dur: 6.2, fd: 0.00, ox:  280, oy:  160 },
-  { src: '/session-history/s2.png', w: 210, top: '42%',  left: 'calc(50% - 355px)', rot:  2, dur: 7.0, fd: 0.08, ox:  310, oy:   10 },
-  { src: '/session-history/s3.png', w: 230, bot: '10%',  left: 'calc(50% - 345px)', rot: -2, dur: 5.8, fd: 0.05, ox:  290, oy: -170 },
-  { src: '/session-history/s5.png', w: 210, top: '14%',  right: 'calc(50% - 405px)', rot:  2, dur: 6.0, fd: 0.12, ox: -240, oy:  130 },
-  { src: '/session-history/s4.png', w: 200, top: '48%',  right: 'calc(50% - 420px)', rot: -2, dur: 6.8, fd: 0.04, ox: -260, oy:   20 },
-  { src: '/session-history/s6.png', w: 200, bot: '10%',  right: 'calc(50% - 410px)', rot:  1, dur: 7.2, fd: 0.09, ox: -250, oy: -160 },
-]
 
 function TPBgSection() {
   const [activeTab, setActiveTab] = useState(0)
-  const [spread, setSpread] = useState(false)
   const sectionRef = useRef(null)
 
   useEffect(() => {
@@ -230,11 +217,8 @@ function TPBgSection() {
 
       if (scrolledIn < 0 || scrolledIn > scrollableRange) {
         document.body.classList.remove('bg-section-nav-dark')
-        if (scrolledIn < 0) setSpread(false)
         return
       }
-
-      setSpread(true)
 
       // Tab switches at each 100vh boundary
       const tabIndex = Math.min(Math.floor(scrolledIn / window.innerHeight), tabs.length - 1)
@@ -257,36 +241,19 @@ function TPBgSection() {
 
   return (
     <>
-      <section className="tp-bg-section" ref={sectionRef} data-nav-theme="dark">
+      <section className="tp-bg-section" ref={sectionRef} data-nav-theme="light">
         <div className="tp-bg-sticky">
 
-          {/* Session cards — hidden behind phone, fan out on scroll */}
-          <div className="tp-session-layer">
-            {SESSION_CARDS.map((card, i) => (
+          {/* Left tab info panel */}
+          <div className="tp-tab-info">
+            {tabInfo.map((info, i) => (
               <div
                 key={i}
-                className={`tp-session-wrap${spread ? ' is-spread' : ''}`}
-                style={{
-                  top: card.top,
-                  bottom: card.bot,
-                  left: card.left,
-                  right: card.right,
-                  '--ox': `${card.ox}px`,
-                  '--oy': `${card.oy}px`,
-                  '--rot': `${card.rot}deg`,
-                  transitionDelay: spread ? `${card.fd}s` : '0s',
-                }}
+                className={`tp-tab-info-slide${activeTab === i ? ' is-active' : ''}`}
               >
-                <img
-                  src={card.src}
-                  alt=""
-                  className="tp-session-card"
-                  style={{
-                    width: card.w,
-                    '--dur': `${card.dur}s`,
-                    '--fdelay': `${card.fd + 0.7}s`,
-                  }}
-                />
+                <p className="tp-tab-info-eyebrow">{info.eyebrow}</p>
+                <h2 className="tp-tab-info-title">{info.title}</h2>
+                <p className="tp-tab-info-body">{info.body}</p>
               </div>
             ))}
           </div>
@@ -536,6 +503,29 @@ const tabs = [
   { icon: IMG_TAB_ICON_4, label: 'Download',             mockup: '/phonemain_3.png' },
 ]
 
+const tabInfo = [
+  {
+    eyebrow: 'Logging',
+    title: 'Every hand,\ncaptured live.',
+    body: 'Log each action as it happens — raises, calls, folds, and showdowns. Your full hand history builds automatically in real time.',
+  },
+  {
+    eyebrow: 'Statistics',
+    title: 'Seven stats\nthat tell the truth.',
+    body: 'VPIP, PFR, 3-bet %, aggression factor, and more. Know exactly where you\'re winning and where you\'re leaking chips.',
+  },
+  {
+    eyebrow: 'Play Style',
+    title: 'Know your\ngame inside out.',
+    body: 'Final Table reads your tendencies and classifies your style — TAG, LAG, Nit, or Calling Station — so you can adjust.',
+  },
+  {
+    eyebrow: 'Download',
+    title: 'Ready when\nyou are.',
+    body: 'Free to download on iOS and Android. No credit card required. Your first session takes 60 seconds to set up.',
+  },
+]
+
 function TPTabBar() {
   const [active, setActive] = useState(0)
 
@@ -562,179 +552,82 @@ function TPTabBar() {
 }
 
 /* ────────────────────────────────────────────────────── */
-/*  PAGE ROOT                                             */
+/*  FEATURES GRID  (Chronicle-style editorial layout)    */
 /* ────────────────────────────────────────────────────── */
-/*  FEATURES GRID                                         */
-/* ────────────────────────────────────────────────────── */
-const featuresGrid = [
-  {
-    icon: '👤',
-    title: 'Opponent Profiles',
-    desc: 'Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you\'ve played against them.',
-    size: 'sm',
-  },
-  {
-    icon: '💰',
-    title: 'Bankroll Tracking',
-    desc: 'Set a bankroll goal and watch your progress. Pinch-to-zoom earnings chart shows your cumulative results over time.',
-    size: 'sm',
-    chart: true,
-  },
-  {
-    icon: '⚡',
-    title: 'Quick Session Logger',
-    desc: 'Don\'t want full hand tracking? Just log your buy-in, cash-out, and session duration for a quick profit/loss record.',
-    size: 'sm',
-  },
-  {
-    icon: '🤖',
-    title: 'AI Hand Analysis',
-    desc: 'Get GTO-based feedback on your hands. The AI reviews your decisions and suggests improvements.',
-    size: 'lg',
-    premium: true,
-  },
-  {
-    icon: '🏛️',
-    title: 'Club Management',
-    desc: 'Create or join a poker club. Manage members, roles, tables, and run events — all from the app.',
-    size: 'sm',
-  },
-  {
-    icon: '🏆',
-    title: 'Multi-Table Tournaments',
-    desc: 'Run live tournaments with multiple tables, real-time rankings, final standings, and prize distribution.',
-    size: 'sm',
-  },
-  {
-    icon: '🎙️',
-    title: 'Dealer Mode',
-    desc: 'Dealers can run a table hands-free using voice commands. Players follow along on their own phones in real time.',
-    size: 'sm',
-  },
-  {
-    icon: '📱',
-    title: 'QR Seat Assignments',
-    desc: 'Players scan a QR code to claim their seat. No manual setup, no confusion.',
-    size: 'sm',
-  },
-  {
-    icon: '🔄',
-    title: 'Real-Time Sync',
-    desc: 'Every action broadcasts instantly to all players and spectators via live updates.',
-    size: 'sm',
-  },
-  {
-    icon: '📋',
-    title: 'Cash Game Waitlists',
-    desc: 'Stakes-scoped waitlists let players queue for the game they want. Admins manage seating from the dashboard.',
-    size: 'sm',
-  },
+const fgBottomFeatures = [
+  { icon: '👤', title: 'Opponent Profiles',      desc: 'Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you\'ve played against them.' },
+  { icon: '💰', title: 'Bankroll Tracking',      desc: 'Set a bankroll goal and watch your progress. Pinch-to-zoom earnings chart shows your cumulative results over time.' },
+  { icon: '⚡', title: 'Quick Session Logger',   desc: 'Don\'t want full hand tracking? Just log your buy-in, cash-out, and session duration for a quick profit/loss record.' },
+  { icon: '🤖', title: 'AI Hand Analysis',       desc: 'Get GTO-based feedback on your hands. The AI reviews your decisions and suggests improvements.' },
+  { icon: '🏛️', title: 'Club Management',        desc: 'Create or join a poker club. Manage members, roles, tables, and run events — all from the app.' },
+  { icon: '🏆', title: 'Multi-Table Tournaments',desc: 'Run live tournaments with multiple tables, real-time rankings, final standings, and prize distribution.' },
+  { icon: '🎙️', title: 'Dealer Mode',            desc: 'Dealers can run a table hands-free using voice commands. Players follow along on their own phones in real time.' },
+  { icon: '📱', title: 'QR Seat Assignments',    desc: 'Players scan a QR code to claim their seat. No manual setup, no confusion.' },
+  { icon: '🔄', title: 'Real-Time Sync',         desc: 'Every action broadcasts instantly to all players and spectators via live updates.' },
+  { icon: '📋', title: 'Cash Game Waitlists',    desc: 'Stakes-scoped waitlists let players queue for the game they want. Admins manage seating from the dashboard.' },
 ]
 
-function MiniChart() {
-  const bars = [30, 45, 35, 60, 50, 75, 90]
-  return (
-    <div className="fg-chart">
-      {bars.map((h, i) => (
-        <div key={i} className="fg-chart-bar" style={{ height: `${h}%` }} />
-      ))}
-    </div>
-  )
-}
-
 function TPFeaturesGrid() {
-  const sectionRef = useRef(null)
-  const trackRef = useRef(null)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current
-      const track = trackRef.current
-      if (!section || !track) return
-
-      const rect = section.getBoundingClientRect()
-      const scrolledIn = -rect.top
-      const scrollableRange = section.offsetHeight - window.innerHeight
-      if (scrolledIn < 0 || scrolledIn > scrollableRange) return
-
-      const progress = scrolledIn / scrollableRange
-      const maxTranslate = track.scrollWidth - track.parentElement.offsetWidth
-      track.style.transform = `translateX(${-progress * maxTranslate}px)`
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
-    <section className="fg-section" ref={sectionRef} data-nav-theme="dark">
-      <div className="fg-sticky">
+    <section className="fg-section" data-nav-theme="dark">
+      <div className="fg-container">
+
+        {/* Left-aligned header */}
         <div className="fg-header">
-          <p className="fg-eyebrow">Everything you need</p>
-          <h2 className="fg-title">Built for every kind of player.</h2>
+          <h2 className="fg-title">Built for every<br />kind of player.</h2>
           <p className="fg-sub">From casual home games to serious grinders — Final Table has the tools to match how you play.</p>
         </div>
-        <div className="fg-track-wrap">
-          <div className="fg-track" ref={trackRef}>
-            {featuresGrid.map((f, i) => (
-              <div key={i} className={`fg-card${f.size === 'lg' ? ' fg-card-lg' : ''}`}>
-                {f.premium && <span className="fg-premium">PREMIUM</span>}
-                <div className="fg-icon">{f.icon}</div>
-                <h3 className="fg-card-title">{f.title}</h3>
-                <p className="fg-card-desc">{f.desc}</p>
-                {f.chart && <MiniChart />}
+
+        <div className="fg-rule" />
+
+        {/* Two hero cells: screenshot above, text below */}
+        <div className="fg-main-grid">
+          <div className="fg-main-cell">
+            <div className="fg-preview">
+              <img src="/phonemain_1.png" alt="" className="fg-preview-img" />
+            </div>
+            <div className="fg-cell-bottom">
+              <div className="fg-cell-header">
+                <img src={IMG_TAB_ICON_1} alt="" className="fg-cell-icon" />
+                <h3 className="fg-cell-title">Hand-by-hand logging</h3>
               </div>
-            ))}
+              <p className="fg-cell-desc">Log every action live — raises, calls, folds, and showdowns. Your full hand history builds automatically as you play.</p>
+            </div>
+          </div>
+          <div className="fg-main-cell">
+            <div className="fg-preview">
+              <img src="/phonemain_2.png" alt="" className="fg-preview-img" />
+            </div>
+            <div className="fg-cell-bottom">
+              <div className="fg-cell-header">
+                <img src={IMG_TAB_ICON_2} alt="" className="fg-cell-icon" />
+                <h3 className="fg-cell-title">7 Core Statistics</h3>
+              </div>
+              <p className="fg-cell-desc">VPIP, PFR, 3-bet %, aggression factor, and more. Know exactly where you're winning and where chips are slipping away.</p>
+            </div>
           </div>
         </div>
+
+        <div className="fg-rule" />
+
+        {/* 10 supporting features — 2-col spec-sheet list */}
+        <div className="fg-list-grid">
+          {fgBottomFeatures.map((f, i) => (
+            <div key={i} className="fg-list-item">
+              <div className="fg-list-header">
+                <span className="fg-list-icon">{f.icon}</span>
+                <h3 className="fg-list-title">{f.title}</h3>
+              </div>
+              <p className="fg-list-desc">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   )
 }
 
-/* ────────────────────────────────────────────────────── */
-/*  GET FINAL TABLE TODAY                                 */
-/* ────────────────────────────────────────────────────── */
-function TPGetToday() {
-  return (
-    <section className="gt-section" data-nav-theme="dark">
-      <div className="gt-glow" />
-      <div className="gt-inner">
-        <p className="gt-eyebrow">Available now</p>
-        <h2 className="gt-headline">
-          Get&nbsp;Final&nbsp;Table<br />today.
-        </h2>
-        <p className="gt-sub">
-          Your poker game, fully tracked. Download free on iOS and Android.
-        </p>
-        <div className="gt-badges">
-          {/* App Store */}
-          <a href="#" className="gt-badge" aria-label="Download on the App Store">
-            <svg className="gt-badge-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            <span className="gt-badge-text">
-              <span className="gt-badge-sub">Download on the</span>
-              <span className="gt-badge-name">App Store</span>
-            </span>
-          </a>
-          {/* Google Play */}
-          <a href="#" className="gt-badge" aria-label="Get it on Google Play">
-            <svg className="gt-badge-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3.18 23.76c.3.17.64.24.99.2l.06-.03 11.2-11.2-2.39-2.39zM20.47 10.6L17.6 9l-2.7 2.7 2.7 2.7 2.9-1.62c.83-.46.83-1.62-.03-2.18zM2.01 1.05C1.7 1.38 1.5 1.9 1.5 2.6v18.8c0 .7.2 1.22.52 1.55l.08.07 10.54-10.54v-.25z"/>
-            </svg>
-            <span className="gt-badge-text">
-              <span className="gt-badge-sub">Get it on</span>
-              <span className="gt-badge-name">Google Play</span>
-            </span>
-          </a>
-        </div>
-        <p className="gt-fine">Free to download · No credit card required</p>
-      </div>
-    </section>
-  )
-}
 
 /* ────────────────────────────────────────────────────── */
 /*  CONTACT                                               */
@@ -1019,8 +912,7 @@ export default function TestPage() {
         <TPBgSection />
         <TPFeaturesGrid />
         <TPReserveUsername />
-        <TPGetToday />
-        <TPContact />
+<TPContact />
       </main>
       <TPFooter />
     </div>
