@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, getDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDTw_1lOHmIl_gDY3ex-N_l8NLxRzy6AtA",
@@ -21,6 +21,33 @@ export async function submitToWaitlist(email) {
     source: 'final-table',
     timestamp: serverTimestamp()
   })
+}
+
+export async function submitNicknameClaim(nickname, email) {
+  const normalized = nickname.toLowerCase().trim()
+
+  // Check if taken by live user
+  const usernameDoc = await getDoc(doc(db, 'usernames', normalized))
+  if (usernameDoc.exists()) return { taken: true }
+
+  // Check if already claimed via web
+  const q = query(
+    collection(db, 'nickname_claims'),
+    where('nickname', '==', normalized),
+    where('status', '==', 'pending')
+  )
+  const existing = await getDocs(q)
+  if (!existing.empty) return { taken: true }
+
+  // Save claim
+  await addDoc(collection(db, 'nickname_claims'), {
+    nickname: normalized,
+    email,
+    source: 'final-table-web',
+    timestamp: serverTimestamp(),
+    status: 'pending'
+  })
+  return { taken: false }
 }
 
 export async function submitContactForm(name, email, message) {

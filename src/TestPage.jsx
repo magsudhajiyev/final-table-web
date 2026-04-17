@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { submitNicknameClaim, submitToWaitlist } from './lib/firebase'
 import './TestPage.css'
 
 /* ── Social icon SVGs (lucide-react v1+ dropped brand icons) ── */
@@ -864,13 +865,14 @@ const FAQS = [
 
 function TPReserveUsername() {
   const [form, setForm]     = useState({ email: '', username: '' })
-  const [status, setStatus] = useState('idle') // idle | sending | done | error
+  const [status, setStatus] = useState('idle') // idle | sending | done | taken | error
   const [openFaq, setOpenFaq] = useState(null)
 
   const handleChange = e => {
     const { name, value } = e.target
+    if (status === 'taken') setStatus('idle')
     if (name === 'username') {
-      setForm(f => ({ ...f, username: value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 16) }))
+      setForm(f => ({ ...f, username: value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20) }))
     } else {
       setForm(f => ({ ...f, [name]: value }))
     }
@@ -880,9 +882,13 @@ function TPReserveUsername() {
     e.preventDefault()
     setStatus('sending')
     try {
-      if (typeof window.submitToWaitlist === 'function') {
-        await window.submitToWaitlist(form.email)
+      const result = await submitNicknameClaim(form.username, form.email)
+      if (result.taken) {
+        setStatus('taken')
+        return
       }
+      // Also add to waitlist for marketing
+      await submitToWaitlist(form.email).catch(() => {})
       setStatus('done')
     } catch {
       setStatus('error')
@@ -967,7 +973,7 @@ function TPReserveUsername() {
                   <div className="ru-field">
                     <label className="ru-label">
                       Username
-                      <span className="ru-char-count">{form.username.length}/16</span>
+                      <span className="ru-char-count">{form.username.length}/20</span>
                     </label>
                     <div className="ru-input-prefix-wrap">
                       <span className="ru-prefix">@</span>
@@ -981,9 +987,12 @@ function TPReserveUsername() {
                         required
                       />
                     </div>
-                    <p className="ru-hint">Letters, numbers and underscores only. Max 16 characters.</p>
+                    <p className="ru-hint">Letters, numbers and underscores only. 3–20 characters.</p>
                   </div>
 
+                  {status === 'taken' && (
+                    <p className="ru-error">That username is already taken. Try a different one.</p>
+                  )}
                   {status === 'error' && (
                     <p className="ru-error">Something went wrong. Please try again.</p>
                   )}
