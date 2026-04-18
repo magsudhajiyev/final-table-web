@@ -984,44 +984,210 @@ const problems = [
   },
 ]
 
-function TPProblems() {
-  const [active, setActive] = useState(0)
+const STACK_CARDS = [
+  {
+    left: {
+      stat: <>Live poker players play<br /><strong>~25–30 hands/hour</strong> on average.</>,
+      question: 'How many of those hands do you actually remember?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table tracks every hand you play, so you can review every action and find leaks you never knew you had.',
+  },
+  {
+    left: {
+      stat: 'Online players review thousands of hands to find leaks.',
+      question: 'How do you spot that you overfold rivers vs aggression with zero data?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table logs your decisions across hundreds of hands and surfaces the patterns so your leaks have nowhere to hide.',
+  },
+  {
+    left: {
+      stat: 'You study GTO solvers for hours before a session.',
+      question: 'But can you actually compare your live play to what the solver says?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table lets you export your logged hands and review them against solver outputs — bridging the gap between study and real play.',
+  },
+  {
+    left: {
+      stat: 'Ask any live player their win rate. Most guess.',
+      question: 'Do you actually know your $/hr by stakes, casino, or game type?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table tracks every session with precision — win rate, duration, stakes — so you always know exactly where you stand.',
+  },
+  {
+    left: {
+      stat: 'Position is the single biggest edge in poker.',
+      question: 'Do you know your actual stats from the BTN vs the BB vs UTG?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table breaks down your performance by position, so you can see where you print money and where you bleed chips.',
+  },
+  {
+    left: {
+      stat: 'Hour 1 you and Hour 7 you are not the same player.',
+      question: 'Can you tell when your game starts falling apart during a long session?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table tracks your performance over time within a session, so you can see exactly when tilt creeps in — and learn when to walk away.',
+  },
+  {
+    left: {
+      stat: <>"He always 3-bets light." "She never folds the river."</>,
+      question: 'Are those real reads or just feelings from one memorable hand?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table builds opponent profiles from logged hands — real stats, real tendencies — so your reads are backed by data, not memory.',
+  },
+  {
+    left: {
+      stat: 'Moving up in stakes is the dream. Going broke is the nightmare.',
+      question: 'Are you making that decision based on actual ROI or just a hot streak?',
+    },
+    headline: null,
+    question: null,
+    body: 'Final Table gives you the bankroll data to make smart stake decisions — track your true ROI and know when you\'re actually ready.',
+  },
+]
 
-  const goTo = (i) => setActive(i)
-  const prev = () => setActive((active - 1 + problems.length) % problems.length)
-  const next = () => setActive((active + 1) % problems.length)
+function TPProblems() {
+  const wrapperRef = useRef(null)
+  const cardRefs = useRef([])
+  const [activeCard, setActiveCard] = useState(0)
+  const activeRef = useRef(0)
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+    const n = STACK_CARDS.length
+    const CONTAINER_H = 290  // must match .sc-right height in CSS
+    const ACTIVE_Y    = 48
+    const PEEK        = 10
+    const LERP        = 0.1  // smoothing factor (lower = silkier)
+
+    const curY = Array(n).fill(CONTAINER_H)
+    let rafId  = null
+    let active = false
+
+    const getTarget = (cp) => {
+      if (cp < 0) return CONTAINER_H
+      if (cp < 0.45) {
+        const t = cp / 0.45
+        const eased = 1 - Math.pow(1 - t, 3)
+        return CONTAINER_H - eased * (CONTAINER_H - ACTIVE_Y)
+      }
+      const depth = Math.floor(cp - 0.45)
+      return Math.max(0, ACTIVE_Y - depth * PEEK)
+    }
+
+    const tick = () => {
+      const rect = wrapper.getBoundingClientRect()
+      const scrolled = -rect.top
+      const total = rect.height - window.innerHeight
+      let needsMore = false
+
+      if (total > 0) {
+        const fi = Math.max(0, Math.min(1, scrolled / total)) * n
+
+        const next = Math.min(Math.floor(fi), n - 1)
+        if (next !== activeRef.current) {
+          activeRef.current = next
+          setActiveCard(next)
+        }
+
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return
+          const cp = fi - i
+          const target = getTarget(cp)
+
+          // z-index: entering card floats above all others
+          card.style.zIndex = (cp >= 0 && cp < 0.45) ? n + i : i
+
+          curY[i] += (target - curY[i]) * LERP
+          if (Math.abs(curY[i] - target) > 0.05) needsMore = true
+          card.style.transform = `translateY(${curY[i].toFixed(2)}px)`
+        })
+      }
+
+      if (needsMore) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        active = false
+      }
+    }
+
+    const onScroll = () => {
+      if (!active) {
+        active = true
+        rafId = requestAnimationFrame(tick)
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    tick()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [])
 
   return (
-    <section className="pp-section" data-nav-theme="dark">
-      <div className="pp-container">
-        <div className="pp-head">
-          <h2 className="pp-title">Problems Live Players Face</h2>
-        </div>
-        <div className="pp-carousel">
-          <button className="pp-arrow pp-arrow-prev" onClick={prev} aria-label="Previous">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
-          <div className="pp-slide-wrap">
-            {problems.map((p, i) => (
-              <div key={i} className={`pp-card${active === i ? ' pp-card--active' : ''}`}>
-                <h3 className="pp-card-headline">{p.headline}</h3>
-                <p className="pp-card-question">{p.question}</p>
-                <div className="pp-card-divider" />
-                <p className="pp-card-solution">{p.solution}</p>
+    <div
+      className="sc-section"
+      data-nav-theme="dark"
+      ref={wrapperRef}
+      style={{ height: `${STACK_CARDS.length * 130}vh` }}
+    >
+      <div className="sc-sticky">
+        <div className="sc-inner">
+
+          <div className="sc-left">
+            {(() => {
+              const card = STACK_CARDS[activeCard]
+              const left = card?.left ?? STACK_CARDS[0].left
+              return (
+                <div className="sc-left-content" key={activeCard}>
+                  <p className="sc-stat">{left.stat}</p>
+                  <h2 className="sc-question">{left.question}</h2>
+                </div>
+              )
+            })()}
+          </div>
+
+          <div className="sc-right">
+            {STACK_CARDS.map((card, i) => (
+              <div
+                key={i}
+                className="sc-card"
+                ref={el => { cardRefs.current[i] = el }}
+              >
+                <span className="sc-num">0{i + 1}</span>
+                {card ? (
+                  <>
+                    {card.headline && <p className="sc-headline">{card.headline}</p>}
+                    {card.question && <p className="sc-card-question">{card.question}</p>}
+                    {(card.headline || card.question) && <div className="sc-divider" />}
+                    <p className="sc-body">{card.body}</p>
+                  </>
+                ) : (
+                  <p className="sc-body sc-placeholder">Card content coming soon.</p>
+                )}
               </div>
             ))}
           </div>
-          <button className="pp-arrow pp-arrow-next" onClick={next} aria-label="Next">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-          </button>
-        </div>
-        <div className="pp-dots">
-          {problems.map((_, i) => (
-            <button key={i} className={`pp-dot${active === i ? ' pp-dot--active' : ''}`} onClick={() => goTo(i)} aria-label={`Go to problem ${i + 1}`} />
-          ))}
+
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
