@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { submitNicknameClaim, submitToWaitlist } from './lib/firebase'
+import { Eye, Activity, Scale, TrendingUp, Crosshair, Clock, Users, BarChart2 } from 'lucide-react'
 import './TestPage.css'
 
 /* ── Social icon SVGs (lucide-react v1+ dropped brand icons) ── */
@@ -984,77 +985,190 @@ const problems = [
   },
 ]
 
+/* ── Gooey SVG filter ── */
+function GooeyFilter({ id = 'goo-filter', strength = 10 }) {
+  return (
+    <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+      <defs>
+        <filter id={id}>
+          <feGaussianBlur in="SourceGraphic" stdDeviation={strength} result="blur" />
+          <feColorMatrix in="blur" type="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+        </filter>
+      </defs>
+    </svg>
+  )
+}
+
+/* ── WebGL shader background ── */
+const SC_VERT = `
+  attribute vec2 aPos;
+  attribute vec2 aUv;
+  uniform float time;
+  uniform float intensity;
+  varying vec2 vUv;
+  void main() {
+    vUv = aUv;
+    vec2 pos = aPos;
+    pos.y += sin(pos.x * 10.0 + time) * 0.1 * intensity;
+    pos.x += cos(pos.y * 8.0  + time * 1.5) * 0.05 * intensity;
+    gl_Position = vec4(pos, 0.0, 1.0);
+  }
+`
+const SC_FRAG = `
+  precision mediump float;
+  uniform float time;
+  uniform float intensity;
+  uniform vec3 color1;
+  uniform vec3 color2;
+  varying vec2 vUv;
+  void main() {
+    vec2 uv = vUv;
+    float noise  = sin(uv.x * 20.0 + time) * cos(uv.y * 15.0 + time * 0.8);
+    noise += sin(uv.x * 35.0 - time * 2.0) * cos(uv.y * 25.0 + time * 1.2) * 0.5;
+    vec3 color = mix(color1, color2, noise * 0.5 + 0.5);
+    color = mix(color, vec3(0.08, 0.35, 0.16), pow(abs(noise), 2.0) * intensity * 0.35);
+    float glow = clamp(1.0 - length(uv - 0.5) * 1.6, 0.0, 1.0);
+    glow = pow(glow, 1.4);
+    gl_FragColor = vec4(color, glow * 0.75 + 0.25);
+  }
+`
+
+function SCShaderBg() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const gl = canvas.getContext('webgl')
+    if (!gl) return
+
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    }
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas)
+
+    const makeShader = (type, src) => {
+      const s = gl.createShader(type)
+      gl.shaderSource(s, src)
+      gl.compileShader(s)
+      return s
+    }
+    const prog = gl.createProgram()
+    gl.attachShader(prog, makeShader(gl.VERTEX_SHADER,   SC_VERT))
+    gl.attachShader(prog, makeShader(gl.FRAGMENT_SHADER, SC_FRAG))
+    gl.linkProgram(prog)
+    gl.useProgram(prog)
+
+    const quad = new Float32Array([-1,-1, 1,-1, -1,1, 1,1])
+    const uvs  = new Float32Array([ 0, 0, 1, 0,  0,1, 1,1])
+
+    const bindAttr = (data, name, size) => {
+      const buf = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf)
+      gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+      const loc = gl.getAttribLocation(prog, name)
+      gl.enableVertexAttribArray(loc)
+      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0)
+    }
+    bindAttr(quad, 'aPos', 2)
+    bindAttr(uvs,  'aUv',  2)
+
+    const uTime      = gl.getUniformLocation(prog, 'time')
+    const uIntensity = gl.getUniformLocation(prog, 'intensity')
+    gl.uniform3f(gl.getUniformLocation(prog, 'color1'), 0.04, 0.10, 0.05)
+    gl.uniform3f(gl.getUniformLocation(prog, 'color2'), 0.07, 0.22, 0.10)
+
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+    let rafId
+    const t0 = performance.now()
+    const render = () => {
+      const t = (performance.now() - t0) / 1000
+      gl.uniform1f(uTime,      t)
+      gl.uniform1f(uIntensity, 1.0 + Math.sin(t * 2) * 0.3)
+      gl.clearColor(0.04, 0.04, 0.04, 1)
+      gl.clear(gl.COLOR_BUFFER_BIT)
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+      rafId = requestAnimationFrame(render)
+    }
+    render()
+
+    return () => { cancelAnimationFrame(rafId); ro.disconnect() }
+  }, [])
+
+  return <canvas ref={canvasRef} className="sc-bg-canvas" />
+}
+
 const STACK_CARDS = [
   {
+    icon: Eye,
     left: {
       stat: <>Live poker players play<br /><strong>~25–30 hands/hour</strong> on average.</>,
       question: 'How many of those hands do you actually remember?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table tracks every hand you play, so you can review every action and find leaks you never knew you had.',
   },
   {
+    icon: Activity,
     left: {
       stat: 'Online players review thousands of hands to find leaks.',
       question: 'How do you spot that you overfold rivers vs aggression with zero data?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table logs your decisions across hundreds of hands and surfaces the patterns so your leaks have nowhere to hide.',
   },
   {
+    icon: Scale,
     left: {
       stat: 'You study GTO solvers for hours before a session.',
       question: 'But can you actually compare your live play to what the solver says?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table lets you export your logged hands and review them against solver outputs — bridging the gap between study and real play.',
   },
   {
+    icon: TrendingUp,
     left: {
       stat: 'Ask any live player their win rate. Most guess.',
       question: 'Do you actually know your $/hr by stakes, casino, or game type?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table tracks every session with precision — win rate, duration, stakes — so you always know exactly where you stand.',
   },
   {
+    icon: Crosshair,
     left: {
       stat: 'Position is the single biggest edge in poker.',
       question: 'Do you know your actual stats from the BTN vs the BB vs UTG?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table breaks down your performance by position, so you can see where you print money and where you bleed chips.',
   },
   {
+    icon: Clock,
     left: {
       stat: 'Hour 1 you and Hour 7 you are not the same player.',
       question: 'Can you tell when your game starts falling apart during a long session?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table tracks your performance over time within a session, so you can see exactly when tilt creeps in — and learn when to walk away.',
   },
   {
+    icon: Users,
     left: {
       stat: <>"He always 3-bets light." "She never folds the river."</>,
       question: 'Are those real reads or just feelings from one memorable hand?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table builds opponent profiles from logged hands — real stats, real tendencies — so your reads are backed by data, not memory.',
   },
   {
+    icon: BarChart2,
     left: {
       stat: 'Moving up in stakes is the dream. Going broke is the nightmare.',
       question: 'Are you making that decision based on actual ROI or just a hot streak?',
     },
-    headline: null,
-    question: null,
     body: 'Final Table gives you the bankroll data to make smart stake decisions — track your true ROI and know when you\'re actually ready.',
   },
 ]
@@ -1063,23 +1177,24 @@ function TPProblems() {
   const wrapperRef = useRef(null)
   const cardRefs = useRef([])
   const [activeCard, setActiveCard] = useState(0)
-  const activeRef = useRef(0)
+  const activeRef = useRef(0)      // tracks left-text active card
+  const rightRef  = useRef(0)      // tracks right-side card for icon animation
 
   useEffect(() => {
     const wrapper = wrapperRef.current
     if (!wrapper) return
     const n = STACK_CARDS.length
-    const CONTAINER_H = 290  // must match .sc-right height in CSS
+    const CONTAINER_H = 340  // must match .sc-right height in CSS
     const ACTIVE_Y    = 48
     const PEEK        = 10
     const LERP        = 0.1  // smoothing factor (lower = silkier)
 
-    const curY = Array(n).fill(CONTAINER_H)
+    const curY = Array(n).fill(CONTAINER_H + 40)
     let rafId  = null
     let active = false
 
     const getTarget = (cp) => {
-      if (cp < 0) return CONTAINER_H
+      if (cp < 0) return CONTAINER_H + 40
       if (cp < 0.45) {
         const t = cp / 0.45
         const eased = 1 - Math.pow(1 - t, 3)
@@ -1098,10 +1213,23 @@ function TPProblems() {
       if (total > 0) {
         const fi = Math.max(0, Math.min(1, scrolled / total)) * n
 
-        const next = Math.min(Math.floor(fi), n - 1)
-        if (next !== activeRef.current) {
-          activeRef.current = next
-          setActiveCard(next)
+        // Left text: updates 0.5 scroll-units BEFORE the right card enters
+        const leftNext = Math.min(Math.floor(fi + 0.5), n - 1)
+        if (leftNext !== activeRef.current) {
+          activeRef.current = leftNext
+          setActiveCard(leftNext)
+        }
+
+        // Right cards: enter at integer fi boundaries (unchanged)
+        const rightNext = Math.min(Math.floor(fi), n - 1)
+        if (rightNext !== rightRef.current) {
+          const oldIcon = wrapper.querySelector(`[data-ci="${rightRef.current}"] .sc-icon`)
+          if (oldIcon) oldIcon.classList.remove('sc-icon--play')
+          rightRef.current = rightNext
+          requestAnimationFrame(() => {
+            const newIcon = wrapper.querySelector(`[data-ci="${rightNext}"] .sc-icon`)
+            if (newIcon) { void newIcon.offsetWidth; newIcon.classList.add('sc-icon--play') }
+          })
         }
 
         cardRefs.current.forEach((card, i) => {
@@ -1109,12 +1237,22 @@ function TPProblems() {
           const cp = fi - i
           const target = getTarget(cp)
 
-          // z-index: entering card floats above all others
           card.style.zIndex = (cp >= 0 && cp < 0.45) ? n + i : i
 
           curY[i] += (target - curY[i]) * LERP
           if (Math.abs(curY[i] - target) > 0.05) needsMore = true
           card.style.transform = `translateY(${curY[i].toFixed(2)}px)`
+        })
+
+        // Letters: reveal during the 0.5 scroll-unit window before the right card enters.
+        // activeCp starts at 0 when left text updates, reaches ~0.4 when card enters.
+        const activeCp = fi - (activeRef.current - 0.5)
+        const lp = Math.max(0, Math.min(1, activeCp / 0.40))
+        const letters   = wrapper.querySelectorAll('.sc-question .sc-letter')
+        const letterLen = letters.length
+        letters.forEach((el, i) => {
+          const t = Math.max(0, Math.min(1, lp * letterLen - i))
+          el.style.color = `rgba(255,255,255,${(0.18 + t * 0.82).toFixed(3)})`
         })
       }
 
@@ -1156,33 +1294,33 @@ function TPProblems() {
               const left = card?.left ?? STACK_CARDS[0].left
               return (
                 <div className="sc-left-content" key={activeCard}>
+                  <span className="sc-num">0{activeCard + 1}</span>
                   <p className="sc-stat">{left.stat}</p>
-                  <h2 className="sc-question">{left.question}</h2>
+                  <h2 className="sc-question">
+                    {left.question.split('').map((ch, i) => (
+                      <span key={i} className="sc-letter">{ch}</span>
+                    ))}
+                  </h2>
                 </div>
               )
             })()}
           </div>
 
           <div className="sc-right">
-            {STACK_CARDS.map((card, i) => (
-              <div
-                key={i}
-                className="sc-card"
-                ref={el => { cardRefs.current[i] = el }}
-              >
-                <span className="sc-num">0{i + 1}</span>
-                {card ? (
-                  <>
-                    {card.headline && <p className="sc-headline">{card.headline}</p>}
-                    {card.question && <p className="sc-card-question">{card.question}</p>}
-                    {(card.headline || card.question) && <div className="sc-divider" />}
-                    <p className="sc-body">{card.body}</p>
-                  </>
-                ) : (
-                  <p className="sc-body sc-placeholder">Card content coming soon.</p>
-                )}
-              </div>
-            ))}
+            {STACK_CARDS.map((card, i) => {
+              const Icon = card.icon
+              return (
+                <div
+                  key={i}
+                  className="sc-card"
+                  data-ci={i}
+                  ref={el => { cardRefs.current[i] = el }}
+                >
+                  <Icon size={28} strokeWidth={1.5} className={`sc-icon${i === 0 ? ' sc-icon--play' : ''}`} />
+                  <p className="sc-body">{card.body}</p>
+                </div>
+              )
+            })}
           </div>
 
         </div>

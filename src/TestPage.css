@@ -2103,12 +2103,15 @@
 /* ── Stacking Cards Section ── */
 .sc-section {
     background: #0a0a0a;
+    position: relative;
 }
+
 
 .sc-sticky {
     position: sticky;
     top: 0;
     height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -2119,14 +2122,22 @@
     margin: 0 auto;
     padding: 0 40px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 80px;
     align-items: center;
     width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
 /* Left */
-.sc-left {}
+.sc-left {
+    height: 340px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
 
 @keyframes sc-left-in {
     from { opacity: 0; transform: translateY(14px); }
@@ -2155,19 +2166,35 @@
 
 .sc-question {
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+    font-size: clamp(1.7rem, 2.6vw, 2.4rem);
     font-weight: 400;
-    color: #ffffff;
-    line-height: 1.2;
+    line-height: 1.25;
     letter-spacing: -0.02em;
     margin: 0;
+}
+
+.sc-letter {
+    color: rgba(255,255,255,0.18);
+    display: inline;
 }
 
 /* Right — absolutely stacked cards */
 .sc-right {
     position: relative;
-    height: 290px;   /* must match CONTAINER_H in JS */
+    height: 340px;
     overflow: hidden;
+}
+
+.sc-right::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35%;
+    background: linear-gradient(to bottom, transparent, #0a0a0a);
+    pointer-events: none;
+    z-index: 999;
 }
 
 .sc-card {
@@ -2175,31 +2202,35 @@
     top: 0;
     left: 0;
     right: 0;
-    background: #141414;
-    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(160deg, #ffffff 0%, #f0f0f0 100%);
+    border: 1px solid rgba(255,255,255,0.9);
     border-radius: 20px;
-    padding: 36px;
-    transform: translateY(290px); /* start fully below container */
+    padding: 44px;
+    transform: translateY(380px);
     will-change: transform;
+    box-shadow:
+        0 2px 0 rgba(255,255,255,0.8) inset,
+        0 -1px 0 rgba(0,0,0,0.06) inset,
+        0 20px 60px rgba(0,0,0,0.35),
+        0 4px 16px rgba(0,0,0,0.2);
 }
 
 
 .sc-num {
     display: block;
     font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.22);
-    text-transform: uppercase;
-    margin-bottom: 20px;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(255,255,255,0.25);
 }
 
 .sc-headline {
     font-family: var(--font-sans);
     font-size: var(--type-body-lg);
     font-weight: 600;
-    color: #ffffff;
+    color: #0a0a0a;
     line-height: 1.4;
     margin: 0 0 10px;
 }
@@ -2208,7 +2239,7 @@
     font-family: var(--font-sans);
     font-size: var(--type-body);
     font-style: italic;
-    color: rgba(255,255,255,0.45);
+    color: rgba(0,0,0,0.45);
     line-height: 1.55;
     margin: 0;
 }
@@ -2216,21 +2247,41 @@
 .sc-divider {
     width: 36px;
     height: 1px;
-    background: rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.12);
     margin: 20px 0;
 }
 
 .sc-body {
     font-family: var(--font-sans);
-    font-size: var(--type-body-lg);
-    line-height: 1.65;
-    color: #A2F69A;
+    font-size: var(--type-body);
+    line-height: 1.6;
+    color: #0a0a0a;
     margin: 0;
 }
 
 .sc-placeholder {
     color: rgba(255,255,255,0.2);
     font-style: italic;
+}
+
+/* Card icons */
+.sc-icon {
+    display: block;
+    color: #2a7a25;
+    margin-bottom: 20px;
+}
+
+.sc-icon * {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+}
+
+.sc-icon--play * {
+    animation: sc-icon-draw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sc-icon-draw {
+    to { stroke-dashoffset: 0; }
 }
 
 @media (max-width: 860px) {
