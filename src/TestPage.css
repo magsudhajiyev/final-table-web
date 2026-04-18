@@ -1281,7 +1281,7 @@
     background: #f5f5f5;
     position: relative;
     overflow: hidden;
-    padding: 120px 24px;
+    padding: 120px 0;
     border-top: 1px solid rgba(0,0,0,0.07);
 }
 
@@ -1299,6 +1299,7 @@
 .ru-inner {
     max-width: 1150px;
     margin: 0 auto;
+    padding: 0 40px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
@@ -1633,9 +1634,9 @@
 }
 
 @media (max-width: 900px) {
-    .ru-inner { grid-template-columns: 1fr; gap: 48px; }
+    .ru-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 20px; }
     .ru-card  { position: static; }
-    .ru-section { padding: 80px 20px; }
+    .ru-section { padding: 80px 0; }
     .ru-glow  { display: none; }
 }
 
@@ -1643,13 +1644,14 @@
 /* ── Contact ── */
 .ct-section {
     background: #0a0a0a;
-    padding: 120px 24px;
+    padding: 120px 0;
     border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .ct-inner {
     max-width: 1150px;
     margin: 0 auto;
+    padding: 0 40px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
@@ -1844,9 +1846,9 @@
 }
 
 @media (max-width: 768px) {
-    .ct-inner { grid-template-columns: 1fr; gap: 48px; }
+    .ct-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 20px; }
     .ct-row { grid-template-columns: 1fr; }
-    .ct-section { padding: 80px 20px; }
+    .ct-section { padding: 80px 0; }
 }
 
 /* ── Footer ── */
@@ -2248,7 +2250,7 @@
 /* ── Features Showcase (bento grid) ── */
 .fs-section {
     background: #ffffff;
-    padding: 100px 0 120px;
+    padding: 120px 0;
 }
 
 .fs-container {
@@ -2262,12 +2264,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 48px;
-    align-items: end;
+    align-items: start;
 }
 
 .fs-title {
     font-family: var(--font-display);
-    font-size: var(--type-h1);
+    font-size: var(--type-h2);
     font-weight: 400;
     color: #0a0a0a;
     line-height: var(--lh-heading);
@@ -2313,7 +2315,6 @@
     flex-direction: column;
     opacity: 0;
     transform: translateY(28px);
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s cubic-bezier(0.4,0,0.2,1);
 }
 
 .fs-card.fs-card--visible {
@@ -2321,10 +2322,6 @@
     animation-delay: calc(var(--i, 0) * 80ms);
 }
 
-.fs-card.fs-card--visible:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.09);
-}
 
 @media (prefers-reduced-motion: reduce) {
     .fs-card { opacity: 1; transform: none; }
@@ -3162,3 +3159,4 @@
 @media (min-width: 2560px) {
     .tp-hero-content { padding-top: 200px; }
 }
+
