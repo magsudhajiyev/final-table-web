@@ -2098,6 +2098,153 @@
     .tp-footer-container { padding: 0 20px; }
 }
 
+/* ── Problems Section (dark bg, carousel) ── */
+.pp-section {
+    background: #0a0a0a;
+    padding: 120px 0;
+}
+.pp-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+.pp-head {
+    text-align: center;
+    margin-bottom: 56px;
+}
+.pp-title {
+    font-family: var(--font-display);
+    font-size: var(--type-h2);
+    font-weight: 600;
+    color: #ffffff;
+    line-height: var(--lh-heading);
+    letter-spacing: var(--ls-heading);
+}
+
+/* Carousel layout */
+.pp-carousel {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.pp-slide-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 260px;
+}
+.pp-card {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 36px 32px;
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateX(40px);
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+.pp-card--active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+.pp-card-headline {
+    font-family: var(--font-sans);
+    font-size: var(--type-body-lg);
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+    line-height: var(--lh-tight);
+}
+.pp-card-question {
+    font-family: var(--font-sans);
+    font-size: var(--type-body);
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: var(--lh-body);
+    margin: 0 0 16px;
+}
+.pp-card-divider {
+    width: 40px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.12);
+    margin-bottom: 16px;
+}
+.pp-card-solution {
+    font-family: var(--font-sans);
+    font-size: var(--type-body-sm);
+    color: #A2F69A;
+    line-height: var(--lh-body);
+    margin: 0;
+}
+
+/* Arrows */
+.pp-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.pp-arrow:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Dots */
+.pp-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+.pp-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s, transform 0.25s;
+}
+.pp-dot--active {
+    background: #ffffff;
+    transform: scale(1.3);
+}
+
+@media (max-width: 900px) {
+    .pp-section {
+        padding: 80px 0;
+    }
+    .pp-container {
+        padding: 0 20px;
+    }
+    .pp-carousel {
+        gap: 12px;
+    }
+    .pp-arrow {
+        width: 36px;
+        height: 36px;
+    }
+    .pp-card {
+        padding: 24px 20px;
+    }
+}
+
 /* ── Features Showcase (bento grid) ── */
 .fs-section {
     background: #ffffff;

@@ -938,6 +938,93 @@ const QR_PATTERN = [
   0,1,1,0,1,1,0,1,0,1,
 ]
 
+/* ────────────────────────────────────────────────────── */
+/*  PROBLEMS SECTION (dark bg, glass cards)              */
+/* ────────────────────────────────────────────────────── */
+const problems = [
+  {
+    headline: 'Live poker players play ~25–30 hands/hour on average.',
+    question: 'How many of those hands do you actually remember?',
+    solution: 'Final Table tracks every hand you play, so you can review every action and find leaks you never knew you had.',
+  },
+  {
+    headline: 'Online players review thousands of hands to find leaks.',
+    question: 'How do you spot that you overfold rivers vs aggression with zero data?',
+    solution: 'Final Table logs your decisions across hundreds of hands and surfaces the patterns — so your leaks have nowhere to hide.',
+  },
+  {
+    headline: 'You study GTO solvers for hours before a session.',
+    question: 'But can you actually compare your live play to what the solver says?',
+    solution: 'Final Table lets you export your logged hands and review them against solver outputs — bridging the gap between study and real play.',
+  },
+  {
+    headline: 'Ask any live player their win rate. Most guess.',
+    question: 'Do you actually know your $/hr by stakes, casino, or game type?',
+    solution: 'Final Table tracks every session with precision — win rate, duration, stakes — so you always know exactly where you stand.',
+  },
+  {
+    headline: 'Position is the single biggest edge in poker.',
+    question: 'Do you know your actual stats from the BTN vs the BB vs UTG?',
+    solution: 'Final Table breaks down your performance by position, so you can see where you print money and where you bleed chips.',
+  },
+  {
+    headline: 'Hour 1 you and Hour 7 you are not the same player.',
+    question: 'Can you tell when your game starts falling apart during a long session?',
+    solution: 'Final Table tracks your performance over time within a session, so you can see exactly when tilt creeps in — and learn when to walk away.',
+  },
+  {
+    headline: '"He always 3-bets light." "She never folds the river."',
+    question: 'Are those real reads or just feelings from one memorable hand?',
+    solution: 'Final Table builds opponent profiles from logged hands — real stats, real tendencies — so your reads are backed by data, not memory.',
+  },
+  {
+    headline: 'Moving up in stakes is the dream. Going broke is the nightmare.',
+    question: 'Are you making that decision based on actual ROI or just a hot streak?',
+    solution: 'Final Table gives you the bankroll data to make smart stake decisions — track your true ROI and know when you\'re actually ready.',
+  },
+]
+
+function TPProblems() {
+  const [active, setActive] = useState(0)
+
+  const goTo = (i) => setActive(i)
+  const prev = () => setActive((active - 1 + problems.length) % problems.length)
+  const next = () => setActive((active + 1) % problems.length)
+
+  return (
+    <section className="pp-section" data-nav-theme="dark">
+      <div className="pp-container">
+        <div className="pp-head">
+          <h2 className="pp-title">Problems Live Players Face</h2>
+        </div>
+        <div className="pp-carousel">
+          <button className="pp-arrow pp-arrow-prev" onClick={prev} aria-label="Previous">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+          </button>
+          <div className="pp-slide-wrap">
+            {problems.map((p, i) => (
+              <div key={i} className={`pp-card${active === i ? ' pp-card--active' : ''}`}>
+                <h3 className="pp-card-headline">{p.headline}</h3>
+                <p className="pp-card-question">{p.question}</p>
+                <div className="pp-card-divider" />
+                <p className="pp-card-solution">{p.solution}</p>
+              </div>
+            ))}
+          </div>
+          <button className="pp-arrow pp-arrow-next" onClick={next} aria-label="Next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+        </div>
+        <div className="pp-dots">
+          {problems.map((_, i) => (
+            <button key={i} className={`pp-dot${active === i ? ' pp-dot--active' : ''}`} onClick={() => goTo(i)} aria-label={`Go to problem ${i + 1}`} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function TPFeaturesShowcase() {
   const gridRef = useRef(null)
 
@@ -1258,6 +1345,7 @@ export default function TestPage() {
       <main>
         <TPHero />
         <TPBgSection />
+        <TPProblems />
         <TPFeaturesShowcase />
         <TPReserveUsername />
         <TPContact />
