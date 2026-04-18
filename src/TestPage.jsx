@@ -118,17 +118,36 @@ const heroTabs = [
 
 function TPHero() {
   const [email, setEmail] = useState('')
+  const sectionRef = useRef(null)
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = sectionRef.current
+      const content = contentRef.current
+      if (!section || !content) return
+
+      const progress = Math.min(Math.max(window.scrollY / (section.offsetHeight * 0.65), 0), 1)
+      const eased = progress * progress
+
+      content.style.filter    = `blur(${eased * 14}px)`
+      content.style.opacity   = `${1 - eased * 0.9}`
+      content.style.transform = `translateY(${eased * -24}px)`
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleWaitlist = (e) => {
     e.preventDefault()
-    // TODO: wire up to Firebase waitlist
     alert(`Thanks! We'll reach out to ${email}`)
     setEmail('')
   }
 
   return (
-    <section className="tp-hero" data-nav-theme="light">
-      <div className="tp-hero-content">
+    <section className="tp-hero" ref={sectionRef} data-nav-theme="light">
+      <div className="tp-hero-content" ref={contentRef}>
         <h1 className="tp-hero-h1">Your poker game,<br />fully tracked.</h1>
         <p className="tp-hero-sub">
           The only app that tells you everything about your game. Real-time stats,
@@ -574,8 +593,8 @@ function TPFeaturesGrid() {
 
         {/* Left-aligned header */}
         <div className="fg-header">
-          <h2 className="fg-title">Built for every<br />kind of player.</h2>
-          <p className="fg-sub">From casual home games to serious grinders — Final Table has the tools to match how you play.</p>
+          <h2 className="fg-title">The core<br />experience.</h2>
+          <p className="fg-sub">Hand-by-hand logging and seven statistics that give you a complete picture of your game.</p>
         </div>
 
         <div className="fg-rule" />
@@ -789,7 +808,7 @@ function TPReserveUsername() {
   }
 
   return (
-    <section className="ru-section" id="reserve-username" data-nav-theme="dark">
+    <section className="ru-section" id="reserve-username" data-nav-theme="light">
       <div className="ru-glow" />
 
       <div className="ru-inner">
@@ -903,6 +922,335 @@ function TPReserveUsername() {
   )
 }
 
+/* ────────────────────────────────────────────────────── */
+/*  FEATURES SHOWCASE  (bento grid, 10 cards)            */
+/* ────────────────────────────────────────────────────── */
+const QR_PATTERN = [
+  1,1,1,1,1,1,1,0,1,0,
+  1,0,0,0,0,0,1,0,0,1,
+  1,0,1,1,1,0,1,0,1,1,
+  1,0,1,1,1,0,1,0,0,1,
+  1,0,1,1,1,0,1,1,1,0,
+  1,0,0,0,0,0,1,0,1,1,
+  1,1,1,1,1,1,1,0,0,1,
+  0,1,0,1,0,0,0,1,0,0,
+  1,0,0,1,1,0,1,0,1,1,
+  0,1,1,0,1,1,0,1,0,1,
+]
+
+function TPFeaturesShowcase() {
+  const gridRef = useRef(null)
+
+  useEffect(() => {
+    const grid = gridRef.current
+    if (!grid) return
+    const cards = Array.from(grid.querySelectorAll('.fs-card'))
+    cards.forEach((card, i) => card.style.setProperty('--i', i))
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fs-card--visible')
+          io.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12 })
+    cards.forEach(card => io.observe(card))
+    return () => io.disconnect()
+  }, [])
+
+  return (
+    <section className="fs-section" data-nav-theme="light">
+      <div className="fs-container">
+
+        <div className="fs-head">
+          <h2 className="fs-title">Built for every<br />kind of player.</h2>
+          <p className="fs-subtitle">From casual home games to serious grinders — Final Table has the tools to match how you play.</p>
+        </div>
+
+        <div className="fs-grid" ref={gridRef}>
+
+          {/* 1. Opponent Profiles — wide */}
+          <div className="fs-card fs-card-2">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-op-card">
+                <div className="fs-op-header">
+                  <div className="fs-op-avatar">MR</div>
+                  <div className="fs-op-meta">
+                    <p className="fs-op-name">Mike Reynolds</p>
+                    <span className="fs-op-badge">LAG</span>
+                  </div>
+                  <span className="fs-op-hands">312 hands</span>
+                </div>
+                <div className="fs-op-bars">
+                  {[
+                    { label: 'VPIP', pct: 51, color: '#ef4444' },
+                    { label: 'PFR',  pct: 38, color: '#f97316' },
+                    { label: '3-bet', pct: 15, color: '#60a5fa' },
+                    { label: 'Agg',  pct: 42, color: '#a78bfa' },
+                  ].map((s, i) => (
+                    <div key={i} className="fs-bar-row">
+                      <span className="fs-bar-label">{s.label}</span>
+                      <div className="fs-bar-track">
+                        <div className="fs-bar-fill" style={{ width: `${s.pct}%`, background: s.color }} />
+                      </div>
+                      <span className="fs-bar-val">{s.pct}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Opponent Profiles</h3>
+              <p className="fs-card-desc">Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you've played against them.</p>
+            </div>
+          </div>
+
+          {/* 2. Bankroll Tracking — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <svg className="fs-svg-chart" viewBox="0 0 140 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="bkGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.15"/>
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon points="0,70 0,58 20,52 40,45 55,50 75,32 100,24 120,14 140,4 140,70" fill="url(#bkGrad)"/>
+                <polyline className="fs-chart-line" points="0,58 20,52 40,45 55,50 75,32 100,24 120,14 140,4"/>
+              </svg>
+              <div className="fs-goal-block">
+                <div className="fs-goal-row">
+                  <span className="fs-goal-label">Goal</span>
+                  <span className="fs-goal-amount">$5,000</span>
+                </div>
+                <div className="fs-goal-track">
+                  <div className="fs-goal-fill" style={{ '--goal': '68%' }} />
+                </div>
+                <p className="fs-goal-sub">$3,420 · 68% reached</p>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Bankroll Tracking</h3>
+              <p className="fs-card-desc">Set a bankroll goal and watch your progress. Pinch-to-zoom earnings chart shows cumulative results over time.</p>
+            </div>
+          </div>
+
+          {/* 3. Quick Session Logger — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-logger">
+                <div className="fs-logger-row">
+                  <span className="fs-lr-label">Buy-in</span>
+                  <span className="fs-lr-val">$200</span>
+                </div>
+                <div className="fs-logger-row">
+                  <span className="fs-lr-label">Cash-out</span>
+                  <span className="fs-lr-val">$485</span>
+                </div>
+                <div className="fs-logger-row">
+                  <span className="fs-lr-label">Duration</span>
+                  <span className="fs-lr-val">3h 40m</span>
+                </div>
+                <div className="fs-logger-result">
+                  <span>Net profit</span>
+                  <span className="fs-lr-profit">+$285</span>
+                </div>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Quick Session Logger</h3>
+              <p className="fs-card-desc">Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a quick profit/loss record.</p>
+            </div>
+          </div>
+
+          {/* 4. AI Hand Analysis — wide */}
+          <div className="fs-card fs-card-2">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-ai-wrap">
+                <div className="fs-ai-hand">
+                  {[
+                    { pos: 'UTG', act: 'Raise 3x  ·  $6', cards: 'A♠ K♥' },
+                    { pos: 'BTN', act: '3-bet  ·  $18',   cards: '' },
+                    { pos: 'UTG', act: 'Call',            cards: '' },
+                  ].map((h, i) => (
+                    <div key={i} className="fs-ai-row">
+                      <span className="fs-ai-pos">{h.pos}</span>
+                      <span className="fs-ai-act">{h.act}</span>
+                      {h.cards && <span className="fs-ai-cards">{h.cards}</span>}
+                    </div>
+                  ))}
+                </div>
+                <div className="fs-ai-bubble">
+                  <span className="fs-ai-chip">AI</span>
+                  <p className="fs-ai-msg">Consider a 4-bet here. AK plays better as a 4-bet than a flat call vs this player's 3-bet frequency.</p>
+                </div>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">AI Hand Analysis</h3>
+              <p className="fs-card-desc">Get GTO-based feedback on your hands. The AI reviews your decisions and suggests improvements.</p>
+            </div>
+          </div>
+
+          {/* 5. Multi-Table Tournaments — wide */}
+          <div className="fs-card fs-card-2">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-mtt-list">
+                {[
+                  { name: 'Table 1',     players: 9, total: 9, tag: 'Running',  tagClass: 'fs-tag-running' },
+                  { name: 'Table 2',     players: 8, total: 9, tag: 'Running',  tagClass: 'fs-tag-running' },
+                  { name: 'Table 3',     players: 6, total: 9, tag: 'Breaking', tagClass: 'fs-tag-breaking' },
+                  { name: 'Final Table', players: 4, total: 9, tag: 'Live',     tagClass: 'fs-tag-live' },
+                ].map((t, i) => (
+                  <div key={i} className="fs-mtt-row">
+                    <span className="fs-mtt-name">{t.name}</span>
+                    <div className="fs-mtt-pips">
+                      {Array.from({ length: t.total }).map((_, j) => (
+                        <div key={j} className={`fs-pip ${j < t.players ? 'fs-pip-on' : 'fs-pip-off'}`} />
+                      ))}
+                    </div>
+                    <span className={`fs-mtt-tag ${t.tagClass}`}>{t.tag}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Multi-Table Tournaments</h3>
+              <p className="fs-card-desc">Run live tournaments with multiple tables, real-time rankings, final standings, and prize distribution.</p>
+            </div>
+          </div>
+
+          {/* 6. Club Management — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-club-list">
+                {[
+                  { init: 'A', name: 'Alex',   role: 'Admin',  cls: 'fs-role-admin' },
+                  { init: 'J', name: 'Jordan', role: 'Dealer', cls: 'fs-role-dealer' },
+                  { init: 'S', name: 'Sam',    role: 'Member', cls: 'fs-role-member' },
+                  { init: 'C', name: 'Chris',  role: 'Member', cls: 'fs-role-member' },
+                ].map((m, i) => (
+                  <div key={i} className="fs-club-row">
+                    <div className="fs-club-av">{m.init}</div>
+                    <span className="fs-club-name">{m.name}</span>
+                    <span className={`fs-club-role ${m.cls}`}>{m.role}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Club Management</h3>
+              <p className="fs-card-desc">Create or join a poker club. Manage members, roles, tables, and run events — all from the app.</p>
+            </div>
+          </div>
+
+          {/* 7. Dealer Mode — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-dealer-visual">
+                <div className="fs-dealer-rings">
+                  <div className="fs-dealer-ring fs-dr-1" />
+                  <div className="fs-dealer-ring fs-dr-2" />
+                  <div className="fs-dealer-ring fs-dr-3" />
+                  <div className="fs-dealer-mic">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                      <rect x="9" y="2" width="6" height="12" rx="3"/>
+                      <path d="M5 10a7 7 0 0 0 14 0"/>
+                      <line x1="12" y1="17" x2="12" y2="21"/>
+                      <line x1="9" y1="21" x2="15" y2="21"/>
+                    </svg>
+                  </div>
+                </div>
+                <p className="fs-dealer-cmd">"Next hand. Blinds: 200/400"</p>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Dealer Mode</h3>
+              <p className="fs-card-desc">Dealers can run a table hands-free using voice commands. Players follow along on their own phones in real time.</p>
+            </div>
+          </div>
+
+          {/* 8. QR Seat Assignments — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-qr-visual">
+                <div className="fs-qr-grid">
+                  {QR_PATTERN.map((on, i) => (
+                    <div key={i} className={`fs-qr-cell ${on ? 'fs-qr-on' : ''}`} style={{ '--qi': i }} />
+                  ))}
+                </div>
+                <div className="fs-qr-info">
+                  <p className="fs-qr-seat">Seat 4</p>
+                  <p className="fs-qr-sub">Table 1 · $2/$5</p>
+                </div>
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">QR Seat Assignments</h3>
+              <p className="fs-card-desc">Players scan a QR code to claim their seat. No manual setup, no confusion.</p>
+            </div>
+          </div>
+
+          {/* 9. Real-Time Sync — narrow */}
+          <div className="fs-card fs-card-1">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-sync-visual">
+                <div className="fs-sync-device" />
+                <div className="fs-sync-dots">
+                  <div className="fs-sync-dot fs-sd-1" />
+                  <div className="fs-sync-dot fs-sd-2" />
+                  <div className="fs-sync-dot fs-sd-3" />
+                </div>
+                <div className="fs-sync-device" />
+                <div className="fs-sync-dots">
+                  <div className="fs-sync-dot fs-sd-2" />
+                  <div className="fs-sync-dot fs-sd-3" />
+                  <div className="fs-sync-dot fs-sd-1" />
+                </div>
+                <div className="fs-sync-device" />
+              </div>
+              <p className="fs-sync-label">Instant broadcast · all devices</p>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Real-Time Sync</h3>
+              <p className="fs-card-desc">Every action broadcasts instantly to all players and spectators via live updates.</p>
+            </div>
+          </div>
+
+          {/* 10. Cash Game Waitlists — full width */}
+          <div className="fs-card fs-card-3">
+            <div className="fs-visual fs-visual-dark">
+              <div className="fs-waitlist-cols">
+                {[
+                  { stakes: '$1/$2 NLH', queue: [{ n: 'Alex M.',   t: '8m' }, { n: 'Jordan K.', t: '6m' }, { n: 'Sam R.',    t: '4m' }] },
+                  { stakes: '$2/$5 NLH', queue: [{ n: 'Chris P.',  t: '3m' }, { n: 'Mike R.',   t: '1m' }] },
+                  { stakes: '$5/$10 NLH',queue: [{ n: 'Taylor B.', t: '12m' }] },
+                ].map((col, ci) => (
+                  <div key={ci} className="fs-wl-col">
+                    <div className="fs-wl-stakes">{col.stakes}</div>
+                    {col.queue.map((p, pi) => (
+                      <div key={pi} className="fs-wl-row">
+                        <span className="fs-wl-pos">#{pi + 1}</span>
+                        <span className="fs-wl-name">{p.n}</span>
+                        <span className="fs-wl-wait">{p.t}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="fs-card-body">
+              <h3 className="fs-card-title">Cash Game Waitlists</h3>
+              <p className="fs-card-desc">Stakes-scoped waitlists let players queue for the game they want. Admins manage seating from the dashboard.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function TestPage() {
   return (
     <div className="tp-root">
@@ -910,9 +1258,9 @@ export default function TestPage() {
       <main>
         <TPHero />
         <TPBgSection />
-        <TPFeaturesGrid />
+        <TPFeaturesShowcase />
         <TPReserveUsername />
-<TPContact />
+        <TPContact />
       </main>
       <TPFooter />
     </div>
