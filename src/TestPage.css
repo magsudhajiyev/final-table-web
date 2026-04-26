@@ -344,6 +344,26 @@
 .tp-hero-waitlist-btn:hover {
     opacity: 0.8;
 }
+.tp-hero-waitlist-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.tp-hero-waitlist-success {
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    animation: tp-fade-in 0.35s ease;
+}
+.tp-hero-success-text {
+    font-family: var(--font-sans);
+    font-size: var(--type-body-sm);
+    font-weight: 600;
+    color: #16a34a;
+}
+@keyframes tp-fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
 
 /* ── Features Grid ── */
 .fg-section {

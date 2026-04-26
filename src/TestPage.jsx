@@ -119,6 +119,7 @@ const heroTabs = [
 
 function TPHero() {
   const [email, setEmail] = useState('')
+  const [waitlistStatus, setWaitlistStatus] = useState('idle') // idle | loading | success | error
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
 
@@ -140,10 +141,19 @@ function TPHero() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleWaitlist = (e) => {
+  const handleWaitlist = async (e) => {
     e.preventDefault()
-    alert(`Thanks! We'll reach out to ${email}`)
-    setEmail('')
+    if (!email.trim() || waitlistStatus === 'loading') return
+    setWaitlistStatus('loading')
+    try {
+      await submitToWaitlist(email.trim())
+      setWaitlistStatus('success')
+      setEmail('')
+    } catch (err) {
+      console.error('Waitlist submission error:', err)
+      setWaitlistStatus('error')
+      setTimeout(() => setWaitlistStatus('idle'), 3000)
+    }
   }
 
   return (
@@ -155,19 +165,32 @@ function TPHero() {
           opponent reads, and hand history — all in one place.
         </p>
 
-        <form className="tp-hero-waitlist" onSubmit={handleWaitlist}>
-          <input
-            type="email"
-            className="tp-hero-email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-          <button type="submit" className="tp-hero-waitlist-btn">
-            Join the waitlist
-          </button>
-        </form>
+        {waitlistStatus === 'success' ? (
+          <div className="tp-hero-waitlist tp-hero-waitlist-success">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6L9 17L4 12" />
+            </svg>
+            <span className="tp-hero-success-text">You're on the list!</span>
+          </div>
+        ) : (
+          <form className="tp-hero-waitlist" onSubmit={handleWaitlist}>
+            <input
+              type="email"
+              className="tp-hero-email"
+              placeholder={waitlistStatus === 'error' ? 'Something went wrong. Try again.' : 'Enter your email'}
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            <button
+              type="submit"
+              className="tp-hero-waitlist-btn"
+              disabled={waitlistStatus === 'loading'}
+            >
+              {waitlistStatus === 'loading' ? 'Joining…' : 'Join the waitlist'}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   )
