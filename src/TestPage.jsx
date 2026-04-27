@@ -17,10 +17,12 @@ const IMG_HERO_MOCKUP_1 = "/phone_mockup_1.png"
 const IMG_HERO_MOCKUP_2 = "/phone_mockup_2.png"
 const IMG_HERO_MOCKUP_3 = "/phone_mockup_3.png"  // replace when ready
 const IMG_HERO_MOCKUP_4 = "/phone_mockup_4.png"  // replace when ready
-const IMG_TAB_ICON_1    = "https://www.figma.com/api/mcp/asset/c416dc6e-c330-4b98-b184-6a4328e5edd6"
-const IMG_TAB_ICON_2    = "https://www.figma.com/api/mcp/asset/59fc0826-2748-4f1d-9ed4-0b8f91470509"
-const IMG_TAB_ICON_3    = "https://www.figma.com/api/mcp/asset/f93fdd33-2253-4d45-96c9-38b1e5dee5d2"
-const IMG_TAB_ICON_4    = "https://www.figma.com/api/mcp/asset/ac64f25e-4570-4103-a6bf-adfaa92cbbc6"
+// Tab icons as inline SVG data URIs (Lucide-style)
+// Tab icons as inline SVG data URIs (Lucide-style)
+const IMG_TAB_ICON_1    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>')}`
+const IMG_TAB_ICON_2    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>')}`
+const IMG_TAB_ICON_3    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>')}`
+const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>')}`
 const IMG_DARK_CARD1_BG = "https://www.figma.com/api/mcp/asset/4f0edfce-4d90-486e-a9b7-de268a9d77a4"
 const IMG_DARK_CARD2_BG = "https://www.figma.com/api/mcp/asset/9e4f72ad-d4aa-47af-aed9-8249fb02e938"
 const IMG_DARK_CARD2_INNER = "https://www.figma.com/api/mcp/asset/400339f8-99be-4166-8739-0e235a3bc4ee"
@@ -1207,12 +1209,21 @@ function TPProblems() {
     const wrapper = wrapperRef.current
     if (!wrapper) return
     const n = STACK_CARDS.length
-    const CONTAINER_H = 340  // must match .sc-right height in CSS
-    const ACTIVE_Y    = 48
+    const isMobile = () => window.innerWidth <= 860
+    const getContainerH = () => isMobile() ? 260 : 340
+    const getActiveY = () => isMobile() ? 32 : 48
     const PEEK        = 10
     const LERP        = 0.1  // smoothing factor (lower = silkier)
 
+    let CONTAINER_H = getContainerH()
+    let ACTIVE_Y = getActiveY()
     const curY = Array(n).fill(CONTAINER_H + 40)
+
+    const onResize = () => {
+      CONTAINER_H = getContainerH()
+      ACTIVE_Y = getActiveY()
+    }
+    window.addEventListener('resize', onResize)
     let rafId  = null
     let active = false
 
@@ -1297,6 +1308,7 @@ function TPProblems() {
     tick()
     return () => {
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
       if (rafId) cancelAnimationFrame(rafId)
     }
   }, [])
@@ -1306,7 +1318,7 @@ function TPProblems() {
       className="sc-section"
       data-nav-theme="dark"
       ref={wrapperRef}
-      style={{ height: `${STACK_CARDS.length * 130}vh` }}
+      style={{ height: `${STACK_CARDS.length * (window.innerWidth <= 860 ? 100 : 130)}vh` }}
     >
       <div className="sc-sticky">
         <div className="sc-inner">
