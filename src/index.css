@@ -43,7 +43,7 @@ body {
 
 body::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: -20vh;
     left: -20vw;
     width: 140vw;
