@@ -140,8 +140,12 @@ export default function HandViewer({ shareId }) {
     winnerName = playerNames[String(winnerId)] || `P${winnerId}`
   }
 
+  // Session name
+  const sessionName = d.sessionName || null
+
   // Hero cards
-  const holeCards = d.ourHoleCards || {}
+  const hideHoleCards = d.hideHoleCards === true
+  const holeCards = hideHoleCards ? {} : (d.ourHoleCards || {})
 
   // Board
   const board = d.boardCards || {}
@@ -205,6 +209,7 @@ export default function HandViewer({ shareId }) {
           <div>
             <h1 style={styles.title}>Hand #{d.handNumber || '?'}</h1>
             <p style={styles.subtitle}>Position: {d.heroPositionName || '?'}</p>
+            {sessionName && <p style={styles.sessionName}>{sessionName}</p>}
           </div>
           <span style={styles.logo}>Final Table</span>
         </div>
@@ -237,10 +242,16 @@ export default function HandViewer({ shareId }) {
               <span style={{ color: '#89F1EC', fontSize: 16 }}>&#9827;</span>
               <span style={{ color: '#89F1EC', fontSize: 12, fontWeight: 600 }}>Your Cards</span>
             </div>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-              {holeCards.card1 ? <PlayingCard card={holeCards.card1} /> : null}
-              {holeCards.card2 ? <PlayingCard card={holeCards.card2} /> : null}
-              {!holeCards.card1 && !holeCards.card2 && <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>Not shown</span>}
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
+              {hideHoleCards ? (
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>Hidden</span>
+              ) : (
+                <>
+                  {holeCards.card1 ? <PlayingCard card={holeCards.card1} /> : null}
+                  {holeCards.card2 ? <PlayingCard card={holeCards.card2} /> : null}
+                  {!holeCards.card1 && !holeCards.card2 && <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>Not shown</span>}
+                </>
+              )}
             </div>
           </div>
 
@@ -458,6 +469,7 @@ const styles = {
   },
   title: { fontSize: 22, fontWeight: 700, color: '#fff', margin: 0 },
   subtitle: { fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 },
+  sessionName: { fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 4 },
   logo: { fontSize: 16, fontWeight: 700, color: '#89F1EC', letterSpacing: -0.5 },
 
   // Summary card
