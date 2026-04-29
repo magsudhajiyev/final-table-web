@@ -2211,8 +2211,8 @@
     .tp-nav-links { display: none; }
     .tp-lang-picker { display: none; }
     .tp-nav-mobile-lang { display: flex; }
-    .tp-nav-cta { display: flex; font-size: var(--type-caption); padding: 0 12px; height: 30px; margin-left: auto; margin-right: 0; }
-    .tp-nav-hamburger { margin-left: 14px; }
+    .tp-nav-cta { display: none; }
+    .tp-nav-hamburger { margin-left: auto; }
     .tp-nav-hamburger { display: flex; }
     .tp-nav-mobile-menu {
         display: flex;
