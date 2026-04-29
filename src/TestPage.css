@@ -128,6 +128,7 @@
     padding: 0 18px;
     letter-spacing: var(--ls-heading);
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .tp-nav-cta {
@@ -157,6 +158,103 @@
     display: block;
     filter: invert(1);
 }
+
+/* ── Language picker ── */
+.tp-lang-picker {
+    position: relative;
+    margin-left: 4px;
+}
+.tp-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 999px;
+    background: rgba(0,0,0,0.04);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-body);
+    color: inherit;
+    transition: background 0.15s;
+}
+.tp-lang-btn:hover { background: rgba(0,0,0,0.08); }
+.tp-lang-flag { font-size: 14px; line-height: 1; }
+.tp-lang-code { font-weight: 600; text-transform: uppercase; }
+.tp-lang-chevron { transition: transform 0.2s; flex-shrink: 0; }
+.tp-lang-chevron-open { transform: rotate(180deg); }
+.tp-lang-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 140px;
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 100;
+}
+.tp-lang-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-body);
+    color: #1a1a1a;
+    transition: background 0.15s;
+}
+.tp-lang-option:hover { background: rgba(0,0,0,0.06); }
+.tp-lang-option-active { font-weight: 600; background: rgba(0,0,0,0.04); }
+
+/* Dark nav lang picker */
+.tp-nav-dark .tp-lang-btn {
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.tp-nav-dark .tp-lang-btn:hover { background: rgba(255,255,255,0.14); }
+.tp-nav-dark .tp-lang-dropdown {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(30,30,30,0.92);
+}
+.tp-nav-dark .tp-lang-option { color: #eee; }
+.tp-nav-dark .tp-lang-option:hover { background: rgba(255,255,255,0.08); }
+.tp-nav-dark .tp-lang-option-active { background: rgba(255,255,255,0.06); }
+
+/* Mobile lang row */
+.tp-nav-mobile-lang {
+    display: none;
+    gap: 8px;
+    padding: 12px 0;
+}
+.tp-mobile-lang-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-body);
+    color: inherit;
+}
+.tp-mobile-lang-btn:hover { background: rgba(0,0,0,0.04); }
+.tp-mobile-lang-active { font-weight: 600; background: rgba(0,0,0,0.06); }
+.tp-nav-dark .tp-mobile-lang-btn { border-color: rgba(255,255,255,0.12); color: #fff; }
+.tp-nav-dark .tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
+.tp-nav-dark .tp-mobile-lang-active { background: rgba(255,255,255,0.08); }
 
 /* ── DARK theme (default) ── */
 .tp-nav-dark .tp-nav {
@@ -2111,6 +2209,8 @@
     .tp-nav { max-width: 100%; }
     .tp-nav-scrolled .tp-nav { max-width: 100%; }
     .tp-nav-links { display: none; }
+    .tp-lang-picker { display: none; }
+    .tp-nav-mobile-lang { display: flex; }
     .tp-nav-cta { display: flex; font-size: var(--type-caption); padding: 0 12px; height: 30px; margin-left: auto; margin-right: 0; }
     .tp-nav-hamburger { margin-left: 14px; }
     .tp-nav-hamburger { display: flex; }
@@ -3560,6 +3660,31 @@
 }
 .tp-hero-waitlist-btn:hover {
     animation-play-state: paused;
+}
+
+/* ─── Hero marker highlight ─── */
+.tp-hero-mark {
+    position: relative;
+    display: inline-block;
+}
+.tp-hero-mark > span:first-child {
+    position: relative;
+    z-index: 1;
+}
+.tp-hero-mark-bg {
+    position: absolute;
+    bottom: 2px;
+    left: -6px;
+    right: -6px;
+    height: 0.35em;
+    background: #16a34a;
+    border-radius: 4px;
+    opacity: 0.35;
+    z-index: 0;
+}
+
+.tp-hero-mark-red .tp-hero-mark-bg {
+    background: #ef4444;
 }
 
 .mf-support {

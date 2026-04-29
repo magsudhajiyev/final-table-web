@@ -1,7 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
 import { submitNicknameClaim, submitToWaitlist } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
+import { useT, SUPPORTED } from './i18n'
 import './TestPage.css'
+
+const FLAGS = { en: '🇬🇧', pl: '🇵🇱', ru: '🇷🇺' }
+
+/* ── Deterministic daily player count ── */
+function getPlayerCount() {
+  const BASE = 283
+  const START = new Date('2026-04-29')
+  const today = new Date()
+  const days = Math.floor((today - START) / 86400000)
+  let total = BASE
+  for (let d = 0; d < days; d++) {
+    // simple hash: consistent random 1-10 per day
+    const seed = d * 2654435761 >>> 0
+    total += (seed % 10) + 1
+  }
+  return total.toLocaleString()
+}
 
 // Tab icons as inline SVG data URIs (Lucide-style)
 const IMG_TAB_ICON_1    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>')}`
@@ -13,9 +31,20 @@ const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
 function TPNavbar() {
+  const { t, locale, setLocale } = useT()
   const [scrolled, setScrolled] = useState(false)
   const [theme, setTheme] = useState('light') // 'dark' | 'light'
   const [menuOpen, setMenuOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef(null)
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -67,14 +96,30 @@ function TPNavbar() {
           <img src={iconSrc} alt="Final Table" className={`tp-nav-logo-icon-img${scrolled ? '' : ' tp-nav-logo-hidden'}`} />
         </div>
         <div className="tp-nav-links">
-          <a href="#features" onClick={smoothScroll}>Features</a>
-          <a href="#how-it-works" onClick={smoothScroll}>How it works</a>
-          <a href="#compare" onClick={smoothScroll}>Compare</a>
-          <a href="#faq" onClick={smoothScroll}>FAQ</a>
+          <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
+          <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+          <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
+          <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
         </div>
-        <a href="#reserve-form" className="tp-nav-cta" onClick={smoothScroll}>
-          Reserve your handle
-        </a>
+        <div className="tp-lang-picker" ref={langRef}>
+          <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
+            <span className="tp-lang-flag">{FLAGS[locale]}</span>
+            <span className="tp-lang-code">{locale.toUpperCase()}</span>
+            <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {langOpen && (
+            <div className="tp-lang-dropdown">
+              {SUPPORTED.map(l => (
+                <button key={l} className={`tp-lang-option${l === locale ? ' tp-lang-option-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
+                  <span className="tp-lang-flag">{FLAGS[l]}</span>
+                  <span>{t(`lang.${l}`)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button
           className="tp-nav-hamburger"
           aria-label="Toggle menu"
@@ -84,11 +129,17 @@ function TPNavbar() {
         </button>
       </nav>
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
-        <a href="#features" onClick={smoothScroll}>Features</a>
-        <a href="#how-it-works" onClick={smoothScroll}>How it works</a>
-        <a href="#compare" onClick={smoothScroll}>Compare</a>
-        <a href="#faq" onClick={smoothScroll}>FAQ</a>
-        <a href="#reserve-form" className="tp-nav-mobile-cta" onClick={smoothScroll}>Reserve your handle</a>
+        <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
+        <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+        <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
+        <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
+        <div className="tp-nav-mobile-lang">
+          {SUPPORTED.map(l => (
+            <button key={l} className={`tp-mobile-lang-btn${l === locale ? ' tp-mobile-lang-active' : ''}`} onClick={() => { setLocale(l); setMenuOpen(false) }}>
+              {FLAGS[l]} {t(`lang.${l}`)}
+            </button>
+          ))}
+        </div>
       </div>
     </header>
   )
@@ -99,6 +150,7 @@ function TPNavbar() {
 /* ────────────────────────────────────────────────────── */
 
 function TPHero() {
+  const { t } = useT()
   const [form, setForm] = useState({ email: '', username: '' })
   const [status, setStatus] = useState('idle') // idle | loading | done | taken | error
   const sectionRef = useRef(null)
@@ -153,11 +205,8 @@ function TPHero() {
   return (
     <section className="tp-hero" ref={sectionRef} data-nav-theme="light">
       <div className="tp-hero-content" ref={contentRef}>
-        <h1 className="tp-hero-h1">Log a hand in three gestures.<br />Not three minutes.</h1>
-        <p className="tp-hero-sub">
-          Final Table is the live poker tracker built for the table itself — fast enough to use
-          one-handed between hands, accurate enough to study after.
-        </p>
+        <h1 className="tp-hero-h1">{t('hero.h1')}</h1>
+        <p className="tp-hero-sub">{t('hero.sub')}</p>
 
         <div id="reserve-form">
           {status === 'done' ? (
@@ -166,10 +215,10 @@ function TPHero() {
                 <path d="M20 6L9 17L4 12" />
               </svg>
               <span className="tp-hero-success-text">
-                <span className="ru-username-preview">@{form.username || 'yourhandle'}</span> is reserved. We'll reach out when Final Table opens.
+                {t('hero.successText', { username: form.username || t('hero.usernamePlaceholder') })}
               </span>
               <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setForm({ email: '', username: '' }) }}>
-                Reserve another
+                {t('hero.resetBtn')}
               </button>
             </div>
           ) : (
@@ -179,7 +228,7 @@ function TPHero() {
                   type="email"
                   name="email"
                   className="tp-hero-email"
-                  placeholder="you@example.com"
+                  placeholder={t('hero.emailPlaceholder')}
                   value={form.email}
                   onChange={handleChange}
                   required
@@ -190,7 +239,7 @@ function TPHero() {
                     type="text"
                     name="username"
                     className="tp-hero-email tp-hero-username"
-                    placeholder="yourhandle"
+                    placeholder={t('hero.usernamePlaceholder')}
                     value={form.username}
                     onChange={handleChange}
                     required
@@ -198,16 +247,16 @@ function TPHero() {
                   <span className="tp-hero-charcount">{form.username.length}/20</span>
                 </div>
               </div>
-              {status === 'taken' && <p className="tp-hero-form-error">That username is already taken. Try a different one.</p>}
-              {status === 'error' && <p className="tp-hero-form-error">Something went wrong. Please try again.</p>}
+              {status === 'taken' && <p className="tp-hero-form-error">{t('hero.errorTaken')}</p>}
+              {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
               <button
                 type="submit"
                 className="tp-hero-waitlist-btn"
                 disabled={status === 'loading'}
               >
-                {status === 'loading' ? 'Reserving…' : 'Reserve my handle →'}
+                {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
               </button>
-              <p className="tp-hero-proof">Free · Takes 10 seconds · 2,400+ players already reserved</p>
+              <p className="tp-hero-proof">{t('hero.proof', { count: getPlayerCount() })}</p>
             </form>
           )}
         </div>
@@ -222,45 +271,35 @@ function TPHero() {
 /*  COMPARISON                                           */
 /* ────────────────────────────────────────────────────── */
 function TPComparison() {
+  const { t } = useT()
   return (
     <section className="tp-compare-section" id="compare" data-nav-theme="light">
       <div className="tp-compare-inner">
-        <p className="tp-compare-eyebrow">WHAT MAKES IT DIFFERENT</p>
-        <h2 className="tp-compare-title">Built for the live game.<br />Designed for the player at the rail.</h2>
-        <p className="tp-compare-subtitle">
-          Live poker trackers exist. None of them feel like they belong at the table.
-          Final Table feels like part of the game.
-        </p>
+        <p className="tp-compare-eyebrow">{t('compare.eyebrow')}</p>
+        <h2 className="tp-compare-title">{t('compare.title')}</h2>
+        <p className="tp-compare-subtitle">{t('compare.subtitle')}</p>
 
         <div className="tp-compare-grid">
           <div className="tp-compare-card">
             <div className="tp-compare-icon"><Zap size={24} /></div>
-            <h3 className="tp-compare-card-title">Three-gesture logging</h3>
-            <p className="tp-compare-card-desc">
-              Log any action — raise, call, fold — in three taps. No typing, no menus. Fast enough to use between hands without missing a beat.
-            </p>
+            <h3 className="tp-compare-card-title">{t('compare.card1.title')}</h3>
+            <p className="tp-compare-card-desc">{t('compare.card1.desc')}</p>
           </div>
           <div className="tp-compare-card">
             <div className="tp-compare-icon"><Target size={24} /></div>
-            <h3 className="tp-compare-card-title">Opponent reads in real time</h3>
-            <p className="tp-compare-card-desc">
-              Build stat-backed profiles on every player you face. Know their VPIP, aggression, and tendencies before you act.
-            </p>
+            <h3 className="tp-compare-card-title">{t('compare.card2.title')}</h3>
+            <p className="tp-compare-card-desc">{t('compare.card2.desc')}</p>
           </div>
           <div className="tp-compare-card">
             <div className="tp-compare-icon"><Layers size={24} /></div>
-            <h3 className="tp-compare-card-title">Session + hand-level data</h3>
-            <p className="tp-compare-card-desc">
-              Track everything from a quick buy-in/cash-out to full hand-by-hand action logging. Use what fits your game.
-            </p>
+            <h3 className="tp-compare-card-title">{t('compare.card3.title')}</h3>
+            <p className="tp-compare-card-desc">{t('compare.card3.desc')}</p>
           </div>
           <div className="tp-compare-card">
             <div className="tp-compare-icon"><Mic size={24} /></div>
-            <h3 className="tp-compare-card-title">Dealer Mode</h3>
-            <p className="tp-compare-card-desc">
-              Dealers run the table hands-free with voice commands. Players follow along on their own phones in real time.
-            </p>
-            <span className="tp-compare-coming-soon">COMING SOON · VENUE PARTNERSHIPS</span>
+            <h3 className="tp-compare-card-title">{t('compare.card4.title')}</h3>
+            <p className="tp-compare-card-desc">{t('compare.card4.desc')}</p>
+            <span className="tp-compare-coming-soon">{t('compare.comingSoon')}</span>
           </div>
         </div>
       </div>
@@ -275,6 +314,9 @@ function TPComparison() {
 const darkTabs = []
 
 function TPBgSection() {
+  const { t } = useT()
+  const tabs = getTabs(t)
+  const tabInfo = getTabInfo(t)
   const [activeTab, setActiveTab] = useState(0)
   const sectionRef = useRef(null)
 
@@ -368,18 +410,19 @@ function TPBgSection() {
 /*  FOOTER                                                */
 /* ────────────────────────────────────────────────────── */
 function TPFooter() {
+  const { t } = useT()
   const year = new Date().getFullYear()
 
   const company = [
-    { title: 'Privacy Policy',  href: '/privacy.html' },
-    { title: 'Terms of Service',href: '/terms.html' },
+    { title: t('footer.privacy'),  href: '/privacy.html' },
+    { title: t('footer.terms'),    href: '/terms.html' },
   ]
 
   const resources = [
-    { title: 'Features',      href: '#features' },
-    { title: 'How it works',  href: '#how-it-works' },
-    { title: 'Compare',       href: '#compare' },
-    { title: 'FAQ',           href: '#faq' },
+    { title: t('nav.features'),     href: '#features' },
+    { title: t('nav.howItWorks'),   href: '#how-it-works' },
+    { title: t('nav.compare'),      href: '#compare' },
+    { title: t('nav.faq'),          href: '#faq' },
   ]
 
   return (
@@ -392,13 +435,13 @@ function TPFooter() {
             <a href="#" className="mf-logo">
               <img src="/assets/Logo_dark.svg" alt="Final Table" className="mf-logo-img" />
             </a>
-            <p className="mf-tagline">Log a hand in three gestures. Not three minutes.</p>
-            <p className="mf-support">Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></p>
+            <p className="mf-tagline">{t('footer.tagline')}</p>
+            <p className="mf-support">{t('footer.support')}</p>
           </div>
 
           {/* Resources col */}
           <div className="mf-col">
-            <span className="mf-col-head">Resources</span>
+            <span className="mf-col-head">{t('footer.resources')}</span>
             {resources.map(({ href, title }, i) => (
               <a key={i} href={href} className="mf-link">{title}</a>
             ))}
@@ -406,7 +449,7 @@ function TPFooter() {
 
           {/* Company col */}
           <div className="mf-col">
-            <span className="mf-col-head">Company</span>
+            <span className="mf-col-head">{t('footer.company')}</span>
             {company.map(({ href, title }, i) => (
               <a key={i} href={href} className="mf-link">{title}</a>
             ))}
@@ -414,7 +457,7 @@ function TPFooter() {
         </div>
 
         <div className="mf-bottom-border" />
-        <p className="mf-copy">© Final Table. All rights reserved {year}</p>
+        <p className="mf-copy">{t('footer.copy', { year })}</p>
       </div>
     </footer>
   )
@@ -423,34 +466,18 @@ function TPFooter() {
 /* ────────────────────────────────────────────────────── */
 /*  FIXED TAB BAR                                         */
 /* ────────────────────────────────────────────────────── */
-const tabs = [
-  { icon: IMG_TAB_ICON_1, label: 'Before the session', mockup: '/phonemain_1.png' },
-  { icon: IMG_TAB_ICON_2, label: 'At the table',       mockup: '/phonemain_2.png' },
-  { icon: IMG_TAB_ICON_3, label: 'After the session',  mockup: '/phonemain_3.png' },
-  { icon: IMG_TAB_ICON_4, label: 'Over time',          mockup: '/phonemain_3.png' },
+const getTabs = (t) => [
+  { icon: IMG_TAB_ICON_1, label: t('tabs.0.label'), mockup: '/phonemain_1.png' },
+  { icon: IMG_TAB_ICON_2, label: t('tabs.1.label'), mockup: '/phonemain_2.png' },
+  { icon: IMG_TAB_ICON_3, label: t('tabs.2.label'), mockup: '/phonemain_3.png' },
+  { icon: IMG_TAB_ICON_4, label: t('tabs.3.label'), mockup: '/phonemain_3.png' },
 ]
 
-const tabInfo = [
-  {
-    eyebrow: 'BEFORE THE SESSION',
-    title: 'Walk in knowing\nwho you\'re playing.',
-    body: 'Review opponent profiles and past hand history before you even sit down. Know who\'s tight, who\'s wild, and where the money is.',
-  },
-  {
-    eyebrow: 'AT THE TABLE',
-    title: 'Three gestures.\nZero lost flow.',
-    body: 'Log any action — raise, call, fold — in three taps. No typing, no menus. Fast enough to use one-handed between hands.',
-  },
-  {
-    eyebrow: 'AFTER THE SESSION',
-    title: 'See the leaks\nyou couldn\'t feel.',
-    body: 'Review every hand, spot patterns in your play, and compare your decisions to GTO baselines. The data tells the truth.',
-  },
-  {
-    eyebrow: 'OVER TIME',
-    title: 'Know your real\nwin rate. Finally.',
-    body: 'Track your true $/hr by stakes, casino, and game type. Make stake decisions based on data, not gut feelings.',
-  },
+const getTabInfo = (t) => [
+  { eyebrow: t('tabs.0.eyebrow'), title: t('tabs.0.title'), body: t('tabs.0.body') },
+  { eyebrow: t('tabs.1.eyebrow'), title: t('tabs.1.title'), body: t('tabs.1.body') },
+  { eyebrow: t('tabs.2.eyebrow'), title: t('tabs.2.title'), body: t('tabs.2.body') },
+  { eyebrow: t('tabs.3.eyebrow'), title: t('tabs.3.title'), body: t('tabs.3.body') },
 ]
 
 /* ────────────────────────────────────────────────────── */
@@ -458,42 +485,19 @@ const tabInfo = [
 /* ────────────────────────────────────────────────────── */
 /*  FEATURES SHOWCASE  (bento grid, 10 cards)            */
 /* ────────────────────────────────────────────────────── */
-const STACK_CARDS = [
-  {
-    icon: Eye,
-    left: {
-      stat: <>Live poker players play<br /><strong>~25–30 hands/hour</strong> on average.</>,
-      question: 'How many of those hands do you actually remember?',
-    },
-    body: 'Final Table tracks every hand you play, so you can review every action and find leaks you never knew you had.',
+const STACK_ICONS = [Eye, TrendingUp, Crosshair, Users]
+const getStackCards = (t) => [0, 1, 2, 3].map(i => ({
+  icon: STACK_ICONS[i],
+  left: {
+    stat: t(`problems.${i}.stat`),
+    question: t(`problems.${i}.question`),
   },
-  {
-    icon: TrendingUp,
-    left: {
-      stat: 'Ask any live player their win rate. Most guess.',
-      question: 'Do you actually know your $/hr by stakes, casino, or game type?',
-    },
-    body: 'Final Table tracks every session with precision — win rate, duration, stakes — so you always know exactly where you stand.',
-  },
-  {
-    icon: Crosshair,
-    left: {
-      stat: 'Position is the single biggest edge in poker.',
-      question: 'Do you know your actual stats from the BTN vs the BB vs UTG?',
-    },
-    body: 'Final Table breaks down your performance by position, so you can see where you print money and where you bleed chips.',
-  },
-  {
-    icon: Users,
-    left: {
-      stat: <>"He always 3-bets light." "She never folds the river."</>,
-      question: 'Are those real reads or just feelings from one memorable hand?',
-    },
-    body: 'Final Table builds opponent profiles from logged hands — real stats, real tendencies — so your reads are backed by data, not memory.',
-  },
-]
+  body: t(`problems.${i}.body`),
+}))
 
 function TPProblems() {
+  const { t } = useT()
+  const STACK_CARDS = getStackCards(t)
   const wrapperRef = useRef(null)
   const cardRefs = useRef([])
   const [activeCard, setActiveCard] = useState(0)
@@ -660,6 +664,7 @@ function TPProblems() {
 }
 
 function TPFeaturesShowcase() {
+  const { t } = useT()
   const gridRef = useRef(null)
 
   useEffect(() => {
@@ -684,8 +689,8 @@ function TPFeaturesShowcase() {
       <div className="fs-container">
 
         <div className="fs-head">
-          <h2 className="fs-title">For the hands you'll<br />want to remember.</h2>
-          <p className="fs-subtitle">Every tool you need to log, review, and improve — without leaving the table.</p>
+          <h2 className="fs-title">{t('features.title')}</h2>
+          <p className="fs-subtitle">{t('features.subtitle')}</p>
         </div>
 
         <div className="fs-grid" ref={gridRef}>
@@ -721,8 +726,8 @@ function TPFeaturesShowcase() {
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Opponent Profiles</h3>
-              <p className="fs-card-desc">Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you've played against them.</p>
+              <h3 className="fs-card-title">{t('features.opponentProfiles.title')}</h3>
+              <p className="fs-card-desc">{t('features.opponentProfiles.desc')}</p>
             </div>
           </div>
 
@@ -751,8 +756,8 @@ function TPFeaturesShowcase() {
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Bankroll Tracking</h3>
-              <p className="fs-card-desc">Set a bankroll goal and watch your progress. Pinch-to-zoom earnings chart shows cumulative results over time.</p>
+              <h3 className="fs-card-title">{t('features.bankroll.title')}</h3>
+              <p className="fs-card-desc">{t('features.bankroll.desc')}</p>
             </div>
           </div>
 
@@ -779,8 +784,8 @@ function TPFeaturesShowcase() {
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Quick Session Logger</h3>
-              <p className="fs-card-desc">Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a quick profit/loss record.</p>
+              <h3 className="fs-card-title">{t('features.sessionLogger.title')}</h3>
+              <p className="fs-card-desc">{t('features.sessionLogger.desc')}</p>
             </div>
           </div>
 
@@ -808,8 +813,8 @@ function TPFeaturesShowcase() {
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Hand Review</h3>
-              <p className="fs-card-desc">Replay every hand you logged. Walk through each street, compare your decisions to GTO baselines, and spot the leaks you couldn't feel at the table.</p>
+              <h3 className="fs-card-title">{t('features.handReview.title')}</h3>
+              <p className="fs-card-desc">{t('features.handReview.desc')}</p>
             </div>
           </div>
 
@@ -822,22 +827,22 @@ function TPFeaturesShowcase() {
                   { name: 'Table 2',     players: 8, total: 9, tag: 'Running',  tagClass: 'fs-tag-running' },
                   { name: 'Table 3',     players: 6, total: 9, tag: 'Breaking', tagClass: 'fs-tag-breaking' },
                   { name: 'Final Table', players: 4, total: 9, tag: 'Live',     tagClass: 'fs-tag-live' },
-                ].map((t, i) => (
+                ].map((row, i) => (
                   <div key={i} className="fs-mtt-row">
-                    <span className="fs-mtt-name">{t.name}</span>
+                    <span className="fs-mtt-name">{row.name}</span>
                     <div className="fs-mtt-pips">
-                      {Array.from({ length: t.total }).map((_, j) => (
-                        <div key={j} className={`fs-pip ${j < t.players ? 'fs-pip-on' : 'fs-pip-off'}`} />
+                      {Array.from({ length: row.total }).map((_, j) => (
+                        <div key={j} className={`fs-pip ${j < row.players ? 'fs-pip-on' : 'fs-pip-off'}`} />
                       ))}
                     </div>
-                    <span className={`fs-mtt-tag ${t.tagClass}`}>{t.tag}</span>
+                    <span className={`fs-mtt-tag ${row.tagClass}`}>{row.tag}</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Multi-Table Tournaments</h3>
-              <p className="fs-card-desc">Run live tournaments with multiple tables, real-time rankings, and prize distribution. Create clubs, manage members and roles — all from the app.</p>
+              <h3 className="fs-card-title">{t('features.mtt.title')}</h3>
+              <p className="fs-card-desc">{t('features.mtt.desc')}</p>
             </div>
           </div>
 
@@ -862,8 +867,8 @@ function TPFeaturesShowcase() {
               </div>
             </div>
             <div className="fs-card-body">
-              <h3 className="fs-card-title">Dealer Mode <span className="fs-coming-soon">COMING SOON</span></h3>
-              <p className="fs-card-desc">Dealers can run a table hands-free using voice commands. Players follow along on their own phones in real time.</p>
+              <h3 className="fs-card-title">{t('features.dealerMode.title')} <span className="fs-coming-soon">{t('features.dealerMode.comingSoon')}</span></h3>
+              <p className="fs-card-desc">{t('features.dealerMode.desc')}</p>
             </div>
           </div>
 
@@ -877,26 +882,14 @@ function TPFeaturesShowcase() {
 /* ────────────────────────────────────────────────────── */
 /*  FINAL CTA                                            */
 /* ────────────────────────────────────────────────────── */
-const FINAL_FAQS = [
-  {
-    q: 'Can I change my username later?',
-    a: 'Once reserved, your username is locked in. Choose carefully — this becomes your permanent handle in Final Table.',
-  },
-  {
-    q: 'Is reserving free?',
-    a: 'Yes. Reserving your username is completely free. Just enter your email and desired handle.',
-  },
-  {
-    q: 'What if my username is taken?',
-    a: 'Usernames are first-come, first-served. If your preferred handle is gone, try a variation — underscores and numbers are fair game.',
-  },
-  {
-    q: 'When will the app launch?',
-    a: 'Final Table is in closed beta. Waitlist members get early access before the public launch.',
-  },
-]
+const getFinalFaqs = (t) => [0, 1, 2, 3].map(i => ({
+  q: t(`faq.${i}.q`),
+  a: t(`faq.${i}.a`),
+}))
 
 function TPFinalCTA() {
+  const { t } = useT()
+  const FINAL_FAQS = getFinalFaqs(t)
   const [form, setForm] = useState({ email: '', username: '' })
   const [status, setStatus] = useState('idle') // idle | sending | done | taken | error
   const [openFaq, setOpenFaq] = useState(null)
@@ -932,10 +925,10 @@ function TPFinalCTA() {
       <div className="fc-inner">
         {/* Left — copy + avatars + FAQ */}
         <div className="fc-left">
-          <p className="ru-eyebrow">Early access</p>
-          <h2 className="ru-title">Reserve your username<br />before anyone else does.</h2>
+          <p className="ru-eyebrow">{t('cta.eyebrow')}</p>
+          <h2 className="ru-title">{t('cta.title')}</h2>
           <p className="ru-body">
-            Claim your permanent handle ahead of launch. Usernames are first-come, first-served — once it's gone, it's gone.
+            {t('cta.body')}
           </p>
 
           <div className="ru-proof">
@@ -944,7 +937,7 @@ function TPFinalCTA() {
                 <div key={i} className="ru-avatar" style={{ '--i': i }}>{l}</div>
               ))}
             </div>
-            <p className="ru-proof-text"><strong>2,400+</strong> players already on the waitlist</p>
+            <p className="ru-proof-text">{t('cta.proof', { count: getPlayerCount() })}</p>
           </div>
 
           <div className="ru-faq" id="faq">
@@ -961,7 +954,7 @@ function TPFinalCTA() {
             ))}
           </div>
 
-          <p className="fc-support">Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></p>
+          <p className="fc-support">{t('cta.support')}</p>
         </div>
 
         {/* Right — form card */}
@@ -969,40 +962,40 @@ function TPFinalCTA() {
           <div className="ru-card">
             {status === 'done' ? (
               <div className="ru-success">
-                <div className="ru-success-chip">✓ Reserved</div>
-                <h3 className="ru-success-title">You're on the list.</h3>
+                <div className="ru-success-chip">{t('cta.successChip')}</div>
+                <h3 className="ru-success-title">{t('cta.successTitle')}</h3>
                 <p className="ru-success-body">
-                  <span className="ru-username-preview">@{form.username || 'yourhandle'}</span> is reserved for you. We'll reach out when Final Table opens.
+                  {t('cta.successBody', { username: form.username || 'yourhandle' })}
                 </p>
                 <button className="ru-success-reset" onClick={() => { setStatus('idle'); setForm({ email: '', username: '' }) }}>
-                  Reserve another
+                  {t('cta.resetBtn')}
                 </button>
               </div>
             ) : (
               <>
                 <div className="ru-card-header">
-                  <p className="ru-card-title">Claim your handle</p>
-                  <p className="ru-card-sub">Free · Takes 10 seconds</p>
+                  <p className="ru-card-title">{t('cta.cardTitle')}</p>
+                  <p className="ru-card-sub">{t('cta.cardSub')}</p>
                 </div>
 
                 <form className="ru-form" onSubmit={handleSubmit}>
                   <div className="ru-field">
-                    <label className="ru-label">Email</label>
+                    <label className="ru-label">{t('cta.labelEmail')}</label>
                     <input
                       className="ru-input"
                       type="email"
                       name="email"
-                      placeholder="you@example.com"
+                      placeholder={t('cta.emailPlaceholder')}
                       value={form.email}
                       onChange={handleChange}
                       required
                     />
-                    <p className="ru-hint">Your future sign-in email — can't be changed later.</p>
+                    <p className="ru-hint">{t('cta.hintEmail')}</p>
                   </div>
 
                   <div className="ru-field">
                     <label className="ru-label">
-                      Username
+                      {t('cta.labelUsername')}
                       <span className="ru-char-count">{form.username.length}/20</span>
                     </label>
                     <div className="ru-input-prefix-wrap">
@@ -1011,24 +1004,24 @@ function TPFinalCTA() {
                         className="ru-input ru-input-with-prefix"
                         type="text"
                         name="username"
-                        placeholder="yourhandle"
+                        placeholder={t('cta.usernamePlaceholder')}
                         value={form.username}
                         onChange={handleChange}
                         required
                       />
                     </div>
-                    <p className="ru-hint">Letters, numbers and underscores only. 3–20 characters.</p>
+                    <p className="ru-hint">{t('cta.hintUsername')}</p>
                   </div>
 
                   {status === 'taken' && (
-                    <p className="ru-error">That username is already taken. Try a different one.</p>
+                    <p className="ru-error">{t('cta.errorTaken')}</p>
                   )}
                   {status === 'error' && (
-                    <p className="ru-error">Something went wrong. Please try again.</p>
+                    <p className="ru-error">{t('cta.errorGeneric')}</p>
                   )}
 
                   <button className="ru-submit" type="submit" disabled={status === 'sending'}>
-                    {status === 'sending' ? 'Reserving…' : 'Reserve my spot →'}
+                    {status === 'sending' ? t('cta.btnLoading') : t('cta.btnSubmit')}
                   </button>
                 </form>
               </>
