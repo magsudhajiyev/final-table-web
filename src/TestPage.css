@@ -3545,6 +3545,23 @@
 /* ────────────────────────────────────────────────────── */
 /*  Footer support email                                 */
 /* ────────────────────────────────────────────────────── */
+/* ─── Reserve handle button pulse animation ─── */
+@keyframes handle-float-x {
+    0%, 100% { transform: translateX(-4px); }
+    50%      { transform: translateX(4px); }
+}
+@keyframes handle-float-scale {
+    0%, 100% { scale: 1; }
+    50%      { scale: 1.03; }
+}
+.tp-hero-waitlist-btn {
+    animation: handle-float-x 3s ease-in-out infinite, handle-float-scale 5s ease-in-out infinite;
+    transition: transform 0.3s ease, scale 0.3s ease;
+}
+.tp-hero-waitlist-btn:hover {
+    animation-play-state: paused;
+}
+
 .mf-support {
     font-family: var(--font-sans);
     font-size: 13px;

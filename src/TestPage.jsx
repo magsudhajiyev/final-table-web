@@ -228,8 +228,8 @@ function TPComparison() {
         <p className="tp-compare-eyebrow">WHAT MAKES IT DIFFERENT</p>
         <h2 className="tp-compare-title">Built for the live game.<br />Designed for the player at the rail.</h2>
         <p className="tp-compare-subtitle">
-          Most poker tools were built for online grinders sitting at a desk. Final Table is the first tracker
-          designed for the speed and chaos of a live table.
+          Live poker trackers exist. None of them feel like they belong at the table.
+          Final Table feels like part of the game.
         </p>
 
         <div className="tp-compare-grid">
