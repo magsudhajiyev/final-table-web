@@ -2209,6 +2209,8 @@
     }
     .tp-nav { max-width: 100%; }
     .tp-nav-scrolled .tp-nav { max-width: 100%; }
+    .tp-nav-logo-img.tp-nav-logo-hidden { display: block; }
+    .tp-nav-logo-icon-img { display: none !important; }
     .tp-nav-links { display: none; }
     .tp-lang-picker { display: none; }
     .tp-nav-mobile-lang { display: flex; }
