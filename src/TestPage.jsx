@@ -91,10 +91,10 @@ function TPNavbar() {
   return (
     <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
-        <div className="tp-nav-logo">
+        <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
           <img src={logo} alt="Final Table" className={`tp-nav-logo-img${scrolled ? ' tp-nav-logo-hidden' : ''}`} />
           <img src={iconSrc} alt="Final Table" className={`tp-nav-logo-icon-img${scrolled ? '' : ' tp-nav-logo-hidden'}`} />
-        </div>
+        </a>
         <div className="tp-nav-links">
           <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
           <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
