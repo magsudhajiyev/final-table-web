@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['en', 'es', 'fr', 'pl', 'ru']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'ru']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -11,6 +11,7 @@ function detectLocale() {
   if (lang.startsWith('ru')) return 'ru'
   if (lang.startsWith('fr')) return 'fr'
   if (lang.startsWith('es')) return 'es'
+  if (lang.startsWith('de')) return 'de'
   return 'en'
 }
 
@@ -155,6 +156,7 @@ const en = {
   'footer.copy': (p) => `© Final Table. All rights reserved ${p.year}`,
 
   // Language
+  'lang.de': 'Deutsch',
   'lang.en': 'English',
   'lang.pl': 'Polski',
   'lang.ru': 'Русский',
@@ -293,6 +295,7 @@ const pl = {
   'footer.terms': 'Regulamin',
   'footer.copy': (p) => `© Final Table. Wszelkie prawa zastrzeżone ${p.year}`,
 
+  'lang.de': 'Deutsch',
   'lang.en': 'English',
   'lang.pl': 'Polski',
   'lang.ru': 'Русский',
@@ -431,6 +434,7 @@ const ru = {
   'footer.terms': 'Условия Использования',
   'footer.copy': (p) => `© Final Table. Все права защищены ${p.year}`,
 
+  'lang.de': 'Deutsch',
   'lang.en': 'English',
   'lang.pl': 'Polski',
   'lang.ru': 'Русский',
@@ -569,6 +573,7 @@ const fr = {
   'footer.terms': 'Conditions d\'Utilisation',
   'footer.copy': (p) => `© Final Table. Tous droits réservés ${p.year}`,
 
+  'lang.de': 'Deutsch',
   'lang.en': 'English',
   'lang.pl': 'Polski',
   'lang.ru': 'Русский',
@@ -707,6 +712,146 @@ const es = {
   'footer.terms': 'Términos de Servicio',
   'footer.copy': (p) => `© Final Table. Todos los derechos reservados ${p.year}`,
 
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.pl': 'Polski',
+  'lang.ru': 'Русский',
+  'lang.fr': 'Français',
+  'lang.es': 'Español',
+}
+
+/* ─────────────────────────────────────────────── */
+/*  GERMAN                                         */
+/* ─────────────────────────────────────────────── */
+const de = {
+  'nav.features': 'Funktionen',
+  'nav.howItWorks': 'So funktioniert\'s',
+  'nav.compare': 'Vergleich',
+  'nav.faq': 'FAQ',
+  'nav.cta': 'Nick reservieren',
+
+  'hero.h1': () => (
+    <>
+      Erfasse eine Hand in{' '}
+      <span className="tp-hero-mark"><span>drei Gesten</span><span className="tp-hero-mark-bg" /></span>
+      .<br />Nicht in{' '}
+      <span className="tp-hero-mark tp-hero-mark-red"><span>drei Minuten</span><span className="tp-hero-mark-bg" /></span>.
+    </>
+  ),
+  'hero.sub': 'Final Table ist der Live-Poker-Tracker für den Tisch — schnell genug, um ihn einhändig zwischen den Händen zu nutzen, genau genug für die Analyse danach.',
+  'hero.emailPlaceholder': 'du@example.com',
+  'hero.usernamePlaceholder': 'deinnick',
+  'hero.errorTaken': 'Dieser Nick ist bereits vergeben. Versuch einen anderen.',
+  'hero.errorGeneric': 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
+  'hero.btnLoading': 'Reserviere…',
+  'hero.btnSubmit': 'Nick reservieren →',
+  'hero.proof': (p) => `Kostenlos · 10 Sekunden · ${p.count}+ Spieler bereits registriert`,
+  'hero.successText': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> ist reserviert. Wir melden uns, wenn Final Table startet.</>
+  ),
+  'hero.resetBtn': 'Weiteren reservieren',
+
+  'compare.eyebrow': 'WAS UNS UNTERSCHEIDET',
+  'compare.title': () => <>Für das Live-Spiel gebaut.<br />Für den Spieler am Tisch gemacht.</>,
+  'compare.subtitle': 'Live-Poker-Tracker gibt es. Keiner fühlt sich an, als gehöre er an den Tisch. Final Table ist Teil des Spiels.',
+  'compare.card1.title': 'Erfassung in drei Gesten',
+  'compare.card1.desc': 'Erfasse jede Aktion — Raise, Call, Fold — in drei Taps. Kein Tippen, keine Menüs. Schnell genug, um den Rhythmus nicht zu verlieren.',
+  'compare.card2.title': 'Gegner-Reads in Echtzeit',
+  'compare.card2.desc': 'Erstelle statistische Profile jedes Spielers. Kenne VPIP, Aggression und Tendenzen, bevor du agierst.',
+  'compare.card3.title': 'Session- & Hand-Daten',
+  'compare.card3.desc': 'Verfolge alles — vom schnellen Buy-in/Cash-out bis zur vollständigen Hand-für-Hand-Erfassung. Nutze, was zu deinem Spiel passt.',
+  'compare.card4.title': 'Dealer-Modus',
+  'compare.card4.desc': 'Dealer leiten den Tisch per Sprachbefehl. Spieler verfolgen das Spiel in Echtzeit auf ihren Handys.',
+  'compare.comingSoon': 'DEMNÄCHST · PARTNERSCHAFTEN MIT SPIELSTÄTTEN',
+
+  'tabs.0.label': 'Vor der Session',
+  'tabs.1.label': 'Am Tisch',
+  'tabs.2.label': 'Nach der Session',
+  'tabs.3.label': 'Im Laufe der Zeit',
+  'tabs.0.eyebrow': 'VOR DER SESSION',
+  'tabs.0.title': 'Komm an den Tisch\nund wisse, gegen wen du spielst.',
+  'tabs.0.body': 'Sieh dir Gegnerprofile und Handverläufe an, bevor du dich setzt. Wisse, wer tight spielt, wer loose, und wo das Geld liegt.',
+  'tabs.1.eyebrow': 'AM TISCH',
+  'tabs.1.title': 'Drei Gesten.\nNull Rhythmusverlust.',
+  'tabs.1.body': 'Erfasse jede Aktion — Raise, Call, Fold — in drei Taps. Kein Tippen, keine Menüs. Schnell genug für einhändige Bedienung.',
+  'tabs.2.eyebrow': 'NACH DER SESSION',
+  'tabs.2.title': 'Sieh die Fehler,\ndie du nicht gespürt hast.',
+  'tabs.2.body': 'Geh jede Hand durch, finde Muster in deinem Spiel und vergleiche Entscheidungen mit GTO-Referenzen. Die Daten lügen nicht.',
+  'tabs.3.eyebrow': 'IM LAUFE DER ZEIT',
+  'tabs.3.title': 'Kenne deine echte\nWin Rate. Endlich.',
+  'tabs.3.body': 'Verfolge deine wahre $/h nach Einsätzen, Casino und Spieltyp. Triff Entscheidungen auf Basis von Daten, nicht Bauchgefühl.',
+
+  'problems.0.stat': () => <>Live-Spieler spielen<br /><strong>~25–30 Hände/Stunde</strong> im Durchschnitt.</>,
+  'problems.0.question': 'An wie viele dieser Hände erinnerst du dich wirklich?',
+  'problems.0.body': 'Final Table verfolgt jede Hand, damit du jede Aktion überprüfen und Fehler finden kannst, von denen du nichts wusstest.',
+  'problems.1.stat': 'Frag einen Live-Spieler nach seiner Win Rate. Die meisten raten.',
+  'problems.1.question': 'Kennst du wirklich deine $/h nach Einsätzen, Casino oder Spieltyp?',
+  'problems.1.body': 'Final Table verfolgt jede Session präzise — Win Rate, Dauer, Einsätze — damit du immer weißt, wo du stehst.',
+  'problems.2.stat': 'Position ist der größte Vorteil im Poker.',
+  'problems.2.question': 'Kennst du deine echten Stats vom BTN vs BB vs UTG?',
+  'problems.2.body': 'Final Table schlüsselt deine Leistung nach Position auf — sieh, wo du Geld druckst und wo du Chips verlierst.',
+  'problems.3.stat': () => <>"Er 3-bettet immer light." "Sie foldet nie am River."</>,
+  'problems.3.question': 'Sind das echte Reads oder Gefühle von einer denkwürdigen Hand?',
+  'problems.3.body': 'Final Table erstellt Gegnerprofile aus erfassten Händen — echte Stats, echte Tendenzen — deine Reads basieren auf Daten, nicht Erinnerung.',
+
+  'features.title': () => <>Für die Hände, an die du<br />dich erinnern willst.</>,
+  'features.subtitle': 'Alle Tools zum Erfassen, Analysieren und Verbessern — ohne den Tisch zu verlassen.',
+  'features.opponentProfiles.title': 'Gegnerprofile',
+  'features.opponentProfiles.desc': 'Erstelle automatisch Profile der Spieler, gegen die du spielst. Verfolge ihre Stats, klassifiziere ihren Stil und sieh dir jede gemeinsame Hand an.',
+  'features.bankroll.title': 'Bankroll-Tracking',
+  'features.bankroll.desc': 'Setze ein Bankroll-Ziel und verfolge deinen Fortschritt. Das Gewinndiagramm mit Zoom zeigt kumulative Ergebnisse.',
+  'features.sessionLogger.title': 'Schneller Session-Log',
+  'features.sessionLogger.desc': 'Kein vollständiges Hand-Tracking gewünscht? Notiere einfach Buy-in, Cash-out und Session-Dauer.',
+  'features.handReview.title': 'Hand-Review',
+  'features.handReview.desc': 'Spiele jede erfasste Hand nach. Geh Street für Street durch, vergleiche Entscheidungen mit GTO und finde Fehler, die du am Tisch nicht gespürt hast.',
+  'features.mtt.title': 'Multi-Tisch-Turniere',
+  'features.mtt.desc': 'Veranstalte Live-Turniere mit mehreren Tischen, Echtzeit-Rankings und Preisverteilung. Erstelle Clubs, verwalte Mitglieder — alles aus der App.',
+  'features.dealerMode.title': 'Dealer-Modus',
+  'features.dealerMode.comingSoon': 'DEMNÄCHST',
+  'features.dealerMode.desc': 'Dealer leiten den Tisch per Sprachbefehl. Spieler verfolgen das Spiel in Echtzeit auf ihren Handys.',
+
+  'cta.eyebrow': 'Früher Zugang',
+  'cta.title': () => <>Reserviere deinen Nick<br />bevor es jemand anderes tut.</>,
+  'cta.body': 'Sichere dir deinen permanenten Nick vor dem Launch. Nicks werden nach dem Prinzip „Wer zuerst kommt" vergeben — einmal weg, ist er weg.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> Spieler bereits auf der Warteliste</>,
+  'cta.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.cardTitle': 'Sichere deinen Nick',
+  'cta.cardSub': 'Kostenlos · 10 Sekunden',
+  'cta.labelEmail': 'Email',
+  'cta.emailPlaceholder': 'du@example.com',
+  'cta.hintEmail': 'Deine zukünftige Login-Email — kann nicht geändert werden.',
+  'cta.labelUsername': 'Nick',
+  'cta.usernamePlaceholder': 'deinnick',
+  'cta.hintUsername': 'Nur Buchstaben, Zahlen und Unterstriche. 3–20 Zeichen.',
+  'cta.errorTaken': 'Dieser Nick ist bereits vergeben. Versuch einen anderen.',
+  'cta.errorGeneric': 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
+  'cta.btnLoading': 'Reserviere…',
+  'cta.btnSubmit': 'Platz reservieren →',
+  'cta.successChip': '✓ Reserviert',
+  'cta.successTitle': 'Du bist auf der Liste.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> ist reserviert. Wir melden uns, wenn Final Table startet.</>
+  ),
+  'cta.resetBtn': 'Weiteren reservieren',
+
+  'faq.0.q': 'Kann ich meinen Nick später ändern?',
+  'faq.0.a': 'Einmal reserviert, ist dein Nick fest. Wähle sorgfältig — das wird dein permanenter Nick in Final Table.',
+  'faq.1.q': 'Ist die Reservierung kostenlos?',
+  'faq.1.a': 'Ja. Die Reservierung ist komplett kostenlos. Gib einfach deine Email und den gewünschten Nick ein.',
+  'faq.2.q': 'Was, wenn mein Nick vergeben ist?',
+  'faq.2.a': 'Nicks werden nach dem Prinzip „Wer zuerst kommt" vergeben. Falls deiner weg ist, versuch eine Variante — Unterstriche und Zahlen sind erlaubt.',
+  'faq.3.q': 'Wann wird die App gelauncht?',
+  'faq.3.a': 'Final Table ist in der geschlossenen Beta. Wartelisten-Mitglieder erhalten frühen Zugang vor dem öffentlichen Launch.',
+
+  'footer.tagline': 'Erfasse eine Hand in drei Gesten. Nicht in drei Minuten.',
+  'footer.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.resources': 'Ressourcen',
+  'footer.company': 'Unternehmen',
+  'footer.privacy': 'Datenschutz',
+  'footer.terms': 'Nutzungsbedingungen',
+  'footer.copy': (p) => `© Final Table. Alle Rechte vorbehalten ${p.year}`,
+
+  'lang.de': 'Deutsch',
   'lang.en': 'English',
   'lang.pl': 'Polski',
   'lang.ru': 'Русский',
@@ -717,7 +862,7 @@ const es = {
 /* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es }
+const translations = { en, pl, ru, fr, es, de }
 
 const I18nContext = createContext()
 
