@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { submitToWaitlist } from './lib/firebase'
+import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import './TestPage.css'
@@ -163,7 +163,7 @@ function TPNavbar() {
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
           <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
-            <span>{FLAGS[locale]} {t(`lang.${locale}`)}</span>
+            <span><Flag locale={locale} /> {t(`lang.${locale}`)}</span>
             <svg className={`tp-mobile-lang-chevron${langOpen ? ' tp-mobile-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
               <polyline points="6 9 12 15 18 9" />
             </svg>
@@ -172,7 +172,7 @@ function TPNavbar() {
             <div className="tp-mobile-lang-grid">
               {SUPPORTED.map(l => (
                 <button key={l} className={`tp-mobile-lang-btn${l === locale ? ' tp-mobile-lang-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
-                  {FLAGS[l]} {t(`lang.${l}`)}
+                  <Flag locale={l} /> {t(`lang.${l}`)}
                 </button>
               ))}
             </div>
