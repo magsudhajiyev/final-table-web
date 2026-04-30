@@ -14,13 +14,12 @@ function Flag({ locale }) {
 function getPlayerCount() {
   const BASE = 283
   const START = new Date('2026-04-29')
-  const today = new Date()
-  const days = Math.floor((today - START) / 86400000)
+  const now = new Date()
+  const slots = Math.floor((now - START) / 1800000) // 30-minute slots
   let total = BASE
-  for (let d = 0; d < days; d++) {
-    // simple hash: consistent random 1-10 per day
-    const seed = d * 2654435761 >>> 0
-    total += (seed % 10) + 1
+  for (let s = 0; s < slots; s++) {
+    const seed = s * 2654435761 >>> 0
+    total += (seed % 5) + 1 // random 1-5 per 30 min
   }
   return total.toLocaleString()
 }
