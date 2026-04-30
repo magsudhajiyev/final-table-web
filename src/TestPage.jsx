@@ -471,7 +471,7 @@ function TPHowItWorks() {
           {/* Row 1 – Before & At the table */}
           <div className="tp-how-card tp-how-card-before">
             <div className="tp-how-visual tp-how-visual-before">
-              <img src="/nwa_before.png" alt="" className="tp-how-img" />
+              <img src="/nwa_before.png" alt="" className="tp-how-img tp-how-img-before" />
             </div>
             <div className="tp-how-body">
               <p className="tp-how-eyebrow">{t('tabs.0.label')}</p>
@@ -482,7 +482,7 @@ function TPHowItWorks() {
 
           <div className="tp-how-card tp-how-card-table">
             <div className="tp-how-visual tp-how-visual-table">
-              <img src="/nwa_table.png" alt="" className="tp-how-img" />
+              <img src="/nwa_table.png" alt="" className="tp-how-img tp-how-img-table" />
             </div>
             <div className="tp-how-body">
               <p className="tp-how-eyebrow">{t('tabs.1.label')}</p>
@@ -499,7 +499,7 @@ function TPHowItWorks() {
               <p className="tp-how-desc">{t('tabs.2.body')}</p>
             </div>
             <div className="tp-how-visual tp-how-visual-after">
-              <img src="/nwa_after.png" alt="" className="tp-how-img" />
+              <img src="/nwa_after.png" alt="" className="tp-how-img tp-how-img-after" />
             </div>
           </div>
 
