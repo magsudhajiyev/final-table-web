@@ -314,10 +314,12 @@ function TPComparison() {
   return (
     <section className="tp-compare-section" id="compare" data-nav-theme="light">
       <div className="tp-compare-inner">
-        <p className="tp-compare-eyebrow">{t('compare.eyebrow')}</p>
-        <div className="tp-compare-header">
-          <h2 className="tp-compare-title">{t('compare.title')}</h2>
-          <p className="tp-compare-subtitle">{t('compare.subtitle')}</p>
+        <div className="tp-compare-header-group">
+          <p className="tp-compare-eyebrow">{t('compare.eyebrow')}</p>
+          <div className="tp-compare-header">
+            <h2 className="tp-compare-title">{t('compare.title')}</h2>
+            <p className="tp-compare-subtitle">{t('compare.subtitle')}</p>
+          </div>
         </div>
 
         <div className="tp-compare-grid">
