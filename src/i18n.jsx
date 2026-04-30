@@ -25,7 +25,7 @@ const en = {
   'nav.howItWorks': 'How it works',
   'nav.compare': 'Compare',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Reserve your handle',
+  'nav.cta': 'Join waitlist',
 
   // Hero
   'hero.h1': (p) => (
@@ -37,21 +37,17 @@ const en = {
     </>
   ),
   'hero.sub': 'Final Table is the live poker tracker built for the table itself — fast enough to use one-handed between hands, accurate enough to study after.',
-  'hero.emailPlaceholder': 'you@example.com',
-  'hero.usernamePlaceholder': 'yourhandle',
-  'hero.errorTaken': 'That username is already taken. Try a different one.',
+  'hero.emailPlaceholder': 'Enter your email',
   'hero.errorGeneric': 'Something went wrong. Please try again.',
   'hero.btnLoading': 'Reserving…',
-  'hero.btnSubmit': 'Reserve my handle →',
+  'hero.btnSubmit': 'Reserve My Spot',
   'hero.proof': (p) => `Free · Takes 10 seconds · ${p.count}+ players already reserved`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> is reserved. We'll reach out when Final Table opens.</>
-  ),
+  'hero.successText': 'You\'re on the list! We\'ll reach out when Final Table opens.',
   'hero.resetBtn': 'Reserve another',
 
   // Comparison
-  'compare.eyebrow': 'WHAT MAKES IT DIFFERENT',
-  'compare.title': () => <>Built for the live game.<br />Designed for the player at the rail.</>,
+  'compare.eyebrow': 'What makes it different?',
+  'compare.title': () => <>Built for the <em>live game</em>.<br />Designed for the <em>player at the rail</em>.</>,
   'compare.subtitle': 'Live poker trackers exist. None of them feel like they belong at the table. Final Table feels like part of the game.',
   'compare.card1.title': 'Three-gesture logging',
   'compare.card1.desc': 'Log any action — raise, call, fold — in three taps. No typing, no menus. Fast enough to use between hands without missing a beat.',
@@ -185,16 +181,12 @@ const pl = {
     </>
   ),
   'hero.sub': 'Final Table to tracker pokerowy stworzony dla żywego stołu — wystarczająco szybki, by używać go jedną ręką między rozdaniami, wystarczająco dokładny, by analizować po sesji.',
-  'hero.emailPlaceholder': 'ty@example.com',
-  'hero.usernamePlaceholder': 'twojnick',
-  'hero.errorTaken': 'Ten nick jest już zajęty. Spróbuj innego.',
+  'hero.emailPlaceholder': 'Wpisz swój email',
   'hero.errorGeneric': 'Coś poszło nie tak. Spróbuj ponownie.',
   'hero.btnLoading': 'Rezerwuję…',
-  'hero.btnSubmit': 'Zarezerwuj nick →',
+  'hero.btnSubmit': 'Zarezerwuj miejsce',
   'hero.proof': (p) => `Darmowe · 10 sekund · ${p.count}+ graczy już zarezerwowało`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> jest zarezerwowany. Odezwiemy się, gdy Final Table wystartuje.</>
-  ),
+  'hero.successText': 'Jesteś na liście! Odezwiemy się, gdy Final Table wystartuje.',
   'hero.resetBtn': 'Zarezerwuj kolejny',
 
   'compare.eyebrow': 'CO NAS WYRÓŻNIA',
@@ -325,16 +317,12 @@ const ru = {
     </>
   ),
   'hero.sub': 'Final Table — покерный трекер, созданный для живого стола. Достаточно быстрый, чтобы пользоваться одной рукой между раздачами, достаточно точный для анализа после.',
-  'hero.emailPlaceholder': 'you@example.com',
-  'hero.usernamePlaceholder': 'вашник',
-  'hero.errorTaken': 'Этот ник уже занят. Попробуйте другой.',
+  'hero.emailPlaceholder': 'Введите ваш email',
   'hero.errorGeneric': 'Что-то пошло не так. Попробуйте снова.',
   'hero.btnLoading': 'Бронирую…',
-  'hero.btnSubmit': 'Забронировать ник →',
+  'hero.btnSubmit': 'Забронировать место',
   'hero.proof': (p) => `Бесплатно · 10 секунд · ${p.count}+ игроков уже забронировали`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> забронирован. Мы свяжемся, когда Final Table запустится.</>
-  ),
+  'hero.successText': 'Вы в списке! Мы свяжемся, когда Final Table запустится.',
   'hero.resetBtn': 'Забронировать ещё',
 
   'compare.eyebrow': 'ЧЕМ МЫ ОТЛИЧАЕМСЯ',
@@ -465,16 +453,12 @@ const fr = {
     </>
   ),
   'hero.sub': 'Final Table est le tracker de poker live conçu pour la table — assez rapide pour être utilisé d\'une main entre les coups, assez précis pour analyser après.',
-  'hero.emailPlaceholder': 'vous@example.com',
-  'hero.usernamePlaceholder': 'votrepseudo',
-  'hero.errorTaken': 'Ce pseudo est déjà pris. Essayez-en un autre.',
+  'hero.emailPlaceholder': 'Entrez votre email',
   'hero.errorGeneric': 'Une erreur est survenue. Veuillez réessayer.',
   'hero.btnLoading': 'Réservation…',
-  'hero.btnSubmit': 'Réserver mon pseudo →',
+  'hero.btnSubmit': 'Réserver ma place',
   'hero.proof': (p) => `Gratuit · 10 secondes · ${p.count}+ joueurs déjà inscrits`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> est réservé. Nous vous contacterons au lancement de Final Table.</>
-  ),
+  'hero.successText': 'Vous êtes sur la liste ! Nous vous contacterons au lancement de Final Table.',
   'hero.resetBtn': 'Réserver un autre',
 
   'compare.eyebrow': 'CE QUI NOUS DISTINGUE',
@@ -605,16 +589,12 @@ const es = {
     </>
   ),
   'hero.sub': 'Final Table es el tracker de póker en vivo diseñado para la mesa — lo bastante rápido para usarlo con una mano entre repartos, lo bastante preciso para analizar después.',
-  'hero.emailPlaceholder': 'tu@example.com',
-  'hero.usernamePlaceholder': 'tunick',
-  'hero.errorTaken': 'Ese nick ya está en uso. Prueba con otro.',
+  'hero.emailPlaceholder': 'Introduce tu email',
   'hero.errorGeneric': 'Algo salió mal. Inténtalo de nuevo.',
   'hero.btnLoading': 'Reservando…',
-  'hero.btnSubmit': 'Reservar mi nick →',
+  'hero.btnSubmit': 'Reservar mi lugar',
   'hero.proof': (p) => `Gratis · 10 segundos · ${p.count}+ jugadores ya registrados`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> está reservado. Te contactaremos cuando Final Table se lance.</>
-  ),
+  'hero.successText': '¡Estás en la lista! Te contactaremos cuando Final Table se lance.',
   'hero.resetBtn': 'Reservar otro',
 
   'compare.eyebrow': 'QUÉ NOS DIFERENCIA',
@@ -745,16 +725,12 @@ const de = {
     </>
   ),
   'hero.sub': 'Final Table ist der Live-Poker-Tracker für den Tisch — schnell genug, um ihn einhändig zwischen den Händen zu nutzen, genau genug für die Analyse danach.',
-  'hero.emailPlaceholder': 'du@example.com',
-  'hero.usernamePlaceholder': 'deinnick',
-  'hero.errorTaken': 'Dieser Nick ist bereits vergeben. Versuch einen anderen.',
+  'hero.emailPlaceholder': 'E-Mail eingeben',
   'hero.errorGeneric': 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
   'hero.btnLoading': 'Reserviere…',
-  'hero.btnSubmit': 'Nick reservieren →',
+  'hero.btnSubmit': 'Platz reservieren',
   'hero.proof': (p) => `Kostenlos · 10 Sekunden · ${p.count}+ Spieler bereits registriert`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> ist reserviert. Wir melden uns, wenn Final Table startet.</>
-  ),
+  'hero.successText': 'Du bist auf der Liste! Wir melden uns, wenn Final Table startet.',
   'hero.resetBtn': 'Weiteren reservieren',
 
   'compare.eyebrow': 'WAS UNS UNTERSCHEIDET',
@@ -885,16 +861,12 @@ const pt = {
     </>
   ),
   'hero.sub': 'Final Table é o tracker de poker ao vivo feito para a mesa — rápido o bastante para usar com uma mão entre as rodadas, preciso o bastante para analisar depois.',
-  'hero.emailPlaceholder': 'voce@example.com',
-  'hero.usernamePlaceholder': 'seunick',
-  'hero.errorTaken': 'Esse nick já está em uso. Tente outro.',
+  'hero.emailPlaceholder': 'Digite seu email',
   'hero.errorGeneric': 'Algo deu errado. Tente novamente.',
   'hero.btnLoading': 'Reservando…',
-  'hero.btnSubmit': 'Reservar meu nick →',
+  'hero.btnSubmit': 'Reservar meu lugar',
   'hero.proof': (p) => `Grátis · 10 segundos · ${p.count}+ jogadores já registrados`,
-  'hero.successText': (p) => (
-    <><span className="ru-username-preview">@{p.username}</span> está reservado. Entraremos em contato quando o Final Table for lançado.</>
-  ),
+  'hero.successText': 'Você está na lista! Entraremos em contato quando o Final Table for lançado.',
   'hero.resetBtn': 'Reservar outro',
 
   'compare.eyebrow': 'O QUE NOS DIFERENCIA',

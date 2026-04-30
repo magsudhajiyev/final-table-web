@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
-import { submitNicknameClaim, submitToWaitlist } from './lib/firebase'
+import { submitToWaitlist } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import './TestPage.css'
+import 'flag-icons/css/flag-icons.min.css'
 
-const FLAGS = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', pl: '🇵🇱', pt: '🇧🇷', ru: '🇷🇺' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru' }
+function Flag({ locale }) {
+  return <span className={`fi fi-${FLAG_ISO[locale]} tp-flag`} />
+}
 
 /* ── Deterministic daily player count ── */
 function getPlayerCount() {
@@ -26,6 +30,26 @@ const IMG_TAB_ICON_1    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="
 const IMG_TAB_ICON_2    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>')}`
 const IMG_TAB_ICON_3    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>')}`
 const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>')}`
+
+/* ────────────────────────────────────────────────────── */
+/*  HOW-IT-WORKS heading helper                           */
+/* ────────────────────────────────────────────────────── */
+function HowTitle({ text }) {
+  const nl = text.indexOf('\n')
+  if (nl === -1) return <p className="tp-how-heading">{text}</p>
+  const line1 = text.slice(0, nl)
+  const line2 = text.slice(nl + 1)
+  const dot1 = line1.endsWith('.')
+  const dot2 = line2.endsWith('.')
+  const core1 = dot1 ? line1.slice(0, -1) : line1
+  const core2 = dot2 ? line2.slice(0, -1) : line2
+  return (
+    <div className="tp-how-heading">
+      <span>{core1}{dot1 && '.'}</span>{' '}
+      <em className="tp-how-italic">{core2}</em>{dot2 && '.'}
+    </div>
+  )
+}
 
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
@@ -76,7 +100,7 @@ function TPNavbar() {
   }, [])
 
   const isLight = theme === 'light'
-  const logo    = isLight ? '/assets/logo_light.svg' : '/assets/Logo_dark.svg'
+  const logo    = '/nwa_logo.svg'
   const iconSrc = '/assets/logo_cion.svg'
 
   const smoothScroll = (e) => {
@@ -93,9 +117,9 @@ function TPNavbar() {
     <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
-          <img src={logo} alt="Final Table" className={`tp-nav-logo-img${scrolled ? ' tp-nav-logo-hidden' : ''}`} />
-          <img src={iconSrc} alt="Final Table" className={`tp-nav-logo-icon-img${scrolled ? '' : ' tp-nav-logo-hidden'}`} />
+          <img src={logo} alt="Final Table" className="tp-nav-logo-img" />
         </a>
+        <div className="tp-nav-sep" />
         <div className="tp-nav-links">
           <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
           <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
@@ -104,7 +128,7 @@ function TPNavbar() {
         </div>
         <div className="tp-lang-picker" ref={langRef}>
           <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
-            <span className="tp-lang-flag">{FLAGS[locale]}</span>
+            <Flag locale={locale} />
             <span className="tp-lang-code">{locale.toUpperCase()}</span>
             <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
               <polyline points="6 9 12 15 18 9" />
@@ -114,13 +138,16 @@ function TPNavbar() {
             <div className="tp-lang-dropdown">
               {SUPPORTED.map(l => (
                 <button key={l} className={`tp-lang-option${l === locale ? ' tp-lang-option-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
-                  <span className="tp-lang-flag">{FLAGS[l]}</span>
+                  <Flag locale={l} />
                   <span>{t(`lang.${l}`)}</span>
                 </button>
               ))}
             </div>
           )}
         </div>
+        <a href="#reserve-form" className="tp-nav-waitlist-btn" onClick={smoothScroll}>
+          {t('nav.cta')}
+        </a>
         <button
           className="tp-nav-hamburger"
           aria-label="Toggle menu"
@@ -162,8 +189,8 @@ function TPNavbar() {
 
 function TPHero() {
   const { t } = useT()
-  const [form, setForm] = useState({ email: '', username: '' })
-  const [status, setStatus] = useState('idle') // idle | loading | done | taken | error
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | done | error
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
 
@@ -185,27 +212,12 @@ function TPHero() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleChange = e => {
-    const { name, value } = e.target
-    if (status === 'taken') setStatus('idle')
-    if (name === 'username') {
-      setForm(f => ({ ...f, username: value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20) }))
-    } else {
-      setForm(f => ({ ...f, [name]: value }))
-    }
-  }
-
   const handleSubmit = async e => {
     e.preventDefault()
     if (status === 'loading') return
     setStatus('loading')
     try {
-      const result = await submitNicknameClaim(form.username, form.email)
-      if (result.taken) {
-        setStatus('taken')
-        return
-      }
-      await submitToWaitlist(form.email).catch(() => {})
+      await submitToWaitlist(email)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -215,64 +227,80 @@ function TPHero() {
 
   return (
     <section className="tp-hero" ref={sectionRef} data-nav-theme="light">
+      <div className="tp-hero-inner">
       <div className="tp-hero-content" ref={contentRef}>
+
+        {/* Badge */}
+        <div className="tp-hero-badge">
+          <img src="/Apple_logo_black.svg" alt="" className="tp-hero-badge-icon" />
+          Public launch on iOS soon
+        </div>
+
         <h1 className="tp-hero-h1">{t('hero.h1')}</h1>
         <p className="tp-hero-sub">{t('hero.sub')}</p>
 
         <div id="reserve-form">
           {status === 'done' ? (
-            <div className="tp-hero-waitlist tp-hero-waitlist-success">
+            <div className="tp-hero-waitlist-success">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6L9 17L4 12" />
               </svg>
-              <span className="tp-hero-success-text">
-                {t('hero.successText', { username: form.username || t('hero.usernamePlaceholder') })}
-              </span>
-              <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setForm({ email: '', username: '' }) }}>
+              <span className="tp-hero-success-text">{t('hero.successText')}</span>
+              <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
                 {t('hero.resetBtn')}
               </button>
             </div>
           ) : (
-            <form className="tp-hero-reserve-form" onSubmit={handleSubmit}>
-              <div className="tp-hero-fields">
-                <input
-                  type="email"
-                  name="email"
-                  className="tp-hero-email"
-                  placeholder={t('hero.emailPlaceholder')}
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                />
-                <div className="tp-hero-username-wrap">
-                  <span className="tp-hero-at">@</span>
-                  <input
-                    type="text"
-                    name="username"
-                    className="tp-hero-email tp-hero-username"
-                    placeholder={t('hero.usernamePlaceholder')}
-                    value={form.username}
-                    onChange={handleChange}
-                    required
-                  />
-                  <span className="tp-hero-charcount">{form.username.length}/20</span>
-                </div>
-              </div>
-              {status === 'taken' && <p className="tp-hero-form-error">{t('hero.errorTaken')}</p>}
-              {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
+            <form className="tp-hero-form" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                name="email"
+                className="tp-hero-email-input"
+                placeholder={t('hero.emailPlaceholder')}
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
               <button
                 type="submit"
-                className="tp-hero-waitlist-btn"
+                className="tp-hero-submit-btn"
                 disabled={status === 'loading'}
               >
                 {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
+                {status !== 'loading' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                )}
               </button>
-              <p className="tp-hero-proof">{t('hero.proof', { count: getPlayerCount() })}</p>
+              {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
             </form>
           )}
         </div>
 
-        <div className="tp-hero-demo-slot" />
+        {/* Social proof */}
+        <div className="tp-hero-proof-row">
+          <div className="tp-hero-avatars">
+            <img src="/avatar_1.png" alt="" className="tp-hero-avatar" />
+            <img src="/avatar_2.png" alt="" className="tp-hero-avatar" />
+            <img src="/avatar_3.png" alt="" className="tp-hero-avatar" />
+            <img src="/avatar_4.png" alt="" className="tp-hero-avatar" />
+            <img src="/avatar_5.png" alt="" className="tp-hero-avatar" />
+          </div>
+          <p className="tp-hero-proof-text">
+            <strong>{getPlayerCount()}+ players</strong>{' '}
+            <span>already signed up</span>
+          </p>
+        </div>
+
+      </div>
+      <div className="tp-hero-phone" aria-hidden="true">
+        <img
+          src="/hero_image.png"
+          alt=""
+          className="tp-hero-phone-img"
+        />
+      </div>
       </div>
     </section>
   )
@@ -287,30 +315,43 @@ function TPComparison() {
     <section className="tp-compare-section" id="compare" data-nav-theme="light">
       <div className="tp-compare-inner">
         <p className="tp-compare-eyebrow">{t('compare.eyebrow')}</p>
-        <h2 className="tp-compare-title">{t('compare.title')}</h2>
-        <p className="tp-compare-subtitle">{t('compare.subtitle')}</p>
+        <div className="tp-compare-header">
+          <h2 className="tp-compare-title">{t('compare.title')}</h2>
+          <p className="tp-compare-subtitle">{t('compare.subtitle')}</p>
+        </div>
 
         <div className="tp-compare-grid">
           <div className="tp-compare-card">
-            <div className="tp-compare-icon"><Zap size={24} /></div>
-            <h3 className="tp-compare-card-title">{t('compare.card1.title')}</h3>
-            <p className="tp-compare-card-desc">{t('compare.card1.desc')}</p>
+            <div className="tp-compare-icon"><Zap size={20} /></div>
+            <div className="tp-compare-card-text">
+              <h3 className="tp-compare-card-title">{t('compare.card1.title')}</h3>
+              <p className="tp-compare-card-desc">{t('compare.card1.desc')}</p>
+            </div>
           </div>
           <div className="tp-compare-card">
-            <div className="tp-compare-icon"><Target size={24} /></div>
-            <h3 className="tp-compare-card-title">{t('compare.card2.title')}</h3>
-            <p className="tp-compare-card-desc">{t('compare.card2.desc')}</p>
+            <div className="tp-compare-icon"><Target size={20} /></div>
+            <div className="tp-compare-card-text">
+              <h3 className="tp-compare-card-title">{t('compare.card2.title')}</h3>
+              <p className="tp-compare-card-desc">{t('compare.card2.desc')}</p>
+            </div>
           </div>
           <div className="tp-compare-card">
-            <div className="tp-compare-icon"><Layers size={24} /></div>
-            <h3 className="tp-compare-card-title">{t('compare.card3.title')}</h3>
-            <p className="tp-compare-card-desc">{t('compare.card3.desc')}</p>
+            <div className="tp-compare-icon"><Layers size={20} /></div>
+            <div className="tp-compare-card-text">
+              <h3 className="tp-compare-card-title">{t('compare.card3.title')}</h3>
+              <p className="tp-compare-card-desc">{t('compare.card3.desc')}</p>
+            </div>
           </div>
           <div className="tp-compare-card">
-            <div className="tp-compare-icon"><Mic size={24} /></div>
-            <h3 className="tp-compare-card-title">{t('compare.card4.title')}</h3>
-            <p className="tp-compare-card-desc">{t('compare.card4.desc')}</p>
-            <span className="tp-compare-coming-soon">{t('compare.comingSoon')}</span>
+            <div className="tp-compare-icon"><Mic size={20} /></div>
+            <div className="tp-compare-card-text">
+              <h3 className="tp-compare-card-title">{t('compare.card4.title')}</h3>
+              <p className="tp-compare-card-desc">{t('compare.card4.desc')}</p>
+            </div>
+            <div className="tp-compare-coming-soon-wrap">
+              <span className="tp-compare-coming-soon">Coming Soon</span>
+              <span className="tp-compare-venue">Venue Partnership</span>
+            </div>
           </div>
         </div>
       </div>
@@ -418,6 +459,57 @@ function TPBgSection() {
 
 
 /* ────────────────────────────────────────────────────── */
+/*  HOW IT WORKS  (3-card Figma layout)                   */
+/* ────────────────────────────────────────────────────── */
+function TPHowItWorks() {
+  const { t } = useT()
+  return (
+    <section className="tp-how-section" id="how-it-works" data-nav-theme="light">
+      <div className="tp-how-inner">
+        <div className="tp-how-grid">
+
+          {/* Row 1 – Before & At the table */}
+          <div className="tp-how-card tp-how-card-before">
+            <div className="tp-how-visual tp-how-visual-before">
+              <img src="/nwa_before.png" alt="" className="tp-how-img" />
+            </div>
+            <div className="tp-how-body">
+              <p className="tp-how-eyebrow">{t('tabs.0.label')}</p>
+              <HowTitle text={t('tabs.0.title')} />
+              <p className="tp-how-desc">{t('tabs.0.body')}</p>
+            </div>
+          </div>
+
+          <div className="tp-how-card tp-how-card-table">
+            <div className="tp-how-visual tp-how-visual-table">
+              <img src="/nwa_table.png" alt="" className="tp-how-img" />
+            </div>
+            <div className="tp-how-body">
+              <p className="tp-how-eyebrow">{t('tabs.1.label')}</p>
+              <HowTitle text={t('tabs.1.title')} />
+              <p className="tp-how-desc">{t('tabs.1.body')}</p>
+            </div>
+          </div>
+
+          {/* Row 2 – After the session */}
+          <div className="tp-how-card tp-how-card-after">
+            <div className="tp-how-body">
+              <p className="tp-how-eyebrow">{t('tabs.2.label')}</p>
+              <HowTitle text={t('tabs.2.title')} />
+              <p className="tp-how-desc">{t('tabs.2.body')}</p>
+            </div>
+            <div className="tp-how-visual tp-how-visual-after">
+              <img src="/nwa_after.png" alt="" className="tp-how-img" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  FOOTER                                                */
 /* ────────────────────────────────────────────────────── */
 function TPFooter() {
@@ -444,7 +536,7 @@ function TPFooter() {
           {/* Brand col */}
           <div className="mf-brand">
             <a href="#" className="mf-logo">
-              <img src="/assets/Logo_dark.svg" alt="Final Table" className="mf-logo-img" />
+              <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img" />
             </a>
             <p className="mf-tagline">{t('footer.tagline')}</p>
             <p className="mf-support">{t('footer.support')}</p>
@@ -676,213 +768,35 @@ function TPProblems() {
 
 function TPFeaturesShowcase() {
   const { t } = useT()
-  const gridRef = useRef(null)
 
-  useEffect(() => {
-    const grid = gridRef.current
-    if (!grid) return
-    const cards = Array.from(grid.querySelectorAll('.fs-card'))
-    cards.forEach((card, i) => card.style.setProperty('--i', i))
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fs-card--visible')
-          io.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.12 })
-    cards.forEach(card => io.observe(card))
-    return () => io.disconnect()
-  }, [])
+  const cards = [
+    { img: '/nwa_opponents.gif', title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
+    { img: '/nwa_chart.gif',     title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
+    { img: '/nwa_session.gif',   title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
+  ]
 
   return (
-    <section className="fs-section" id="features" data-nav-theme="light">
-      <div className="fs-container">
-
-        <div className="fs-head">
-          <h2 className="fs-title">{t('features.title')}</h2>
-          <p className="fs-subtitle">{t('features.subtitle')}</p>
+    <section className="fv-section" id="features" data-nav-theme="dark">
+      <div className="fv-inner">
+        <div className="fv-header">
+          <h2 className="fv-title">
+            For the hands you'll{' '}
+            <em>want to remember</em>.
+          </h2>
+          <p className="fv-subtitle">{t('features.subtitle')}</p>
         </div>
-
-        <div className="fs-grid" ref={gridRef}>
-
-          {/* 1. Opponent Profiles — wide */}
-          <div className="fs-card fs-card-2">
-            <div className="fs-visual fs-visual-dark">
-              <div className="fs-op-card">
-                <div className="fs-op-header">
-                  <div className="fs-op-avatar">MR</div>
-                  <div className="fs-op-meta">
-                    <p className="fs-op-name">Mike Reynolds</p>
-                    <span className="fs-op-badge">LAG</span>
-                  </div>
-                  <span className="fs-op-hands">312 hands</span>
-                </div>
-                <div className="fs-op-bars">
-                  {[
-                    { label: 'VPIP', pct: 51, color: '#ef4444' },
-                    { label: 'PFR',  pct: 38, color: '#f97316' },
-                    { label: '3-bet', pct: 15, color: '#60a5fa' },
-                    { label: 'Agg',  pct: 42, color: '#a78bfa' },
-                  ].map((s, i) => (
-                    <div key={i} className="fs-bar-row">
-                      <span className="fs-bar-label">{s.label}</span>
-                      <div className="fs-bar-track">
-                        <div className="fs-bar-fill" style={{ width: `${s.pct}%`, background: s.color }} />
-                      </div>
-                      <span className="fs-bar-val">{s.pct}%</span>
-                    </div>
-                  ))}
-                </div>
+        <div className="fv-row">
+          {cards.map((card, ci) => (
+            <div key={ci} className={`fv-card${ci === 0 ? ' fv-card-featured' : ''}`}>
+              <div className="fv-card-img-wrap">
+                <img src={card.img} alt="" className="fv-card-img" />
+              </div>
+              <div className="fv-card-body">
+                <h3 className="fv-card-title">{card.title}</h3>
+                <p className="fv-card-desc">{card.desc}</p>
               </div>
             </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.opponentProfiles.title')}</h3>
-              <p className="fs-card-desc">{t('features.opponentProfiles.desc')}</p>
-            </div>
-          </div>
-
-          {/* 2. Bankroll Tracking — narrow */}
-          <div className="fs-card fs-card-1">
-            <div className="fs-visual fs-visual-dark">
-              <svg className="fs-svg-chart" viewBox="0 0 140 70" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="bkGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.15"/>
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
-                  </linearGradient>
-                </defs>
-                <polygon points="0,70 0,58 20,52 40,45 55,50 75,32 100,24 120,14 140,4 140,70" fill="url(#bkGrad)"/>
-                <polyline className="fs-chart-line" points="0,58 20,52 40,45 55,50 75,32 100,24 120,14 140,4"/>
-              </svg>
-              <div className="fs-goal-block">
-                <div className="fs-goal-row">
-                  <span className="fs-goal-label">Goal</span>
-                  <span className="fs-goal-amount">$5,000</span>
-                </div>
-                <div className="fs-goal-track">
-                  <div className="fs-goal-fill" style={{ '--goal': '68%' }} />
-                </div>
-                <p className="fs-goal-sub">$3,420 · 68% reached</p>
-              </div>
-            </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.bankroll.title')}</h3>
-              <p className="fs-card-desc">{t('features.bankroll.desc')}</p>
-            </div>
-          </div>
-
-          {/* 3. Quick Session Logger — narrow */}
-          <div className="fs-card fs-card-1">
-            <div className="fs-visual fs-visual-dark">
-              <div className="fs-logger">
-                <div className="fs-logger-row">
-                  <span className="fs-lr-label">Buy-in</span>
-                  <span className="fs-lr-val">$200</span>
-                </div>
-                <div className="fs-logger-row">
-                  <span className="fs-lr-label">Cash-out</span>
-                  <span className="fs-lr-val">$485</span>
-                </div>
-                <div className="fs-logger-row">
-                  <span className="fs-lr-label">Duration</span>
-                  <span className="fs-lr-val">3h 40m</span>
-                </div>
-                <div className="fs-logger-result">
-                  <span>Net profit</span>
-                  <span className="fs-lr-profit">+$285</span>
-                </div>
-              </div>
-            </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.sessionLogger.title')}</h3>
-              <p className="fs-card-desc">{t('features.sessionLogger.desc')}</p>
-            </div>
-          </div>
-
-          {/* 4. AI Hand Analysis — wide */}
-          <div className="fs-card fs-card-2">
-            <div className="fs-visual fs-visual-dark">
-              <div className="fs-ai-wrap">
-                <div className="fs-ai-hand">
-                  {[
-                    { pos: 'UTG', act: 'Raise 3x  ·  $6', cards: 'A♠ K♥' },
-                    { pos: 'BTN', act: '3-bet  ·  $18',   cards: '' },
-                    { pos: 'UTG', act: 'Call',            cards: '' },
-                  ].map((h, i) => (
-                    <div key={i} className="fs-ai-row">
-                      <span className="fs-ai-pos">{h.pos}</span>
-                      <span className="fs-ai-act">{h.act}</span>
-                      {h.cards && <span className="fs-ai-cards">{h.cards}</span>}
-                    </div>
-                  ))}
-                </div>
-                <div className="fs-ai-bubble">
-                  <span className="fs-ai-chip">AI</span>
-                  <p className="fs-ai-msg">Consider a 4-bet here. AK plays better as a 4-bet than a flat call vs this player's 3-bet frequency.</p>
-                </div>
-              </div>
-            </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.handReview.title')}</h3>
-              <p className="fs-card-desc">{t('features.handReview.desc')}</p>
-            </div>
-          </div>
-
-          {/* 5. Multi-Table Tournaments — wide */}
-          <div className="fs-card fs-card-2">
-            <div className="fs-visual fs-visual-dark">
-              <div className="fs-mtt-list">
-                {[
-                  { name: 'Table 1',     players: 9, total: 9, tag: 'Running',  tagClass: 'fs-tag-running' },
-                  { name: 'Table 2',     players: 8, total: 9, tag: 'Running',  tagClass: 'fs-tag-running' },
-                  { name: 'Table 3',     players: 6, total: 9, tag: 'Breaking', tagClass: 'fs-tag-breaking' },
-                  { name: 'Final Table', players: 4, total: 9, tag: 'Live',     tagClass: 'fs-tag-live' },
-                ].map((row, i) => (
-                  <div key={i} className="fs-mtt-row">
-                    <span className="fs-mtt-name">{row.name}</span>
-                    <div className="fs-mtt-pips">
-                      {Array.from({ length: row.total }).map((_, j) => (
-                        <div key={j} className={`fs-pip ${j < row.players ? 'fs-pip-on' : 'fs-pip-off'}`} />
-                      ))}
-                    </div>
-                    <span className={`fs-mtt-tag ${row.tagClass}`}>{row.tag}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.mtt.title')}</h3>
-              <p className="fs-card-desc">{t('features.mtt.desc')}</p>
-            </div>
-          </div>
-
-          {/* 6. Dealer Mode — narrow */}
-          <div className="fs-card fs-card-1">
-            <div className="fs-visual fs-visual-dark">
-              <div className="fs-dealer-visual">
-                <div className="fs-dealer-rings">
-                  <div className="fs-dealer-ring fs-dr-1" />
-                  <div className="fs-dealer-ring fs-dr-2" />
-                  <div className="fs-dealer-ring fs-dr-3" />
-                  <div className="fs-dealer-mic">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <rect x="9" y="2" width="6" height="12" rx="3"/>
-                      <path d="M5 10a7 7 0 0 0 14 0"/>
-                      <line x1="12" y1="17" x2="12" y2="21"/>
-                      <line x1="9" y1="21" x2="15" y2="21"/>
-                    </svg>
-                  </div>
-                </div>
-                <p className="fs-dealer-cmd">"Next hand. Blinds: 200/400"</p>
-              </div>
-            </div>
-            <div className="fs-card-body">
-              <h3 className="fs-card-title">{t('features.dealerMode.title')} <span className="fs-coming-soon">{t('features.dealerMode.comingSoon')}</span></h3>
-              <p className="fs-card-desc">{t('features.dealerMode.desc')}</p>
-            </div>
-          </div>
-
+          ))}
         </div>
       </div>
     </section>
@@ -932,7 +846,7 @@ function TPFinalCTA() {
   }
 
   return (
-    <section className="fc-section" data-nav-theme="dark">
+    <section className="fc-section" data-nav-theme="light">
       <div className="fc-inner">
         {/* Left — copy + avatars + FAQ */}
         <div className="fc-left">
@@ -1051,8 +965,7 @@ export default function TestPage() {
       <main>
         <TPHero />
         <TPComparison />
-        <TPBgSection />
-        <TPProblems />
+        <TPHowItWorks />
         <TPFeaturesShowcase />
         <TPFinalCTA />
       </main>
