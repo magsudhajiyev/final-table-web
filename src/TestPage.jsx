@@ -134,11 +134,21 @@ function TPNavbar() {
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang">
-          {SUPPORTED.map(l => (
-            <button key={l} className={`tp-mobile-lang-btn${l === locale ? ' tp-mobile-lang-active' : ''}`} onClick={() => { setLocale(l); setMenuOpen(false) }}>
-              {FLAGS[l]} {t(`lang.${l}`)}
-            </button>
-          ))}
+          <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
+            <span>{FLAGS[locale]} {t(`lang.${locale}`)}</span>
+            <svg className={`tp-mobile-lang-chevron${langOpen ? ' tp-mobile-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {langOpen && (
+            <div className="tp-mobile-lang-grid">
+              {SUPPORTED.map(l => (
+                <button key={l} className={`tp-mobile-lang-btn${l === locale ? ' tp-mobile-lang-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
+                  {FLAGS[l]} {t(`lang.${l}`)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </header>

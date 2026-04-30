@@ -230,32 +230,52 @@
 .tp-nav-dark .tp-lang-option:hover { background: rgba(255,255,255,0.08); }
 .tp-nav-dark .tp-lang-option-active { background: rgba(255,255,255,0.06); }
 
-/* Mobile lang row */
+/* Mobile lang picker */
 .tp-nav-mobile-lang {
     display: none;
-    gap: 8px;
-    padding: 12px 0;
+    flex-direction: column;
+    padding: 12px 0 0;
 }
-.tp-mobile-lang-btn {
-    flex: 1;
+.tp-mobile-lang-current {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 8px;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 0;
+    border: none;
     background: none;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 15px;
+    font-family: var(--font-body);
+    color: inherit;
+}
+.tp-mobile-lang-chevron { transition: transform 0.2s; flex-shrink: 0; }
+.tp-mobile-lang-chevron-open { transform: rotate(180deg); }
+.tp-mobile-lang-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 8px 0;
+}
+.tp-mobile-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
     font-family: var(--font-body);
     color: inherit;
 }
 .tp-mobile-lang-btn:hover { background: rgba(0,0,0,0.04); }
 .tp-mobile-lang-active { font-weight: 600; background: rgba(0,0,0,0.06); }
+.tp-nav-dark .tp-mobile-lang-current { color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn { border-color: rgba(255,255,255,0.12); color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
-.tp-nav-dark .tp-mobile-lang-active { background: rgba(255,255,255,0.08); }
+.tp-nav-dark .tp-mobile-lang-active { background: rgba(255,255,255,0.10); }
 
 /* ── DARK theme (default) ── */
 .tp-nav-dark .tp-nav {
@@ -2213,7 +2233,7 @@
     .tp-nav-logo-icon-img { display: none !important; }
     .tp-nav-links { display: none; }
     .tp-lang-picker { display: none; }
-    .tp-nav-mobile-lang { display: flex; }
+    .tp-nav-mobile-lang { display: flex; flex-direction: column; }
     .tp-nav-cta { display: none; }
     .tp-nav-hamburger { margin-left: auto; }
     .tp-nav-hamburger { display: flex; }
