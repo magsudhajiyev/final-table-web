@@ -262,16 +262,16 @@
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 10px;
     background: none;
     cursor: pointer;
     font-size: 14px;
     font-family: var(--font-body);
-    color: inherit;
+    color: #fff;
 }
-.tp-mobile-lang-btn:hover { background: rgba(0,0,0,0.04); }
-.tp-mobile-lang-active { font-weight: 600; background: rgba(0,0,0,0.06); }
+.tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
+.tp-mobile-lang-active { font-weight: 600; background: rgba(255,255,255,0.10); }
 .tp-nav-dark .tp-mobile-lang-current { color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn { border-color: rgba(255,255,255,0.12); color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
