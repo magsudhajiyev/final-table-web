@@ -37,10 +37,11 @@ function TPNavbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const langRef = useRef(null)
+  const mobileLangRef = useRef(null)
 
   useEffect(() => {
     const handler = (e) => {
-      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false)
+      if (langRef.current && !langRef.current.contains(e.target) && mobileLangRef.current && !mobileLangRef.current.contains(e.target)) setLangOpen(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
@@ -133,7 +134,7 @@ function TPNavbar() {
         <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
-        <div className="tp-nav-mobile-lang">
+        <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
           <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
             <span>{FLAGS[locale]} {t(`lang.${locale}`)}</span>
             <svg className={`tp-mobile-lang-chevron${langOpen ? ' tp-mobile-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
