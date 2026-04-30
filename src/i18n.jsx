@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['en', 'pl', 'ru', 'fr', 'es']
+const SUPPORTED = ['en', 'es', 'fr', 'pl', 'ru']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
