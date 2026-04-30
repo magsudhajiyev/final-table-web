@@ -4,7 +4,7 @@ import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'luc
 import { useT, SUPPORTED } from './i18n'
 import './TestPage.css'
 
-const FLAGS = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', pl: '🇵🇱', ru: '🇷🇺' }
+const FLAGS = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', pl: '🇵🇱', pt: '🇧🇷', ru: '🇷🇺' }
 
 /* ── Deterministic daily player count ── */
 function getPlayerCount() {

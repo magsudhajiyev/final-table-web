@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'ru']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -12,6 +12,7 @@ function detectLocale() {
   if (lang.startsWith('fr')) return 'fr'
   if (lang.startsWith('es')) return 'es'
   if (lang.startsWith('de')) return 'de'
+  if (lang.startsWith('pt')) return 'pt'
   return 'en'
 }
 
@@ -158,10 +159,11 @@ const en = {
   // Language
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -297,10 +299,11 @@ const pl = {
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -436,10 +439,11 @@ const ru = {
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -575,10 +579,11 @@ const fr = {
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -714,10 +719,11 @@ const es = {
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -853,16 +859,157 @@ const de = {
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
-  'lang.pl': 'Polski',
-  'lang.ru': 'Русский',
-  'lang.fr': 'Français',
   'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
+}
+
+/* ─────────────────────────────────────────────── */
+/*  PORTUGUESE                                     */
+/* ─────────────────────────────────────────────── */
+const pt = {
+  'nav.features': 'Funcionalidades',
+  'nav.howItWorks': 'Como funciona',
+  'nav.compare': 'Comparar',
+  'nav.faq': 'FAQ',
+  'nav.cta': 'Reservar meu nick',
+
+  'hero.h1': () => (
+    <>
+      Registre uma mão em{' '}
+      <span className="tp-hero-mark"><span>três gestos</span><span className="tp-hero-mark-bg" /></span>
+      .<br />Não em{' '}
+      <span className="tp-hero-mark tp-hero-mark-red"><span>três minutos</span><span className="tp-hero-mark-bg" /></span>.
+    </>
+  ),
+  'hero.sub': 'Final Table é o tracker de poker ao vivo feito para a mesa — rápido o bastante para usar com uma mão entre as rodadas, preciso o bastante para analisar depois.',
+  'hero.emailPlaceholder': 'voce@example.com',
+  'hero.usernamePlaceholder': 'seunick',
+  'hero.errorTaken': 'Esse nick já está em uso. Tente outro.',
+  'hero.errorGeneric': 'Algo deu errado. Tente novamente.',
+  'hero.btnLoading': 'Reservando…',
+  'hero.btnSubmit': 'Reservar meu nick →',
+  'hero.proof': (p) => `Grátis · 10 segundos · ${p.count}+ jogadores já registrados`,
+  'hero.successText': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> está reservado. Entraremos em contato quando o Final Table for lançado.</>
+  ),
+  'hero.resetBtn': 'Reservar outro',
+
+  'compare.eyebrow': 'O QUE NOS DIFERENCIA',
+  'compare.title': () => <>Feito para o jogo ao vivo.<br />Projetado para o jogador na mesa.</>,
+  'compare.subtitle': 'Trackers de poker ao vivo existem. Nenhum parece pertencer à mesa. Final Table faz parte do jogo.',
+  'compare.card1.title': 'Registro em três gestos',
+  'compare.card1.desc': 'Registre qualquer ação — raise, call, fold — em três toques. Sem digitar, sem menus. Rápido o bastante para não perder o ritmo.',
+  'compare.card2.title': 'Leitura de oponentes em tempo real',
+  'compare.card2.desc': 'Crie perfis estatísticos de cada jogador. Conheça VPIP, agressividade e tendências antes de agir.',
+  'compare.card3.title': 'Dados de sessão e mãos',
+  'compare.card3.desc': 'Acompanhe tudo — de um simples buy-in/cash-out ao registro completo mão a mão. Use o que se adapta ao seu jogo.',
+  'compare.card4.title': 'Modo Dealer',
+  'compare.card4.desc': 'Dealers comandam a mesa por voz. Jogadores acompanham em tempo real nos seus celulares.',
+  'compare.comingSoon': 'EM BREVE · PARCERIAS COM CASAS DE JOGO',
+
+  'tabs.0.label': 'Antes da sessão',
+  'tabs.1.label': 'Na mesa',
+  'tabs.2.label': 'Depois da sessão',
+  'tabs.3.label': 'Com o tempo',
+  'tabs.0.eyebrow': 'ANTES DA SESSÃO',
+  'tabs.0.title': 'Chegue sabendo\ncontra quem você joga.',
+  'tabs.0.body': 'Revise perfis de oponentes e histórico de mãos antes de sentar. Saiba quem é tight, quem é loose e onde está o dinheiro.',
+  'tabs.1.eyebrow': 'NA MESA',
+  'tabs.1.title': 'Três gestos.\nZero perda de ritmo.',
+  'tabs.1.body': 'Registre qualquer ação — raise, call, fold — em três toques. Sem digitar, sem menus. Rápido o bastante para jogar com uma mão.',
+  'tabs.2.eyebrow': 'DEPOIS DA SESSÃO',
+  'tabs.2.title': 'Veja os erros\nque você não sentia.',
+  'tabs.2.body': 'Revise cada mão, encontre padrões no seu jogo e compare decisões com referências GTO. Os dados dizem a verdade.',
+  'tabs.3.eyebrow': 'COM O TEMPO',
+  'tabs.3.title': 'Conheça seu verdadeiro\nwin rate. Finalmente.',
+  'tabs.3.body': 'Acompanhe seu verdadeiro $/h por stakes, cassino e tipo de jogo. Tome decisões baseadas em dados, não em intuição.',
+
+  'problems.0.stat': () => <>Jogadores ao vivo jogam<br /><strong>~25–30 mãos/hora</strong> em média.</>,
+  'problems.0.question': 'Quantas dessas mãos você realmente lembra?',
+  'problems.0.body': 'Final Table rastreia cada mão que você joga para revisar cada ação e encontrar erros que você nem sabia que tinha.',
+  'problems.1.stat': 'Pergunte a qualquer jogador ao vivo seu win rate. A maioria chuta.',
+  'problems.1.question': 'Você realmente sabe seu $/h por stakes, cassino ou tipo de jogo?',
+  'problems.1.body': 'Final Table rastreia cada sessão com precisão — win rate, duração, stakes — para você sempre saber onde está.',
+  'problems.2.stat': 'Posição é a maior vantagem no poker.',
+  'problems.2.question': 'Você conhece suas stats reais do BTN vs BB vs UTG?',
+  'problems.2.body': 'Final Table detalha seu desempenho por posição — veja onde você lucra e onde perde fichas.',
+  'problems.3.stat': () => <>"Ele sempre dá 3-bet light." "Ela nunca folda no river."</>,
+  'problems.3.question': 'São leituras reais ou sensações de uma mão memorável?',
+  'problems.3.body': 'Final Table constrói perfis de oponentes a partir de mãos registradas — stats reais, tendências reais — suas leituras baseadas em dados, não em memória.',
+
+  'features.title': () => <>Para as mãos que você<br />vai querer lembrar.</>,
+  'features.subtitle': 'Todas as ferramentas para registrar, analisar e melhorar — sem sair da mesa.',
+  'features.opponentProfiles.title': 'Perfis de Oponentes',
+  'features.opponentProfiles.desc': 'Crie automaticamente perfis dos jogadores que você enfrenta. Acompanhe stats, classifique o estilo e revise cada mão em comum.',
+  'features.bankroll.title': 'Controle de Bankroll',
+  'features.bankroll.desc': 'Defina uma meta de bankroll e acompanhe o progresso. O gráfico de ganhos com zoom mostra resultados acumulados.',
+  'features.sessionLogger.title': 'Log Rápido de Sessão',
+  'features.sessionLogger.desc': 'Não quer registro completo? Anote apenas buy-in, cash-out e duração da sessão.',
+  'features.handReview.title': 'Revisão de Mãos',
+  'features.handReview.desc': 'Reproduza cada mão registrada. Percorra cada street, compare decisões com referências GTO e encontre erros invisíveis na mesa.',
+  'features.mtt.title': 'Torneios Multi-Mesa',
+  'features.mtt.desc': 'Organize torneios ao vivo com múltiplas mesas, rankings em tempo real e distribuição de prêmios. Crie clubes, gerencie membros — tudo pelo app.',
+  'features.dealerMode.title': 'Modo Dealer',
+  'features.dealerMode.comingSoon': 'EM BREVE',
+  'features.dealerMode.desc': 'Dealers comandam a mesa por voz. Jogadores acompanham em tempo real nos seus celulares.',
+
+  'cta.eyebrow': 'Acesso antecipado',
+  'cta.title': () => <>Reserve seu nick<br />antes de qualquer um.</>,
+  'cta.body': 'Garanta seu nick permanente antes do lançamento. Nicks são por ordem de chegada — uma vez tomado, já era.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> jogadores já na lista de espera</>,
+  'cta.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.cardTitle': 'Garanta seu nick',
+  'cta.cardSub': 'Grátis · 10 segundos',
+  'cta.labelEmail': 'Email',
+  'cta.emailPlaceholder': 'voce@example.com',
+  'cta.hintEmail': 'Seu futuro email de login — não pode ser alterado.',
+  'cta.labelUsername': 'Nick',
+  'cta.usernamePlaceholder': 'seunick',
+  'cta.hintUsername': 'Apenas letras, números e underscores. 3–20 caracteres.',
+  'cta.errorTaken': 'Esse nick já está em uso. Tente outro.',
+  'cta.errorGeneric': 'Algo deu errado. Tente novamente.',
+  'cta.btnLoading': 'Reservando…',
+  'cta.btnSubmit': 'Reservar meu lugar →',
+  'cta.successChip': '✓ Reservado',
+  'cta.successTitle': 'Você está na lista.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> está reservado. Entraremos em contato quando o Final Table for lançado.</>
+  ),
+  'cta.resetBtn': 'Reservar outro',
+
+  'faq.0.q': 'Posso mudar meu nick depois?',
+  'faq.0.a': 'Uma vez reservado, seu nick é fixo. Escolha com cuidado — esse será seu nick permanente no Final Table.',
+  'faq.1.q': 'A reserva é grátis?',
+  'faq.1.a': 'Sim. Reservar seu nick é totalmente grátis. Basta informar seu email e o nick desejado.',
+  'faq.2.q': 'E se meu nick estiver tomado?',
+  'faq.2.a': 'Nicks são por ordem de chegada. Se o seu estiver tomado, tente uma variação — underscores e números são permitidos.',
+  'faq.3.q': 'Quando o app será lançado?',
+  'faq.3.a': 'Final Table está em beta fechado. Membros da lista de espera terão acesso antecipado antes do lançamento público.',
+
+  'footer.tagline': 'Registre uma mão em três gestos. Não em três minutos.',
+  'footer.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.resources': 'Recursos',
+  'footer.company': 'Empresa',
+  'footer.privacy': 'Política de Privacidade',
+  'footer.terms': 'Termos de Uso',
+  'footer.copy': (p) => `© Final Table. Todos os direitos reservados ${p.year}`,
+
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
 }
 
 /* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es, de }
+const translations = { en, pl, ru, fr, es, de, pt }
 
 const I18nContext = createContext()
 
