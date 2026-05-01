@@ -100,7 +100,7 @@ function TPNavbar() {
   }, [])
 
   useEffect(() => {
-    const NAV_IDS = ['features', 'how-it-works', 'compare', 'faq']
+    const NAV_IDS = ['compare', 'how-it-works', 'features', 'faq']
     const updateActive = () => {
       const threshold = window.scrollY + 80
       let current = ''
@@ -123,16 +123,20 @@ function TPNavbar() {
     const href = e.currentTarget.getAttribute('href')
     if (href && href.startsWith('#')) {
       e.preventDefault()
-      const el = document.querySelector(href)
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
       setMenuOpen(false)
+      if (window.__lenis) {
+        window.__lenis.scrollTo(href)
+      } else {
+        const el = document.querySelector(href)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }
 
   return (
     <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
-        <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+        <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
           <img src={logo} alt="Final Table" className="tp-nav-logo-img" />
         </a>
         <div className="tp-nav-sep" />
@@ -984,6 +988,18 @@ function TPFinalCTA() {
 }
 
 export default function TestPage() {
+  useEffect(() => {
+    if (typeof Lenis === 'undefined') return
+    const lenis = new Lenis({
+      duration: 1.8,
+      easing: t => 1 - Math.pow(1 - t, 4),
+    })
+    window.__lenis = lenis
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf) }
+    requestAnimationFrame(raf)
+    return () => { lenis.destroy(); delete window.__lenis }
+  }, [])
+
   return (
     <div className="tp-root">
       <TPNavbar />
