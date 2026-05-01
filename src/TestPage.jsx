@@ -128,7 +128,6 @@ function TPNavbar() {
         <div className="tp-lang-picker" ref={langRef}>
           <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
             <Flag locale={locale} />
-            <span className="tp-lang-code">{locale.toUpperCase()}</span>
             <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
               <polyline points="6 9 12 15 18 9" />
             </svg>
