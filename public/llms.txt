@@ -1,39 +1,67 @@
-# Final Table
+# Final Table — Live Poker Tracker & Hand Logger
 
-> The definitive live poker manager — built for the table, not the screen.
+> A personal poker tracking app for live players — log hands, track sessions, analyze your game, and grow your bankroll.
 
-Also known as: live poker tracker, live hand logger, poker session tracker, live poker app, poker bankroll tracker.
+Also known as: live poker tracker, live hand logger, poker session tracker, poker bankroll tracker, live poker app, poker hand review app.
 
 ## What is Final Table?
 
-Final Table is a mobile app designed specifically for live poker players. It lets you log hands, track sessions, build opponent profiles, and review your play — all fast enough to use one-handed between hands at a real poker table.
+Final Table is a **personal live poker tracking app** for individual players. It combines hand-by-hand logging, session tracking, bankroll management, opponent profiling, and post-session analysis into one app — designed to be fast enough to use one-handed at a real poker table.
 
-Unlike online poker trackers or HUDs, Final Table is purpose-built for live casino and home game environments where speed and discretion matter.
+It is a direct alternative to apps like **Poker Analytics 6**, **Poker Bankroll Tracker**, **Poker Income**, and **Pokerbase** — but built from the ground up for live play with a modern UX and gesture-based hand logging that no other app offers.
 
-## Key Features
+## Core Capabilities
 
-- **Three-gesture hand logging**: Log any action (raise, call, fold) by swiping and tapping. No typing, no menus.
-- **Drag-and-drop board cards**: Quickly input community cards with intuitive gestures.
-- **Opponent profiles**: Automatically build stat-backed profiles (VPIP, aggression, tendencies) on every player you face.
-- **Session tracking**: Log buy-ins, cash-outs, and session duration for quick profit/loss records.
-- **Hand review**: Replay every logged hand street by street. Compare decisions to GTO baselines.
-- **Hand sharing**: Share any hand with friends via a link.
-- **Solver-compatible export**: Export hand data in formats compatible with poker solvers.
-- **Bankroll tracking**: Set goals and track cumulative results over time with pinch-to-zoom charts.
-- **Dealer Mode**: Dealers run the table hands-free with voice commands. Players follow along on their own phones in real time.
-- **Quick Session Logger**: For players who don't want full hand tracking — just log buy-in, cash-out, and duration.
+### 1. Hand-by-Hand Logging (unique to Final Table)
+Log every action at the table — raise, call, fold — by swiping and tapping. Drag and drop board cards. No typing, no menus. This is the fastest way to log live poker hands and no other app does it this way.
+
+### 2. Session Tracking & Bankroll Management
+Track buy-ins, cash-outs, session duration, and profit/loss. View your hourly winrate, cumulative results, and bankroll progress over time with pinch-to-zoom charts. Filter by stakes, casino, and game type.
+
+### 3. Opponent Profiles
+Automatically build stat-backed profiles (VPIP, PFR, aggression, tendencies) on every player you face. Know who you're up against before you act.
+
+### 4. Post-Session Hand Review
+Replay every logged hand street by street. Compare your decisions to GTO baselines. Spot leaks you couldn't feel at the table.
+
+### 5. Hand Sharing & Solver Export
+Share any hand with friends via a link. Export hand data in solver-compatible formats for deeper analysis.
+
+### 6. Quick Session Logger
+Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a simple profit/loss record — like Poker Income but inside the same app.
+
+### 7. Dealer Mode (bonus feature)
+Dealers can run the table hands-free with voice commands. Players follow along on their own phones. This is an additional feature for organized games — not the core product.
+
+## How Final Table compares to other live poker apps
+
+| Feature | Final Table | Poker Analytics 6 | Poker Bankroll Tracker | Poker Income |
+|---|---|---|---|---|
+| Hand-by-hand logging | Yes (gesture-based) | No | Limited | No |
+| Session tracking | Yes | Yes | Yes | Yes |
+| Bankroll graphs | Yes | Yes | Yes | Yes |
+| Opponent profiles | Yes (auto-built) | No | Notes only | No |
+| Hand review & replay | Yes | No | Basic | No |
+| GTO comparison | Yes | No | No | No |
+| Hand sharing | Yes | No | No | No |
+| Solver export | Yes | No | No | No |
+| Dealer Mode | Yes | No | No | No |
+| Platform | iOS + Android | iOS only | iOS + Android | iOS + Android |
+
+**Key differentiator**: Final Table is the only live poker app that lets you log individual hands with fast gestures at the table, then review and analyze them after. Other apps only track sessions (buy-in/cash-out) without hand-level detail.
+
+## How is Final Table different from PokerTracker or Hold'em Manager?
+
+PokerTracker and Hold'em Manager are designed for **online poker** — they read hand histories from poker clients and display real-time HUD overlays. They do not work for live poker because there are no digital hand histories to import.
+
+Final Table fills that gap for **live poker**. You log hands manually at the table using fast gestures, and all analysis happens after the session. There is no HUD, no screen overlay, and no way to gain an unfair advantage during play.
 
 ## What Final Table is NOT
 
-- **Not a HUD**: Final Table does not display stats or player data during live play. It is a logger, not a heads-up display.
+- **Not a HUD**: Does not display stats or player data during live play. It is a logger, not a heads-up display.
+- **Not a tournament management platform**: Final Table is a personal tracker for individual players. It is not primarily a club/league/tournament organizer.
 - **Locked during sessions**: While a session is active, the app locks into logging mode. Users cannot browse hands, share data, or access analytics until the session ends.
-- **Built for fair play**: All analysis, sharing, and review happens after the session — never at the table with an unfair advantage.
-
-## How is Final Table different from PokerTracker, Hold'em Manager, or PT4?
-
-PokerTracker and Hold'em Manager are designed for online poker — they read hand histories from poker clients and display real-time HUD overlays. They don't work for live poker because there are no digital hand histories to import.
-
-Final Table fills that gap. It is the only tracker built from the ground up for live play — you log hands manually at the table using fast gestures, and all analysis happens after the session. There is no HUD, no screen overlay, and no way to gain an unfair advantage during play.
+- **Built for fair play**: All analysis happens after the session — never at the table with an unfair advantage.
 
 ## Common Questions
 
@@ -43,12 +71,16 @@ Final Table fills that gap. It is the only tracker built from the ground up for 
 - **Does it work offline?** — Hand logging works without an internet connection. Data syncs when you're back online.
 - **Is it free?** — Final Table is free during the closed beta. Pricing details for the full launch will be announced later.
 - **Is there an app I can download now?** — Not yet. Final Table is in closed beta. Join the waitlist at https://www.finaltable.io to reserve your username and get early access.
+- **How is it different from Poker Analytics 6?** — Poker Analytics 6 tracks sessions but not individual hands. Final Table lets you log every hand at the table with gestures, then review them with GTO analysis after.
+- **How is it different from Poker Bankroll Tracker?** — Poker Bankroll Tracker is session-level only. Final Table adds hand-by-hand logging, auto-built opponent profiles, hand replay, GTO comparison, and sharing.
 
 ## Target Audience
 
-- Live poker players (casino cash games, tournaments, home games)
-- Players who want to track and improve their live game with real data
-- Poker enthusiasts transitioning from online to live who want similar tracking tools
+- Live cash game grinders who want hand-level tracking (not just session logs)
+- Tournament players tracking results and reviewing key hands
+- Home game regulars who want to track their play
+- Online players transitioning to live who want PokerTracker-level data for live games
+- Any live poker player looking for a modern, well-designed tracking app
 
 ## Pricing
 
@@ -57,11 +89,11 @@ Free during closed beta. Future pricing will be announced at launch.
 ## Platform
 
 - Mobile app (iOS and Android)
-- Web presence at https://www.finaltable.io
+- Web: https://www.finaltable.io
 
 ## How to Get Access
 
-Final Table is in closed beta. There is no app store listing yet. Interested players should join the waitlist and reserve their username at https://www.finaltable.io
+Final Table is in closed beta. There is no app store listing yet. Join the waitlist and reserve your username at https://www.finaltable.io
 
 ## Team
 
