@@ -4624,3 +4624,114 @@
     .fv-header { gap: 12px; }
 }
 
+/* ────────────────────────────────────────────────────── */
+/*  Bottom CTA  (bc-*)                                    */
+/* ────────────────────────────────────────────────────── */
+.bc-section {
+    background: #fff;
+    border-top: 1px solid rgba(0,0,0,0.07);
+}
+
+.bc-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 80px 98px;
+    display: flex;
+    align-items: center;
+    gap: clamp(40px, 11vw, 239px);
+}
+
+.bc-left {
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+    flex: 0 0 auto;
+    max-width: 547px;
+}
+
+.bc-logo {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.bc-logo-img {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+
+.bc-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.bc-headline-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.bc-h2 {
+    margin: 0;
+    font-size: clamp(28px, 3.2vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #000;
+    font-weight: 400;
+}
+
+.bc-hl-sans {
+    font-family: var(--font-sans);
+    font-style: normal;
+}
+
+.bc-hl-italic {
+    font-family: var(--font-display);
+    font-style: italic;
+}
+
+.bc-sub {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #848484;
+    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    max-width: 450px;
+}
+
+.bc-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.bc-right {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bc-phone-img {
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+@media (max-width: 1100px) {
+    .bc-inner { padding: 64px 48px; gap: 40px; }
+    .bc-phone-img { max-width: 360px; }
+}
+
+@media (max-width: 768px) {
+    .bc-inner { flex-direction: column; padding: 48px 24px; gap: 40px; align-items: flex-start; }
+    .bc-left { max-width: 100%; }
+    .bc-right { width: 100%; justify-content: center; }
+    .bc-phone-img { max-width: 300px; }
+}
+

@@ -155,6 +155,16 @@ const en = {
   'faq.3.q': 'When will the app launch?',
   'faq.3.a': 'Final Table is in closed beta. Waitlist members get early access before the public launch.',
 
+  // Bottom CTA
+  'cta.title': () => (
+    <>
+      <span className="bc-hl-sans">Ready to</span>
+      <span className="bc-hl-italic"> track your hands?</span>
+      <span className="bc-hl-sans">.</span>
+    </>
+  ),
+  'cta.sub': 'Join the early waitlist and get notified the moment we go live.',
+
   // Footer
   'footer.tagline': () => (
     <>

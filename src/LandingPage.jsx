@@ -585,6 +585,100 @@ function TPHowItWorks() {
 }
 
 /* ────────────────────────────────────────────────────── */
+/*  BOTTOM CTA                                            */
+/* ────────────────────────────────────────────────────── */
+function TPBottomCTA() {
+  const { t } = useT()
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('idle')
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (status === 'loading') return
+    setStatus('loading')
+    try {
+      await submitToWaitlist(email)
+      setStatus('done')
+    } catch {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+    }
+  }
+
+  return (
+    <section className="bc-section" data-nav-theme="light">
+      <div className="bc-inner">
+        <div className="bc-left">
+          <a href="#" className="bc-logo">
+            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img" />
+          </a>
+          <div className="bc-content">
+            <div className="bc-headline-group">
+              <h2 className="bc-h2">{t('cta.title')}</h2>
+              <p className="bc-sub">{t('cta.sub')}</p>
+            </div>
+            <div className="bc-form-group">
+              {status === 'done' ? (
+                <div className="tp-hero-waitlist-success">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17L4 12" />
+                  </svg>
+                  <span className="tp-hero-success-text">{t('hero.successText')}</span>
+                  <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
+                    {t('hero.resetBtn')}
+                  </button>
+                </div>
+              ) : (
+                <form className="tp-hero-form" onSubmit={handleSubmit}>
+                  <input
+                    type="email"
+                    name="email"
+                    className="tp-hero-email-input"
+                    placeholder={t('hero.emailPlaceholder')}
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="tp-hero-submit-btn"
+                    disabled={status === 'loading'}
+                  >
+                    {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
+                    {status !== 'loading' && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </button>
+                  {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
+                </form>
+              )}
+              <div className="tp-hero-proof-row">
+                <div className="tp-hero-avatars">
+                  <img src="/avatar_1.png" alt="" className="tp-hero-avatar" />
+                  <img src="/avatar_2.png" alt="" className="tp-hero-avatar" />
+                  <img src="/avatar_3.png" alt="" className="tp-hero-avatar" />
+                  <img src="/avatar_4.png" alt="" className="tp-hero-avatar" />
+                  <img src="/avatar_5.png" alt="" className="tp-hero-avatar" />
+                </div>
+                <p className="tp-hero-proof-text">
+                  <strong>{getPlayerCount()}+ players</strong>{' '}
+                  <span>already signed up</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bc-right" aria-hidden="true">
+          <img src="/cta_cluster.png" alt="" className="bc-phone-img" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  FOOTER                                                */
 /* ────────────────────────────────────────────────────── */
 const TPFooter = forwardRef(function TPFooter(_, ref) {
@@ -1082,6 +1176,7 @@ export default function LandingPage() {
           <TPFeaturesShowcase />
           <TPComparison />
           <TPFinalCTA />
+          <TPBottomCTA />
         </main>
       </div>
       <TPFooter ref={footerRef} />
