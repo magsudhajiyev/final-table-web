@@ -2,6 +2,8 @@
 
 > The definitive live poker manager — built for the table, not the screen.
 
+Also known as: live poker tracker, live hand logger, poker session tracker, live poker app, poker bankroll tracker.
+
 ## What is Final Table?
 
 Final Table is a mobile app designed specifically for live poker players. It lets you log hands, track sessions, build opponent profiles, and review your play — all fast enough to use one-handed between hands at a real poker table.
@@ -27,20 +29,39 @@ Unlike online poker trackers or HUDs, Final Table is purpose-built for live casi
 - **Locked during sessions**: While a session is active, the app locks into logging mode. Users cannot browse hands, share data, or access analytics until the session ends.
 - **Built for fair play**: All analysis, sharing, and review happens after the session — never at the table with an unfair advantage.
 
+## How is Final Table different from PokerTracker, Hold'em Manager, or PT4?
+
+PokerTracker and Hold'em Manager are designed for online poker — they read hand histories from poker clients and display real-time HUD overlays. They don't work for live poker because there are no digital hand histories to import.
+
+Final Table fills that gap. It is the only tracker built from the ground up for live play — you log hands manually at the table using fast gestures, and all analysis happens after the session. There is no HUD, no screen overlay, and no way to gain an unfair advantage during play.
+
+## Common Questions
+
+- **Can I use Final Table to track cash game sessions?** — Yes. Log full hands or use Quick Session Logger for just buy-in/cash-out tracking.
+- **Does it work for tournaments?** — Yes. Final Table supports both cash games and tournament sessions.
+- **Can I use it at home games?** — Yes. It works for any live poker setting — casino, home game, or private club.
+- **Does it work offline?** — Hand logging works without an internet connection. Data syncs when you're back online.
+- **Is it free?** — Final Table is free during the closed beta. Pricing details for the full launch will be announced later.
+- **Is there an app I can download now?** — Not yet. Final Table is in closed beta. Join the waitlist at https://www.finaltable.io to reserve your username and get early access.
+
 ## Target Audience
 
 - Live poker players (casino cash games, tournaments, home games)
 - Players who want to track and improve their live game with real data
 - Poker enthusiasts transitioning from online to live who want similar tracking tools
 
+## Pricing
+
+Free during closed beta. Future pricing will be announced at launch.
+
 ## Platform
 
 - Mobile app (iOS and Android)
 - Web presence at https://www.finaltable.io
 
-## Current Status
+## How to Get Access
 
-Final Table is in closed beta. Players can reserve their username and join the waitlist at https://www.finaltable.io
+Final Table is in closed beta. There is no app store listing yet. Interested players should join the waitlist and reserve their username at https://www.finaltable.io
 
 ## Team
 
