@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, forwardRef } from 'react'
 import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
-import './TestPage.css'
+import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
 const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru' }
@@ -1045,7 +1045,7 @@ function TPFinalCTA() {
   )
 }
 
-export default function TestPage() {
+export default function LandingPage() {
   const footerRef = useRef(null)
 
   useEffect(() => {

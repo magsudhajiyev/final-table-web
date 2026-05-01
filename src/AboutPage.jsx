@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useT, SUPPORTED } from './i18n'
-import './TestPage.css'
+import './LandingPage.css'
 import './AboutPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
