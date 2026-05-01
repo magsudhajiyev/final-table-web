@@ -146,7 +146,12 @@ const en = {
   'faq.3.a': 'Final Table is in closed beta. Waitlist members get early access before the public launch.',
 
   // Footer
-  'footer.tagline': 'Log a hand in three gestures. Not three minutes.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Log a hand in </span><span className="mf-hl-italic">three gestures.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Not three minutes.</span></p>
+    </>
+  ),
   'footer.support': () => <>Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Resources',
   'footer.company': 'Company',
@@ -285,7 +290,12 @@ const pl = {
   'faq.3.q': 'Kiedy aplikacja ruszy?',
   'faq.3.a': 'Final Table jest w zamkniętej becie. Osoby z listy oczekujących dostaną wczesny dostęp przed publicznym startem.',
 
-  'footer.tagline': 'Zapisz rozdanie w trzech gestach. Nie w trzy minuty.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Zapisz rozdanie w </span><span className="mf-hl-italic">trzech gestach.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Nie w trzy minuty.</span></p>
+    </>
+  ),
   'footer.support': () => <>Pytania? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Zasoby',
   'footer.company': 'Firma',
@@ -423,7 +433,12 @@ const ru = {
   'faq.3.q': 'Когда запустится приложение?',
   'faq.3.a': 'Final Table в закрытой бете. Участники списка ожидания получат ранний доступ до публичного запуска.',
 
-  'footer.tagline': 'Запиши раздачу за три жеста. Не за три минуты.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Запиши раздачу за </span><span className="mf-hl-italic">три жеста.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Не за три минуты.</span></p>
+    </>
+  ),
   'footer.support': () => <>Вопросы? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Ресурсы',
   'footer.company': 'Компания',
@@ -561,7 +576,12 @@ const fr = {
   'faq.3.q': 'Quand l\'app sera-t-elle lancée ?',
   'faq.3.a': 'Final Table est en bêta fermée. Les membres de la liste d\'attente auront un accès anticipé avant le lancement public.',
 
-  'footer.tagline': 'Enregistre une main en trois gestes. Pas en trois minutes.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Enregistre une main en </span><span className="mf-hl-italic">trois gestes.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Pas en trois minutes.</span></p>
+    </>
+  ),
   'footer.support': () => <>Questions ? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Ressources',
   'footer.company': 'Entreprise',
@@ -699,7 +719,12 @@ const es = {
   'faq.3.q': '¿Cuándo se lanzará la app?',
   'faq.3.a': 'Final Table está en beta cerrada. Los miembros de la lista de espera tendrán acceso anticipado antes del lanzamiento público.',
 
-  'footer.tagline': 'Registra una mano en tres gestos. No en tres minutos.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Registra una mano en </span><span className="mf-hl-italic">tres gestos.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">No en tres minutos.</span></p>
+    </>
+  ),
   'footer.support': () => <>¿Preguntas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Recursos',
   'footer.company': 'Empresa',
@@ -837,7 +862,12 @@ const de = {
   'faq.3.q': 'Wann wird die App gelauncht?',
   'faq.3.a': 'Final Table ist in der geschlossenen Beta. Wartelisten-Mitglieder erhalten frühen Zugang vor dem öffentlichen Launch.',
 
-  'footer.tagline': 'Erfasse eine Hand in drei Gesten. Nicht in drei Minuten.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Erfasse eine Hand in </span><span className="mf-hl-italic">drei Gesten.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Nicht in drei Minuten.</span></p>
+    </>
+  ),
   'footer.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Ressourcen',
   'footer.company': 'Unternehmen',
@@ -975,7 +1005,12 @@ const pt = {
   'faq.3.q': 'Quando o app será lançado?',
   'faq.3.a': 'Final Table está em beta fechado. Membros da lista de espera terão acesso antecipado antes do lançamento público.',
 
-  'footer.tagline': 'Registre uma mão em três gestos. Não em três minutos.',
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Registre uma mão em </span><span className="mf-hl-italic">três gestos.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Não em três minutos.</span></p>
+    </>
+  ),
   'footer.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
   'footer.resources': 'Recursos',
   'footer.company': 'Empresa',
