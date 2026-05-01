@@ -15,15 +15,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-export async function submitToWaitlist(email) {
+export async function submitToWaitlist(email, firstName = '', lastName = '') {
   await addDoc(collection(db, 'waitlist'), {
     email,
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
     source: 'final-table',
     timestamp: serverTimestamp()
   })
 }
 
-export async function submitNicknameClaim(nickname, email) {
+export async function submitNicknameClaim(nickname, email, firstName = '', lastName = '') {
   const normalized = nickname.toLowerCase().trim()
 
   // Check if taken by live user
@@ -43,6 +45,8 @@ export async function submitNicknameClaim(nickname, email) {
   await addDoc(collection(db, 'nickname_claims'), {
     nickname: normalized,
     email: email.toLowerCase().trim(),
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
     source: 'final-table-web',
     timestamp: serverTimestamp(),
     status: 'pending'

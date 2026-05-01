@@ -15,7 +15,7 @@ function getPlayerCount() {
   const BASE = 283
   const START = new Date('2026-04-29')
   const now = new Date()
-  const slots = Math.floor((now - START) / 1800000) // 30-minute slots
+  const slots = Math.floor((now - START) / 10800000) // 3-hour slots
   let total = BASE
   for (let s = 0; s < slots; s++) {
     const seed = s * 2654435761 >>> 0
@@ -1019,9 +1019,9 @@ function TPFinalCTA() {
     e.preventDefault()
     setStatus('sending')
     try {
-      const result = await submitNicknameClaim(form.username, form.email)
+      const result = await submitNicknameClaim(form.username, form.email, form.firstName, form.lastName)
       if (result.taken) { setStatus('taken'); return }
-      await submitToWaitlist(form.email).catch(() => {})
+      await submitToWaitlist(form.email, form.firstName, form.lastName).catch(() => {})
       setStatus('done')
     } catch {
       setStatus('error')
@@ -1129,7 +1129,7 @@ function TPFinalCTA() {
                   {status === 'taken' && <p className="ru-error">{t('cta.errorTaken')}</p>}
                   {status === 'error' && <p className="ru-error">{t('cta.errorGeneric')}</p>}
                   <button className="fc-submit" type="submit" disabled={status === 'sending'}>
-                    {status === 'sending' ? t('cta.btnLoading') : 'Continue to checkout'}
+                    {status === 'sending' ? t('cta.btnLoading') : 'Reserve my spot'}
                     {status !== 'sending' && (
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M5 12h14M12 5l7 7-7 7" />
