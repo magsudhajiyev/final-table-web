@@ -467,40 +467,44 @@ function TPHowItWorks() {
   return (
     <section className="tp-how-section" id="how-it-works" data-nav-theme="light">
       <div className="tp-how-inner">
-        <div className="tp-how-grid">
+        <div className="tp-how-row">
 
-          {/* Row 1 – Before & At the table */}
-          <div className="tp-how-card tp-how-card-before">
-            <div className="tp-how-visual tp-how-visual-before">
-              <img src="/nwa_before.png" alt="" className="tp-how-img tp-how-img-before" />
+          {/* Left column: Before + After stacked */}
+          <div className="tp-how-left-col">
+
+            <div className="tp-how-card tp-how-card-before">
+              <div className="tp-how-visual tp-how-visual-before">
+                <img src="/nwa_before.png" alt="" className="tp-how-img tp-how-img-before" />
+              </div>
+              <div className="tp-how-body">
+                <p className="tp-how-eyebrow">{t('tabs.0.label')}</p>
+                <HowTitle text={t('tabs.0.title')} />
+                <p className="tp-how-desc">{t('tabs.0.body')}</p>
+              </div>
             </div>
-            <div className="tp-how-body">
-              <p className="tp-how-eyebrow">{t('tabs.0.label')}</p>
-              <HowTitle text={t('tabs.0.title')} />
-              <p className="tp-how-desc">{t('tabs.0.body')}</p>
+
+            <div className="tp-how-card tp-how-card-after">
+              <div className="tp-how-body">
+                <p className="tp-how-eyebrow">{t('tabs.2.label')}</p>
+                <HowTitle text={t('tabs.2.title')} />
+                <p className="tp-how-desc">{t('tabs.2.body')}</p>
+              </div>
+              <div className="tp-how-visual tp-how-visual-after">
+                <img src="/opponents.png" alt="" className="tp-how-img tp-how-img-after" />
+              </div>
             </div>
+
           </div>
 
+          {/* Right column: At the table (tall spanning card) */}
           <div className="tp-how-card tp-how-card-table">
             <div className="tp-how-visual tp-how-visual-table">
-              <img src="/nwa_table.png" alt="" className="tp-how-img tp-how-img-table" />
+              <img src="/hand_3.png" alt="" className="tp-how-img tp-how-img-table" />
             </div>
             <div className="tp-how-body">
               <p className="tp-how-eyebrow">{t('tabs.1.label')}</p>
               <HowTitle text={t('tabs.1.title')} />
               <p className="tp-how-desc">{t('tabs.1.body')}</p>
-            </div>
-          </div>
-
-          {/* Row 2 – After the session */}
-          <div className="tp-how-card tp-how-card-after">
-            <div className="tp-how-body">
-              <p className="tp-how-eyebrow">{t('tabs.2.label')}</p>
-              <HowTitle text={t('tabs.2.title')} />
-              <p className="tp-how-desc">{t('tabs.2.body')}</p>
-            </div>
-            <div className="tp-how-visual tp-how-visual-after">
-              <img src="/nwa_after.png" alt="" className="tp-how-img tp-how-img-after" />
             </div>
           </div>
 

@@ -3653,11 +3653,17 @@
     margin: 0 auto;
     padding: 0 98px;
 }
-.tp-how-grid {
-    display: grid;
-    grid-template-columns: calc(58% - 10px) calc(42% - 10px);
-    grid-template-rows: auto auto;
+.tp-how-row {
+    display: flex;
     gap: 20px;
+    align-items: flex-start;
+}
+.tp-how-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 717;
+    min-width: 0;
 }
 .tp-how-card {
     border: 1px solid #efefef;
@@ -3665,66 +3671,74 @@
     overflow: hidden;
 }
 .tp-how-card-before {
-    grid-column: 1;
-    grid-row: 1;
+    height: 348px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 16px;
+}
+.tp-how-card-after {
+    height: 348px;
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-top: 16px;
 }
 .tp-how-card-table {
-    grid-column: 2;
-    grid-row: 1;
+    flex: 507;
+    min-width: 0;
+    height: 561px;
     display: flex;
     flex-direction: column;
     padding-top: 16px;
 }
-.tp-how-card-after {
-    grid-column: 1;
-    grid-row: 2;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
 .tp-how-visual {
     flex-shrink: 0;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
 }
 .tp-how-visual-before {
-    width: 401px;
+    width: 358px;
     height: 332px;
 }
 .tp-how-visual-table {
     width: 100%;
     height: 332px;
+    background: #fff;
 }
 .tp-how-visual-after {
-    width: 360px;
+    width: 358px;
     height: 332px;
-    flex-shrink: 0;
 }
 .tp-how-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top center;
     display: block;
 }
-/* per-image overrides for mobile */
 .tp-how-img-before {
     object-fit: contain;
-    object-position: center center;
+    object-position: center;
     background: #f9f9f9;
 }
+/* hand image: centered with slight left offset, overflows container height */
 .tp-how-img-table {
+    position: absolute;
+    left: calc(50% - 18.5px);
+    top: 0;
+    width: 470px;
+    height: 452px;
+    transform: translateX(-50%);
     object-fit: cover;
-    object-position: center center;
 }
+/* opponents image: offset from left, overflows container height */
 .tp-how-img-after {
-    object-fit: contain;
-    object-position: center top;
-    background: #f9f9f9;
+    position: absolute;
+    left: 45.5px;
+    top: 0;
+    width: 269px;
+    height: 457px;
+    object-fit: cover;
 }
 .tp-how-body {
     flex: 1;
@@ -3769,25 +3783,34 @@
 
 @media (max-width: 1100px) {
     .tp-how-inner { padding: 0 48px; }
-    .tp-how-visual-before { width: 280px; }
+    .tp-how-visual-before { width: 260px; }
     .tp-how-visual-after { width: 260px; }
 }
 @media (max-width: 900px) {
-    .tp-how-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
-    .tp-how-card-before,
-    .tp-how-card-table,
-    .tp-how-card-after { grid-column: 1; grid-row: auto; }
-    .tp-how-card-before { flex-direction: column; }
-    .tp-how-card-after {
-        flex-direction: column-reverse;
-        padding-top: 16px;
-    }
+    .tp-how-row { flex-direction: column; }
+    .tp-how-left-col { flex: none; width: 100%; }
+    .tp-how-card-table { flex: none; width: 100%; height: auto; }
+    .tp-how-card-before { flex-direction: column; height: auto; }
+    .tp-how-card-after { flex-direction: column-reverse; height: auto; }
     .tp-how-visual-before,
     .tp-how-visual-after { width: 100%; height: 332px; }
     .tp-how-visual-table { height: 332px; }
+    .tp-how-img-table {
+        position: absolute;
+        left: calc(50% - 18.5px);
+        top: 0;
+        width: 470px;
+        height: 452px;
+        transform: translateX(-50%);
+    }
+    .tp-how-img-after {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        height: 100%;
+        object-fit: contain;
+    }
     .tp-how-section { padding: 60px 0; }
 }
 @media (max-width: 600px) {
