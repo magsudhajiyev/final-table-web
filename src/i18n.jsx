@@ -111,6 +111,8 @@ const en = {
   // Final CTA
   'cta.eyebrow': 'Early access',
   'cta.title': () => <>Reserve your username<br />before anyone else does.</>,
+  'cta.titleLine1': 'Reserve your username',
+  'cta.titleLine2': 'before anyone else does.',
   'cta.body': "Claim your permanent handle ahead of launch. Usernames are first-come, first-served — once it's gone, it's gone.",
   'cta.proof': (p) => <><strong>{p.count}+</strong> players already on the waitlist</>,
   'cta.support': () => <>Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -250,6 +252,8 @@ const pl = {
 
   'cta.eyebrow': 'Wczesny dostęp',
   'cta.title': () => <>Zarezerwuj swój nick<br />zanim ktoś inny to zrobi.</>,
+  'cta.titleLine1': 'Zarezerwuj swój nick',
+  'cta.titleLine2': 'zanim ktoś inny to zrobi.',
   'cta.body': 'Zabezpiecz swój nick przed startem. Nicki są na zasadzie kto pierwszy, ten lepszy — jak zniknie, to zniknie.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> graczy już na liście oczekujących</>,
   'cta.support': () => <>Pytania? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -386,6 +390,8 @@ const ru = {
 
   'cta.eyebrow': 'Ранний доступ',
   'cta.title': () => <>Забронируй свой ник<br />пока кто-то другой не сделал это.</>,
+  'cta.titleLine1': 'Забронируй свой ник',
+  'cta.titleLine2': 'пока кто-то другой не сделал это.',
   'cta.body': 'Закрепи свой постоянный ник до запуска. Ники — кто первый, тот и забрал. Как уйдёт — уйдёт.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> игроков уже в списке ожидания</>,
   'cta.support': () => <>Вопросы? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -522,6 +528,8 @@ const fr = {
 
   'cta.eyebrow': 'Accès anticipé',
   'cta.title': () => <>Réservez votre pseudo<br />avant tout le monde.</>,
+  'cta.titleLine1': 'Réservez votre pseudo',
+  'cta.titleLine2': 'avant tout le monde.',
   'cta.body': 'Sécurisez votre pseudo permanent avant le lancement. Les pseudos sont attribués par ordre d\'arrivée — une fois pris, c\'est pris.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> joueurs déjà sur la liste d'attente</>,
   'cta.support': () => <>Questions ? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -658,6 +666,8 @@ const es = {
 
   'cta.eyebrow': 'Acceso anticipado',
   'cta.title': () => <>Reserva tu nick<br />antes que nadie.</>,
+  'cta.titleLine1': 'Reserva tu nick',
+  'cta.titleLine2': 'antes que nadie.',
   'cta.body': 'Asegura tu nick permanente antes del lanzamiento. Los nicks se asignan por orden de llegada — una vez tomado, desaparece.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> jugadores ya en la lista de espera</>,
   'cta.support': () => <>¿Preguntas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -794,6 +804,8 @@ const de = {
 
   'cta.eyebrow': 'Früher Zugang',
   'cta.title': () => <>Reserviere deinen Nick<br />bevor es jemand anderes tut.</>,
+  'cta.titleLine1': 'Reserviere deinen Nick',
+  'cta.titleLine2': 'bevor es jemand anderes tut.',
   'cta.body': 'Sichere dir deinen permanenten Nick vor dem Launch. Nicks werden nach dem Prinzip „Wer zuerst kommt" vergeben — einmal weg, ist er weg.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> Spieler bereits auf der Warteliste</>,
   'cta.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
@@ -930,6 +942,8 @@ const pt = {
 
   'cta.eyebrow': 'Acesso antecipado',
   'cta.title': () => <>Reserve seu nick<br />antes de qualquer um.</>,
+  'cta.titleLine1': 'Reserve seu nick',
+  'cta.titleLine2': 'antes de qualquer um.',
   'cta.body': 'Garanta seu nick permanente antes do lançamento. Nicks são por ordem de chegada — uma vez tomado, já era.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> jogadores já na lista de espera</>,
   'cta.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,

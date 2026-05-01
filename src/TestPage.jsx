@@ -810,18 +810,31 @@ function TPFeaturesShowcase() {
 
 
 /* ────────────────────────────────────────────────────── */
-/*  FINAL CTA                                            */
+/*  FINAL CTA  (Figma 110:9602)                          */
 /* ────────────────────────────────────────────────────── */
 const getFinalFaqs = (t) => [0, 1, 2, 3].map(i => ({
   q: t(`faq.${i}.q`),
   a: t(`faq.${i}.a`),
 }))
 
+const PlusIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <circle cx="11" cy="11" r="10.5" stroke="#000"/>
+    <path d="M11 7v8M7 11h8" stroke="#000" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+const MinusIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <circle cx="11" cy="11" r="10.5" stroke="#000"/>
+    <path d="M7 11h8" stroke="#000" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
 function TPFinalCTA() {
   const { t } = useT()
   const FINAL_FAQS = getFinalFaqs(t)
-  const [form, setForm] = useState({ email: '', username: '' })
-  const [status, setStatus] = useState('idle') // idle | sending | done | taken | error
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', username: '' })
+  const [status, setStatus] = useState('idle')
   const [openFaq, setOpenFaq] = useState(null)
 
   const handleChange = e => {
@@ -839,10 +852,7 @@ function TPFinalCTA() {
     setStatus('sending')
     try {
       const result = await submitNicknameClaim(form.username, form.email)
-      if (result.taken) {
-        setStatus('taken')
-        return
-      }
+      if (result.taken) { setStatus('taken'); return }
       await submitToWaitlist(form.email).catch(() => {})
       setStatus('done')
     } catch {
@@ -851,112 +861,114 @@ function TPFinalCTA() {
   }
 
   return (
-    <section className="fc-section" data-nav-theme="light">
+    <section className="fc-section" data-nav-theme="light" id="faq">
       <div className="fc-inner">
-        {/* Left — copy + avatars + FAQ */}
-        <div className="fc-left">
-          <p className="ru-eyebrow">{t('cta.eyebrow')}</p>
-          <h2 className="ru-title">{t('cta.title')}</h2>
-          <p className="ru-body">
-            {t('cta.body')}
-          </p>
 
-          <div className="ru-proof">
-            <div className="ru-avatars">
-              {['A','J','K','Q','T'].map((l,i) => (
-                <div key={i} className="ru-avatar" style={{ '--i': i }}>{l}</div>
-              ))}
+        {/* ── Header ── */}
+        <div className="fc-header-group">
+          <div className="fc-header-top">
+            <p className="fc-eyebrow">{t('cta.eyebrow')}</p>
+            <div className="fc-title-row">
+              <h2 className="fc-title">
+                <em>{t('cta.titleLine1')}</em>
+                <br />
+                {t('cta.titleLine2')}
+              </h2>
+              <p className="fc-subtitle">{t('cta.body')}</p>
             </div>
-            <p className="ru-proof-text">{t('cta.proof', { count: getPlayerCount() })}</p>
           </div>
-
-          <div className="ru-faq" id="faq">
-            {FINAL_FAQS.map((f, i) => (
-              <div key={i} className={`ru-faq-item${openFaq === i ? ' ru-faq-open' : ''}`}>
-                <button className="ru-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                  <span>{f.q}</span>
-                  <svg className="ru-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-                <div className="ru-faq-a">{f.a}</div>
-              </div>
-            ))}
+          <div className="fc-proof-row">
+            <div className="fc-avatars">
+              <img src="/avatar_1.png" alt="" className="fc-avatar" />
+              <img src="/avatar_2.png" alt="" className="fc-avatar" />
+              <img src="/avatar_3.png" alt="" className="fc-avatar" />
+              <img src="/avatar_4.png" alt="" className="fc-avatar" />
+              <img src="/avatar_5.png" alt="" className="fc-avatar" />
+            </div>
+            <p className="fc-proof-text">
+              <strong>{getPlayerCount()}+ players</strong>{' '}
+              <span>already signed up</span>
+            </p>
           </div>
-
-          <p className="fc-support">{t('cta.support')}</p>
         </div>
 
-        {/* Right — form card */}
-        <div className="fc-right">
-          <div className="ru-card">
+        {/* ── Bottom: FAQ + Form ── */}
+        <div className="fc-bottom">
+
+          {/* FAQ column */}
+          <div className="fc-faq-col">
+            <div className="fc-faq-list">
+              {FINAL_FAQS.map((f, i) => (
+                <div key={i} className={`fc-faq-item${openFaq === i ? ' fc-faq-open' : ''}`}>
+                  <button className="fc-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                    <span>{f.q}</span>
+                    <span className="fc-faq-icon">
+                      {openFaq === i ? <MinusIcon /> : <PlusIcon />}
+                    </span>
+                  </button>
+                  <div className="fc-faq-a">{f.a}</div>
+                </div>
+              ))}
+            </div>
+            <p className="fc-support">{t('cta.support')}</p>
+          </div>
+
+          {/* Form card */}
+          <div className="fc-card">
             {status === 'done' ? (
-              <div className="ru-success">
+              <div className="fc-success">
                 <div className="ru-success-chip">{t('cta.successChip')}</div>
                 <h3 className="ru-success-title">{t('cta.successTitle')}</h3>
                 <p className="ru-success-body">
                   {t('cta.successBody', { username: form.username || 'yourhandle' })}
                 </p>
-                <button className="ru-success-reset" onClick={() => { setStatus('idle'); setForm({ email: '', username: '' }) }}>
+                <button className="ru-success-reset" onClick={() => { setStatus('idle'); setForm({ firstName: '', lastName: '', email: '', username: '' }) }}>
                   {t('cta.resetBtn')}
                 </button>
               </div>
             ) : (
               <>
-                <div className="ru-card-header">
-                  <p className="ru-card-title">{t('cta.cardTitle')}</p>
-                  <p className="ru-card-sub">{t('cta.cardSub')}</p>
+                <div className="fc-card-header">
+                  <p className="fc-card-title">
+                    3 months free trial to<br /><em>Reserve Username in advance</em>
+                  </p>
                 </div>
-
-                <form className="ru-form" onSubmit={handleSubmit}>
-                  <div className="ru-field">
-                    <label className="ru-label">{t('cta.labelEmail')}</label>
-                    <input
-                      className="ru-input"
-                      type="email"
-                      name="email"
-                      placeholder={t('cta.emailPlaceholder')}
-                      value={form.email}
-                      onChange={handleChange}
-                      required
-                    />
-                    <p className="ru-hint">{t('cta.hintEmail')}</p>
-                  </div>
-
-                  <div className="ru-field">
-                    <label className="ru-label">
-                      {t('cta.labelUsername')}
-                      <span className="ru-char-count">{form.username.length}/20</span>
-                    </label>
-                    <div className="ru-input-prefix-wrap">
-                      <span className="ru-prefix">@</span>
-                      <input
-                        className="ru-input ru-input-with-prefix"
-                        type="text"
-                        name="username"
-                        placeholder={t('cta.usernamePlaceholder')}
-                        value={form.username}
-                        onChange={handleChange}
-                        required
-                      />
+                <form className="fc-form" onSubmit={handleSubmit}>
+                  <div className="fc-fields">
+                    <div className="fc-name-row">
+                      <input className="fc-input" type="text" name="firstName" placeholder="Enter first name" value={form.firstName} onChange={handleChange} />
+                      <input className="fc-input" type="text" name="lastName" placeholder="Enter last name" value={form.lastName} onChange={handleChange} />
                     </div>
-                    <p className="ru-hint">{t('cta.hintUsername')}</p>
+                    <div className="fc-field-group">
+                      <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
+                      <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
+                    </div>
+                    <div className="fc-username-section">
+                      <p className="fc-username-label">What username would you like to reserve?</p>
+                      <div className="fc-field-group">
+                        <div className="fc-input-prefix-wrap">
+                          <span className="fc-prefix">@</span>
+                          <input className="fc-input fc-input-prefix" type="text" name="username" placeholder="Enter username" value={form.username} onChange={handleChange} required />
+                        </div>
+                        <p className="fc-hint">Maximum 20 characters</p>
+                      </div>
+                    </div>
                   </div>
-
-                  {status === 'taken' && (
-                    <p className="ru-error">{t('cta.errorTaken')}</p>
-                  )}
-                  {status === 'error' && (
-                    <p className="ru-error">{t('cta.errorGeneric')}</p>
-                  )}
-
-                  <button className="ru-submit" type="submit" disabled={status === 'sending'}>
-                    {status === 'sending' ? t('cta.btnLoading') : t('cta.btnSubmit')}
+                  {status === 'taken' && <p className="ru-error">{t('cta.errorTaken')}</p>}
+                  {status === 'error' && <p className="ru-error">{t('cta.errorGeneric')}</p>}
+                  <button className="fc-submit" type="submit" disabled={status === 'sending'}>
+                    {status === 'sending' ? t('cta.btnLoading') : 'Continue to checkout'}
+                    {status !== 'sending' && (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    )}
                   </button>
                 </form>
               </>
             )}
           </div>
+
         </div>
       </div>
     </section>
