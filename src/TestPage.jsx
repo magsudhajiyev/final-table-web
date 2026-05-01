@@ -925,13 +925,15 @@ function TPFinalCTA() {
                 </div>
                 <form className="fc-form" onSubmit={handleSubmit}>
                   <div className="fc-fields">
-                    <div className="fc-name-row">
-                      <input className="fc-input" type="text" name="firstName" placeholder="Enter first name" value={form.firstName} onChange={handleChange} />
-                      <input className="fc-input" type="text" name="lastName" placeholder="Enter last name" value={form.lastName} onChange={handleChange} />
-                    </div>
-                    <div className="fc-field-group">
-                      <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
-                      <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
+                    <div className="fc-top-fields">
+                      <div className="fc-name-row">
+                        <input className="fc-input" type="text" name="firstName" placeholder="Enter first name" value={form.firstName} onChange={handleChange} />
+                        <input className="fc-input" type="text" name="lastName" placeholder="Enter last name" value={form.lastName} onChange={handleChange} />
+                      </div>
+                      <div className="fc-field-group">
+                        <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
+                        <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
+                      </div>
                     </div>
                     <div className="fc-username-section">
                       <p className="fc-username-label">What username would you like to reserve?</p>
