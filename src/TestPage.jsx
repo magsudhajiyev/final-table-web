@@ -817,18 +817,6 @@ const getFinalFaqs = (t) => [0, 1, 2, 3].map(i => ({
   a: t(`faq.${i}.a`),
 }))
 
-const PlusIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <circle cx="11" cy="11" r="10.5" stroke="#000"/>
-    <path d="M11 7v8M7 11h8" stroke="#000" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-)
-const MinusIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <circle cx="11" cy="11" r="10.5" stroke="#000"/>
-    <path d="M7 11h8" stroke="#000" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-)
 
 function TPFinalCTA() {
   const { t } = useT()
@@ -902,9 +890,11 @@ function TPFinalCTA() {
                 <div key={i} className={`fc-faq-item${openFaq === i ? ' fc-faq-open' : ''}`}>
                   <button className="fc-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                     <span>{f.q}</span>
-                    <span className="fc-faq-icon">
-                      {openFaq === i ? <MinusIcon /> : <PlusIcon />}
-                    </span>
+                    <img
+                      src="/plus-bold.svg"
+                      alt=""
+                      className={`fc-faq-icon${openFaq === i ? ' fc-faq-icon-open' : ''}`}
+                    />
                   </button>
                   <div className="fc-faq-a">{f.a}</div>
                 </div>

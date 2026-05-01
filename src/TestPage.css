@@ -3963,9 +3963,14 @@
     line-height: 1.5;
 }
 .fc-faq-icon {
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
+    display: block;
+    transition: transform 0.3s ease;
+}
+.fc-faq-icon-open {
+    transform: rotate(45deg);
 }
 .fc-faq-a {
     font-family: var(--font-sans);
