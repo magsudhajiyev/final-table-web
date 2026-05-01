@@ -177,18 +177,20 @@
 .tp-lang-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border: 1px solid rgba(0,0,0,0.12);
-    border-radius: 999px;
-    background: rgba(0,0,0,0.04);
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    background: none;
     cursor: pointer;
-    font-size: 12px;
-    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-sans);
     color: inherit;
+    letter-spacing: -0.019em;
     transition: background 0.15s;
 }
-.tp-lang-btn:hover { background: rgba(0,0,0,0.08); }
+.tp-lang-btn:hover { background: rgba(0,0,0,0.04); }
 .tp-lang-flag { font-size: 14px; line-height: 1; }
 .tp-flag {
     width: 20px !important;
@@ -239,11 +241,11 @@
 
 /* Dark nav lang picker */
 .tp-nav-dark .tp-lang-btn {
-    border-color: rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    background: none;
     color: #fff;
 }
-.tp-nav-dark .tp-lang-btn:hover { background: rgba(255,255,255,0.14); }
+.tp-nav-dark .tp-lang-btn:hover { background: rgba(255,255,255,0.08); }
 .tp-nav-dark .tp-lang-dropdown {
     border-color: rgba(255,255,255,0.12);
     background: rgba(30,30,30,0.92);
