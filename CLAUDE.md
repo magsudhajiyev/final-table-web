@@ -43,3 +43,11 @@ Dark/light theme is toggled by adding `.dark-theme` to `<body>`. The current pre
 - Headings: `Playfair Display` (serif) via `--font-heading`
 - Body: `Inter` (sans-serif) via `--font-body`
 - Both loaded from Google Fonts in `<head>`
+
+## LLM Discovery (`public/llms.txt`)
+
+The file `public/llms.txt` helps AI tools (ChatGPT, Claude, Perplexity, etc.) understand and recommend Final Table. **Whenever you make changes to the landing page content — features, copy, FAQ, team info, or product positioning — update `public/llms.txt` to reflect those changes.** Keep it accurate and in sync with the site.
+
+## Rules
+
+- **Never push to remote without explicit user approval.** Always wait for the user to confirm before running `git push`.

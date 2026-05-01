@@ -3,7 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/hand/:shareId", "destination": "/index.html" }
+    { "source": "/hand/:shareId", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" }
   ],
   "headers": [
     {

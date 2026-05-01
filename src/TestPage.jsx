@@ -100,7 +100,7 @@ function TPNavbar() {
   }, [])
 
   useEffect(() => {
-    const NAV_IDS = ['features', 'how-it-works', 'faq']
+    const NAV_IDS = ['how-it-works', 'features', 'compare', 'faq']
     const updateActive = () => {
       const threshold = window.scrollY + 80
       let current = ''
@@ -141,8 +141,8 @@ function TPNavbar() {
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
-          <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
           <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+          <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
           <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
           <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.faq')}</a>
         </div>
@@ -176,8 +176,8 @@ function TPNavbar() {
         </button>
       </nav>
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
-        <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
         <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+        <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
@@ -480,6 +480,35 @@ function TPBgSection() {
 
 
 /* ────────────────────────────────────────────────────── */
+/*  Letter-by-letter reveal on scroll                     */
+/* ────────────────────────────────────────────────────── */
+function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
+  const ref = useRef(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold: 0.3 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  return (
+    <Tag ref={ref} className={`${className} lr-wrap${visible ? ' lr-visible' : ''}`}>
+      {text.split('').map((ch, i) => (
+        <span key={i} className="lr-char" style={{ transitionDelay: `${i * 40}ms` }}>
+          {ch === ' ' ? '\u00A0' : ch}
+        </span>
+      ))}
+    </Tag>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  HOW IT WORKS  (3-card Figma layout)                   */
 /* ────────────────────────────────────────────────────── */
 function TPHowItWorks() {
@@ -487,6 +516,7 @@ function TPHowItWorks() {
   return (
     <section className="tp-how-section" id="how-it-works" data-nav-theme="light">
       <div className="tp-how-inner">
+        <LetterReveal text={t('nav.howItWorks')} className="tp-how-section-title" tag="h2" />
         <div className="tp-how-row">
 
           {/* Left column: Before + After stacked */}
@@ -529,6 +559,26 @@ function TPHowItWorks() {
           </div>
 
         </div>
+
+        {/* What Final Table isn't */}
+        <div className="tp-nothud">
+          <h3 className="tp-nothud-title">{t('notHud.title')}</h3>
+          <div className="tp-nothud-grid">
+            <div className="tp-nothud-card">
+              <h4 className="tp-nothud-card-title">{t('notHud.item1Title')}</h4>
+              <p className="tp-nothud-card-desc">{t('notHud.item1Desc')}</p>
+            </div>
+            <div className="tp-nothud-card">
+              <h4 className="tp-nothud-card-title">{t('notHud.item2Title')}</h4>
+              <p className="tp-nothud-card-desc">{t('notHud.item2Desc')}</p>
+            </div>
+            <div className="tp-nothud-card">
+              <h4 className="tp-nothud-card-title">{t('notHud.item3Title')}</h4>
+              <p className="tp-nothud-card-desc">{t('notHud.item3Desc')}</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   )
@@ -547,8 +597,8 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
   ]
 
   const resources = [
-    { title: t('nav.features'),     href: '#features' },
     { title: t('nav.howItWorks'),   href: '#how-it-works' },
+    { title: t('nav.features'),     href: '#features' },
     { title: t('nav.compare'),      href: '#compare' },
     { title: t('nav.faq'),          href: '#faq' },
   ]
@@ -1028,9 +1078,9 @@ export default function TestPage() {
       <div className="tp-page-body">
         <main>
           <TPHero />
-          <TPComparison />
           <TPHowItWorks />
           <TPFeaturesShowcase />
+          <TPComparison />
           <TPFinalCTA />
         </main>
       </div>

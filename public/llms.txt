@@ -1,0 +1,53 @@
+# Final Table
+
+> The definitive live poker manager — built for the table, not the screen.
+
+## What is Final Table?
+
+Final Table is a mobile app designed specifically for live poker players. It lets you log hands, track sessions, build opponent profiles, and review your play — all fast enough to use one-handed between hands at a real poker table.
+
+Unlike online poker trackers or HUDs, Final Table is purpose-built for live casino and home game environments where speed and discretion matter.
+
+## Key Features
+
+- **Three-gesture hand logging**: Log any action (raise, call, fold) by swiping and tapping. No typing, no menus.
+- **Drag-and-drop board cards**: Quickly input community cards with intuitive gestures.
+- **Opponent profiles**: Automatically build stat-backed profiles (VPIP, aggression, tendencies) on every player you face.
+- **Session tracking**: Log buy-ins, cash-outs, and session duration for quick profit/loss records.
+- **Hand review**: Replay every logged hand street by street. Compare decisions to GTO baselines.
+- **Hand sharing**: Share any hand with friends via a link.
+- **Solver-compatible export**: Export hand data in formats compatible with poker solvers.
+- **Bankroll tracking**: Set goals and track cumulative results over time with pinch-to-zoom charts.
+- **Dealer Mode**: Dealers run the table hands-free with voice commands. Players follow along on their own phones in real time.
+- **Quick Session Logger**: For players who don't want full hand tracking — just log buy-in, cash-out, and duration.
+
+## What Final Table is NOT
+
+- **Not a HUD**: Final Table does not display stats or player data during live play. It is a logger, not a heads-up display.
+- **Locked during sessions**: While a session is active, the app locks into logging mode. Users cannot browse hands, share data, or access analytics until the session ends.
+- **Built for fair play**: All analysis, sharing, and review happens after the session — never at the table with an unfair advantage.
+
+## Target Audience
+
+- Live poker players (casino cash games, tournaments, home games)
+- Players who want to track and improve their live game with real data
+- Poker enthusiasts transitioning from online to live who want similar tracking tools
+
+## Platform
+
+- Mobile app (iOS and Android)
+- Web presence at https://www.finaltable.io
+
+## Current Status
+
+Final Table is in closed beta. Players can reserve their username and join the waitlist at https://www.finaltable.io
+
+## Team
+
+- **Magsud Hajiyev** — Founder & CTO
+- **Tural Jumshudlu** — Co-Founder & CDO
+
+## Contact
+
+- Website: https://www.finaltable.io
+- Support: support@finaltable.app
