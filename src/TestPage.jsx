@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, forwardRef } from 'react'
 import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
@@ -537,7 +537,7 @@ function TPHowItWorks() {
 /* ────────────────────────────────────────────────────── */
 /*  FOOTER                                                */
 /* ────────────────────────────────────────────────────── */
-function TPFooter() {
+const TPFooter = forwardRef(function TPFooter(_, ref) {
   const { t } = useT()
   const year = new Date().getFullYear()
 
@@ -554,7 +554,7 @@ function TPFooter() {
   ]
 
   return (
-    <footer className="mf-footer">
+    <footer ref={ref} className="mf-footer">
       <div className="mf-inner">
         <a href="#" className="mf-logo">
           <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img" />
@@ -597,7 +597,7 @@ function TPFooter() {
       </div>
     </footer>
   )
-}
+})
 
 /* ────────────────────────────────────────────────────── */
 /*  FIXED TAB BAR                                         */
@@ -996,6 +996,8 @@ function TPFinalCTA() {
 }
 
 export default function TestPage() {
+  const footerRef = useRef(null)
+
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
     const lenis = new Lenis({
@@ -1008,17 +1010,31 @@ export default function TestPage() {
     return () => { lenis.destroy(); delete window.__lenis }
   }, [])
 
+  useEffect(() => {
+    const footer = footerRef.current
+    if (!footer) return
+    const update = () => {
+      document.documentElement.style.setProperty('--footer-height', footer.offsetHeight + 'px')
+    }
+    const ro = new ResizeObserver(update)
+    ro.observe(footer)
+    update()
+    return () => ro.disconnect()
+  }, [])
+
   return (
     <div className="tp-root">
       <TPNavbar />
-      <main>
-        <TPHero />
-        <TPComparison />
-        <TPHowItWorks />
-        <TPFeaturesShowcase />
-        <TPFinalCTA />
-      </main>
-      <TPFooter />
+      <div className="tp-page-body">
+        <main>
+          <TPHero />
+          <TPComparison />
+          <TPHowItWorks />
+          <TPFeaturesShowcase />
+          <TPFinalCTA />
+        </main>
+      </div>
+      <TPFooter ref={footerRef} />
     </div>
   )
 }
