@@ -998,7 +998,7 @@ function TPFinalCTA() {
               <>
                 <div className="fc-card-header">
                   <p className="fc-card-title">
-                    3 months free trial to<br /><em>Reserve Username in advance</em>
+                    7-day free trial to<br /><em>Reserve Username in advance</em>
                   </p>
                 </div>
                 <form className="fc-form" onSubmit={handleSubmit}>
