@@ -59,6 +59,7 @@ function TPNavbar() {
   const [theme, setTheme] = useState('light') // 'dark' | 'light'
   const [menuOpen, setMenuOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('')
   const langRef = useRef(null)
   const mobileLangRef = useRef(null)
 
@@ -98,6 +99,22 @@ function TPNavbar() {
     return () => window.removeEventListener('scroll', getTheme)
   }, [])
 
+  useEffect(() => {
+    const NAV_IDS = ['features', 'how-it-works', 'compare', 'faq']
+    const updateActive = () => {
+      const threshold = window.scrollY + 80
+      let current = ''
+      NAV_IDS.forEach(id => {
+        const el = document.getElementById(id)
+        if (el && el.offsetTop <= threshold) current = id
+      })
+      setActiveSection(current)
+    }
+    window.addEventListener('scroll', updateActive, { passive: true })
+    updateActive()
+    return () => window.removeEventListener('scroll', updateActive)
+  }, [])
+
   const isLight = theme === 'light'
   const logo    = '/nwa_logo.svg'
   const iconSrc = '/assets/logo_cion.svg'
@@ -120,10 +137,10 @@ function TPNavbar() {
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
-          <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
-          <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
-          <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
-          <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
+          <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
+          <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+          <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
+          <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.faq')}</a>
         </div>
         <div className="tp-lang-picker" ref={langRef}>
           <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
