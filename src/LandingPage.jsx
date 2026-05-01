@@ -560,25 +560,33 @@ function TPHowItWorks() {
 
         </div>
 
-        {/* What Final Table isn't */}
-        <div className="tp-nothud">
-          <h3 className="tp-nothud-title">{t('notHud.title')}</h3>
-          <div className="tp-nothud-grid">
-            <div className="tp-nothud-card">
-              <h4 className="tp-nothud-card-title">{t('notHud.item1Title')}</h4>
-              <p className="tp-nothud-card-desc">{t('notHud.item1Desc')}</p>
-            </div>
-            <div className="tp-nothud-card">
-              <h4 className="tp-nothud-card-title">{t('notHud.item2Title')}</h4>
-              <p className="tp-nothud-card-desc">{t('notHud.item2Desc')}</p>
-            </div>
-            <div className="tp-nothud-card">
-              <h4 className="tp-nothud-card-title">{t('notHud.item3Title')}</h4>
-              <p className="tp-nothud-card-desc">{t('notHud.item3Desc')}</p>
-            </div>
-          </div>
-        </div>
+      </div>
+    </section>
+  )
+}
 
+/* ────────────────────────────────────────────────────── */
+/*  WHAT FINAL TABLE ISN'T                                */
+/* ────────────────────────────────────────────────────── */
+function TPNotHud() {
+  const { t } = useT()
+  const cards = [
+    { titleKey: 'notHud.item1Title', descKey: 'notHud.item1Desc' },
+    { titleKey: 'notHud.item2Title', descKey: 'notHud.item2Desc' },
+    { titleKey: 'notHud.item3Title', descKey: 'notHud.item3Desc' },
+  ]
+  return (
+    <section className="nh-section" data-nav-theme="light">
+      <div className="nh-inner">
+        <h2 className="nh-title">{t('notHud.title')}</h2>
+        <div className="nh-grid">
+          {cards.map(({ titleKey, descKey }) => (
+            <div key={titleKey} className="nh-card">
+              <h3 className="nh-card-title">{t(titleKey)}</h3>
+              <p className="nh-card-desc">{t(descKey)}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -1173,6 +1181,7 @@ export default function LandingPage() {
         <main>
           <TPHero />
           <TPHowItWorks />
+          <TPNotHud />
           <TPFeaturesShowcase />
           <TPComparison />
           <TPFinalCTA />

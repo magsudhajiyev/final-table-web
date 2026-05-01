@@ -75,7 +75,7 @@ const en = {
   'tabs.2.body': 'Review every hand, spot patterns in your play, share any hands with your friends, export solver compatible hand data and compare your decisions to GTO baselines. The data tells the truth.',
 
   // What Final Table isn't
-  'notHud.title': "What Final Table isn't",
+  'notHud.title': () => <><span className="nh-hl-sans">What Final Table</span><span className="nh-hl-italic"> isn't?</span></>,
   'notHud.item1Title': 'Not a HUD',
   'notHud.item1Desc': "Final Table doesn't display stats or player data during live play. It's a logger, not a heads-up display.",
   'notHud.item2Title': 'Locked during sessions',
@@ -262,7 +262,7 @@ const pl = {
   'tabs.2.title': 'Zobacz błędy,\nktórych nie czułeś.',
   'tabs.2.body': 'Przejrzyj każde rozdanie, znajdź wzorce w swojej grze, udostępnij dowolne rozdania znajomym, eksportuj dane kompatybilne z solverem i porównaj decyzje z GTO. Dane mówią prawdę.',
 
-  'notHud.title': 'Czym Final Table nie jest',
+  'notHud.title': () => <><span className="nh-hl-sans">Czym Final Table </span><span className="nh-hl-italic">nie jest?</span></>,
   'notHud.item1Title': 'To nie HUD',
   'notHud.item1Desc': 'Final Table nie wyświetla statystyk ani danych graczy podczas gry na żywo. To rejestrator, nie heads-up display.',
   'notHud.item2Title': 'Zablokowany podczas sesji',
@@ -433,7 +433,7 @@ const ru = {
   'tabs.2.title': 'Увидь ошибки,\nкоторых не чувствовал.',
   'tabs.2.body': 'Просмотри каждую раздачу, найди паттерны в своей игре, поделись любыми раздачами с друзьями, экспортируй данные в формате солвера и сравни решения с GTO. Данные говорят правду.',
 
-  'notHud.title': 'Чем Final Table не является',
+  'notHud.title': () => <><span className="nh-hl-sans">Чем Final Table </span><span className="nh-hl-italic">не является?</span></>,
   'notHud.item1Title': 'Это не HUD',
   'notHud.item1Desc': 'Final Table не показывает статистику или данные игроков во время живой игры. Это логгер, а не хедз-ап дисплей.',
   'notHud.item2Title': 'Заблокирован во время сессии',
@@ -604,7 +604,7 @@ const fr = {
   'tabs.2.title': 'Voyez les erreurs\nque vous ne sentiez pas.',
   'tabs.2.body': 'Revoyez chaque main, trouvez des schémas dans votre jeu, partagez vos mains avec vos amis, exportez des données compatibles avec les solveurs et comparez vos décisions aux références GTO. Les données disent la vérité.',
 
-  'notHud.title': "Ce que Final Table n'est pas",
+  'notHud.title': () => <><span className="nh-hl-sans">Ce que Final Table </span><span className="nh-hl-italic">n'est pas?</span></>,
   'notHud.item1Title': 'Pas un HUD',
   'notHud.item1Desc': "Final Table n'affiche pas de statistiques ni de données joueurs pendant le jeu en direct. C'est un enregistreur, pas un heads-up display.",
   'notHud.item2Title': 'Verrouillé pendant les sessions',
@@ -775,7 +775,7 @@ const es = {
   'tabs.2.title': 'Ve los errores\nque no sentías.',
   'tabs.2.body': 'Revisa cada mano, encuentra patrones en tu juego, comparte manos con tus amigos, exporta datos compatibles con solvers y compara tus decisiones con las referencias GTO. Los datos dicen la verdad.',
 
-  'notHud.title': 'Lo que Final Table no es',
+  'notHud.title': () => <><span className="nh-hl-sans">Lo que Final Table </span><span className="nh-hl-italic">no es?</span></>,
   'notHud.item1Title': 'No es un HUD',
   'notHud.item1Desc': 'Final Table no muestra estadísticas ni datos de jugadores durante el juego en vivo. Es un registrador, no un heads-up display.',
   'notHud.item2Title': 'Bloqueado durante las sesiones',
@@ -946,7 +946,7 @@ const de = {
   'tabs.2.title': 'Sieh die Fehler,\ndie du nicht gespürt hast.',
   'tabs.2.body': 'Geh jede Hand durch, finde Muster in deinem Spiel, teile Hände mit Freunden, exportiere Solver-kompatible Handdaten und vergleiche Entscheidungen mit GTO-Referenzen. Die Daten lügen nicht.',
 
-  'notHud.title': 'Was Final Table nicht ist',
+  'notHud.title': () => <><span className="nh-hl-sans">Was Final Table </span><span className="nh-hl-italic">nicht ist?</span></>,
   'notHud.item1Title': 'Kein HUD',
   'notHud.item1Desc': 'Final Table zeigt keine Statistiken oder Spielerdaten während des Live-Spiels an. Es ist ein Logger, kein Heads-up Display.',
   'notHud.item2Title': 'Gesperrt während der Sitzung',
@@ -1117,7 +1117,7 @@ const pt = {
   'tabs.2.title': 'Veja os erros\nque você não sentia.',
   'tabs.2.body': 'Revise cada mão, encontre padrões no seu jogo, compartilhe mãos com amigos, exporte dados compatíveis com solvers e compare decisões com referências GTO. Os dados dizem a verdade.',
 
-  'notHud.title': 'O que o Final Table não é',
+  'notHud.title': () => <><span className="nh-hl-sans">O que o Final Table </span><span className="nh-hl-italic">não é?</span></>,
   'notHud.item1Title': 'Não é um HUD',
   'notHud.item1Desc': 'O Final Table não exibe estatísticas ou dados de jogadores durante o jogo ao vivo. É um registrador, não um heads-up display.',
   'notHud.item2Title': 'Bloqueado durante as sessões',

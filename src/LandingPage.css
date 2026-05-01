@@ -4735,3 +4735,85 @@
     .bc-phone-img { max-width: 300px; }
 }
 
+
+/* ────────────────────────────────────────────────────── */
+/*  What Final Table isn't  (nh-*)                        */
+/* ────────────────────────────────────────────────────── */
+.nh-section {
+    background: #fff;
+    border-top: 1px solid rgba(0,0,0,0.07);
+}
+
+.nh-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 44px 98px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.nh-title {
+    margin: 0;
+    font-size: clamp(28px, 3.2vw, 42px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #000;
+    max-width: 547px;
+}
+
+.nh-hl-sans {
+    font-family: var(--font-sans);
+    font-style: normal;
+}
+
+.nh-hl-italic {
+    font-family: var(--font-display);
+    font-style: italic;
+}
+
+.nh-grid {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.nh-card {
+    flex: 1 0 0;
+    min-width: 0;
+    border: 1px solid #848484;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nh-card-title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: -0.02em;
+    line-height: 1.5;
+}
+
+.nh-card-desc {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: #848484;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 1100px) {
+    .nh-inner { padding: 44px 48px 64px; }
+}
+
+@media (max-width: 768px) {
+    .nh-inner { padding: 40px 24px 56px; }
+    .nh-grid { flex-direction: column; }
+}
