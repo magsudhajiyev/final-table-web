@@ -591,6 +591,26 @@ function TPHowItWorks() {
 /* ────────────────────────────────────────────────────── */
 function TPNotHud() {
   const { t } = useT()
+  const gridRef = useRef(null)
+
+  useEffect(() => {
+    const cards = gridRef.current?.querySelectorAll('.nh-card')
+    if (!cards) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('nh-card--visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+    cards.forEach(card => observer.observe(card))
+    return () => observer.disconnect()
+  }, [])
+
   const cards = [
     { titleKey: 'notHud.item1Title', descKey: 'notHud.item1Desc' },
     { titleKey: 'notHud.item2Title', descKey: 'notHud.item2Desc' },
@@ -600,9 +620,9 @@ function TPNotHud() {
     <section className="nh-section" data-nav-theme="light">
       <div className="nh-inner">
         <h2 className="nh-title">{t('notHud.title')}</h2>
-        <div className="nh-grid">
-          {cards.map(({ titleKey, descKey }) => (
-            <div key={titleKey} className="nh-card">
+        <div className="nh-grid" ref={gridRef}>
+          {cards.map(({ titleKey, descKey }, i) => (
+            <div key={titleKey} className="nh-card" style={{ transitionDelay: `${i * 100}ms` }}>
               <h3 className="nh-card-title">{t(titleKey)}</h3>
               <p className="nh-card-desc">{t(descKey)}</p>
             </div>
