@@ -27,11 +27,6 @@ html {
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
 
-/* ── Theme-aware logo switching ── */
-.logo-dark  { display: none; }
-.logo-light { display: block; }
-body.dark-theme .logo-dark  { display: block; }
-body.dark-theme .logo-light { display: none; }
 
 /* ════════════════════════════════════════════════════════
    TYPOGRAPHY DESIGN SYSTEM

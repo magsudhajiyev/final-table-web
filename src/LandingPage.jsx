@@ -54,8 +54,7 @@ function TPLoader({ onDone }) {
 
   return (
     <div className={`tp-loader${exiting ? ' tp-loader--exit' : ''}`}>
-      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo logo-light" />
-      <img src="/nwa_logo_dark.svg" alt="Final Table" className="tp-loader-logo logo-dark" />
+      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo" />
     </div>
   )
 }
@@ -689,8 +688,7 @@ function TPBottomCTA() {
       <div className="bc-inner">
         <div className="bc-left">
           <a href="#" className="bc-logo">
-            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img logo-light" />
-            <img src="/nwa_logo_dark.svg" alt="Final Table" className="bc-logo-img logo-dark" />
+            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img" />
           </a>
           <div className="bc-content">
             <div className="bc-headline-group">
@@ -781,8 +779,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
     <footer ref={ref} className="mf-footer">
       <div className="mf-inner">
         <a href="#" className="mf-logo">
-          <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img logo-light" />
-          <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img logo-dark" />
+          <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img" />
         </a>
 
         <div className="mf-grid">
