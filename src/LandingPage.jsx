@@ -353,7 +353,7 @@ function TPComparison() {
   const { t } = useT()
   return (
     <section className="tp-compare-section" id="compare" data-nav-theme="light">
-      <div className="tp-compare-inner">
+      <div className="tp-compare-inner" data-section-blur>
         <div className="tp-compare-header-group">
           <p className="tp-compare-eyebrow">{t('compare.eyebrow')}</p>
           <div className="tp-compare-header">
@@ -536,7 +536,7 @@ function TPHowItWorks() {
   const { t } = useT()
   return (
     <section className="hiw-section" id="how-it-works" data-nav-theme="light">
-      <div className="hiw-inner">
+      <div className="hiw-inner" data-section-blur>
 
         <h2 className="hiw-title">
           <span className="hiw-title-sans">How it </span>
@@ -618,7 +618,7 @@ function TPNotHud() {
   ]
   return (
     <section className="nh-section" data-nav-theme="light">
-      <div className="nh-inner">
+      <div className="nh-inner" data-section-blur>
         <h2 className="nh-title">{t('notHud.title')}</h2>
         <div className="nh-grid" ref={gridRef}>
           {cards.map(({ titleKey, descKey }, i) => (
@@ -656,7 +656,7 @@ function TPBottomCTA() {
 
   return (
     <section className="bc-section" data-nav-theme="light">
-      <div className="bc-inner">
+      <div className="bc-inner" data-section-blur>
         <div className="bc-left">
           <a href="#" className="bc-logo">
             <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img" />
@@ -1003,7 +1003,7 @@ function TPFeaturesShowcase() {
 
   return (
     <section className="fv-section" id="features" data-nav-theme="dark">
-      <div className="fv-inner">
+      <div className="fv-inner" data-section-blur>
         <div className="fv-header">
           <h2 className="fv-title">
             For the hands you'll{' '}
@@ -1071,7 +1071,7 @@ function TPFinalCTA() {
 
   return (
     <section className="fc-section" data-nav-theme="light" id="faq">
-      <div className="fc-inner">
+      <div className="fc-inner" data-section-blur>
 
         {/* ── Header ── */}
         <div className="fc-header-group">
@@ -1190,6 +1190,23 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      document.querySelectorAll('[data-section-blur]').forEach(el => {
+        const section = el.parentElement
+        if (!section) return
+        const scrolledPast = -section.getBoundingClientRect().top
+        const progress = Math.min(Math.max(scrolledPast / (section.offsetHeight * 0.55), 0), 1)
+        const eased = progress * progress
+        el.style.filter    = `blur(${eased * 12}px)`
+        el.style.opacity   = `${1 - eased * 0.88}`
+        el.style.transform = `translateY(${eased * -20}px)`
+      })
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
