@@ -31,6 +31,35 @@ const IMG_TAB_ICON_3    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="
 const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>')}`
 
 /* ────────────────────────────────────────────────────── */
+/*  LOADER                                                */
+/* ────────────────────────────────────────────────────── */
+function TPLoader({ onDone }) {
+  const [exiting, setExiting] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const show = setTimeout(() => {
+      setExiting(true)
+      const hide = setTimeout(() => {
+        document.body.style.overflow = ''
+        onDone()
+      }, 650)
+      return () => clearTimeout(hide)
+    }, 750)
+    return () => {
+      clearTimeout(show)
+      document.body.style.overflow = ''
+    }
+  }, [])
+
+  return (
+    <div className={`tp-loader${exiting ? ' tp-loader--exit' : ''}`}>
+      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo" />
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  HOW-IT-WORKS heading helper                           */
 /* ────────────────────────────────────────────────────── */
 function HowTitle({ text }) {
@@ -1190,6 +1219,7 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
+  const [loaderDone, setLoaderDone] = useState(false)
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
@@ -1217,6 +1247,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
+      {!loaderDone && <TPLoader onDone={() => setLoaderDone(true)} />}
       <TPNavbar />
       <div className="tp-page-body">
         <main>

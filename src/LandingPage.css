@@ -51,6 +51,34 @@
     --ls-caps:      0.08em;
 }
 
+/* ── Page loader ── */
+.tp-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(0);
+    transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.tp-loader--exit {
+    transform: translateY(-100%);
+}
+
+.tp-loader-logo {
+    width: 140px;
+    opacity: 0;
+    animation: loader-logo-in 0.4s ease 0.1s forwards;
+}
+
+@keyframes loader-logo-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 .tp-root {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
