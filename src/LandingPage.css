@@ -2218,7 +2218,6 @@ html {
     height: 24px;
     width: auto;
     display: block;
-    filter: invert(1) brightness(2);
 }
 
 .mf-grid {
