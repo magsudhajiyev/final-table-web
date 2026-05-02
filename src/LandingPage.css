@@ -59,10 +59,6 @@
     overflow-x: clip;
 }
 
-[data-section-blur] {
-    will-change: filter, opacity, transform;
-}
-
 /* ── Navbar ── */
 .tp-nav-wrap {
     position: fixed;
