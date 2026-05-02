@@ -282,7 +282,7 @@ html {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 50px;
     background: none;
