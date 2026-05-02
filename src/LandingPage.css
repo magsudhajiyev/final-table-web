@@ -198,7 +198,7 @@ html {
     display: inline-flex;
     align-items: center;
     padding: 8px 14px;
-    border: 1px solid #ddd;
+    border: 1px solid #000;
     border-radius: 50px;
     font-family: var(--font-sans);
     font-size: 15px;
