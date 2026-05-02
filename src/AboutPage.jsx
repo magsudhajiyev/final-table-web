@@ -148,7 +148,7 @@ function AboutFooter() {
         <div className="mf-grid">
           <div className="mf-brand">
             <a href="/" className="mf-logo">
-              <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img" />
+              <img src="/nwa_logo_dark_v2.svg" alt="Final Table" className="mf-logo-img" />
             </a>
             <p className="mf-tagline">{t('footer.tagline')}</p>
             <p className="mf-support">{t('footer.support')}</p>

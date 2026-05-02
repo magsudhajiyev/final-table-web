@@ -163,7 +163,7 @@ function TPNavbar() {
   }, [])
 
   const isLight = theme === 'light'
-  const logo    = isLight ? '/nwa_logo.svg' : '/nwa_logo_dark.svg'
+  const logo    = isLight ? '/nwa_logo.svg' : '/nwa_logo_dark_v2.svg'
   const iconSrc = '/assets/logo_cion.svg'
 
   const smoothScroll = (e) => {
@@ -779,7 +779,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
     <footer ref={ref} className="mf-footer">
       <div className="mf-inner">
         <a href="#" className="mf-logo">
-          <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img" />
+          <img src="/nwa_logo_dark_v2.svg" alt="Final Table" className="mf-logo-img" />
         </a>
 
         <div className="mf-grid">
