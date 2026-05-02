@@ -1235,7 +1235,7 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
-  const [loaderDone, setLoaderDone] = useState(false)
+  const [loaderDone, setLoaderDone] = useState(() => sessionStorage.getItem('ft_loader_done') === '1')
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
@@ -1263,7 +1263,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
-      {!loaderDone && <TPLoader onDone={() => setLoaderDone(true)} />}
+      {!loaderDone && <TPLoader onDone={() => { sessionStorage.setItem('ft_loader_done', '1'); setLoaderDone(true) }} />}
       <TPNavbar />
       <div className="tp-page-body">
         <main>

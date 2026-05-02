@@ -61,8 +61,8 @@ function AboutNavbar() {
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
-          <a href="/#features">{t('nav.features')}</a>
           <a href="/#how-it-works">{t('nav.howItWorks')}</a>
+          <a href="/#features">{t('nav.features')}</a>
           <a href="/#compare">{t('nav.compare')}</a>
           <a href="/#faq">{t('nav.faq')}</a>
           <a href="/about" className="tp-nav-link-active">{t('about.nav')}</a>
@@ -98,8 +98,8 @@ function AboutNavbar() {
         </button>
       </nav>
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
-        <a href="/#features">{t('nav.features')}</a>
         <a href="/#how-it-works">{t('nav.howItWorks')}</a>
+        <a href="/#features">{t('nav.features')}</a>
         <a href="/#compare">{t('nav.compare')}</a>
         <a href="/#faq">{t('nav.faq')}</a>
         <a href="/about">{t('about.nav')}</a>
