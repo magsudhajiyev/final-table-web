@@ -337,16 +337,16 @@ html {
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(0,0,0,0.12);
     border-radius: 10px;
     background: none;
     cursor: pointer;
     font-size: 14px;
     font-family: var(--font-body);
-    color: #fff;
+    color: #000;
 }
-.tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
-.tp-mobile-lang-active { font-weight: 600; background: rgba(255,255,255,0.10); }
+.tp-mobile-lang-btn:hover { background: rgba(0,0,0,0.04); }
+.tp-mobile-lang-active { font-weight: 600; background: rgba(0,0,0,0.06); }
 .tp-nav-dark .tp-mobile-lang-current { color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn { border-color: rgba(255,255,255,0.12); color: #fff; }
 .tp-nav-dark .tp-mobile-lang-btn:hover { background: rgba(255,255,255,0.06); }
@@ -420,7 +420,7 @@ html {
     max-height: 0;
     transition: max-height 0.35s ease, padding 0.35s ease;
     padding: 0 20px;
-    background: rgba(10,10,10,0.96);
+    background: rgba(255,255,255,0.97);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 }
@@ -434,10 +434,10 @@ html {
 .tp-nav-mobile-menu a {
     font-size: var(--type-h4);
     font-weight: 500;
-    color: rgba(255,255,255,0.8);
+    color: rgba(0,0,0,0.7);
     text-decoration: none;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
     transition: color 0.2s ease;
 }
 
@@ -446,13 +446,13 @@ html {
 }
 
 .tp-nav-mobile-menu a:hover {
-    color: #fff;
+    color: #000;
 }
 
 .tp-nav-mobile-cta {
     margin-top: 8px;
-    background: #fff !important;
-    color: #000 !important;
+    background: #000 !important;
+    color: #fff !important;
     border-radius: 999px;
     text-align: center;
     padding: 12px 0 !important;
