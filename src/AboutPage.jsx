@@ -56,7 +56,8 @@ function AboutNavbar() {
     <header className={`tp-nav-wrap tp-nav-light${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="/" className="tp-nav-logo">
-          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img" />
+          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img logo-light" />
+          <img src="/nwa_logo_dark.svg" alt="Final Table" className="tp-nav-logo-img logo-dark" />
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
@@ -148,7 +149,8 @@ function AboutFooter() {
         <div className="mf-grid">
           <div className="mf-brand">
             <a href="/" className="mf-logo">
-              <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img" />
+              <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img logo-light" />
+              <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img logo-dark" />
             </a>
             <p className="mf-tagline">{t('footer.tagline')}</p>
             <p className="mf-support">{t('footer.support')}</p>

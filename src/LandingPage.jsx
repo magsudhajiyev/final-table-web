@@ -54,7 +54,8 @@ function TPLoader({ onDone }) {
 
   return (
     <div className={`tp-loader${exiting ? ' tp-loader--exit' : ''}`}>
-      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo" />
+      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo logo-light" />
+      <img src="/nwa_logo_dark.svg" alt="Final Table" className="tp-loader-logo logo-dark" />
     </div>
   )
 }
@@ -184,7 +185,8 @@ function TPNavbar() {
     <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
-          <img src={logo} alt="Final Table" className="tp-nav-logo-img" />
+          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img logo-light" />
+          <img src="/nwa_logo_dark.svg" alt="Final Table" className="tp-nav-logo-img logo-dark" />
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
@@ -688,7 +690,8 @@ function TPBottomCTA() {
       <div className="bc-inner">
         <div className="bc-left">
           <a href="#" className="bc-logo">
-            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img" />
+            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img logo-light" />
+            <img src="/nwa_logo_dark.svg" alt="Final Table" className="bc-logo-img logo-dark" />
           </a>
           <div className="bc-content">
             <div className="bc-headline-group">
@@ -779,7 +782,8 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
     <footer ref={ref} className="mf-footer">
       <div className="mf-inner">
         <a href="#" className="mf-logo">
-          <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img" />
+          <img src="/nwa_logo.svg" alt="Final Table" className="mf-logo-img logo-light" />
+          <img src="/nwa_logo_dark.svg" alt="Final Table" className="mf-logo-img logo-dark" />
         </a>
 
         <div className="mf-grid">
