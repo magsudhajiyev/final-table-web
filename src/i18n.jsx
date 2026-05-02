@@ -27,6 +27,10 @@ const en = {
   'nav.faq': 'FAQ',
   'nav.cta': 'Join waitlist',
 
+  // How it works section title
+  'howSection.sans': 'How it ',
+  'howSection.italic': 'works?',
+
   // Hero
   'hero.h1': () => (
     <>
@@ -217,6 +221,9 @@ const pl = {
   'nav.faq': 'FAQ',
   'nav.cta': 'Zarezerwuj nick',
 
+  'howSection.sans': 'Jak to ',
+  'howSection.italic': 'działa?',
+
   'hero.h1': () => (
     <>
       <span className="tp-hero-hl-sans">Zapisz rozdanie w</span>
@@ -386,6 +393,9 @@ const ru = {
   'nav.compare': 'Сравнить',
   'nav.faq': 'FAQ',
   'nav.cta': 'Забронировать ник',
+
+  'howSection.sans': 'Как это ',
+  'howSection.italic': 'работает?',
 
   'hero.h1': () => (
     <>
@@ -557,6 +567,9 @@ const fr = {
   'nav.faq': 'FAQ',
   'nav.cta': 'Réserver mon pseudo',
 
+  'howSection.sans': 'Comment ça ',
+  'howSection.italic': 'marche ?',
+
   'hero.h1': () => (
     <>
       <span className="tp-hero-hl-sans">Enregistre une main en</span>
@@ -726,6 +739,9 @@ const es = {
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
   'nav.cta': 'Reserva tu nick',
+
+  'howSection.sans': '¿Cómo ',
+  'howSection.italic': 'funciona?',
 
   'hero.h1': () => (
     <>
@@ -897,6 +913,9 @@ const de = {
   'nav.faq': 'FAQ',
   'nav.cta': 'Nick reservieren',
 
+  'howSection.sans': 'So ',
+  'howSection.italic': 'funktioniert\'s?',
+
   'hero.h1': () => (
     <>
       <span className="tp-hero-hl-sans">Erfasse eine Hand in</span>
@@ -1066,6 +1085,9 @@ const pt = {
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
   'nav.cta': 'Reservar meu nick',
+
+  'howSection.sans': 'Como ',
+  'howSection.italic': 'funciona?',
 
   'hero.h1': () => (
     <>

@@ -568,8 +568,8 @@ function TPHowItWorks() {
       <div className="hiw-inner">
 
         <h2 className="hiw-title">
-          <span className="hiw-title-sans">How it </span>
-          <span className="hiw-title-italic">works</span>
+          <span className="hiw-title-sans">{t('howSection.sans')}</span>
+          <span className="hiw-title-italic">{t('howSection.italic')}</span>
         </h2>
 
         <div className="hiw-grid">
