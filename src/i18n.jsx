@@ -22,7 +22,7 @@ function detectLocale() {
 const en = {
   // Navbar
   'nav.features': 'Features',
-  'nav.howItWorks': 'How it works',
+  'nav.howItWorks': 'How it works?',
   'nav.compare': 'Compare',
   'nav.faq': 'FAQ',
   'nav.cta': 'Join waitlist',
@@ -212,7 +212,7 @@ const en = {
 /* ─────────────────────────────────────────────── */
 const pl = {
   'nav.features': 'Funkcje',
-  'nav.howItWorks': 'Jak to działa',
+  'nav.howItWorks': 'Jak to działa?',
   'nav.compare': 'Porównaj',
   'nav.faq': 'FAQ',
   'nav.cta': 'Zarezerwuj nick',
@@ -382,7 +382,7 @@ const pl = {
 /* ─────────────────────────────────────────────── */
 const ru = {
   'nav.features': 'Функции',
-  'nav.howItWorks': 'Как это работает',
+  'nav.howItWorks': 'Как это работает?',
   'nav.compare': 'Сравнить',
   'nav.faq': 'FAQ',
   'nav.cta': 'Забронировать ник',
@@ -552,7 +552,7 @@ const ru = {
 /* ─────────────────────────────────────────────── */
 const fr = {
   'nav.features': 'Fonctionnalités',
-  'nav.howItWorks': 'Comment ça marche',
+  'nav.howItWorks': 'Comment ça marche ?',
   'nav.compare': 'Comparer',
   'nav.faq': 'FAQ',
   'nav.cta': 'Réserver mon pseudo',
@@ -722,7 +722,7 @@ const fr = {
 /* ─────────────────────────────────────────────── */
 const es = {
   'nav.features': 'Funciones',
-  'nav.howItWorks': 'Cómo funciona',
+  'nav.howItWorks': '¿Cómo funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
   'nav.cta': 'Reserva tu nick',
@@ -892,7 +892,7 @@ const es = {
 /* ─────────────────────────────────────────────── */
 const de = {
   'nav.features': 'Funktionen',
-  'nav.howItWorks': 'So funktioniert\'s',
+  'nav.howItWorks': 'So funktioniert\'s?',
   'nav.compare': 'Vergleich',
   'nav.faq': 'FAQ',
   'nav.cta': 'Nick reservieren',
@@ -1062,7 +1062,7 @@ const de = {
 /* ─────────────────────────────────────────────── */
 const pt = {
   'nav.features': 'Funcionalidades',
-  'nav.howItWorks': 'Como funciona',
+  'nav.howItWorks': 'Como funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
   'nav.cta': 'Reservar meu nick',
