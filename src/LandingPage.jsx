@@ -34,27 +34,27 @@ const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="
 /*  LOADER                                                */
 /* ────────────────────────────────────────────────────── */
 function TPLoader({ onDone }) {
-  const [exiting, setExiting] = useState(false)
+  const [phase, setPhase] = useState(0)
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const show = setTimeout(() => {
-      setExiting(true)
-      const hide = setTimeout(() => {
-        document.body.style.overflow = ''
-        onDone()
-      }, 650)
-      return () => clearTimeout(hide)
-    }, 750)
-    return () => {
-      clearTimeout(show)
-      document.body.style.overflow = ''
-    }
+    const timers = [
+      setTimeout(() => setPhase(1), 150),   // icon fades in
+      setTimeout(() => setPhase(2), 750),   // words slide in from below
+      setTimeout(() => setPhase(3), 1650),  // words converge back into icon
+      setTimeout(() => setPhase(4), 2100),  // icon expands, overlay fades
+      setTimeout(() => { document.body.style.overflow = ''; onDone() }, 2750),
+    ]
+    return () => { timers.forEach(clearTimeout); document.body.style.overflow = '' }
   }, [])
 
   return (
-    <div className={`tp-loader${exiting ? ' tp-loader--exit' : ''}`}>
-      <img src="/nwa_logo.svg" alt="Final Table" className="tp-loader-logo" />
+    <div className={`tp-loader tp-loader-ph${phase}`}>
+      <div className="tp-loader-stage">
+        <img src="/loader-icon.svg" className="tp-loader-icon" alt="" aria-hidden="true" />
+        <img src="/loader-final.svg" className="tp-loader-word tp-loader-final" alt="" aria-hidden="true" />
+        <img src="/loader-table.svg" className="tp-loader-word tp-loader-table" alt="" aria-hidden="true" />
+      </div>
     </div>
   )
 }
