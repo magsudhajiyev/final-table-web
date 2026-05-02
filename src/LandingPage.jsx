@@ -548,6 +548,7 @@ function TPHowItWorks() {
           <div className="hiw-row">
             <div className="hiw-card">
               <div className="hiw-img-wrap">
+                <img src="/hiw_before.jpg" alt="" className="hiw-img" />
               </div>
               <div className="hiw-body">
                 <p className="hiw-eyebrow">{t('tabs.0.label')}</p>
@@ -558,6 +559,7 @@ function TPHowItWorks() {
 
             <div className="hiw-card">
               <div className="hiw-img-wrap">
+                <img src="/hiw_table.png" alt="" className="hiw-img" />
               </div>
               <div className="hiw-body">
                 <p className="hiw-eyebrow">{t('tabs.1.label')}</p>
@@ -569,6 +571,7 @@ function TPHowItWorks() {
 
           <div className="hiw-card hiw-card-half">
             <div className="hiw-img-wrap">
+              <img src="/hiw_after.png" alt="" className="hiw-img" />
             </div>
             <div className="hiw-body">
               <p className="hiw-eyebrow">{t('tabs.2.label')}</p>
