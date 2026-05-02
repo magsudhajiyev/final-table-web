@@ -116,8 +116,8 @@ function LegalFooter() {
     { title: t('nav.howItWorks'),   href: '/#how-it-works' },
     { title: t('nav.features'),     href: '/#features' },
     { title: t('nav.compare'),      href: '/#compare' },
-    { title: t('nav.faq'),          href: '/#faq' },
     { title: t('about.nav'),        href: '/about' },
+    { title: t('nav.faq'),          href: '/#faq' },
   ]
 
   return (
