@@ -164,7 +164,7 @@ function TPNavbar() {
   }, [])
 
   const isLight = theme === 'light'
-  const logo    = '/nwa_logo.svg'
+  const logo    = isLight ? '/nwa_logo.svg' : '/nwa_logo_dark.svg'
   const iconSrc = '/assets/logo_cion.svg'
 
   const smoothScroll = (e) => {
@@ -185,8 +185,7 @@ function TPNavbar() {
     <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
-          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img logo-light" />
-          <img src="/nwa_logo_dark.svg" alt="Final Table" className="tp-nav-logo-img logo-dark" />
+          <img src={logo} alt="Final Table" className="tp-nav-logo-img" />
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
