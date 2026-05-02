@@ -16,6 +16,7 @@
   "author": "Final Table Team",
   "license": "MIT",
   "dependencies": {
+    "cobe": "^2.0.1",
     "firebase": "^12.2.1",
     "flag-icons": "^7.5.0",
     "lucide-react": "^1.8.0",
