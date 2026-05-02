@@ -366,7 +366,6 @@ body.dark-theme .logo-light { display: none; }
 }
 
 .tp-nav-dark .tp-nav-sep { background: rgba(255,255,255,0.15); }
-.tp-nav-dark .tp-nav-logo-img { filter: invert(1) brightness(2); }
 .tp-nav-dark .tp-nav-links a { color: rgba(255,255,255,0.75); }
 .tp-nav-dark .tp-nav-links a:hover { color: #fff; }
 .tp-nav-dark .tp-nav-links a.tp-nav-active { color: #fff; text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 1.5px; }
