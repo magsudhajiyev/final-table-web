@@ -323,8 +323,10 @@
 
 /* ── LIGHT theme ── */
 .tp-nav-light {
-    background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+    background: rgba(255, 255, 255, 0.75);
+    border-bottom: 1px solid rgba(224, 224, 224, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .tp-nav-light .tp-nav-links a { color: #848484; }
