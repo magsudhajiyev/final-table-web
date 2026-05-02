@@ -131,16 +131,16 @@ html {
 }
 .tp-loader-final {
     right: calc(50% + 52px);
-    transform: translateY(calc(-50% + 36px));
+    transform: translateY(-50%) translateX(104px);
 }
 .tp-loader-table {
     left: calc(50% + 52px);
-    transform: translateY(calc(-50% + 36px));
+    transform: translateY(-50%) translateX(-112px);
 }
 
-/* Phase 2: words slide up into place */
-.tp-loader-ph2 .tp-loader-final { opacity: 1; transform: translateY(-50%); }
-.tp-loader-ph2 .tp-loader-table { opacity: 1; transform: translateY(-50%); }
+/* Phase 2: words slide outward from icon center */
+.tp-loader-ph2 .tp-loader-final { opacity: 1; transform: translateY(-50%) translateX(0); }
+.tp-loader-ph2 .tp-loader-table { opacity: 1; transform: translateY(-50%) translateX(0); }
 
 /* Phase 3: words converge back into icon */
 .tp-loader-ph3 .tp-loader-final {
