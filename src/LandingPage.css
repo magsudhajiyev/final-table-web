@@ -3896,7 +3896,8 @@
     .hiw-inner { padding: 0 16px; }
     .hiw-section { padding: 40px 0; }
     .hiw-card { flex-direction: column; align-items: stretch; }
-    .hiw-img-wrap { height: 220px; border-radius: 16px; }
+    .hiw-img-wrap { flex: none; height: 220px; border-radius: 16px; }
+    .hiw-body { flex: none; }
     .hiw-heading { font-size: 24px; }
     .hiw-title { font-size: 28px; }
 }
