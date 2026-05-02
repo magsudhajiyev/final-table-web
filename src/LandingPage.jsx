@@ -811,12 +811,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
         </div>
 
         <div className="mf-divider" />
-        <p className="mf-copy">
-          <svg className="mf-copy-icon" width="18" height="18" viewBox="0 0 80 80" fill="currentColor" aria-hidden="true">
-            <path fillRule="evenodd" clipRule="evenodd" d="M67.4307 11.5693C52.005 -3.85643 26.995 -3.85643 11.5693 11.5693C-3.85643 26.995 -3.85643 52.005 11.5693 67.4307C26.995 82.8564 52.005 82.8564 67.4307 67.4307C82.8564 52.005 82.8564 26.995 67.4307 11.5693ZM17.9332 17.9332C29.8442 6.02225 49.1558 6.02225 61.0668 17.9332C72.9777 29.8442 72.9777 49.1558 61.0668 61.0668C59.7316 62.4019 58.3035 63.5874 56.8032 64.6232L56.8241 64.6023C46.8657 54.6439 46.8657 38.4982 56.8241 28.5398L58.2383 27.1256L51.8744 20.7617L50.4602 22.1759C40.5018 32.1343 24.3561 32.1343 14.3977 22.1759L14.3768 22.1968C15.4126 20.6965 16.5981 19.2684 17.9332 17.9332ZM34.0282 38.6078C25.6372 38.9948 17.1318 36.3344 10.3131 30.6265C7.56889 39.6809 9.12599 49.76 14.9844 57.6517L34.0282 38.6078ZM21.3483 64.0156C29.24 69.874 39.3191 71.4311 48.3735 68.6869C42.6656 61.8682 40.0052 53.3628 40.3922 44.9718L21.3483 64.0156Z" />
-          </svg>
-          {t('footer.copy', { year })}
-        </p>
+        <p className="mf-copy">{t('footer.copy', { year })}</p>
       </div>
     </footer>
   )
@@ -1156,61 +1151,81 @@ function TPFinalCTA() {
 
           {/* Form card */}
           <div className="fc-card">
-            {status === 'done' ? (
-              <div className="fc-success">
-                <div className="ru-success-chip">{t('cta.successChip')}</div>
-                <h3 className="ru-success-title">{t('cta.successTitle')}</h3>
-                <p className="ru-success-body">
-                  {t('cta.successBody', { username: form.username || 'yourhandle' })}
+            <div className="fc-card-header">
+              <p className="fc-card-title">
+                7-day free trial to<br /><em>Reserve Username in advance</em>
+              </p>
+            </div>
+            <form className="fc-form" onSubmit={handleSubmit}>
+              <div className="fc-fields">
+                <div className="fc-top-fields">
+                  <div className="fc-name-row">
+                    <input className="fc-input" type="text" name="firstName" placeholder="Enter first name" value={form.firstName} onChange={handleChange} />
+                    <input className="fc-input" type="text" name="lastName" placeholder="Enter last name" value={form.lastName} onChange={handleChange} />
+                  </div>
+                  <div className="fc-field-group">
+                    <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
+                    <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
+                  </div>
+                </div>
+                <div className="fc-username-section">
+                  <p className="fc-username-label">What username would you like to reserve?</p>
+                  <div className="fc-field-group">
+                    <div className="fc-input-prefix-wrap">
+                      <span className="fc-prefix">@</span>
+                      <input className="fc-input fc-input-prefix" type="text" name="username" placeholder="Enter username" value={form.username} onChange={handleChange} required />
+                    </div>
+                    <p className="fc-hint">Maximum 20 characters</p>
+                  </div>
+                </div>
+              </div>
+              {status === 'taken' && <p className="ru-error">{t('cta.errorTaken')}</p>}
+              {status === 'error' && <p className="ru-error">{t('cta.errorGeneric')}</p>}
+              <button className="fc-submit" type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? t('cta.btnLoading') : 'Reserve my spot'}
+                {status !== 'sending' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Success modal overlay */}
+          {status === 'done' && (
+            <div className="spotlight-success-overlay" onClick={() => { setStatus('idle'); setForm({ firstName: '', lastName: '', email: '', username: '' }) }}>
+              <div className="spotlight-success-card" onClick={e => e.stopPropagation()}>
+                <p className="spotlight-success-pretitle">
+                  3 months free trial to{' '}
+                  <em>Reserve Username in advance</em>
                 </p>
-                <button className="ru-success-reset" onClick={() => { setStatus('idle'); setForm({ firstName: '', lastName: '', email: '', username: '' }) }}>
-                  {t('cta.resetBtn')}
+                <div className="spotlight-success-body">
+                  <svg className="spotlight-success-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="ssi-grad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#6dd5c0" />
+                        <stop offset="100%" stopColor="#1ea87c" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="17" cy="17" r="17" fill="url(#ssi-grad)" />
+                    <path d="M10.5 17.5L14.5 21.5L23.5 12.5" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <h3 className="spotlight-success-heading">You're on the list!</h3>
+                  <p className="spotlight-success-text">We'll drop you a note once Final Table is live. Until then dream up your next game. We'll take care of the rest.</p>
+                </div>
+                <button
+                  className="spotlight-success-btn"
+                  onClick={() => { setStatus('idle'); setForm({ firstName: '', lastName: '', email: '', username: '' }) }}
+                >
+                  Reserve another
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
                 </button>
               </div>
-            ) : (
-              <>
-                <div className="fc-card-header">
-                  <p className="fc-card-title">
-                    7-day free trial to<br /><em>Reserve Username in advance</em>
-                  </p>
-                </div>
-                <form className="fc-form" onSubmit={handleSubmit}>
-                  <div className="fc-fields">
-                    <div className="fc-top-fields">
-                      <div className="fc-name-row">
-                        <input className="fc-input" type="text" name="firstName" placeholder="Enter first name" value={form.firstName} onChange={handleChange} />
-                        <input className="fc-input" type="text" name="lastName" placeholder="Enter last name" value={form.lastName} onChange={handleChange} />
-                      </div>
-                      <div className="fc-field-group">
-                        <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
-                        <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
-                      </div>
-                    </div>
-                    <div className="fc-username-section">
-                      <p className="fc-username-label">What username would you like to reserve?</p>
-                      <div className="fc-field-group">
-                        <div className="fc-input-prefix-wrap">
-                          <span className="fc-prefix">@</span>
-                          <input className="fc-input fc-input-prefix" type="text" name="username" placeholder="Enter username" value={form.username} onChange={handleChange} required />
-                        </div>
-                        <p className="fc-hint">Maximum 20 characters</p>
-                      </div>
-                    </div>
-                  </div>
-                  {status === 'taken' && <p className="ru-error">{t('cta.errorTaken')}</p>}
-                  {status === 'error' && <p className="ru-error">{t('cta.errorGeneric')}</p>}
-                  <button className="fc-submit" type="submit" disabled={status === 'sending'}>
-                    {status === 'sending' ? t('cta.btnLoading') : 'Reserve my spot'}
-                    {status !== 'sending' && (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
+            </div>
+          )}
 
         </div>
       </div>
