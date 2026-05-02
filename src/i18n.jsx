@@ -28,12 +28,11 @@ const en = {
   'nav.cta': 'Join waitlist',
 
   // Hero
-  'hero.h1': (p) => (
+  'hero.h1': () => (
     <>
-      Log a hand in{' '}
-      <span className="tp-hero-mark"><span>three gestures</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Not{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>three minutes</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Log a hand in</span>
+      <span className="tp-hero-hl-italic">three gestures</span>
+      <span className="tp-hero-hl-sans">Not three minutes.</span>
     </>
   ),
   'hero.sub': 'Final Table is the live poker tracker built for the table itself — fast enough to use one-handed between hands, accurate enough to study after.',
@@ -220,10 +219,9 @@ const pl = {
 
   'hero.h1': () => (
     <>
-      Zapisz rozdanie w{' '}
-      <span className="tp-hero-mark"><span>trzech gestach</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Nie w{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>trzy minuty</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Zapisz rozdanie w</span>
+      <span className="tp-hero-hl-italic">trzech gestach</span>
+      <span className="tp-hero-hl-sans">Nie w trzy minuty.</span>
     </>
   ),
   'hero.sub': 'Final Table to tracker pokerowy stworzony dla żywego stołu — wystarczająco szybki, by używać go jedną ręką między rozdaniami, wystarczająco dokładny, by analizować po sesji.',
@@ -391,10 +389,9 @@ const ru = {
 
   'hero.h1': () => (
     <>
-      Запиши раздачу за{' '}
-      <span className="tp-hero-mark"><span>три жеста</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Не за{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>три минуты</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Запиши раздачу за</span>
+      <span className="tp-hero-hl-italic">три жеста</span>
+      <span className="tp-hero-hl-sans">Не за три минуты.</span>
     </>
   ),
   'hero.sub': 'Final Table — покерный трекер, созданный для живого стола. Достаточно быстрый, чтобы пользоваться одной рукой между раздачами, достаточно точный для анализа после.',
@@ -562,10 +559,9 @@ const fr = {
 
   'hero.h1': () => (
     <>
-      Enregistre une main en{' '}
-      <span className="tp-hero-mark"><span>trois gestes</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Pas en{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>trois minutes</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Enregistre une main en</span>
+      <span className="tp-hero-hl-italic">trois gestes</span>
+      <span className="tp-hero-hl-sans">Pas en trois minutes.</span>
     </>
   ),
   'hero.sub': 'Final Table est le tracker de poker live conçu pour la table — assez rapide pour être utilisé d\'une main entre les coups, assez précis pour analyser après.',
@@ -733,10 +729,9 @@ const es = {
 
   'hero.h1': () => (
     <>
-      Registra una mano en{' '}
-      <span className="tp-hero-mark"><span>tres gestos</span><span className="tp-hero-mark-bg" /></span>
-      .<br />No en{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>tres minutos</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Registra una mano en</span>
+      <span className="tp-hero-hl-italic">tres gestos</span>
+      <span className="tp-hero-hl-sans">No en tres minutos.</span>
     </>
   ),
   'hero.sub': 'Final Table es el tracker de póker en vivo diseñado para la mesa — lo bastante rápido para usarlo con una mano entre repartos, lo bastante preciso para analizar después.',
@@ -904,10 +899,9 @@ const de = {
 
   'hero.h1': () => (
     <>
-      Erfasse eine Hand in{' '}
-      <span className="tp-hero-mark"><span>drei Gesten</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Nicht in{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>drei Minuten</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Erfasse eine Hand in</span>
+      <span className="tp-hero-hl-italic">drei Gesten</span>
+      <span className="tp-hero-hl-sans">Nicht in drei Minuten.</span>
     </>
   ),
   'hero.sub': 'Final Table ist der Live-Poker-Tracker für den Tisch — schnell genug, um ihn einhändig zwischen den Händen zu nutzen, genau genug für die Analyse danach.',
@@ -1075,10 +1069,9 @@ const pt = {
 
   'hero.h1': () => (
     <>
-      Registre uma mão em{' '}
-      <span className="tp-hero-mark"><span>três gestos</span><span className="tp-hero-mark-bg" /></span>
-      .<br />Não em{' '}
-      <span className="tp-hero-mark tp-hero-mark-red"><span>três minutos</span><span className="tp-hero-mark-bg" /></span>.
+      <span className="tp-hero-hl-sans">Registre uma mão em</span>
+      <span className="tp-hero-hl-italic">três gestos</span>
+      <span className="tp-hero-hl-sans">Não em três minutos.</span>
     </>
   ),
   'hero.sub': 'Final Table é o tracker de poker ao vivo feito para a mesa — rápido o bastante para usar com uma mão entre as rodadas, preciso o bastante para analisar depois.',

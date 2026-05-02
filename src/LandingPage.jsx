@@ -50,6 +50,24 @@ function HowTitle({ text }) {
   )
 }
 
+function HiwTitle({ text }) {
+  const nl = text.indexOf('\n')
+  if (nl === -1) return <p className="hiw-heading">{text}</p>
+  const line1 = text.slice(0, nl)
+  const line2 = text.slice(nl + 1)
+  const dot1 = line1.endsWith('.')
+  const dot2 = line2.endsWith('.')
+  const core1 = dot1 ? line1.slice(0, -1) : line1
+  const core2 = dot2 ? line2.slice(0, -1) : line2
+  return (
+    <div className="hiw-heading">
+      <span>{core1}{dot1 && '.'}</span>
+      <br />
+      <em className="hiw-heading-italic">{core2}</em>{dot2 && '.'}
+    </div>
+  )
+}
+
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
@@ -247,79 +265,82 @@ function TPHero() {
   return (
     <section className="tp-hero" ref={sectionRef} data-nav-theme="light">
       <div className="tp-hero-inner">
-      <div className="tp-hero-content" ref={contentRef}>
+        <div className="tp-hero-row">
+          <div className="tp-hero-content" ref={contentRef}>
 
-        {/* Badge */}
-        <div className="tp-hero-badge">
-          <img src="/Apple_logo_black.svg" alt="" className="tp-hero-badge-icon" />
-          Public launch on iOS soon
-        </div>
-
-        <h1 className="tp-hero-h1">{t('hero.h1')}</h1>
-        <p className="tp-hero-sub">{t('hero.sub')}</p>
-
-        <div id="reserve-form">
-          {status === 'done' ? (
-            <div className="tp-hero-waitlist-success">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 6L9 17L4 12" />
-              </svg>
-              <span className="tp-hero-success-text">{t('hero.successText')}</span>
-              <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
-                {t('hero.resetBtn')}
-              </button>
+            {/* Badge */}
+            <div className="tp-hero-badge">
+              <img src="/Apple_logo_black.svg" alt="" className="tp-hero-badge-icon" />
+              Public launch on iOS soon
             </div>
-          ) : (
-            <form className="tp-hero-form" onSubmit={handleSubmit}>
-              <input
-                type="email"
-                name="email"
-                className="tp-hero-email-input"
-                placeholder={t('hero.emailPlaceholder')}
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-              />
-              <button
-                type="submit"
-                className="tp-hero-submit-btn"
-                disabled={status === 'loading'}
-              >
-                {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
-                {status !== 'loading' && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+
+            <h1 className="tp-hero-h1">{t('hero.h1')}</h1>
+            <p className="tp-hero-sub">{t('hero.sub')}</p>
+
+            <div id="reserve-form">
+              {status === 'done' ? (
+                <div className="tp-hero-waitlist-success">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17L4 12" />
                   </svg>
-                )}
-              </button>
-              {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
-            </form>
-          )}
-        </div>
+                  <span className="tp-hero-success-text">{t('hero.successText')}</span>
+                  <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
+                    {t('hero.resetBtn')}
+                  </button>
+                </div>
+              ) : (
+                <form className="tp-hero-form" onSubmit={handleSubmit}>
+                  <input
+                    type="email"
+                    name="email"
+                    className="tp-hero-email-input"
+                    placeholder={t('hero.emailPlaceholder')}
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="tp-hero-submit-btn"
+                    disabled={status === 'loading'}
+                  >
+                    {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
+                    {status !== 'loading' && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </button>
+                  {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
+                </form>
+              )}
+            </div>
 
-        {/* Social proof */}
-        <div className="tp-hero-proof-row">
-          <div className="tp-hero-avatars">
-            <img src="/avatar_1.png" alt="" className="tp-hero-avatar" />
-            <img src="/avatar_2.png" alt="" className="tp-hero-avatar" />
-            <img src="/avatar_3.png" alt="" className="tp-hero-avatar" />
-            <img src="/avatar_4.png" alt="" className="tp-hero-avatar" />
-            <img src="/avatar_5.png" alt="" className="tp-hero-avatar" />
+            {/* Social proof */}
+            <div className="tp-hero-proof-row">
+              <div className="tp-hero-avatars">
+                <img src="/avatar_1.png" alt="" className="tp-hero-avatar" />
+                <img src="/avatar_2.png" alt="" className="tp-hero-avatar" />
+                <img src="/avatar_3.png" alt="" className="tp-hero-avatar" />
+                <img src="/avatar_4.png" alt="" className="tp-hero-avatar" />
+                <img src="/avatar_5.png" alt="" className="tp-hero-avatar" />
+              </div>
+              <p className="tp-hero-proof-text">
+                <strong>{getPlayerCount()}+ players</strong>{' '}
+                <span>already signed up</span>
+              </p>
+            </div>
+
           </div>
-          <p className="tp-hero-proof-text">
-            <strong>{getPlayerCount()}+ players</strong>{' '}
-            <span>already signed up</span>
-          </p>
+          <div className="tp-hero-phone" aria-hidden="true">
+            <img
+              src="/cde599f0-7770-4806-97a9-e434c7cdf352.png"
+              alt=""
+              className="tp-hero-phone-img"
+            />
+          </div>
         </div>
-
-      </div>
-      <div className="tp-hero-phone" aria-hidden="true">
-        <img
-          src="/hero_image.png"
-          alt=""
-          className="tp-hero-phone-img"
-        />
-      </div>
+        <div className="tp-hero-divider" />
       </div>
     </section>
   )
@@ -514,52 +535,49 @@ function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
 function TPHowItWorks() {
   const { t } = useT()
   return (
-    <section className="tp-how-section" id="how-it-works" data-nav-theme="light">
-      <div className="tp-how-inner">
-        <LetterReveal text={t('nav.howItWorks')} className="tp-how-section-title" tag="h2" />
-        <div className="tp-how-row">
+    <section className="hiw-section" id="how-it-works" data-nav-theme="light">
+      <div className="hiw-inner">
 
-          {/* Left column: Before + After stacked */}
-          <div className="tp-how-left-col">
+        <h2 className="hiw-title">
+          <span className="hiw-title-sans">How it </span>
+          <span className="hiw-title-italic">works</span>
+        </h2>
 
-            <div className="tp-how-card tp-how-card-before">
-              <div className="tp-how-visual tp-how-visual-before">
-                <img src="/nwa_before.png" alt="" className="tp-how-img tp-how-img-before" />
-              </div>
-              <div className="tp-how-body">
-                <p className="tp-how-eyebrow">{t('tabs.0.label')}</p>
-                <HowTitle text={t('tabs.0.title')} />
-                <p className="tp-how-desc">{t('tabs.0.body')}</p>
-              </div>
-            </div>
+        <div className="hiw-grid">
 
-            <div className="tp-how-card tp-how-card-after">
-              <div className="tp-how-body">
-                <p className="tp-how-eyebrow">{t('tabs.2.label')}</p>
-                <HowTitle text={t('tabs.2.title')} />
-                <p className="tp-how-desc">{t('tabs.2.body')}</p>
+          <div className="hiw-row">
+            <div className="hiw-card">
+              <div className="hiw-img-wrap">
               </div>
-              <div className="tp-how-visual tp-how-visual-after">
-                <img src="/opponents.png" alt="" className="tp-how-img tp-how-img-after" />
+              <div className="hiw-body">
+                <p className="hiw-eyebrow">{t('tabs.0.label')}</p>
+                <HiwTitle text={t('tabs.0.title')} />
+                <p className="hiw-desc">{t('tabs.0.body')}</p>
               </div>
             </div>
 
+            <div className="hiw-card">
+              <div className="hiw-img-wrap">
+              </div>
+              <div className="hiw-body">
+                <p className="hiw-eyebrow">{t('tabs.1.label')}</p>
+                <HiwTitle text={t('tabs.1.title')} />
+                <p className="hiw-desc">{t('tabs.1.body')}</p>
+              </div>
+            </div>
           </div>
 
-          {/* Right column: At the table (tall spanning card) */}
-          <div className="tp-how-card tp-how-card-table">
-            <div className="tp-how-visual tp-how-visual-table">
-              <img src="/hand_3.png" alt="" className="tp-how-img tp-how-img-table" />
+          <div className="hiw-card hiw-card-half">
+            <div className="hiw-img-wrap">
             </div>
-            <div className="tp-how-body">
-              <p className="tp-how-eyebrow">{t('tabs.1.label')}</p>
-              <HowTitle text={t('tabs.1.title')} />
-              <p className="tp-how-desc">{t('tabs.1.body')}</p>
+            <div className="hiw-body">
+              <p className="hiw-eyebrow">{t('tabs.2.label')}</p>
+              <HiwTitle text={t('tabs.2.title')} />
+              <p className="hiw-desc">{t('tabs.2.body')}</p>
             </div>
           </div>
 
         </div>
-
       </div>
     </section>
   )
