@@ -2232,7 +2232,7 @@ html {
 .tp-page-body {
     position: relative;
     z-index: 1;
-    padding-bottom: var(--footer-height, 0px);
+    margin-bottom: var(--footer-height, 0px);
 }
 
 .mf-footer {
@@ -2251,7 +2251,7 @@ html {
         position: relative;
     }
     .tp-page-body {
-        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
     }
 }
 
@@ -2383,6 +2383,7 @@ html {
     letter-spacing: -0.02em;
     transition: opacity 0.15s ease;
     font-weight: 400;
+    cursor: pointer;
 }
 
 .mf-link:hover {

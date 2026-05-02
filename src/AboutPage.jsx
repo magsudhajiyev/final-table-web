@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useT, SUPPORTED } from './i18n'
 import './LandingPage.css'
 import './AboutPage.css'
+import './LegalPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
 const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru' }
@@ -130,15 +131,16 @@ function AboutFooter() {
   const year = new Date().getFullYear()
 
   const company = [
-    { title: t('footer.privacy'),  href: '/privacy.html' },
-    { title: t('footer.terms'),    href: '/terms.html' },
+    { title: t('footer.privacy'),  href: '/privacy' },
+    { title: t('footer.terms'),    href: '/terms' },
   ]
 
   const resources = [
-    { title: t('nav.features'),     href: '/#features' },
     { title: t('nav.howItWorks'),   href: '/#how-it-works' },
+    { title: t('nav.features'),     href: '/#features' },
     { title: t('nav.compare'),      href: '/#compare' },
     { title: t('nav.faq'),          href: '/#faq' },
+    { title: t('about.nav'),        href: '/about' },
   ]
 
   return (
@@ -177,7 +179,7 @@ function AboutFooter() {
 export default function AboutPage() {
   const { t } = useT()
   return (
-    <div className="tp-root">
+    <div className="tp-root legal-root">
       <AboutNavbar />
       <main className="about-main" data-nav-theme="light">
 

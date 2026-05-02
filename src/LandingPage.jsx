@@ -692,8 +692,8 @@ function TPBottomCTA() {
           </a>
           <div className="bc-content">
             <div className="bc-headline-group">
-              <h2 className="bc-h2">{t('cta.title')}</h2>
-              <p className="bc-sub">{t('cta.sub')}</p>
+              <h2 className="bc-h2">{t('bottomCta.title')}</h2>
+              <p className="bc-sub">{t('bottomCta.sub')}</p>
             </div>
             <div className="bc-form-group">
               {status === 'done' ? (
@@ -764,8 +764,8 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
   const year = new Date().getFullYear()
 
   const company = [
-    { title: t('footer.privacy'),  href: '/privacy.html' },
-    { title: t('footer.terms'),    href: '/terms.html' },
+    { title: t('footer.privacy'),  href: '/privacy' },
+    { title: t('footer.terms'),    href: '/terms' },
   ]
 
   const resources = [
@@ -773,6 +773,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
     { title: t('nav.features'),     href: '#features' },
     { title: t('nav.compare'),      href: '#compare' },
     { title: t('nav.faq'),          href: '#faq' },
+    { title: t('about.nav'),        href: '/about' },
   ]
 
   return (
