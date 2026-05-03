@@ -2,45 +2,145 @@
 
 > A personal poker tracking app for live players — log hands, track sessions, analyze your game, and grow your bankroll.
 
-Also known as: live poker tracker, live hand logger, poker session tracker, poker bankroll tracker, live poker app, poker hand review app.
+Also known as: live poker tracker, live hand logger, poker session tracker, poker bankroll tracker, live poker app, poker hand review app, poker HUD alternative for live play.
 
 ## What is Final Table?
 
-Final Table is a **personal live poker tracking app** for individual players. It combines hand-by-hand logging, session tracking, bankroll management, opponent profiling, and post-session analysis into one app — designed to be fast enough to use one-handed at a real poker table.
+Final Table is a **personal live poker tracking app** for individual players. It combines hand-by-hand logging, session tracking, bankroll management, opponent profiling, AI-powered analysis, and post-session review into one app — designed to be fast enough to use one-handed at a real poker table.
 
 It is a direct alternative to apps like **Poker Analytics 6**, **Poker Bankroll Tracker**, **Poker Income**, and **Pokerbase** — but built from the ground up for live play with a modern UX and gesture-based hand logging that no other app offers.
 
-## Core Capabilities
+## Core Features
 
 ### 1. Hand-by-Hand Logging (unique to Final Table)
-Log every action at the table — raise, call, fold — by swiping and tapping. Drag and drop board cards. No typing, no menus. This is the fastest way to log live poker hands and no other app does it this way.
+Log every action at the table — raise, call, fold — by swiping and tapping. No typing, no menus. This is the fastest way to log live poker hands and no other app does it this way.
+
+- **Swipe gestures**: Swipe up to raise (with snap points at round numbers like 500, 750, 1000), tap to call/check/fold
+- **Board cards**: Enter flop, turn, and river cards via a visual card keyboard
+- **Hole cards**: Enter your hole cards before hand completion; optionally enter opponent showdown cards
+- **Auto-advance streets**: When all players act, the app automatically moves to the next street
+- **Button & position tracking**: Tracks dealer button, calculates positions (BTN, CO, MP, SB, BB, UTG) automatically
+- **Table management**: Change button position, reassign your seat, search and save opponents — all without leaving the hand
+- **Chopped pots & side pots**: Full support for split pots with multiple winners and side pot calculations
+- **BB ante**: Optional BB ante toggle at session creation, correctly factored into pot calculations
+- **Undo**: Undo the last action with full state restoration
+- **Hand tagging & notes**: Star/favorite hands, add tags (e.g. "Bluff", "Value", "Bad Beat"), and write free-text notes on any hand
+- Supports both **cash games** and **tournaments** with blind level changes
 
 ### 2. Session Tracking & Bankroll Management
-Track buy-ins, cash-outs, session duration, and profit/loss. View your hourly rate, cumulative results, and bankroll progress over time with pinch-to-zoom earnings charts. Set bankroll goals and track progress with a visual progress bar.
+Track buy-ins, cash-outs, session duration, and profit/loss across all your poker sessions.
 
-### 3. Opponent Profiles
-Automatically build stat-backed profiles (VPIP, PFR, aggression, tendencies) on every player you face. Know who you're up against before you act.
+- **Bankroll goals**: Set a target bankroll and track progress with a visual progress bar
+- **Earnings chart**: Cumulative profit/loss chart on the home screen with pinch-to-zoom
+- **Live stack chart**: Real-time running stack chart during an active session, with tappable points linking to hand details
+- **Stack updates with notes**: Update your stack mid-session with optional notes explaining what happened
+- **Rebuys & add-ons**: Track rebuys (tournaments) and add-ons (cash & tournament) with running total invested
+- **Session history**: Browse all past sessions with Cash/Tournament tabs, session cards showing key stats
+- **Session analytics**: Per-session detail screen with stack history chart, rebuy history, profit/loss breakdown
+- **Compact bankroll display**: Large values show as $15K, 1.5M zl for readability
 
-### 4. Post-Session Hand Review
-Replay every logged hand street by street. Compare your decisions to GTO baselines. Spot leaks you couldn't feel at the table.
+### 3. Statistics & Analytics
+Comprehensive poker statistics computed from your logged hands, with opportunity-based denominators for accuracy.
 
-### 5. Hand Sharing & Solver Export
-Share any hand with friends via a link. Export hand data in solver-compatible formats for deeper analysis.
+**7 Core Poker Metrics:**
+- VPIP (Voluntarily Put $ In Pot)
+- PFR (Pre-Flop Raise)
+- 3-Bet %
+- Fold to 3-Bet %
+- C-Bet (Continuation Bet)
+- Steal %
+- Check-Raise %
+- Win Rate and Aggression Factor
 
-### 6. Quick Session Logger
-Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a simple profit/loss record — like Poker Income but inside the same app. Track stack changes with notes, add rebuys and add-ons mid-session, and view a live stack growth chart. Supports both cash and tournament sessions.
+**Position-specific breakdowns**: Stats broken down by table position (BTN, CO, MP, SB, BB, UTG).
 
-### 7. Dealer Mode (bonus feature)
-Dealers can run the table hands-free with voice commands. Players follow along on their own phones. This is an additional feature for organized games — not the core product.
+**Session Financial Statistics** in three sections:
+- **General**: Total Sessions, Total Time, Avg Session, Total Buy-In, Total Cash-Out, Net Profit, Hourly Rate
+- **Cash**: Sessions, Total Buy-In, Total Cash-Out, Net Profit, Hourly Rate
+- **Tournament**: Sessions, Total Buy-In, Total Cash-Out, Net Profit, Hourly Rate, ITM%, Average Finish, Best Finish, ROI%, Final Tables, Average Buy-In, Average Field Size
 
-### 8. Multi-Currency Support
-Final Table supports 22 currencies out of the box — USD, EUR, GBP, CAD, AUD, BRL, PLN, RUB, INR, JPY, CNY, KRW, SEK, MXN, TRY, CZK, NOK, DKK, CHF, ILS, UAH, ARS. All monetary displays (bankroll, buy-ins, profits, charts, statistics) adapt to your selected currency with proper symbol placement and formatting. Large bankroll values display in compact form (e.g. $15K, 1.5M zł).
+### 4. Opponent Profiles & Play Style Detection
+Automatically build stat-backed profiles on every player you face.
 
-### 9. Session Statistics with Tournament Analytics
-Statistics are broken into three sections — **General**, **Cash**, and **Tournament** — each showing Total Buy-In, Total Cash-Out, Net Profit, and Hourly Rate. Tournament stats go deeper with ITM%, Average Finish, Best Finish, ROI%, Final Tables reached, Average Buy-In, and Average Field Size.
+- **Auto-built stats**: VPIP, PFR, 3-Bet, C-Bet, Steal, Check-Raise — tracked for every saved opponent
+- **Play style classification**: Automatically classifies players as Maniac, LAG, TAG, Balanced, Calling Station, Nit, or Unknown based on 50+ hands of data
+- **Opponent hand history**: View all logged hands involving a specific opponent
+- **Notes**: Add free-text notes to any opponent profile
+- **Color coding**: Assign colors to opponents for quick identification at the table
+
+### 5. AI Hand Analysis
+Send any logged hand to an AI engine for strategic analysis. Get feedback on your decisions street by street — what was good, what could be improved, and why. Results are cached per hand so you can revisit them anytime. Premium feature.
+
+### 6. Post-Session Hand Review
+Replay every logged hand street by street. Review the action sequence, pot sizes, board runout, and your decisions. Compare your play to identify leaks you couldn't feel at the table.
+
+### 7. Hand Sharing & Export
+
+- **Share hands**: Share any hand with friends via a link, with the option to hide your hole cards
+- **PokerStars export**: Export hands in PokerStars `.txt` hand history format for import into GTO Wizard, PioSolver, and other solvers. Handles card symbols, blind posting, BB ante, and raise formats correctly
+- **CSV export**: Export hand and session data to CSV format (Hand#, Street, Seat, Player, Action, Amount, Pot, Board, Hole Cards)
+- **Full session export**: Export an entire session's hand histories via email
+
+### 8. Quick Session Logger
+Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a simple profit/loss record.
+
+- Track stack changes with optional notes throughout the session
+- Add rebuys (tournaments) and add-ons (cash & tournament) mid-session
+- View a live stack growth chart as you play
+- Back navigation confirmation prevents accidental session loss
+- Session end flow collects final cash-out before ending
+- Supports both cash and tournament sessions
+
+### 9. Multi-Currency Support
+Final Table supports 22 currencies out of the box: USD, EUR, GBP, CAD, AUD, BRL, PLN, RUB, INR, JPY, CNY, KRW, SEK, MXN, TRY, CZK, NOK, DKK, CHF, ILS, UAH, ARS. All monetary displays — bankroll, buy-ins, profits, charts, statistics — adapt to your selected currency with proper symbol placement and formatting. Zero-decimal currencies (JPY, KRW, CZK, ARS) are handled correctly.
 
 ### 10. Internationalization
-The entire app is available in 7 languages: English, German, Spanish, French, Polish, Portuguese, and Russian. Poker terminology stays consistent across all languages.
+The entire app is available in 7 languages: English, German, Spanish, French, Polish, Portuguese, and Russian. Over 2,000 localized strings. Poker terminology (VPIP, PFR, ITM, ROI, Buy-In) stays consistent in English across all languages.
+
+### 11. Club Management
+Create and manage poker clubs for organized home games and private card rooms.
+
+- **Role hierarchy**: Owner > Admin > Dealer > Player
+- **Member management**: Invite members by email or in-app invitation links, approve/decline join requests
+- **Club settings**: Name, address, phone, description — configurable by admins
+- **Multi-table support**: Create and manage multiple tables per club
+- **QR code seat assignments**: Generate per-seat and per-table QR codes (shareable as PDF). Players scan to join a seat, dealers scan to start dealing
+- **Waitlist**: Players can join a waitlist for full cash game tables; admins manage seating from the waitlist
+- **Club notifications**: In-app notifications for invitations, event announcements, and club activity
+- **Deep links**: Email invitation links open the app directly to the relevant club or seat
+
+### 12. Event & Tournament Management (within clubs)
+Run organized poker events through your club.
+
+- **Create events**: Schedule cash games or tournaments with buy-in, starting stack, blind structure, tables, date/time
+- **Event lifecycle**: Created > Live > Completed
+- **RSVP tracking**: Going / Maybe / Not Going for each event
+- **Live dashboard**: Real-time chip-count rankings during live events
+- **Blind level changes**: Adjust blinds during live tournaments
+- **Final standings**: Top-3 trophies display with shareable results
+- **Event tabs**: Upcoming, Live, and Past events on the club dashboard
+
+### 13. Dealer Mode
+Dealers can run hands at a table with voice commands while players follow along on their own phones.
+
+- **Voice logging**: Real-time speech recognition (Deepgram) converts spoken actions to logged hand data
+- **Manual + voice**: Voice commands and manual action buttons coexist
+- **Speaker locking**: Diarization locks onto the dealer's voice to filter out table chatter
+- **Player session view**: Players on their own phones see live hand state, enter hole cards privately, add tags and notes
+- **Spectator view**: Non-players can watch live tournament rankings with auto-refresh
+- **Public leaderboard**: Landscape/TV display mode for tournament rankings, accessible via access code
+
+### 14. Authentication & Profile
+- **Google Sign-In** as primary authentication method
+- **Email/password** auth with password reset flow
+- **Username reservation**: Unique username setup on first sign-in
+- **Nickname option**: Use a display name nickname in games instead of your full name
+- **Profile screen**: View and edit profile, access settings, bankroll, and statistics
+
+### 15. Help & Knowledge Base
+- **In-app support**: Submit bug reports and feature requests with category, subject, and description directly from the app
+- **Knowledge base**: Built-in articles explaining poker statistics definitions and how clubs work
+- **Onboarding tour**: Interactive guided walkthrough for new users with step-by-step explanations of key screens, replayable from Settings
 
 ## How Final Table compares to other live poker apps
 
@@ -49,18 +149,25 @@ The entire app is available in 7 languages: English, German, Spanish, French, Po
 | Hand-by-hand logging | Yes (gesture-based) | No | Limited | No |
 | Session tracking | Yes | Yes | Yes | Yes |
 | Bankroll graphs | Yes | Yes | Yes | Yes |
-| Opponent profiles | Yes (auto-built) | No | Notes only | No |
+| Opponent profiles | Yes (auto-built stats) | No | Notes only | No |
+| Play style detection | Yes (7 archetypes) | No | No | No |
 | Hand review & replay | Yes | No | Basic | No |
-| GTO comparison | Yes | No | No | No |
-| Hand sharing | Yes | No | No | No |
-| Solver export | Yes | No | No | No |
-| Dealer Mode | Yes | No | No | No |
-| Multi-currency | Yes (22 currencies) | Limited | Limited | Limited |
+| AI hand analysis | Yes | No | No | No |
+| Hand sharing | Yes (with hide cards option) | No | No | No |
+| GTO Wizard / solver export | Yes (PokerStars format) | No | No | No |
+| CSV export | Yes | No | No | No |
 | Tournament analytics | Yes (ITM%, ROI, finishes) | No | Basic | No |
+| Hourly rate tracking | Yes (per game type) | Limited | Limited | Yes |
+| Dealer Mode (voice) | Yes | No | No | No |
+| Club management | Yes (roles, events, tables) | No | No | No |
+| QR seat assignments | Yes | No | No | No |
+| Real-time sync | Yes (WebSocket + Firestore) | No | No | No |
+| Multi-currency | Yes (22 currencies) | Limited | Limited | Limited |
 | Multi-language | Yes (7 languages) | Limited | Limited | Limited |
+| Offline support | Yes (dual storage) | Partial | Yes | Yes |
 | Platform | iOS + Android | iOS only | iOS + Android | iOS + Android |
 
-**Key differentiator**: Final Table is the only live poker app that lets you log individual hands with fast gestures at the table, then review and analyze them after. Other apps only track sessions (buy-in/cash-out) without hand-level detail.
+**Key differentiator**: Final Table is the only live poker app that lets you log individual hands with fast gestures at the table, then review and analyze them with AI after. Other apps only track sessions (buy-in/cash-out) without hand-level detail.
 
 ## How is Final Table different from PokerTracker or Hold'em Manager?
 
@@ -71,35 +178,40 @@ Final Table fills that gap for **live poker**. You log hands manually at the tab
 ## What Final Table is NOT
 
 - **Not a HUD**: Does not display stats or player data during live play. It is a logger, not a heads-up display.
-- **Not a tournament management platform**: Final Table is a personal tracker for individual players. It is not primarily a club/league/tournament organizer.
-- **Locked during sessions**: While a session is active, the app locks into logging mode. Users cannot browse hands, share data, or access analytics until the session ends.
+- **Not primarily a tournament management platform**: Final Table is a personal tracker for individual players. Club management and events are a bonus feature for organized games.
 - **Built for fair play**: All analysis happens after the session — never at the table with an unfair advantage.
 
 ## Common Questions
 
 - **Can I use Final Table to track cash game sessions?** — Yes. Log full hands or use Quick Session Logger for just buy-in/cash-out tracking.
-- **Does it work for tournaments?** — Yes. Final Table supports both cash games and tournament sessions.
-- **Can I use it at home games?** — Yes. It works for any live poker setting — casino, home game, or private club.
-- **Does it work offline?** — Hand logging works without an internet connection. Data syncs when you're back online.
+- **Does it work for tournaments?** — Yes. Final Table supports both cash games and tournament sessions, with tournament-specific stats like ITM%, ROI, and finish positions.
+- **Can I use it at home games?** — Yes. It works for any live poker setting — casino, home game, or private club. Club management features make it great for organizing regular home games.
+- **Does it work offline?** — Yes. All data is written to both Firebase and a local SQLite database. Hand logging works without an internet connection and syncs when you're back online.
+- **Can I export my hands to GTO Wizard?** — Yes. Export any session in PokerStars hand history format, then import directly into GTO Wizard, PioSolver, or any solver that accepts PokerStars format.
+- **What stats does it track?** — VPIP, PFR, 3-Bet, Fold-to-3-Bet, C-Bet, Steal, Check-Raise, Win Rate, Aggression Factor — all with position breakdowns. Plus session financials: buy-ins, cash-outs, net profit, hourly rate, and tournament-specific metrics.
+- **Can I track opponents?** — Yes. Opponent profiles are auto-built from logged hands. The app tracks the same 7 metrics for opponents and classifies their play style after 50+ hands.
 - **Is it free?** — Final Table is free during the closed beta. Pricing details for the full launch will be announced later.
 - **Is there an app I can download now?** — Not yet. Final Table is in closed beta. Join the waitlist at https://www.finaltable.io to reserve your username and get early access.
-- **How is it different from Poker Analytics 6?** — Poker Analytics 6 tracks sessions but not individual hands. Final Table lets you log every hand at the table with gestures, then review them with GTO analysis after.
-- **How is it different from Poker Bankroll Tracker?** — Poker Bankroll Tracker is session-level only. Final Table adds hand-by-hand logging, auto-built opponent profiles, hand replay, GTO comparison, and sharing.
+- **How is it different from Poker Analytics 6?** — Poker Analytics 6 tracks sessions but not individual hands. Final Table lets you log every hand at the table with gestures, then review them with AI analysis after. It also adds auto-built opponent profiles, play style detection, solver export, and club management.
+- **How is it different from Poker Bankroll Tracker?** — Poker Bankroll Tracker is session-level only. Final Table adds hand-by-hand logging, auto-built opponent profiles, AI analysis, hand replay, solver export, sharing, tournament analytics, and club management.
+- **What currencies are supported?** — 22 currencies: USD, EUR, GBP, CAD, AUD, BRL, PLN, RUB, INR, JPY, CNY, KRW, SEK, MXN, TRY, CZK, NOK, DKK, CHF, ILS, UAH, ARS.
+- **What languages are supported?** — English, German, Spanish, French, Polish, Portuguese, and Russian.
 
 ## Target Audience
 
 - Live cash game grinders who want hand-level tracking (not just session logs)
-- Tournament players tracking results and reviewing key hands
-- Home game regulars who want to track their play
+- Tournament players tracking results, reviewing key hands, and analyzing ROI
+- Home game organizers who want club management with QR seating and live rankings
 - Online players transitioning to live who want PokerTracker-level data for live games
+- Poker dealers who want to run tables hands-free with voice commands
 - Any live poker player looking for a modern, well-designed tracking app
 
 ## Pricing
 
 Free during closed beta. Three tiers planned for launch:
 - **Free**: Basic hand logging (5 hands per session), 10 opponent profiles, 30-day session history
-- **Pro**: Unlimited hands, opponents, and history, AI hand analysis, CSV export, full statistics
-- **Club**: Everything in Pro plus club management, dealer voice logging, multi-table events, real-time sync
+- **Pro**: Unlimited hands, opponents, and history, AI hand analysis, CSV export, solver export, full statistics
+- **Club**: Everything in Pro plus club management, dealer voice logging, multi-table events, real-time sync, QR seat assignments
 
 ## Platform
 
