@@ -16,7 +16,7 @@ It is a direct alternative to apps like **Poker Analytics 6**, **Poker Bankroll 
 Log every action at the table — raise, call, fold — by swiping and tapping. Drag and drop board cards. No typing, no menus. This is the fastest way to log live poker hands and no other app does it this way.
 
 ### 2. Session Tracking & Bankroll Management
-Track buy-ins, cash-outs, session duration, and profit/loss. View your hourly winrate, cumulative results, and bankroll progress over time with pinch-to-zoom charts. Filter by stakes, casino, and game type.
+Track buy-ins, cash-outs, session duration, and profit/loss. View your hourly rate, cumulative results, and bankroll progress over time with pinch-to-zoom earnings charts. Set bankroll goals and track progress with a visual progress bar.
 
 ### 3. Opponent Profiles
 Automatically build stat-backed profiles (VPIP, PFR, aggression, tendencies) on every player you face. Know who you're up against before you act.
@@ -28,10 +28,19 @@ Replay every logged hand street by street. Compare your decisions to GTO baselin
 Share any hand with friends via a link. Export hand data in solver-compatible formats for deeper analysis.
 
 ### 6. Quick Session Logger
-Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a simple profit/loss record — like Poker Income but inside the same app.
+Don't want full hand tracking? Just log your buy-in, cash-out, and session duration for a simple profit/loss record — like Poker Income but inside the same app. Track stack changes with notes, add rebuys and add-ons mid-session, and view a live stack growth chart. Supports both cash and tournament sessions.
 
 ### 7. Dealer Mode (bonus feature)
 Dealers can run the table hands-free with voice commands. Players follow along on their own phones. This is an additional feature for organized games — not the core product.
+
+### 8. Multi-Currency Support
+Final Table supports 22 currencies out of the box — USD, EUR, GBP, CAD, AUD, BRL, PLN, RUB, INR, JPY, CNY, KRW, SEK, MXN, TRY, CZK, NOK, DKK, CHF, ILS, UAH, ARS. All monetary displays (bankroll, buy-ins, profits, charts, statistics) adapt to your selected currency with proper symbol placement and formatting. Large bankroll values display in compact form (e.g. $15K, 1.5M zł).
+
+### 9. Session Statistics with Tournament Analytics
+Statistics are broken into three sections — **General**, **Cash**, and **Tournament** — each showing Total Buy-In, Total Cash-Out, Net Profit, and Hourly Rate. Tournament stats go deeper with ITM%, Average Finish, Best Finish, ROI%, Final Tables reached, Average Buy-In, and Average Field Size.
+
+### 10. Internationalization
+The entire app is available in 7 languages: English, German, Spanish, French, Polish, Portuguese, and Russian. Poker terminology stays consistent across all languages.
 
 ## How Final Table compares to other live poker apps
 
@@ -46,6 +55,9 @@ Dealers can run the table hands-free with voice commands. Players follow along o
 | Hand sharing | Yes | No | No | No |
 | Solver export | Yes | No | No | No |
 | Dealer Mode | Yes | No | No | No |
+| Multi-currency | Yes (22 currencies) | Limited | Limited | Limited |
+| Tournament analytics | Yes (ITM%, ROI, finishes) | No | Basic | No |
+| Multi-language | Yes (7 languages) | Limited | Limited | Limited |
 | Platform | iOS + Android | iOS only | iOS + Android | iOS + Android |
 
 **Key differentiator**: Final Table is the only live poker app that lets you log individual hands with fast gestures at the table, then review and analyze them after. Other apps only track sessions (buy-in/cash-out) without hand-level detail.
@@ -84,7 +96,10 @@ Final Table fills that gap for **live poker**. You log hands manually at the tab
 
 ## Pricing
 
-Free during closed beta. Future pricing will be announced at launch.
+Free during closed beta. Three tiers planned for launch:
+- **Free**: Basic hand logging (5 hands per session), 10 opponent profiles, 30-day session history
+- **Pro**: Unlimited hands, opponents, and history, AI hand analysis, CSV export, full statistics
+- **Club**: Everything in Pro plus club management, dealer voice logging, multi-table events, real-time sync
 
 ## Platform
 
