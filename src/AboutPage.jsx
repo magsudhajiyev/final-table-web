@@ -189,9 +189,11 @@ export default function AboutPage() {
           <h1 className="about-h1">
             {t('about.missionTitle')}
           </h1>
-          <p className="about-body">
-            {t('about.missionBody')}
-          </p>
+          <p className="about-body">{t('about.missionP1')}</p>
+          <p className="about-body">{t('about.missionP2')}</p>
+          <p className="about-body">{t('about.missionP3')}</p>
+          <p className="about-body">{t('about.missionP4')}</p>
+          <p className="about-body">{t('about.missionP5')}</p>
         </section>
 
         {/* Values */}

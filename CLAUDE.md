@@ -51,3 +51,5 @@ The file `public/llms.txt` helps AI tools (ChatGPT, Claude, Perplexity, etc.) un
 ## Rules
 
 - **Never push to remote without explicit user approval.** Always wait for the user to confirm before running `git push`.
+- **Never commit or push unless the user explicitly asks.** Do not auto-commit after completing a task.
+- **Translate every added text.** Whenever you add or change user-facing text, translate it into all 7 supported languages (DE, EN, ES, FR, PL, PT, RU) in `src/i18n.jsx`.
