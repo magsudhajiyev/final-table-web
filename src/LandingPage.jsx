@@ -191,6 +191,7 @@ function TPNavbar() {
           <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
           <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
           <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
+          <a href="/about">{t('about.nav')}</a>
           <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.faq')}</a>
         </div>
         <div className="tp-lang-picker" ref={langRef}>
@@ -226,6 +227,7 @@ function TPNavbar() {
         <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
         <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
+        <a href="/about">{t('about.nav')}</a>
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
           <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
@@ -1235,7 +1237,7 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
-  const [loaderDone, setLoaderDone] = useState(false)
+  const [loaderDone, setLoaderDone] = useState(() => sessionStorage.getItem('ft_loader_done') === '1')
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
@@ -1263,7 +1265,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
-      {!loaderDone && <TPLoader onDone={() => setLoaderDone(true)} />}
+      {!loaderDone && <TPLoader onDone={() => { sessionStorage.setItem('ft_loader_done', '1'); setLoaderDone(true) }} />}
       <TPNavbar />
       <div className="tp-page-body">
         <main>
