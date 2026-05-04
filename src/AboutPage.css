@@ -1,48 +1,72 @@
-/* ── About page — uses same design tokens as LandingPage.css ── */
+/* ── About page — consistent with LandingPage design system ── */
 
 .about-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 24px;
-  padding-top: 80px; /* clear fixed nav */
+  padding-top: 0;
 }
 
-/* ── Eyebrow ── */
+/* ── Shared inner wrapper (matches landing page 1440/98px pattern) ── */
+.about-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 98px;
+}
+
+/* ── Shared eyebrow ── */
 .about-eyebrow {
   font-family: var(--font-sans);
-  font-size: var(--type-caption);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #888;
-  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: #848484;
+  margin: 0 0 18px;
+  line-height: 1.5;
 }
 
-/* ── Mission ── */
+/* ════════════════════════════════════════════════
+   MISSION
+════════════════════════════════════════════════ */
 .about-mission {
-  padding: 60px 0 64px;
-  max-width: 640px;
+  padding: 140px 0 80px;
+  background: #fff;
+}
+.about-mission .about-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 .about-h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 4.8vw, 62px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  margin: 0 0 28px;
+  color: #000;
+  max-width: 700px;
+}
+.about-h1 em {
   font-family: var(--font-display);
-  font-size: 48px;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: var(--ls-heading);
-  margin: 0 0 24px;
-  color: #0a0a0a;
+  font-style: italic;
+  font-weight: 400;
+  display: block;
 }
 .about-body {
   font-family: var(--font-sans);
-  font-size: 17px;
-  line-height: 1.7;
-  color: #444;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #848484;
   margin: 0;
+  max-width: 560px;
+  letter-spacing: -0.02em;
 }
 
-/* ── Values ── */
+/* ════════════════════════════════════════════════
+   VALUES
+════════════════════════════════════════════════ */
 .about-values {
-  padding: 0 0 80px;
+  padding: 56px 0;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
 }
 .about-values-grid {
   display: grid;
@@ -52,35 +76,49 @@
 .about-value-card {
   padding: 32px 28px;
   background: #fff;
-  border: 1px solid #e8e8e6;
-  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 24px;
 }
 .about-value-title {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 500;
   margin: 0 0 10px;
-  letter-spacing: var(--ls-heading);
+  letter-spacing: -0.02em;
+  color: #000;
+  line-height: 1.3;
 }
 .about-value-desc {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.65;
-  color: #555;
+  color: #848484;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
-/* ── Team ── */
+/* ════════════════════════════════════════════════
+   TEAM
+════════════════════════════════════════════════ */
 .about-team {
-  padding: 0 0 80px;
+  padding: 56px 0;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
 }
 .about-h2 {
-  font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: var(--ls-heading);
+  font-family: var(--font-sans);
+  font-size: clamp(26px, 2.8vw, 36px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   margin: 0 0 40px;
-  color: #0a0a0a;
+  color: #000;
+  line-height: 1.2;
+}
+.about-h2 em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.04em;
 }
 .about-team-grid {
   display: grid;
@@ -88,45 +126,51 @@
   gap: 20px;
 }
 .about-team-card {
-  padding: 36px 32px;
+  padding: 40px 36px;
   background: #fff;
-  border: 1px solid #e8e8e6;
-  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 24px;
   text-align: center;
 }
 .about-team-avatar {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #000;
   color: #fff;
-  font-family: var(--font-display);
-  font-size: 22px;
+  font-family: var(--font-sans);
+  font-size: 20px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
+  letter-spacing: -0.01em;
 }
 .about-team-name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 0 4px;
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  color: #000;
+  line-height: 1.3;
 }
 .about-team-role {
   font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 500;
-  color: #888;
+  font-weight: 400;
+  color: #848484;
   margin: 0 0 16px;
+  letter-spacing: -0.01em;
 }
 .about-team-bio {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.65;
-  color: #555;
-  margin: 0 0 16px;
+  color: #848484;
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
 }
 .about-team-linkedin {
   display: inline-flex;
@@ -141,39 +185,66 @@
 }
 .about-team-linkedin:hover { opacity: 0.7; }
 
-/* ── CTA ── */
+/* ════════════════════════════════════════════════
+   CTA
+════════════════════════════════════════════════ */
 .about-cta {
-  padding: 64px 0 80px;
+  padding: 80px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  background: #fff;
+}
+.about-cta .about-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  border-top: 1px solid #e8e8e6;
+  gap: 20px;
+}
+.about-cta .about-h2 {
+  margin-bottom: 0;
 }
 .about-cta-body {
   font-family: var(--font-sans);
   font-size: 16px;
-  color: #555;
-  margin: 0 auto 28px;
+  color: #848484;
+  margin: 0;
   max-width: 480px;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
 }
 .about-cta-btn {
-  display: inline-block;
-  padding: 14px 32px;
-  background: #0a0a0a;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 28px;
+  background: #000;
   color: #fff;
   font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 500;
   border-radius: 999px;
   text-decoration: none;
+  letter-spacing: -0.01em;
   transition: opacity 0.2s;
+  margin-top: 8px;
 }
 .about-cta-btn:hover { opacity: 0.85; }
 
-/* ── Mobile ── */
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .about-inner { padding: 0 48px; }
+}
 @media (max-width: 768px) {
-  .about-main { padding-top: 72px; }
-  .about-mission { padding: 40px 0 40px; }
-  .about-h1 { font-size: 34px; }
-  .about-h2 { font-size: 26px; }
+  .about-inner { padding: 0 20px; }
+  .about-mission { padding: 100px 0 56px; }
+  .about-values { padding: 40px 0; }
+  .about-team { padding: 40px 0; }
+  .about-cta { padding: 56px 0; }
+  .about-h1 { font-size: 36px; letter-spacing: -0.04em; }
+  .about-h2 { font-size: 26px; margin-bottom: 28px; }
   .about-values-grid { grid-template-columns: 1fr; }
   .about-team-grid { grid-template-columns: 1fr; }
+  .about-team-card { padding: 32px 24px; }
 }
