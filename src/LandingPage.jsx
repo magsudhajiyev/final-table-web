@@ -212,7 +212,7 @@ function TPNavbar() {
             </div>
           )}
         </div>
-        <a href="#reserve-form" className="tp-nav-waitlist-btn" onClick={smoothScroll}>
+        <a href="#faq" className="tp-nav-waitlist-btn" onClick={smoothScroll}>
           {t('nav.cta')}
         </a>
         <button
@@ -364,10 +364,13 @@ function TPHero() {
 
           </div>
           <div className="tp-hero-phone" aria-hidden="true">
-            <img
-              src="/cde599f0-7770-4806-97a9-e434c7cdf352.png"
-              alt=""
+            <video
+              src="/hero_render.mp4"
               className="tp-hero-phone-img"
+              autoPlay
+              loop
+              muted
+              playsInline
             />
           </div>
         </div>
