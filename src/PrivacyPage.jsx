@@ -38,7 +38,7 @@ function LegalNavbar() {
     <header className={`tp-nav-wrap tp-nav-light${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="/" className="tp-nav-logo">
-          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img" />
+          <img src="/logo.png" alt="Final Table" className="tp-nav-logo-img" />
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
@@ -124,7 +124,7 @@ function LegalFooter() {
     <footer className="mf-footer">
       <div className="mf-inner">
         <a href="/" className="mf-logo">
-          <img src="/nwa_logo_dark_v2.svg" alt="Final Table" className="mf-logo-img" />
+          <img src="/logo.png" alt="Final Table" className="mf-logo-img" />
         </a>
         <div className="mf-grid">
           <div className="mf-brand">

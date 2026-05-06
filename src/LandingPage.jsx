@@ -163,7 +163,7 @@ function TPNavbar() {
   }, [])
 
   const isLight = theme === 'light'
-  const logo    = isLight ? '/nwa_logo.svg' : '/nwa_logo_dark_v2.svg'
+  const logo    = '/logo.png'
   const iconSrc = '/assets/logo_cion.svg'
 
   const smoothScroll = (e) => {
@@ -693,7 +693,7 @@ function TPBottomCTA() {
       <div className="bc-inner">
         <div className="bc-left">
           <a href="#" className="bc-logo">
-            <img src="/nwa_logo.svg" alt="Final Table" className="bc-logo-img" />
+            <img src="/logo.png" alt="Final Table" className="bc-logo-img" />
           </a>
           <div className="bc-content">
             <div className="bc-headline-group">
@@ -785,7 +785,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
     <footer ref={ref} className="mf-footer">
       <div className="mf-inner">
         <a href="#" className="mf-logo">
-          <img src="/nwa_logo_dark_v2.svg" alt="Final Table" className="mf-logo-img" />
+          <img src="/logo.png" alt="Final Table" className="mf-logo-img" />
         </a>
 
         <div className="mf-grid">

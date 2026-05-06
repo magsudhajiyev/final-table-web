@@ -25,8 +25,7 @@ export default function Navbar() {
       <div className="header-container">
         <div className="logo-container">
           <a href="/" className="logo-link">
-            <img src="/assets/logo_light.svg" alt="Final Table Logo" className="logo-img logo-light" />
-            <img src="/assets/Logo_dark.svg" alt="Final Table Logo" className="logo-img logo-dark" />
+            <img src="/logo.png" alt="Final Table Logo" className="logo-img" />
           </a>
         </div>
 

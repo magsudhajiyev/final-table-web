@@ -57,15 +57,15 @@ function AboutNavbar() {
     <header className={`tp-nav-wrap tp-nav-light${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <a href="/" className="tp-nav-logo">
-          <img src="/nwa_logo.svg" alt="Final Table" className="tp-nav-logo-img" />
+          <img src="/logo.png" alt="Final Table" className="tp-nav-logo-img" />
         </a>
         <div className="tp-nav-sep" />
         <div className="tp-nav-links">
           <a href="/#how-it-works">{t('nav.howItWorks')}</a>
           <a href="/#features">{t('nav.features')}</a>
           <a href="/#compare">{t('nav.compare')}</a>
-          <a href="/#faq">{t('nav.faq')}</a>
           <a href="/about" className="tp-nav-link-active">{t('about.nav')}</a>
+          <a href="/#faq">{t('nav.faq')}</a>
         </div>
         <div className="tp-lang-picker" ref={langRef}>
           <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
@@ -101,8 +101,8 @@ function AboutNavbar() {
         <a href="/#how-it-works">{t('nav.howItWorks')}</a>
         <a href="/#features">{t('nav.features')}</a>
         <a href="/#compare">{t('nav.compare')}</a>
-        <a href="/#faq">{t('nav.faq')}</a>
         <a href="/about">{t('about.nav')}</a>
+        <a href="/#faq">{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
           <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
             <span><Flag locale={locale} /> {t(`lang.${locale}`)}</span>
@@ -150,7 +150,7 @@ function AboutFooter() {
         <div className="mf-grid">
           <div className="mf-brand">
             <a href="/" className="mf-logo">
-              <img src="/nwa_logo_dark_v2.svg" alt="Final Table" className="mf-logo-img" />
+              <img src="/logo.png" alt="Final Table" className="mf-logo-img" />
             </a>
             <p className="mf-tagline">{t('footer.tagline')}</p>
             <p className="mf-support">{t('footer.support')}</p>
