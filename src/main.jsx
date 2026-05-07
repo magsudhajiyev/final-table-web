@@ -5,6 +5,7 @@ import HandViewer from './HandViewer'
 import AboutPage from './AboutPage'
 import PrivacyPage from './PrivacyPage'
 import TermsPage from './TermsPage'
+import AdminPage from './AdminPage'
 import { I18nProvider } from './i18n'
 import './index.css'
 
@@ -17,6 +18,7 @@ function App() {
   if (path === '/about') return <I18nProvider><AboutPage /></I18nProvider>
   if (path === '/privacy') return <I18nProvider><PrivacyPage /></I18nProvider>
   if (path === '/terms') return <I18nProvider><TermsPage /></I18nProvider>
+  if (path === '/admin') return <AdminPage />
   return <I18nProvider><LandingPage /></I18nProvider>
 }
 
