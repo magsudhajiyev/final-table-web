@@ -39,7 +39,7 @@ const en = {
       <span className="tp-hero-hl-sans">Not three minutes.</span>
     </>
   ),
-  'hero.sub': 'Final Table is the live poker tracker built for the table itself — fast enough to use one-handed between hands, accurate enough to study after.',
+  'hero.sub': 'Final Table is the live poker tracker built for the table. Fast enough to log a hand one-handed between deals. Accurate enough to study every session later.',
   'hero.emailPlaceholder': 'Enter your email',
   'hero.errorGeneric': 'Something went wrong. Please try again.',
   'hero.btnLoading': 'Reserving…',
@@ -105,8 +105,8 @@ const en = {
   'problems.3.body': 'Final Table builds opponent profiles from logged hands — real stats, real tendencies — so your reads are backed by data, not memory.',
 
   // Features Showcase
-  'features.title': () => <>For the hands you'll<br />want to remember.</>,
-  'features.subtitle': 'Every tool you need to log, review, and improve — without leaving the table.',
+  'features.title': () => <>Buckle up —<br /><em>there's more coming</em>.</>,
+  'features.subtitle': 'Every tool you need to log, track, review, and improve your game.',
   'features.opponentProfiles.title': 'Opponent Profiles',
   'features.opponentProfiles.desc': "Automatically build profiles on the players you face. Track their stats, classify their style, and review every hand you've played against them.",
   'features.bankroll.title': 'Bankroll Tracking',
@@ -235,7 +235,7 @@ const pl = {
       <span className="tp-hero-hl-sans">Nie w trzy minuty.</span>
     </>
   ),
-  'hero.sub': 'Final Table to tracker pokerowy stworzony dla żywego stołu — wystarczająco szybki, by używać go jedną ręką między rozdaniami, wystarczająco dokładny, by analizować po sesji.',
+  'hero.sub': 'Final Table to tracker pokerowy stworzony dla żywego stołu. Wystarczająco szybki, by zapisać rozdanie jedną ręką między rozdaniami. Wystarczająco dokładny, by analizować każdą sesję później.',
   'hero.emailPlaceholder': 'Wpisz swój email',
   'hero.errorGeneric': 'Coś poszło nie tak. Spróbuj ponownie.',
   'hero.btnLoading': 'Rezerwuję…',
@@ -296,8 +296,8 @@ const pl = {
   'problems.3.question': 'Czy to prawdziwe odczyty, czy uczucia z jednego pamiętnego rozdania?',
   'problems.3.body': 'Final Table buduje profile przeciwników z zalogowanych rozdań — prawdziwe statystyki, prawdziwe tendencje — Twoje odczyty oparte na danych, nie pamięci.',
 
-  'features.title': () => <>Dla rozdań, które<br />chcesz zapamiętać.</>,
-  'features.subtitle': 'Każde narzędzie do logowania, przeglądu i doskonalenia — bez opuszczania stołu.',
+  'features.title': () => <>Trzymaj się —<br /><em>to jeszcze nie koniec</em>.</>,
+  'features.subtitle': 'Każde narzędzie do logowania, śledzenia, przeglądu i doskonalenia Twojej gry.',
   'features.opponentProfiles.title': 'Profile Przeciwników',
   'features.opponentProfiles.desc': 'Automatycznie buduj profile graczy, z którymi grasz. Śledź ich statystyki, klasyfikuj styl i przeglądaj każde wspólne rozdanie.',
   'features.bankroll.title': 'Śledzenie Bankrolla',
@@ -412,7 +412,7 @@ const ru = {
       <span className="tp-hero-hl-sans">Не за три минуты.</span>
     </>
   ),
-  'hero.sub': 'Final Table — покерный трекер, созданный для живого стола. Достаточно быстрый, чтобы пользоваться одной рукой между раздачами, достаточно точный для анализа после.',
+  'hero.sub': 'Final Table — покерный трекер, созданный для живого стола. Достаточно быстрый, чтобы записать раздачу одной рукой между сдачами. Достаточно точный, чтобы разобрать каждую сессию позже.',
   'hero.emailPlaceholder': 'Введите ваш email',
   'hero.errorGeneric': 'Что-то пошло не так. Попробуйте снова.',
   'hero.btnLoading': 'Бронирую…',
@@ -473,8 +473,8 @@ const ru = {
   'problems.3.question': 'Это реальные риды или ощущения от одной запомнившейся раздачи?',
   'problems.3.body': 'Final Table строит профили оппонентов из записанных раздач — настоящая статистика, настоящие тенденции — твои риды основаны на данных, а не памяти.',
 
-  'features.title': () => <>Для раздач, которые<br />хочешь запомнить.</>,
-  'features.subtitle': 'Все инструменты для записи, анализа и улучшения — не покидая стола.',
+  'features.title': () => <>Пристегнитесь —<br /><em>это ещё не всё</em>.</>,
+  'features.subtitle': 'Все инструменты для записи, отслеживания, анализа и улучшения вашей игры.',
   'features.opponentProfiles.title': 'Профили Оппонентов',
   'features.opponentProfiles.desc': 'Автоматически создавай профили игроков. Отслеживай их статистику, классифицируй стиль и просматривай каждую общую раздачу.',
   'features.bankroll.title': 'Отслеживание Банкролла',
@@ -589,7 +589,7 @@ const fr = {
       <span className="tp-hero-hl-sans">Pas en trois minutes.</span>
     </>
   ),
-  'hero.sub': 'Final Table est le tracker de poker live conçu pour la table — assez rapide pour être utilisé d\'une main entre les coups, assez précis pour analyser après.',
+  'hero.sub': 'Final Table est le tracker de poker live conçu pour la table. Assez rapide pour enregistrer une main d\'une seule main entre les donnes. Assez précis pour analyser chaque session après coup.',
   'hero.emailPlaceholder': 'Entrez votre email',
   'hero.errorGeneric': 'Une erreur est survenue. Veuillez réessayer.',
   'hero.btnLoading': 'Réservation…',
@@ -650,8 +650,8 @@ const fr = {
   'problems.3.question': 'Ce sont de vraies lectures ou des impressions d\'une main mémorable ?',
   'problems.3.body': 'Final Table construit des profils adverses à partir des mains enregistrées — vraies stats, vraies tendances — vos lectures reposent sur les données, pas la mémoire.',
 
-  'features.title': () => <>Pour les mains que vous<br />voudrez retenir.</>,
-  'features.subtitle': 'Tous les outils pour enregistrer, analyser et progresser — sans quitter la table.',
+  'features.title': () => <>Accrochez-vous —<br /><em>ce n'est pas fini</em>.</>,
+  'features.subtitle': 'Tous les outils pour enregistrer, suivre, analyser et améliorer votre jeu.',
   'features.opponentProfiles.title': 'Profils Adverses',
   'features.opponentProfiles.desc': 'Construisez automatiquement des profils des joueurs que vous affrontez. Suivez leurs stats, classifiez leur style et revoyez chaque main commune.',
   'features.bankroll.title': 'Suivi du Bankroll',
@@ -766,7 +766,7 @@ const es = {
       <span className="tp-hero-hl-sans">No en tres minutos.</span>
     </>
   ),
-  'hero.sub': 'Final Table es el tracker de póker en vivo diseñado para la mesa — lo bastante rápido para usarlo con una mano entre repartos, lo bastante preciso para analizar después.',
+  'hero.sub': 'Final Table es el tracker de póker en vivo diseñado para la mesa. Lo bastante rápido para registrar una mano con una sola mano entre repartos. Lo bastante preciso para analizar cada sesión después.',
   'hero.emailPlaceholder': 'Introduce tu email',
   'hero.errorGeneric': 'Algo salió mal. Inténtalo de nuevo.',
   'hero.btnLoading': 'Reservando…',
@@ -827,8 +827,8 @@ const es = {
   'problems.3.question': '¿Son lecturas reales o sensaciones de una mano memorable?',
   'problems.3.body': 'Final Table construye perfiles de oponentes a partir de manos registradas — stats reales, tendencias reales — tus lecturas se basan en datos, no en memoria.',
 
-  'features.title': () => <>Para las manos que<br />querrás recordar.</>,
-  'features.subtitle': 'Todas las herramientas para registrar, analizar y mejorar — sin dejar la mesa.',
+  'features.title': () => <>Prepárate —<br /><em>hay más en camino</em>.</>,
+  'features.subtitle': 'Todas las herramientas para registrar, rastrear, analizar y mejorar tu juego.',
   'features.opponentProfiles.title': 'Perfiles de Oponentes',
   'features.opponentProfiles.desc': 'Crea automáticamente perfiles de los jugadores que enfrentas. Rastrea sus stats, clasifica su estilo y revisa cada mano en común.',
   'features.bankroll.title': 'Seguimiento del Bankroll',
@@ -943,7 +943,7 @@ const de = {
       <span className="tp-hero-hl-sans">Nicht in drei Minuten.</span>
     </>
   ),
-  'hero.sub': 'Final Table ist der Live-Poker-Tracker für den Tisch — schnell genug, um ihn einhändig zwischen den Händen zu nutzen, genau genug für die Analyse danach.',
+  'hero.sub': 'Final Table ist der Live-Poker-Tracker für den Tisch. Schnell genug, um eine Hand einhändig zwischen den Deals zu loggen. Genau genug, um jede Session später auszuwerten.',
   'hero.emailPlaceholder': 'E-Mail eingeben',
   'hero.errorGeneric': 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
   'hero.btnLoading': 'Reserviere…',
@@ -1004,8 +1004,8 @@ const de = {
   'problems.3.question': 'Sind das echte Reads oder Gefühle von einer denkwürdigen Hand?',
   'problems.3.body': 'Final Table erstellt Gegnerprofile aus erfassten Händen — echte Stats, echte Tendenzen — deine Reads basieren auf Daten, nicht Erinnerung.',
 
-  'features.title': () => <>Für die Hände, an die du<br />dich erinnern willst.</>,
-  'features.subtitle': 'Alle Tools zum Erfassen, Analysieren und Verbessern — ohne den Tisch zu verlassen.',
+  'features.title': () => <>Anschnallen —<br /><em>da kommt noch mehr</em>.</>,
+  'features.subtitle': 'Alle Tools zum Erfassen, Verfolgen, Analysieren und Verbessern deines Spiels.',
   'features.opponentProfiles.title': 'Gegnerprofile',
   'features.opponentProfiles.desc': 'Erstelle automatisch Profile der Spieler, gegen die du spielst. Verfolge ihre Stats, klassifiziere ihren Stil und sieh dir jede gemeinsame Hand an.',
   'features.bankroll.title': 'Bankroll-Tracking',
@@ -1120,7 +1120,7 @@ const pt = {
       <span className="tp-hero-hl-sans">Não em três minutos.</span>
     </>
   ),
-  'hero.sub': 'Final Table é o tracker de poker ao vivo feito para a mesa — rápido o bastante para usar com uma mão entre as rodadas, preciso o bastante para analisar depois.',
+  'hero.sub': 'Final Table é o tracker de poker ao vivo feito para a mesa. Rápido o bastante para registrar uma mão com uma só mão entre as rodadas. Preciso o bastante para analisar cada sessão depois.',
   'hero.emailPlaceholder': 'Digite seu email',
   'hero.errorGeneric': 'Algo deu errado. Tente novamente.',
   'hero.btnLoading': 'Reservando…',
@@ -1181,8 +1181,8 @@ const pt = {
   'problems.3.question': 'São leituras reais ou sensações de uma mão memorável?',
   'problems.3.body': 'Final Table constrói perfis de oponentes a partir de mãos registradas — stats reais, tendências reais — suas leituras baseadas em dados, não em memória.',
 
-  'features.title': () => <>Para as mãos que você<br />vai querer lembrar.</>,
-  'features.subtitle': 'Todas as ferramentas para registrar, analisar e melhorar — sem sair da mesa.',
+  'features.title': () => <>Prepare-se —<br /><em>tem mais por vir</em>.</>,
+  'features.subtitle': 'Todas as ferramentas para registrar, acompanhar, analisar e melhorar seu jogo.',
   'features.opponentProfiles.title': 'Perfis de Oponentes',
   'features.opponentProfiles.desc': 'Crie automaticamente perfis dos jogadores que você enfrenta. Acompanhe stats, classifique o estilo e revise cada mão em comum.',
   'features.bankroll.title': 'Controle de Bankroll',
