@@ -1036,7 +1036,8 @@ function TPFeaturesShowcase() {
       <div className="fv-inner">
         <div className="fv-header">
           <h2 className="fv-title">
-            {t('features.title')}
+            For the hands you'll{' '}
+            <em>want to remember</em>.
           </h2>
           <p className="fv-subtitle">{t('features.subtitle')}</p>
         </div>
