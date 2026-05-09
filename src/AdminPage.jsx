@@ -441,7 +441,7 @@ function WaitlistTab() {
         </table>
       </div>
       {editing && <EditModal title="Edit Waitlist Entry" fields={WAITLIST_FIELDS}
-        initial={{ email: editing.email, firstName: editing.firstName, lastName: editing.lastName, platform: editing.platform || '', source: editing.source }}
+        initial={{ email: editing.email || '', firstName: editing.firstName || '', lastName: editing.lastName || '', platform: editing.platform || '', source: editing.source || '' }}
         onSave={async v => { await updateWaitlistUser(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={deleting.email}
         onConfirm={async () => { await deleteWaitlistUser(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
@@ -551,7 +551,7 @@ function UsersTab({ onToast }) {
         </table>
       </div>
       {editing && <EditModal title="Edit User" fields={USERS_FIELDS}
-        initial={{ nickname: editing.nickname, email: editing.email, firstName: editing.firstName, lastName: editing.lastName, platform: editing.platform || '', status: editing.status || 'pending' }}
+        initial={{ nickname: editing.nickname || '', email: editing.email || '', firstName: editing.firstName || '', lastName: editing.lastName || '', platform: editing.platform || '', status: editing.status || 'pending' }}
         onSave={async v => { await updateNicknameClaim(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={`@${deleting.nickname}`}
         onConfirm={async () => { await deleteNicknameClaim(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
@@ -745,6 +745,7 @@ function SharedHandsTab() {
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
   const [toast, setToast] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleLogout = () => { sessionStorage.removeItem('admin_auth'); window.location.reload() }
   const showToast = useCallback((message, type) => setToast({ message, type, key: Date.now() }), [])
@@ -757,13 +758,23 @@ function Dashboard() {
     { id: 'hands', label: 'Shared Hands' },
   ]
 
+  const selectTab = (id) => { setActiveTab(id); setMenuOpen(false) }
+
   return (
     <div className="adm-shell">
-      <aside className="adm-sidebar">
+      {/* Mobile top bar */}
+      <div className="adm-mobile-bar">
+        <span className="adm-mobile-bar-title">FT Admin</span>
+        <button className="adm-hamburger" onClick={() => setMenuOpen(o => !o)}>
+          {menuOpen ? '✕' : '☰'}
+        </button>
+      </div>
+      {menuOpen && <div className="adm-mobile-overlay" onClick={() => setMenuOpen(false)} />}
+      <aside className={`adm-sidebar${menuOpen ? ' adm-sidebar-open' : ''}`}>
         <div className="adm-sidebar-logo">FT Admin</div>
         <nav className="adm-sidebar-nav">
           {tabs.map(t => (
-            <button key={t.id} className={`adm-sidebar-item${activeTab === t.id ? ' active' : ''}`} onClick={() => setActiveTab(t.id)}>
+            <button key={t.id} className={`adm-sidebar-item${activeTab === t.id ? ' active' : ''}`} onClick={() => selectTab(t.id)}>
               {t.label}
             </button>
           ))}
