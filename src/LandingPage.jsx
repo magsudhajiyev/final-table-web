@@ -365,7 +365,7 @@ function TPHero() {
           </div>
           <div className="tp-hero-phone" aria-hidden="true">
             <video
-              src="/hero_render.mp4"
+              src="/hero_hand_logging_website_v1.webm"
               className="tp-hero-phone-img"
               autoPlay
               loop
