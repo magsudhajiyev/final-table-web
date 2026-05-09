@@ -4353,6 +4353,43 @@ html {
     z-index: 1;
 }
 .fc-input-prefix { padding-left: 34px; }
+
+/* Platform toggle */
+.fc-platform-toggle {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+.fc-platform-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    background: #f5f5f5;
+    color: #888;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.fc-platform-btn:first-child { border-right: 1px solid #e0e0e0; }
+.fc-platform-btn.fc-platform-active {
+    background: #000;
+    color: #fff;
+}
+.fc-platform-btn:hover:not(.fc-platform-active) {
+    background: #eaeaea;
+}
+.fc-platform-toggle-inline {
+    flex-shrink: 0;
+}
+
 .fc-submit {
     display: flex;
     align-items: center;
@@ -4416,11 +4453,12 @@ html {
 .tp-hero-form {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     flex-wrap: wrap;
+    max-width: 420px;
 }
 .tp-hero-email-input {
-    flex: 0 0 228px;
+    flex: 1 1 200px;
     height: 40px;
     background: #f2f2f2;
     border: none;
@@ -4443,8 +4481,10 @@ html {
 .tp-hero-submit-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     height: 40px;
+    width: 100%;
     background: #000;
     color: #fff;
     border: none;
@@ -4457,7 +4497,6 @@ html {
     white-space: nowrap;
     letter-spacing: -0.02em;
     transition: background 0.2s ease;
-    flex-shrink: 0;
 }
 .tp-hero-submit-btn:hover { background: #222; }
 .tp-hero-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }

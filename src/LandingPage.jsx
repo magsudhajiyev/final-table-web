@@ -258,6 +258,7 @@ function TPNavbar() {
 function TPHero() {
   const { t } = useT()
   const [email, setEmail] = useState('')
+  const [platform, setPlatform] = useState('ios')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
@@ -285,7 +286,7 @@ function TPHero() {
     if (status === 'loading') return
     setStatus('loading')
     try {
-      await submitToWaitlist(email)
+      await submitToWaitlist(email, '', '', platform)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -330,6 +331,16 @@ function TPHero() {
                     onChange={e => setEmail(e.target.value)}
                     required
                   />
+                  <div className="fc-platform-toggle fc-platform-toggle-inline">
+                    <button type="button" className={`fc-platform-btn${platform === 'ios' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('ios')}>
+                      <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-62.1 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                      iOS
+                    </button>
+                    <button type="button" className={`fc-platform-btn${platform === 'android' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('android')}>
+                      <svg width="14" height="14" viewBox="0 0 576 512" fill="currentColor"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48l47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a306.2 306.2 0 0 0-134.63 0l-48.54-84.07a10 10 0 1 0-17.27 10l47.94 83C208.09 194.27 160 270.33 160 360h416c0-89.67-48.09-165.73-136.85-202.55"/></svg>
+                      Android
+                    </button>
+                  </div>
                   <button
                     type="submit"
                     className="tp-hero-submit-btn"
@@ -673,6 +684,7 @@ function TPNotHud() {
 function TPBottomCTA() {
   const { t } = useT()
   const [email, setEmail] = useState('')
+  const [platform, setPlatform] = useState('ios')
   const [status, setStatus] = useState('idle')
 
   const handleSubmit = async e => {
@@ -680,7 +692,7 @@ function TPBottomCTA() {
     if (status === 'loading') return
     setStatus('loading')
     try {
-      await submitToWaitlist(email)
+      await submitToWaitlist(email, '', '', platform)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -722,6 +734,16 @@ function TPBottomCTA() {
                     onChange={e => setEmail(e.target.value)}
                     required
                   />
+                  <div className="fc-platform-toggle fc-platform-toggle-inline">
+                    <button type="button" className={`fc-platform-btn${platform === 'ios' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('ios')}>
+                      <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-62.1 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                      iOS
+                    </button>
+                    <button type="button" className={`fc-platform-btn${platform === 'android' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('android')}>
+                      <svg width="14" height="14" viewBox="0 0 576 512" fill="currentColor"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48l47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a306.2 306.2 0 0 0-134.63 0l-48.54-84.07a10 10 0 1 0-17.27 10l47.94 83C208.09 194.27 160 270.33 160 360h416c0-89.67-48.09-165.73-136.85-202.55"/></svg>
+                      Android
+                    </button>
+                  </div>
                   <button
                     type="submit"
                     className="tp-hero-submit-btn"
@@ -1072,6 +1094,7 @@ function TPFinalCTA() {
   const { t } = useT()
   const FINAL_FAQS = getFinalFaqs(t)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', username: '' })
+  const [platform, setPlatform] = useState('ios')
   const [status, setStatus] = useState('idle')
   const [openFaq, setOpenFaq] = useState(null)
 
@@ -1089,9 +1112,9 @@ function TPFinalCTA() {
     e.preventDefault()
     setStatus('sending')
     try {
-      const result = await submitNicknameClaim(form.username, form.email, form.firstName, form.lastName)
+      const result = await submitNicknameClaim(form.username, form.email, form.firstName, form.lastName, platform)
       if (result.taken) { setStatus('taken'); return }
-      await submitToWaitlist(form.email, form.firstName, form.lastName).catch(() => {})
+      await submitToWaitlist(form.email, form.firstName, form.lastName, platform).catch(() => {})
       setStatus('done')
     } catch {
       setStatus('error')
@@ -1182,6 +1205,24 @@ function TPFinalCTA() {
                     <p className="fc-hint">Maximum 20 characters</p>
                   </div>
                 </div>
+              </div>
+              <div className="fc-platform-toggle">
+                <button
+                  type="button"
+                  className={`fc-platform-btn${platform === 'ios' ? ' fc-platform-active' : ''}`}
+                  onClick={() => setPlatform('ios')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-62.1 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                  iOS
+                </button>
+                <button
+                  type="button"
+                  className={`fc-platform-btn${platform === 'android' ? ' fc-platform-active' : ''}`}
+                  onClick={() => setPlatform('android')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 576 512" fill="currentColor"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48l47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a306.2 306.2 0 0 0-134.63 0l-48.54-84.07a10 10 0 1 0-17.27 10l47.94 83C208.09 194.27 160 270.33 160 360h416c0-89.67-48.09-165.73-136.85-202.55"/></svg>
+                  Android
+                </button>
               </div>
               {status === 'taken' && <p className="ru-error">{t('cta.errorTaken')}</p>}
               {status === 'error' && <p className="ru-error">{t('cta.errorGeneric')}</p>}

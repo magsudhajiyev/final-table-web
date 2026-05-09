@@ -371,12 +371,14 @@ const WAITLIST_FIELDS = [
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
   { key: 'lastName', label: 'Last Name' },
+  { key: 'platform', label: 'Platform', type: 'select', options: ['', 'ios', 'android'] },
   { key: 'source', label: 'Source' },
 ]
 const WAITLIST_CSV_COLS = [
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
   { key: 'lastName', label: 'Last Name' },
+  { key: 'platform', label: 'Platform' },
   { key: 'source', label: 'Source' },
   { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
 ]
@@ -419,7 +421,7 @@ function WaitlistTab() {
           <thead>
             <tr>
               <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Source</th>
+              <th>#</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Source</th>
               <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
               <th></th>
             </tr>
@@ -429,17 +431,17 @@ function WaitlistTab() {
               <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
                 <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
                 <td className="adm-td-num">{i + 1}</td>
-                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td><td>{u.source || '—'}</td>
+                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td><td>{u.platform || '—'}</td><td>{u.source || '—'}</td>
                 <td className="adm-td-date">{formatDate(u.timestamp)}</td>
                 <td className="adm-td-actions"><RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} /></td>
               </tr>
             ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="8" className="adm-empty">No entries found</td></tr>}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="9" className="adm-empty">No entries found</td></tr>}
           </tbody>
         </table>
       </div>
       {editing && <EditModal title="Edit Waitlist Entry" fields={WAITLIST_FIELDS}
-        initial={{ email: editing.email, firstName: editing.firstName, lastName: editing.lastName, source: editing.source }}
+        initial={{ email: editing.email, firstName: editing.firstName, lastName: editing.lastName, platform: editing.platform || '', source: editing.source }}
         onSave={async v => { await updateWaitlistUser(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={deleting.email}
         onConfirm={async () => { await deleteWaitlistUser(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
@@ -456,6 +458,7 @@ const USERS_FIELDS = [
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
   { key: 'lastName', label: 'Last Name' },
+  { key: 'platform', label: 'Platform', type: 'select', options: ['', 'ios', 'android'] },
   { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] },
 ]
 const USERS_CSV_COLS = [
@@ -463,6 +466,7 @@ const USERS_CSV_COLS = [
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
   { key: 'lastName', label: 'Last Name' },
+  { key: 'platform', label: 'Platform' },
   { key: 'status', label: 'Status' },
   { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
 ]
@@ -521,7 +525,7 @@ function UsersTab({ onToast }) {
           <thead>
             <tr>
               <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Username</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Status</th>
+              <th>#</th><th>Username</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Status</th>
               <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
               <th></th>
             </tr>
@@ -533,6 +537,7 @@ function UsersTab({ onToast }) {
                 <td className="adm-td-num">{i + 1}</td>
                 <td className="adm-td-username">@{u.nickname}</td>
                 <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td>
+                <td>{u.platform || '—'}</td>
                 <td><span className={`adm-status adm-status-${u.status || 'pending'}`}>{u.status || 'pending'}</span></td>
                 <td className="adm-td-date">{formatDate(u.timestamp)}</td>
                 <td className="adm-td-actions">
@@ -541,12 +546,12 @@ function UsersTab({ onToast }) {
                 </td>
               </tr>
             ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="9" className="adm-empty">No entries found</td></tr>}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="10" className="adm-empty">No entries found</td></tr>}
           </tbody>
         </table>
       </div>
       {editing && <EditModal title="Edit User" fields={USERS_FIELDS}
-        initial={{ nickname: editing.nickname, email: editing.email, firstName: editing.firstName, lastName: editing.lastName, status: editing.status || 'pending' }}
+        initial={{ nickname: editing.nickname, email: editing.email, firstName: editing.firstName, lastName: editing.lastName, platform: editing.platform || '', status: editing.status || 'pending' }}
         onSave={async v => { await updateNicknameClaim(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={`@${deleting.nickname}`}
         onConfirm={async () => { await deleteNicknameClaim(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
