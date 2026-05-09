@@ -827,7 +827,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
 /* ────────────────────────────────────────────────────── */
 const getTabs = (t) => [
   { icon: IMG_TAB_ICON_1, label: t('tabs.0.label'), mockup: '/phonemain_1.png' },
-  { icon: IMG_TAB_ICON_2, label: t('tabs.1.label'), mockup: '/phonemain_2.png' },
+  { icon: IMG_TAB_ICON_2, label: t('tabs.1.label'), mockup: '/at_the_table_1.png' },
   { icon: IMG_TAB_ICON_3, label: t('tabs.2.label'), mockup: '/phonemain_3.png' },
   { icon: IMG_TAB_ICON_4, label: t('tabs.3.label'), mockup: '/phonemain_3.png' },
 ]

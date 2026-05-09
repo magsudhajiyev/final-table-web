@@ -5,51 +5,76 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Start dev server at http://localhost:3000 with live reload
-npm run serve    # Start server at http://localhost:8080
-npm run build    # Copy files to public/ for deployment
+npm run dev      # Start Vite dev server (usually http://localhost:5173)
+npm run build    # Vite build → dist/
+npm run preview  # Serve the dist/ build locally
 ```
 
-There is no test suite or linter configured.
+No test suite or linter configured.
 
 ## Architecture
 
-This is a vanilla HTML/CSS/JS static landing page for the **Final Table** poker manager app. There is no framework, bundler, or build step beyond copying files.
+This is a **React + Vite SPA** for the **Final Table** poker manager app landing page.
 
-**Three source files:**
-- `index.html` — single-page structure with all sections (hero, features, download CTA, contact)
-- `styles.css` — all styles; uses CSS custom properties defined in `:root` for theming
-- `script.js` — all client-side logic loaded as an ES module (`type="module"`)
+**Entry point:** `src/main.jsx` — handles all routing manually with `window.location.pathname` comparisons (no React Router). Routes:
+- `/` → `LandingPage` (wrapped in `I18nProvider`)
+- `/about` → `AboutPage`
+- `/privacy`, `/terms` → legal pages
+- `/admin` → `AdminPage` (password-protected, hardcoded `ADMIN_PASS`)
+- `/hand/:shareId` → `HandViewer` (shared hand replay, reads `shared_hands` Firestore collection)
 
-**Deployment:** Vercel reads `vercel.json`, runs `npm run build`, and serves from `public/`.
+Vercel rewrites all paths to `/index.html` (`vercel.json`).
 
-### Firebase backend (`script.js`)
-`script.js` initializes Firebase directly via CDN ESM imports (not the npm package). Two Firestore collections are written to:
-- `waitlist` — email + timestamp, submitted from the hero/download section
-- `contact_submissions` — name, email, message + timestamp, submitted from the contact form
+### Landing page (`src/LandingPage.jsx`)
 
-Both write functions are exposed on `window` (`window.submitToWaitlist`, `window.submitContactForm`) so they can be called from inline HTML handlers if needed.
+This is a ~1300-line monolithic file. All section components are defined inline here with a `TP` prefix (`TPNavbar`, `TPHero`, `TPHowItWorks`, `TPNotHud`, `TPFeaturesShowcase`, `TPComparison`, `TPFinalCTA`, `TPBottomCTA`, `TPFooter`). The `LandingPage` default export owns Lenis smooth scroll and exposes it on `window.__lenis`.
 
-### Theming
-Dark/light theme is toggled by adding `.dark-theme` to `<body>`. The current preference is persisted in `localStorage` under the key `theme`. CSS variables for both modes are declared in `styles.css`.
+> **Note:** `src/App.jsx` and `src/components/` (Navbar, Hero, etc.) are not imported by any active route — they are unused legacy code.
 
-### Animations
-- **Scroll reveal:** Elements with class `.observe-me` fade/slide in via `IntersectionObserver` adding `.in-view`.
-- **Hero 3D scroll effect:** On scroll, `rotateX` and `scale` are applied to `.app-screenshot` and `translateY` to `.hero-content` using `requestAnimationFrame`.
-- **Chart bars:** `.fake-chart .bar` elements animate their height in when scrolled into view.
-- **Smooth scroll:** Lenis library (loaded via CDN in `index.html`) handles scroll easing; GSAP is also loaded for potential animation use.
+The hero's player count (`getPlayerCount()`) is a **deterministic pseudo-random calculation** seeded by date, not real Firestore data. It increments predictably over 3-hour slots since a hardcoded start date.
 
-### Fonts
-- Headings: `Playfair Display` (serif) via `--font-heading`
-- Body: `Inter` (sans-serif) via `--font-body`
-- Both loaded from Google Fonts in `<head>`
+### i18n (`src/i18n.jsx`)
+
+All user-facing text lives here. **Always add/update translations for all 7 languages when changing any copy:** `de`, `en`, `es`, `fr`, `pl`, `pt`, `ru`.
+
+- `I18nProvider` detects locale from `localStorage` (`ft_lang`) or `navigator.language`
+- `useT()` hook returns a translation function `t(key, params?)`
+- Translation values can be strings or render functions returning JSX (e.g., `hero.h1`, `compare.title`)
+- Language switcher flag icons use the `flag-icons` npm package; `FLAG_ISO` in `LandingPage.jsx` maps locale codes to ISO country codes (`pt` → `br`, `en` → `gb`)
+
+### Firebase (`src/lib/firebase.js`)
+
+Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here. Collections:
+- `waitlist` — email sign-ups with optional first/last name
+- `nickname_claims` — username reservations (checks `usernames` collection for live-app conflicts)
+- `contact_submissions` — contact form entries
+- `shared_hands` — hand replay data written by the mobile app, read by `HandViewer`
+
+### Admin page (`src/AdminPage.jsx`)
+
+Password gate (`ADMIN_PASS` hardcoded). Tabs for waitlist users, nickname claims, contact submissions, and shared hands. Supports CSV export and bulk email via Resend API (key entered at runtime, stored in `sessionStorage`).
+
+### Animations & scroll
+
+- **Lenis** smooth scroll and **GSAP** are loaded as CDN globals in `index.html` (`window.Lenis`, `window.gsap`). Lenis is initialized in `LandingPage.jsx` and exposed as `window.__lenis`. GSAP is loaded but not currently wired to anything.
+- **Scroll reveal:** add `.observe-me` class to any element; an `IntersectionObserver` adds `.in-view` when it enters the viewport. Wired up in `LandingPage.jsx`.
+
+### Fonts & theming
+
+- Headings: `Playfair Display` (serif) via `--font-heading`; body: `Inter` via `--font-body`; mono accents: `Roboto Mono`
+- Dark/light theme toggled via `.dark-theme` on `<body>`; preference in `localStorage` key `theme`
+- Primary accent color: `#A2F69A` (green)
+
+### Legacy files
+
+`index-legacy.html`, `script.js`, and `styles.css` in the project root are the old vanilla JS version of the page. They are **not part of the React app**. `FIGMA_RULES.md` also describes this old vanilla JS architecture and is stale.
 
 ## LLM Discovery (`public/llms.txt`)
 
-The file `public/llms.txt` helps AI tools (ChatGPT, Claude, Perplexity, etc.) understand and recommend Final Table. **Whenever you make changes to the landing page content — features, copy, FAQ, team info, or product positioning — update `public/llms.txt` to reflect those changes.** Keep it accurate and in sync with the site.
+**Update `public/llms.txt` whenever landing page content changes** (features, copy, FAQ, positioning). It helps AI tools recommend Final Table.
 
 ## Rules
 
-- **Never push to remote without explicit user approval.** Always wait for the user to confirm before running `git push`.
-- **Never commit or push unless the user explicitly asks.** Do not auto-commit after completing a task.
-- **Translate every added text.** Whenever you add or change user-facing text, translate it into all 7 supported languages (DE, EN, ES, FR, PL, PT, RU) in `src/i18n.jsx`.
+- **Never push to remote without explicit user approval.**
+- **Never commit unless explicitly asked.**
+- **Translate every added text** into all 7 languages in `src/i18n.jsx` whenever user-facing copy is added or changed.
