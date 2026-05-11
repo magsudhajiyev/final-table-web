@@ -16,14 +16,30 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 export async function submitToWaitlist(email, firstName = '', lastName = '', platform = '') {
+  const normalizedEmail = email.toLowerCase().trim()
+  const q = query(collection(db, 'waitlist'), where('email', '==', normalizedEmail))
+  const existing = await getDocs(q)
+
+  if (!existing.empty) {
+    const existingDoc = existing.docs[0]
+    const data = existingDoc.data()
+    if (data.platform) return { status: 'already' }
+    if (platform) {
+      await updateDoc(doc(db, 'waitlist', existingDoc.id), { platform })
+      return { status: 'updated' }
+    }
+    return { status: 'already' }
+  }
+
   await addDoc(collection(db, 'waitlist'), {
-    email,
+    email: normalizedEmail,
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     platform,
     source: 'final-table',
     timestamp: serverTimestamp()
   })
+  return { status: 'new' }
 }
 
 export async function submitNicknameClaim(nickname, email, firstName = '', lastName = '', platform = '') {
@@ -102,4 +118,39 @@ export async function submitContactForm(name, email, message) {
     timestamp: serverTimestamp(),
     status: 'new'
   })
+}
+
+// Email templates
+export async function getEmailTemplates() {
+  const q = query(collection(db, 'email_templates'), orderBy('createdAt', 'desc'))
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(d => ({
+    id: d.id, ...d.data(),
+    createdAt: d.data().createdAt?.toDate?.() || null,
+    updatedAt: d.data().updatedAt?.toDate?.() || null
+  }))
+}
+
+export async function saveEmailTemplate(data) {
+  return addDoc(collection(db, 'email_templates'), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
+}
+
+export async function updateEmailTemplate(id, data) {
+  await updateDoc(doc(db, 'email_templates', id), { ...data, updatedAt: serverTimestamp() })
+}
+
+export async function deleteEmailTemplate(id) { await deleteDoc(doc(db, 'email_templates', id)) }
+
+// Email logs
+export async function saveEmailLog(data) {
+  return addDoc(collection(db, 'email_logs'), { ...data, sentAt: serverTimestamp() })
+}
+
+export async function getEmailLogs() {
+  const q = query(collection(db, 'email_logs'), orderBy('sentAt', 'desc'))
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(d => ({
+    id: d.id, ...d.data(),
+    sentAt: d.data().sentAt?.toDate?.() || null
+  }))
 }

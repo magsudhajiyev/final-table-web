@@ -4,7 +4,9 @@ import {
   updateWaitlistUser, deleteWaitlistUser,
   updateNicknameClaim, deleteNicknameClaim,
   getContactSubmissions, updateContactSubmission, deleteContactSubmission,
-  getSharedHands, deleteSharedHand
+  getSharedHands, deleteSharedHand,
+  getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
+  saveEmailLog, getEmailLogs
 } from './lib/firebase'
 import './AdminPage.css'
 
@@ -38,26 +40,24 @@ function exportCSV(rows, filename, columns) {
   URL.revokeObjectURL(url)
 }
 
-function getResendKey() {
-  let key = sessionStorage.getItem('resend_api_key')
-  if (!key) {
-    key = prompt('Enter your Resend API key:')
-    if (key) sessionStorage.setItem('resend_api_key', key)
+async function sendResendEmail(to, { subject, html, templateId, variables } = {}) {
+  const payload = { to }
+  if (templateId) {
+    payload.templateId = templateId
+    if (variables) payload.variables = variables
+    if (subject) payload.subject = subject
+  } else {
+    payload.subject = subject
+    payload.html = html
   }
-  return key
-}
-
-async function sendResendEmail(to, subject, body) {
-  const key = getResendKey()
-  if (!key) throw new Error('No API key provided')
-  const res = await fetch('https://api.resend.com/emails', {
+  const res = await fetch('/api/send-email', {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'Final Table <onboarding@resend.dev>', to: [to], subject, html: body })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   })
   if (!res.ok) {
-    if (res.status === 401) sessionStorage.removeItem('resend_api_key')
-    throw new Error(await res.text())
+    const err = await res.json().catch(() => ({ error: 'Send failed' }))
+    throw new Error(err.error || 'Send failed')
   }
   return res.json()
 }
@@ -220,7 +220,7 @@ function EmailModal({ to, onClose, onToast }) {
   const handleSend = async () => {
     setSending(true)
     try {
-      await sendResendEmail(to, subject, body)
+      await sendResendEmail(to, { subject, html: body })
       onToast('Email sent successfully', 'success')
       onClose()
     } catch (err) {
@@ -739,6 +739,431 @@ function SharedHandsTab() {
 }
 
 /* ══════════════════════════════════════════════
+   EMAIL TAB
+   ══════════════════════════════════════════════ */
+
+function EmailTab({ onToast }) {
+  const [subTab, setSubTab] = useState('compose')
+  const [waitlistData, setWaitlistData] = useState([])
+  const [templates, setTemplates] = useState([])
+  const [logs, setLogs] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  // Compose state
+  const [platformFilter, setPlatformFilter] = useState('')
+  const [recipientSearch, setRecipientSearch] = useState('')
+  const [selected, setSelected] = useState(new Set())
+  const [sendMode, setSendMode] = useState('html') // 'html' | 'template'
+  const [subject, setSubject] = useState('')
+  const [body, setBody] = useState('')
+  const [resendTemplateId, setResendTemplateId] = useState('')
+  const [resendTemplates, setResendTemplates] = useState([])
+  const [loadingResendTemplates, setLoadingResendTemplates] = useState(false)
+  const [templateVars, setTemplateVars] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sendProgress, setSendProgress] = useState(null)
+  const [confirmSend, setConfirmSend] = useState(false)
+
+  // Template editing
+  const [editingTemplate, setEditingTemplate] = useState(null)
+  const [deletingTemplate, setDeletingTemplate] = useState(null)
+
+  // History expand
+  const [expandedLog, setExpandedLog] = useState(null)
+
+  const fetchAll = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [w, t, l] = await Promise.all([getWaitlistUsers(), getEmailTemplates(), getEmailLogs()])
+      setWaitlistData(w)
+      setTemplates(t)
+      setLogs(l)
+    } catch (err) { console.error(err) }
+    finally { setLoading(false) }
+  }, [])
+  useEffect(() => { fetchAll() }, [fetchAll])
+
+  const fetchResendTemplates = useCallback(async () => {
+    setLoadingResendTemplates(true)
+    try {
+      const res = await fetch('/api/list-templates')
+      if (res.ok) {
+        const json = await res.json()
+        setResendTemplates(json.data || [])
+      }
+    } catch (err) { console.error(err) }
+    finally { setLoadingResendTemplates(false) }
+  }, [])
+
+  useEffect(() => { if (sendMode === 'template' && resendTemplates.length === 0) fetchResendTemplates() }, [sendMode])
+
+  // Filtered recipients
+  const filteredRecipients = useMemo(() => {
+    let items = [...waitlistData]
+    if (platformFilter) {
+      if (platformFilter === 'unspecified') items = items.filter(r => !r.platform)
+      else items = items.filter(r => r.platform === platformFilter)
+    }
+    if (recipientSearch) {
+      const q = recipientSearch.toLowerCase()
+      items = items.filter(r =>
+        (r.email || '').toLowerCase().includes(q) ||
+        (r.firstName || '').toLowerCase().includes(q) ||
+        (r.lastName || '').toLowerCase().includes(q)
+      )
+    }
+    return items
+  }, [waitlistData, platformFilter, recipientSearch])
+
+  const toggleRecipient = (id) => setSelected(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+  const toggleAllRecipients = () => setSelected(s => s.size === filteredRecipients.length ? new Set() : new Set(filteredRecipients.map(r => r.id)))
+
+  // Send bulk email
+  const handleSend = async () => {
+    setConfirmSend(false)
+    const recipients = waitlistData.filter(r => selected.has(r.id))
+    if (!recipients.length) {
+      onToast('Please select recipients', 'error')
+      return
+    }
+    if (sendMode === 'html' && (!subject.trim() || !body.trim())) {
+      onToast('Please fill in subject & body', 'error')
+      return
+    }
+    if (sendMode === 'template' && !resendTemplateId.trim()) {
+      onToast('Please enter a Resend template ID', 'error')
+      return
+    }
+
+    // Parse template variables JSON
+    let parsedVars = undefined
+    if (sendMode === 'template' && templateVars.trim()) {
+      try { parsedVars = JSON.parse(templateVars) } catch {
+        onToast('Invalid JSON in template variables', 'error')
+        return
+      }
+    }
+
+    setSending(true)
+    setSendProgress({ sent: 0, total: recipients.length, failed: [] })
+    const failed = []
+    for (let i = 0; i < recipients.length; i++) {
+      const emailOpts = sendMode === 'template'
+        ? { templateId: resendTemplateId.trim(), variables: parsedVars, subject: subject.trim() || undefined }
+        : { subject, html: body.replace(/\n/g, '<br>') }
+      try {
+        await sendResendEmail(recipients[i].email, emailOpts)
+      } catch (err) {
+        failed.push({ email: recipients[i].email, error: err.message })
+      }
+      setSendProgress({ sent: i + 1, total: recipients.length, failed: [...failed] })
+      if (i < recipients.length - 1) await new Promise(r => setTimeout(r, 100))
+    }
+    // Log the send
+    try {
+      await saveEmailLog({
+        subject,
+        body,
+        recipientCount: recipients.length,
+        recipientEmails: recipients.map(r => r.email),
+        filters: { platform: platformFilter || 'all', search: recipientSearch || '' },
+        status: failed.length === 0 ? 'sent' : failed.length === recipients.length ? 'failed' : 'partial',
+        failedEmails: failed.map(f => f.email),
+      })
+    } catch (err) { console.error('Failed to log email send:', err) }
+
+    setSending(false)
+    setSendProgress(null)
+    if (failed.length === 0) {
+      onToast(`Email sent to ${recipients.length} recipients`, 'success')
+    } else {
+      onToast(`Sent ${recipients.length - failed.length}/${recipients.length} — ${failed.length} failed`, 'error')
+    }
+    setSelected(new Set())
+    // Refresh logs
+    try { setLogs(await getEmailLogs()) } catch (err) { console.error(err) }
+  }
+
+  // Save as template
+  const handleSaveTemplate = async () => {
+    const name = prompt('Template name:')
+    if (!name?.trim()) return
+    try {
+      await saveEmailTemplate({ name: name.trim(), subject, body })
+      onToast('Template saved', 'success')
+      setTemplates(await getEmailTemplates())
+    } catch (err) {
+      onToast('Failed to save template: ' + err.message, 'error')
+    }
+  }
+
+  // Load template into compose
+  const loadTemplate = (t) => {
+    setSubject(t.subject || '')
+    setBody(t.body || '')
+    setSubTab('compose')
+  }
+
+  if (loading) return <div className="adm-loading">Loading email module...</div>
+
+  return (
+    <>
+      <div className="adm-header">
+        <h1 className="adm-page-title">Email</h1>
+        <div className="adm-header-right">
+          <button className="adm-refresh-btn" onClick={fetchAll} disabled={loading}>Refresh</button>
+        </div>
+      </div>
+
+      {/* Sub-tabs */}
+      <div className="adm-email-subtabs">
+        {[{ id: 'compose', label: 'Compose' }, { id: 'templates', label: 'Templates' }, { id: 'history', label: 'History' }].map(t => (
+          <button key={t.id} className={`adm-email-subtab${subTab === t.id ? ' active' : ''}`} onClick={() => setSubTab(t.id)}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* ── COMPOSE ── */}
+      {subTab === 'compose' && (
+        <div className="adm-email-compose">
+          {/* Recipients panel */}
+          <div className="adm-email-recipients">
+            <h3 className="adm-email-section-title">
+              Recipients
+              <span className="adm-recipient-chip">{selected.size} of {filteredRecipients.length} selected</span>
+            </h3>
+            <div className="adm-email-filters">
+              <select className="adm-email-filter-select" value={platformFilter} onChange={e => { setPlatformFilter(e.target.value); setSelected(new Set()) }}>
+                <option value="">All platforms</option>
+                <option value="ios">iOS</option>
+                <option value="android">Android</option>
+                <option value="unspecified">Unspecified</option>
+              </select>
+              <input className="adm-email-filter-search" type="text" placeholder="Search by name or email..." value={recipientSearch} onChange={e => setRecipientSearch(e.target.value)} />
+            </div>
+            <div className="adm-email-recipient-list">
+              <div className="adm-email-recipient-header">
+                <label className="adm-email-check-all">
+                  <input type="checkbox" checked={selected.size === filteredRecipients.length && filteredRecipients.length > 0} onChange={toggleAllRecipients} />
+                  <span>Select all ({filteredRecipients.length})</span>
+                </label>
+              </div>
+              <div className="adm-email-recipient-scroll">
+                {filteredRecipients.map(r => (
+                  <label key={r.id} className={`adm-email-recipient-row${selected.has(r.id) ? ' selected' : ''}`}>
+                    <input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleRecipient(r.id)} />
+                    <span className="adm-email-recipient-email">{r.email}</span>
+                    <span className="adm-email-recipient-meta">
+                      {r.firstName || r.lastName ? `${r.firstName || ''} ${r.lastName || ''}`.trim() : ''}
+                      {r.platform ? ` · ${r.platform}` : ''}
+                    </span>
+                  </label>
+                ))}
+                {filteredRecipients.length === 0 && <div className="adm-empty" style={{ padding: '20px 0' }}>No recipients match filters</div>}
+              </div>
+            </div>
+          </div>
+
+          {/* Compose panel */}
+          <div className="adm-email-editor">
+            <h3 className="adm-email-section-title">Compose</h3>
+
+            {/* Mode toggle */}
+            <div className="adm-email-mode-toggle">
+              <button className={`adm-email-mode-btn${sendMode === 'html' ? ' active' : ''}`} onClick={() => setSendMode('html')}>Write HTML</button>
+              <button className={`adm-email-mode-btn${sendMode === 'template' ? ' active' : ''}`} onClick={() => setSendMode('template')}>Resend Template</button>
+            </div>
+
+            {sendMode === 'html' && (
+              <>
+                <div className="adm-email-template-bar">
+                  <select className="adm-email-filter-select" defaultValue="" onChange={e => {
+                    const t = templates.find(t => t.id === e.target.value)
+                    if (t) loadTemplate(t)
+                    e.target.value = ''
+                  }}>
+                    <option value="" disabled>Load saved template...</option>
+                    {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                  <button className="adm-email-save-tpl" onClick={handleSaveTemplate} disabled={!subject.trim() && !body.trim()}>Save as Template</button>
+                </div>
+                <label className="adm-modal-label">
+                  <span>Subject</span>
+                  <input className="adm-modal-input" type="text" value={subject} onChange={e => setSubject(e.target.value)} placeholder="Email subject..." />
+                </label>
+                <label className="adm-modal-label">
+                  <span>Body</span>
+                  <span className="adm-email-hint">Plain text (newlines become line breaks) or raw HTML</span>
+                  <textarea className="adm-modal-input adm-modal-textarea adm-email-body" value={body} onChange={e => setBody(e.target.value)} rows={10} placeholder="Write your email content here..." />
+                </label>
+              </>
+            )}
+
+            {sendMode === 'template' && (
+              <>
+                <label className="adm-modal-label">
+                  <span>Resend Template</span>
+                  <div className="adm-email-template-bar">
+                    <select className="adm-email-filter-select" style={{ flex: 1 }} value={resendTemplateId} onChange={e => setResendTemplateId(e.target.value)}>
+                      <option value="">Select a template...</option>
+                      {resendTemplates.map(t => (
+                        <option key={t.id} value={t.id}>{t.name}{t.alias ? ` (${t.alias})` : ''}</option>
+                      ))}
+                    </select>
+                    <button className="adm-email-save-tpl" onClick={fetchResendTemplates} disabled={loadingResendTemplates}>
+                      {loadingResendTemplates ? 'Loading...' : 'Refresh'}
+                    </button>
+                  </div>
+                </label>
+                <label className="adm-modal-label">
+                  <span>Subject override <span style={{ color: '#666', fontWeight: 400 }}>(optional)</span></span>
+                  <input className="adm-modal-input" type="text" value={subject} onChange={e => setSubject(e.target.value)} placeholder="Leave empty to use template default" />
+                </label>
+                <label className="adm-modal-label">
+                  <span>Template variables <span style={{ color: '#666', fontWeight: 400 }}>(optional JSON)</span></span>
+                  <span className="adm-email-hint">Key/value pairs for your template, e.g. {`{"name": "John", "cta_link": "https://..."}`}</span>
+                  <textarea className="adm-modal-input adm-modal-textarea" value={templateVars} onChange={e => setTemplateVars(e.target.value)} rows={4} placeholder='{"key": "value"}' />
+                </label>
+              </>
+            )}
+
+            {/* Send progress */}
+            {sendProgress && (
+              <div className="adm-email-progress-wrap">
+                <div className="adm-email-progress-bar">
+                  <div className="adm-email-progress-fill" style={{ width: `${(sendProgress.sent / sendProgress.total) * 100}%` }} />
+                </div>
+                <span className="adm-email-progress-text">Sending {sendProgress.sent}/{sendProgress.total}...</span>
+              </div>
+            )}
+
+            <div className="adm-email-send-actions">
+              <button className="adm-email-send-btn" onClick={() => setConfirmSend(true)} disabled={
+                sending || selected.size === 0 ||
+                (sendMode === 'html' && (!subject.trim() || !body.trim())) ||
+                (sendMode === 'template' && !resendTemplateId.trim())
+              }>
+                {sending ? `Sending...` : `Send to ${selected.size} recipient${selected.size !== 1 ? 's' : ''}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TEMPLATES ── */}
+      {subTab === 'templates' && (
+        <>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr><th>Name</th><th>Subject</th><th>Created</th><th></th></tr>
+              </thead>
+              <tbody>
+                {templates.map(t => (
+                  <tr key={t.id}>
+                    <td className="adm-td-template-name">{t.name}</td>
+                    <td>{t.subject || '—'}</td>
+                    <td className="adm-td-date">{formatDate(t.createdAt)}</td>
+                    <td className="adm-td-actions">
+                      <RowMenu
+                        onEdit={() => setEditingTemplate(t)}
+                        onDelete={() => setDeletingTemplate(t)}
+                        extraItems={[{ label: 'Use', onClick: () => loadTemplate(t) }]}
+                      />
+                    </td>
+                  </tr>
+                ))}
+                {templates.length === 0 && <tr><td colSpan="4" className="adm-empty">No templates saved yet</td></tr>}
+              </tbody>
+            </table>
+          </div>
+          {editingTemplate && (
+            <EditModal title="Edit Template" fields={[
+              { key: 'name', label: 'Name' },
+              { key: 'subject', label: 'Subject' },
+              { key: 'body', label: 'Body (HTML)', type: 'textarea' },
+            ]}
+              initial={{ name: editingTemplate.name || '', subject: editingTemplate.subject || '', body: editingTemplate.body || '' }}
+              onSave={async v => { await updateEmailTemplate(editingTemplate.id, v); setTemplates(await getEmailTemplates()) }}
+              onClose={() => setEditingTemplate(null)} />
+          )}
+          {deletingTemplate && (
+            <DeleteConfirm label={deletingTemplate.name}
+              onConfirm={async () => { await deleteEmailTemplate(deletingTemplate.id); setTemplates(await getEmailTemplates()) }}
+              onClose={() => setDeletingTemplate(null)} />
+          )}
+        </>
+      )}
+
+      {/* ── HISTORY ── */}
+      {subTab === 'history' && (
+        <div className="adm-table-wrap">
+          <table className="adm-table">
+            <thead>
+              <tr><th>Date</th><th>Subject</th><th>Recipients</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              {logs.map(l => (
+                <React.Fragment key={l.id}>
+                  <tr className={expandedLog === l.id ? 'adm-row-selected' : ''}>
+                    <td className="adm-td-date">{formatDate(l.sentAt)}</td>
+                    <td>{l.subject || '—'}</td>
+                    <td>{l.recipientCount || 0}</td>
+                    <td><span className={`adm-status adm-status-${l.status || 'sent'}`}>{l.status || 'sent'}</span></td>
+                    <td className="adm-td-actions">
+                      <button className="adm-menu-trigger" onClick={() => setExpandedLog(expandedLog === l.id ? null : l.id)}>
+                        {expandedLog === l.id ? '▲' : '▼'}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedLog === l.id && (
+                    <tr className="adm-email-log-detail-row">
+                      <td colSpan="5">
+                        <div className="adm-email-log-detail">
+                          <div className="adm-email-log-section">
+                            <strong>Recipients ({l.recipientEmails?.length || 0}):</strong>
+                            <div className="adm-email-log-emails">{(l.recipientEmails || []).join(', ')}</div>
+                          </div>
+                          {l.failedEmails?.length > 0 && (
+                            <div className="adm-email-log-section adm-email-log-failed">
+                              <strong>Failed ({l.failedEmails.length}):</strong>
+                              <div className="adm-email-log-emails">{l.failedEmails.join(', ')}</div>
+                            </div>
+                          )}
+                          <div className="adm-email-log-section">
+                            <strong>Filters:</strong> Platform: {l.filters?.platform || 'all'}{l.filters?.search ? `, Search: "${l.filters.search}"` : ''}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+              {logs.length === 0 && <tr><td colSpan="5" className="adm-empty">No emails sent yet</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Confirm send modal */}
+      {confirmSend && (
+        <div className="adm-modal-overlay" onClick={() => setConfirmSend(false)}>
+          <div className="adm-modal adm-modal-sm" onClick={e => e.stopPropagation()}>
+            <h2 className="adm-modal-title">Confirm Send</h2>
+            <p className="adm-modal-body">
+              Send <strong>"{subject}"</strong> to <strong>{selected.size} recipient{selected.size !== 1 ? 's' : ''}</strong>?
+            </p>
+            <div className="adm-modal-actions">
+              <button className="adm-modal-cancel" onClick={() => setConfirmSend(false)}>Cancel</button>
+              <button className="adm-modal-save" onClick={handleSend}>Send</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════
    DASHBOARD SHELL
    ══════════════════════════════════════════════ */
 
@@ -756,6 +1181,7 @@ function Dashboard() {
     { id: 'users', label: 'Users' },
     { id: 'contacts', label: 'Contacts' },
     { id: 'hands', label: 'Shared Hands' },
+    { id: 'email', label: 'Email' },
   ]
 
   const selectTab = (id) => { setActiveTab(id); setMenuOpen(false) }
@@ -787,6 +1213,7 @@ function Dashboard() {
         {activeTab === 'users' && <UsersTab onToast={showToast} />}
         {activeTab === 'contacts' && <ContactsTab />}
         {activeTab === 'hands' && <SharedHandsTab />}
+        {activeTab === 'email' && <EmailTab onToast={showToast} />}
       </main>
       {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} key={toast.key} />}
     </div>

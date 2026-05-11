@@ -264,7 +264,10 @@ function TPHero() {
   const contentRef = useRef(null)
 
   useEffect(() => {
+    const isMobile = () => window.innerWidth <= 768
+
     const handleScroll = () => {
+      if (isMobile()) return
       const section = sectionRef.current
       const content = contentRef.current
       if (!section || !content) return
@@ -286,7 +289,8 @@ function TPHero() {
     if (status === 'loading') return
     setStatus('loading')
     try {
-      await submitToWaitlist(email, '', '', platform)
+      const result = await submitToWaitlist(email, '', '', platform)
+      if (result?.status === 'already') { setStatus('already'); return }
       setStatus('done')
     } catch {
       setStatus('error')
@@ -310,12 +314,12 @@ function TPHero() {
             <p className="tp-hero-sub">{t('hero.sub')}</p>
 
             <div id="reserve-form">
-              {status === 'done' ? (
+              {status === 'done' || status === 'already' ? (
                 <div className="tp-hero-waitlist-success">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6L9 17L4 12" />
                   </svg>
-                  <span className="tp-hero-success-text">{t('hero.successText')}</span>
+                  <span className="tp-hero-success-text">{status === 'already' ? t('hero.already') : t('hero.successText')}</span>
                   <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
                     {t('hero.resetBtn')}
                   </button>
@@ -692,7 +696,8 @@ function TPBottomCTA() {
     if (status === 'loading') return
     setStatus('loading')
     try {
-      await submitToWaitlist(email, '', '', platform)
+      const result = await submitToWaitlist(email, '', '', platform)
+      if (result?.status === 'already') { setStatus('already'); return }
       setStatus('done')
     } catch {
       setStatus('error')
@@ -713,12 +718,12 @@ function TPBottomCTA() {
               <p className="bc-sub">{t('bottomCta.sub')}</p>
             </div>
             <div className="bc-form-group">
-              {status === 'done' ? (
+              {status === 'done' || status === 'already' ? (
                 <div className="tp-hero-waitlist-success">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6L9 17L4 12" />
                   </svg>
-                  <span className="tp-hero-success-text">{t('hero.successText')}</span>
+                  <span className="tp-hero-success-text">{status === 'already' ? t('hero.already') : t('hero.successText')}</span>
                   <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
                     {t('hero.resetBtn')}
                   </button>

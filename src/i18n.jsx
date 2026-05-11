@@ -46,6 +46,7 @@ const en = {
   'hero.btnSubmit': 'Reserve My Spot',
   'hero.proof': (p) => `Free · Takes 10 seconds · ${p.count}+ players already reserved`,
   'hero.successText': 'You\'re on the list! We\'ll reach out when Final Table opens.',
+  'hero.already': 'You\'re already on the list! We\'ll notify you when we launch.',
   'hero.resetBtn': 'Reserve another',
 
   // Comparison
@@ -242,6 +243,7 @@ const pl = {
   'hero.btnSubmit': 'Zarezerwuj miejsce',
   'hero.proof': (p) => `Darmowe · 10 sekund · ${p.count}+ graczy już zarezerwowało`,
   'hero.successText': 'Jesteś na liście! Odezwiemy się, gdy Final Table wystartuje.',
+  'hero.already': 'Już jesteś na liście! Powiadomimy Cię, gdy wystartujemy.',
   'hero.resetBtn': 'Zarezerwuj kolejny',
 
   'compare.eyebrow': 'CO NAS WYRÓŻNIA',
@@ -419,6 +421,7 @@ const ru = {
   'hero.btnSubmit': 'Забронировать место',
   'hero.proof': (p) => `Бесплатно · 10 секунд · ${p.count}+ игроков уже забронировали`,
   'hero.successText': 'Вы в списке! Мы свяжемся, когда Final Table запустится.',
+  'hero.already': 'Вы уже в списке! Мы сообщим, когда запустимся.',
   'hero.resetBtn': 'Забронировать ещё',
 
   'compare.eyebrow': 'ЧЕМ МЫ ОТЛИЧАЕМСЯ',
@@ -597,6 +600,7 @@ const fr = {
   'hero.proof': (p) => `Gratuit · 10 secondes · ${p.count}+ joueurs déjà inscrits`,
   'hero.successText': 'Vous êtes sur la liste ! Nous vous contacterons au lancement de Final Table.',
   'hero.resetBtn': 'Réserver un autre',
+  'hero.already': 'Vous êtes déjà sur la liste ! Nous vous préviendrons au lancement.',
 
   'compare.eyebrow': 'CE QUI NOUS DISTINGUE',
   'compare.title': () => <>Conçu pour le jeu live.<br />Pensé pour le joueur à la table.</>,
@@ -773,6 +777,7 @@ const es = {
   'hero.btnSubmit': 'Reservar mi lugar',
   'hero.proof': (p) => `Gratis · 10 segundos · ${p.count}+ jugadores ya registrados`,
   'hero.successText': '¡Estás en la lista! Te contactaremos cuando Final Table se lance.',
+  'hero.already': '¡Ya estás en la lista! Te avisaremos cuando lancemos.',
   'hero.resetBtn': 'Reservar otro',
 
   'compare.eyebrow': 'QUÉ NOS DIFERENCIA',
@@ -950,6 +955,7 @@ const de = {
   'hero.btnSubmit': 'Platz reservieren',
   'hero.proof': (p) => `Kostenlos · 10 Sekunden · ${p.count}+ Spieler bereits registriert`,
   'hero.successText': 'Du bist auf der Liste! Wir melden uns, wenn Final Table startet.',
+  'hero.already': 'Du bist bereits auf der Liste! Wir benachrichtigen dich zum Start.',
   'hero.resetBtn': 'Weiteren reservieren',
 
   'compare.eyebrow': 'WAS UNS UNTERSCHEIDET',
@@ -1127,6 +1133,7 @@ const pt = {
   'hero.btnSubmit': 'Reservar meu lugar',
   'hero.proof': (p) => `Grátis · 10 segundos · ${p.count}+ jogadores já registrados`,
   'hero.successText': 'Você está na lista! Entraremos em contato quando o Final Table for lançado.',
+  'hero.already': 'Você já está na lista! Avisaremos quando lançarmos.',
   'hero.resetBtn': 'Reservar outro',
 
   'compare.eyebrow': 'O QUE NOS DIFERENCIA',
