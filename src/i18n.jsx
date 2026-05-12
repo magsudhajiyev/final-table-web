@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru', 'tr']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -13,6 +13,7 @@ function detectLocale() {
   if (lang.startsWith('es')) return 'es'
   if (lang.startsWith('de')) return 'de'
   if (lang.startsWith('pt')) return 'pt'
+  if (lang.startsWith('tr')) return 'tr'
   return 'en'
 }
 
@@ -214,6 +215,7 @@ const en = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -392,6 +394,7 @@ const pl = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -570,6 +573,7 @@ const ru = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -748,6 +752,7 @@ const fr = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -926,6 +931,7 @@ const es = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -1104,6 +1110,7 @@ const de = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -1282,12 +1289,192 @@ const pt = {
   'lang.pl': 'Polski',
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
+}
+
+/* ─────────────────────────────────────────────── */
+/*  TURKISH                                        */
+/* ─────────────────────────────────────────────── */
+const tr = {
+  'nav.features': 'Özellikler',
+  'nav.howItWorks': 'Nasıl çalışır?',
+  'nav.compare': 'Karşılaştır',
+  'nav.faq': 'SSS',
+  'nav.cta': 'Kullanıcı adını al',
+
+  'howSection.sans': 'Nasıl ',
+  'howSection.italic': 'çalışır?',
+
+  'hero.h1': () => (
+    <>
+      <span className="tp-hero-hl-sans">Bir eli üç hareketle</span>
+      <span className="tp-hero-hl-italic">kaydet</span>
+      <span className="tp-hero-hl-sans">Üç dakikada değil.</span>
+    </>
+  ),
+  'hero.sub': 'Final Table, masa başı için tasarlanmış canlı poker takipçisidir. Eller arasında tek elle kayıt yapacak kadar hızlı. Her seansı sonra analiz edecek kadar hassas.',
+  'hero.emailPlaceholder': 'E-postanızı girin',
+  'hero.errorGeneric': 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
+  'hero.btnLoading': 'Rezerve ediliyor…',
+  'hero.btnSubmit': 'Yerimi Ayırt',
+  'hero.proof': (p) => `Ücretsiz · 10 saniye · ${p.count}+ oyuncu zaten kayıt yaptı`,
+  'hero.successText': 'Listedesiniz! Final Table açıldığında sizinle iletişime geçeceğiz.',
+  'hero.already': 'Zaten listedesiniz! Lansmanı size bildireceğiz.',
+  'hero.resetBtn': 'Başka biri için kayıt yap',
+
+  'compare.eyebrow': 'BİZİ FARKLI KILAN NE?',
+  'compare.title': () => <>Canlı oyun için yapıldı.<br />Masadaki oyuncu için tasarlandı.</>,
+  'compare.subtitle': 'Canlı poker takipçileri var. Hiçbiri masaya ait hissettirmiyor. Final Table oyunun bir parçası.',
+  'compare.card1.title': 'Üç hareketle kayıt',
+  'compare.card1.desc': 'Herhangi bir aksiyonu — raise, call, fold — üç dokunuşla kaydedin. Yazma yok, menü yok. Ritmi bozmayacak kadar hızlı.',
+  'compare.card2.title': 'Gerçek zamanlı rakip okuma',
+  'compare.card2.desc': 'Karşılaştığınız her oyuncunun istatistik profilini oluşturun. Hamle yapmadan önce VPIP, agresyon ve eğilimlerini bilin.',
+  'compare.card3.title': 'Seans ve el düzeyinde veri',
+  'compare.card3.desc': "Hızlı bir buy-in/cash-out'tan tam el bazında aksiyon kaydına kadar her şeyi takip edin. Oyununuza uygun olanı kullanın.",
+  'compare.card4.title': 'Krupiye Modu',
+  'compare.card4.desc': 'Krupiyeler masayı sesli komutlarla yönetir. Oyuncular kendi telefonlarından gerçek zamanlı takip eder.',
+  'compare.comingSoon': 'YAKINDA · MEKAN ORTAKLIKLARI',
+
+  'tabs.0.label': 'Seanstan önce',
+  'tabs.1.label': 'Masada',
+  'tabs.2.label': 'Seanstan sonra',
+  'tabs.3.label': 'Zamanla',
+  'tabs.0.eyebrow': 'SEANSTAN ÖNCE',
+  'tabs.0.title': 'Kiminle oynadığını\nbilerek masaya otur.',
+  'tabs.0.body': 'Oturmadan önce rakip profillerini ve geçmiş el geçmişini inceleyin. Kimin sıkı, kimin gevşek oynadığını ve paranın nerede olduğunu bilin.',
+  'tabs.1.eyebrow': 'MASADA',
+  'tabs.1.title': 'Üç hareket.\nSıfır akış kaybı.',
+  'tabs.1.body': 'Herhangi bir aksiyonu — raise, call, fold — kaydırarak ve dokunarak kaydedin. Seans ilerlemenizi takip edin. Tek elle kullanacak kadar hızlı.',
+  'tabs.2.eyebrow': 'SEANSTAN SONRA',
+  'tabs.2.title': 'Hissedemediğin\nhataları gör.',
+  'tabs.2.body': 'Her eli inceleyin, oyununuzdaki kalıpları bulun, elleri arkadaşlarınızla paylaşın, solver uyumlu el verisi dışa aktarın ve kararlarınızı GTO referanslarıyla karşılaştırın. Veriler gerçeği söyler.',
+
+  'notHud.title': () => <><span className="nh-hl-sans">Final Table ne </span><span className="nh-hl-italic">değildir?</span></>,
+  'notHud.item1Title': 'HUD değil',
+  'notHud.item1Desc': 'Final Table, canlı oyun sırasında istatistik veya oyuncu verisi göstermez. Bir kayıt aracıdır, heads-up display değil.',
+  'notHud.item2Title': 'Seans sırasında kilitli',
+  'notHud.item2Desc': 'Seans aktifken uygulama kayıt moduna kilitlenir. Seans bitene kadar elleri inceleyemez, veri paylaşamaz, AI analizi veya analitiğe erişemezsiniz.',
+  'notHud.item3Title': 'Adil oyun için tasarlandı',
+  'notHud.item3Desc': 'Her şey seans sonrasında olur. İnceleyin, paylaşın ve analiz edin — ama asla masada haksız bir avantajla değil.',
+
+  'tabs.3.eyebrow': 'ZAMANLA',
+  'tabs.3.title': 'Gerçek kazanma\noranını öğren. Sonunda.',
+  'tabs.3.body': 'Bahis, kumarhane ve oyun türüne göre gerçek $/saat oranınızı takip edin. Sezgiye değil, verilere dayalı kararlar verin.',
+
+  'problems.0.stat': () => <>Canlı poker oyuncuları ortalama<br /><strong>saatte ~25–30 el</strong> oynar.</>,
+  'problems.0.question': 'Bu ellerden kaçını gerçekten hatırlıyorsun?',
+  'problems.0.body': 'Final Table oynadığınız her eli takip eder, böylece her aksiyonu inceleyebilir ve bilmediğiniz hataları bulabilirsiniz.',
+  'problems.1.stat': 'Herhangi bir canlı oyuncuya kazanma oranını sorun. Çoğu tahmin eder.',
+  'problems.1.question': 'Bahis, kumarhane veya oyun türüne göre gerçek $/saat oranını biliyor musun?',
+  'problems.1.body': 'Final Table her seansı hassasiyetle takip eder — kazanma oranı, süre, bahisler — böylece her zaman nerede olduğunuzu bilirsiniz.',
+  'problems.2.stat': 'Pozisyon, pokerdeki en büyük avantajdır.',
+  'problems.2.question': 'BTN vs BB vs UTG pozisyonlarındaki gerçek istatistiklerini biliyor musun?',
+  'problems.2.body': 'Final Table performansınızı pozisyona göre ayrıştırır — nerede para kazandığınızı ve nerede çip kaybettiğinizi görün.',
+  'problems.3.stat': () => <>"Hep hafif 3-bet yapar." "River'da asla fold yapmaz."</>,
+  'problems.3.question': 'Bunlar gerçek okumalar mı yoksa akılda kalan bir elden gelen hisler mi?',
+  'problems.3.body': 'Final Table, kaydedilen ellerden rakip profilleri oluşturur — gerçek istatistikler, gerçek eğilimler — okumalarınız hafızaya değil, verilere dayanır.',
+
+  'features.title': () => <>Kemerlerinizi bağlayın —<br /><em>daha fazlası geliyor</em>.</>,
+  'features.subtitle': 'El kaydı buzdağının sadece görünen kısmı. Final Table birçok akıllı özelliğe sahip.',
+  'features.opponentProfiles.title': 'İstatistikler',
+  'features.opponentProfiles.desc': 'Oyun tarzınızı belirlemek için zamanla oluşan istatistiklerinizi görün. VPIP, agresyon, kazanma oranları ve daha fazlasını takip edin — rakamlar yalan söylemez.',
+  'features.bankroll.title': 'Bankroll Takibi',
+  'features.bankroll.desc': 'Bir bankroll hedefi belirleyin ve ilerlemenizi izleyin. Saatlik oranınızı, net kârınızı, ROI ve daha birçok bankroll metriğini görün.',
+  'features.sessionLogger.title': 'AI Analizi',
+  'features.sessionLogger.desc': 'AI destekli analizler alın. El geçmişlerini analiz edin, kalıpları belirleyin ve oyununuzu geliştirmek için kişiselleştirilmiş öneriler alın.',
+  'features.handReview.title': 'El İnceleme',
+  'features.handReview.desc': 'Kaydedilen her eli yeniden oynatın. Her sokağı adım adım geçin, kararlarınızı GTO referanslarıyla karşılaştırın ve masada hissedemediğiniz hataları bulun.',
+  'features.mtt.title': 'Çok Masalı Turnuvalar',
+  'features.mtt.desc': 'Birden fazla masada canlı turnuvalar düzenleyin, gerçek zamanlı sıralamalar ve ödül dağıtımı yapın. Kulüpler oluşturun, üyeleri yönetin — hepsi uygulamadan.',
+  'features.dealerMode.title': 'Krupiye Modu',
+  'features.dealerMode.comingSoon': 'YAKINDA',
+  'features.dealerMode.desc': 'Krupiyeler masayı sesli komutlarla yönetir. Oyuncular kendi telefonlarından gerçek zamanlı takip eder.',
+
+  'cta.eyebrow': 'Erken erişim',
+  'cta.title': () => <>Kullanıcı adını<br />başkası almadan önce al.</>,
+  'cta.titleLine1': 'Kullanıcı adını',
+  'cta.titleLine2': 'başkası almadan önce al.',
+  'cta.body': 'Lansmandan önce kalıcı kullanıcı adınızı alın. Kullanıcı adları ilk gelen alır — gitti mi gitti.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> oyuncu zaten bekleme listesinde</>,
+  'cta.support': () => <>Sorularınız mı var? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'cta.cardTitle': 'Kullanıcı adını al',
+  'cta.cardSub': 'Ücretsiz · 10 saniye',
+  'cta.labelEmail': 'E-posta',
+  'cta.emailPlaceholder': 'siz@example.com',
+  'cta.hintEmail': 'Gelecekteki giriş e-postanız — sonradan değiştirilemez.',
+  'cta.labelUsername': 'Kullanıcı Adı',
+  'cta.usernamePlaceholder': 'kullaniciadiniz',
+  'cta.hintUsername': 'Yalnızca harfler, rakamlar ve alt çizgiler. 3–20 karakter.',
+  'cta.errorTaken': 'Bu kullanıcı adı zaten alınmış. Başka bir tane deneyin.',
+  'cta.errorGeneric': 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
+  'cta.btnLoading': 'Rezerve ediliyor…',
+  'cta.btnSubmit': 'Yerimi ayırt →',
+  'cta.successChip': '✓ Rezerve edildi',
+  'cta.successTitle': 'Listedesiniz.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> sizin için ayrıldı. Final Table açıldığında sizinle iletişime geçeceğiz.</>
+  ),
+  'cta.resetBtn': 'Başka biri için kayıt yap',
+
+  'faq.0.q': 'Kullanıcı adımı sonradan değiştirebilir miyim?',
+  'faq.0.a': 'Rezerve edildikten sonra kullanıcı adınız sabitlenir. Dikkatli seçin — bu Final Table\'daki kalıcı kullanıcı adınız olacak.',
+  'faq.1.q': 'Rezervasyon ücretsiz mi?',
+  'faq.1.a': 'Evet, o kullanıcı adı alınmamış olduğu sürece.',
+  'faq.2.q': 'Kullanıcı adım alınmışsa ne olur?',
+  'faq.2.a': 'Kullanıcı adları ilk gelen alır prensibine göre çalışır. Sizinki alınmışsa bir varyasyon deneyin — alt çizgi ve rakamlar kullanılabilir.',
+  'faq.3.q': 'Uygulama ne zaman çıkacak?',
+  'faq.3.a': 'Final Table kapalı betadadır. Bekleme listesi üyeleri halka açık lansmandan önce erken erişim alacak.',
+
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Bir eli </span><span className="mf-hl-italic">üç hareketle kaydet.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Üç dakikada değil.</span></p>
+    </>
+  ),
+  'footer.support': () => <>Sorularınız mı var? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'footer.resources': 'Kaynaklar',
+  'footer.company': 'Şirket',
+  'footer.privacy': 'Gizlilik Politikası',
+  'footer.terms': 'Kullanım Koşulları',
+  'footer.copy': (p) => `© Final Table. Tüm hakları saklıdır ${p.year}`,
+
+  // About
+  'about.nav': 'Hakkımızda',
+  'about.missionEyebrow': 'Misyonumuz',
+  'about.missionTitle': () => <>Canlı pokeri<br /><em>herkes için daha akıllı hale getirmek.</em></>,
+  'about.missionP1': 'Final Table, bir türlü kurtulamadığımız bir hayal kırıklığıyla başladı.',
+  'about.missionP2': 'Canlı etkinliklere daldığımızda, hep aynı duvara çarptık: masada gerçekte ne olduğunu kaydetmenin iyi bir yolu yok. Canlı oyunu seviyoruz, ama günler sonra birkaç eli hatırlamak için hafızaya güvenmek çalışma değil — nostalji. Ve gerçek seans verileri olmadan, oyunumuzdaki sızıntılar görünmez kaldı.',
+  'about.missionP3': 'Piyasadaki araçlar hiç yoktan daha kötüydü. Eski, hantal, ağır — seans ortasında asla çıkarmayacağınız türden şeyler çünkü sizi tamamen oyundan çıkarırdı. 2026 yılındayız. Bu yanlış geldi.',
+  'about.missionP4': 'Bu yüzden istediğimiz şeyi biz yaptık — ve böyle bir uygulamanın dürüstçe yapılabileceği tek yoldan: onunla yaşayarak. Sekiz ay prototipleme, gerçek seanslara götürme, neyin işe yaradığını inceleme, neyin işe yaramadığını parçalama ve tekrar oynama. Tekrar tekrar. Her etkileşim kumarhane ışıkları altında, gerçek ellerde, gerçek para söz konusuyken test edildi.',
+  'about.missionP5': 'Final Table, bir seansı bir şeyi yanlış oynadığını bilerek bitirmiş ama neyi olduğunu hatırlayamamış her canlı oyuncu içindir. Her el bir hikaye anlatır. Biz sadece onu kaybetmemenizi sağlıyoruz.',
+  'about.value1Title': 'Önce hız',
+  'about.value1Desc': 'Masada sizi yavaşlatıyorsa, yapılmaya değmez. Her özellik dakikalarda değil, saniyelerde çalışmak için tasarlandı.',
+  'about.value2Title': 'Sezgi değil veri',
+  'about.value2Desc': 'Duygular yalan söyler, veriler söylemez. Tahminleri gerçek rakamlarla değiştirmenize yardımcı oluyoruz — kazanma oranları, eğilimler, kalıplar.',
+  'about.value3Title': 'Canlı oyun için yapıldı',
+  'about.value3Desc': 'Online oyunun bir portu değil. Her etkileşim, her ekran canlı poker masasının kaos ve hızı için tasarlandı.',
+  'about.teamEyebrow': 'Ekip',
+  'about.teamTitle': () => <><em>Final Table</em>'ın arkasındaki insanlar</>,
+  'about.member1Bio': 'Gerçek sorunları çözen ürünler yaratma tutkusuna sahip yazılım mühendisi. Final Table\'ın teknik vizyonuna liderlik ediyor.',
+  'about.member2Bio': 'Sezgisel deneyimler oluşturmaya odaklı, tasarım odaklı ürün düşünürü. Final Table\'ın görünümünü ve kullanıcı deneyimini şekillendiriyor.',
+  'about.ctaTitle': () => <>Bu yolculuğun <em>bir parçası olmak ister misiniz?</em></>,
+  'about.ctaBody': 'Final Table kapalı betadadır. Yerinizi ayırtın ve çıkış yaptığımızda ilk siz öğrenin.',
+  'about.ctaBtn': 'Yerimi ayırt →',
+
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
 }
 
 /* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es, de, pt }
+const translations = { en, pl, ru, fr, es, de, pt, tr }
 
 const I18nContext = createContext()
 

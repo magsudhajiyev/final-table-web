@@ -5,7 +5,7 @@ import { useT, SUPPORTED } from './i18n'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr' }
 
 function sendWelcomeEmail(email) {
   fetch('/api/send-welcome', {
