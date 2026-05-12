@@ -3898,12 +3898,6 @@ html {
     letter-spacing: -0.04em;
 }
 
-.hiw-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
 .hiw-row {
     display: flex;
     gap: 24px;
@@ -3915,26 +3909,28 @@ html {
     border: 1px solid #efefef;
     border-radius: 32px;
     display: flex;
-    gap: 16px;
-    align-items: center;
+    flex-direction: column;
     overflow: hidden;
     flex: 1;
     min-width: 0;
 }
 
-.hiw-card-half {
-    flex: none;
-    width: calc(50% - 12px);
+.hiw-img-area {
+    width: 100%;
+    height: 332px;
+    position: relative;
+    flex-shrink: 0;
 }
 
 .hiw-img-wrap {
-    flex: 1 0 0;
-    min-width: 0;
-    height: 332px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(297px, 100%);
+    height: 100%;
     border-radius: 24px;
     overflow: hidden;
-    background: #f6f6f6;
-    position: relative;
 }
 
 .hiw-img {
@@ -3952,6 +3948,7 @@ html {
     flex-direction: column;
     gap: 14px;
     padding: 24px 16px;
+    text-align: center;
 }
 
 .hiw-eyebrow {
@@ -3992,20 +3989,27 @@ html {
 @media (max-width: 1100px) {
     .hiw-inner { padding: 0 48px; }
     .hiw-heading { font-size: 26px; }
-    .hiw-card-half { width: calc(50% - 12px); }
 }
 @media (max-width: 900px) {
-    .hiw-row { flex-direction: column; }
-    .hiw-card-half { width: 100%; }
-    .hiw-heading { font-size: 28px; }
+    .hiw-heading { font-size: 24px; }
+    .hiw-img-area { height: 280px; }
 }
 @media (max-width: 600px) {
     .hiw-inner { padding: 0 16px; }
     .hiw-section { padding: 40px 0; }
-    .hiw-card { flex-direction: column; align-items: stretch; }
-    .hiw-img-wrap { display: none; }
-    .hiw-body { flex: none; }
-    .hiw-heading { font-size: 24px; }
+    .hiw-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .hiw-card:last-child { grid-column: 1 / -1; }
+    .hiw-img-area { height: auto; }
+    .hiw-img-wrap {
+        position: relative;
+        left: auto;
+        transform: none;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+    }
+    .hiw-img { height: auto; }
+    .hiw-heading { font-size: 20px; }
     .hiw-title { font-size: 28px; }
 }
 
@@ -4811,7 +4815,7 @@ html {
 }
 @media (max-width: 900px) {
     .fv-section { padding: 60px 0; }
-    .fv-header { flex-direction: column; gap: 16px; }
+    .fv-header { flex-direction: column; gap: 16px; align-items: flex-start; }
     .fv-row { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {

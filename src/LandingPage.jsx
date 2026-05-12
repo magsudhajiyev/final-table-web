@@ -550,35 +550,39 @@ function TPHowItWorks() {
           <span className="hiw-title-italic">{t('howSection.italic')}</span>
         </h2>
 
-        <div className="hiw-grid">
+        <div className="hiw-row">
 
-          <div className="hiw-row">
-            <div className="hiw-card">
+          <div className="hiw-card">
+            <div className="hiw-img-area">
               <div className="hiw-img-wrap">
                 <img src="/hiw_before.jpg" alt="" className="hiw-img" />
               </div>
-              <div className="hiw-body">
-                <p className="hiw-eyebrow">{t('tabs.0.label')}</p>
-                <HiwTitle text={t('tabs.0.title')} />
-                <p className="hiw-desc">{t('tabs.0.body')}</p>
-              </div>
             </div>
-
-            <div className="hiw-card">
-              <div className="hiw-img-wrap">
-                <img src="/hiw_table.png" alt="" className="hiw-img" />
-              </div>
-              <div className="hiw-body">
-                <p className="hiw-eyebrow">{t('tabs.1.label')}</p>
-                <HiwTitle text={t('tabs.1.title')} />
-                <p className="hiw-desc">{t('tabs.1.body')}</p>
-              </div>
+            <div className="hiw-body">
+              <p className="hiw-eyebrow">{t('tabs.0.label')}</p>
+              <HiwTitle text={t('tabs.0.title')} />
+              <p className="hiw-desc">{t('tabs.0.body')}</p>
             </div>
           </div>
 
-          <div className="hiw-card hiw-card-half">
-            <div className="hiw-img-wrap">
-              <img src="/hiw_after.png" alt="" className="hiw-img" />
+          <div className="hiw-card">
+            <div className="hiw-img-area">
+              <div className="hiw-img-wrap">
+                <img src="/hiw_table.png" alt="" className="hiw-img" />
+              </div>
+            </div>
+            <div className="hiw-body">
+              <p className="hiw-eyebrow">{t('tabs.1.label')}</p>
+              <HiwTitle text={t('tabs.1.title')} />
+              <p className="hiw-desc">{t('tabs.1.body')}</p>
+            </div>
+          </div>
+
+          <div className="hiw-card">
+            <div className="hiw-img-area">
+              <div className="hiw-img-wrap">
+                <img src="/hiw_after.png" alt="" className="hiw-img" />
+              </div>
             </div>
             <div className="hiw-body">
               <p className="hiw-eyebrow">{t('tabs.2.label')}</p>
@@ -1012,7 +1016,7 @@ function TPFeaturesShowcase() {
   const { t } = useT()
 
   const cards = [
-    { img: '/nwa_opponents.gif',  title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
+    { video: '/statistics.mp4',   title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
     { img: '/nwa_chart.gif',      title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
     { video: '/ai_analysis.mp4',  title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
   ]
