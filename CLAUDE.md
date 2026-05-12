@@ -27,11 +27,13 @@ Vercel rewrites all paths to `/index.html` (`vercel.json`).
 
 ### Landing page (`src/LandingPage.jsx`)
 
-This is a ~1300-line monolithic file. All section components are defined inline here with a `TP` prefix (`TPNavbar`, `TPHero`, `TPHowItWorks`, `TPNotHud`, `TPFeaturesShowcase`, `TPComparison`, `TPFinalCTA`, `TPBottomCTA`, `TPFooter`). The `LandingPage` default export owns Lenis smooth scroll and exposes it on `window.__lenis`.
+This is a ~1300-line monolithic file. All section components are defined inline here with a `TP` prefix. Render order: `TPNavbar → TPHero → TPHowItWorks → TPNotHud → TPFeaturesShowcase → TPComparison → TPFinalCTA → TPBottomCTA → TPFooter`. The `LandingPage` default export owns Lenis smooth scroll and exposes it on `window.__lenis`.
 
 > **Note:** `src/App.jsx` and `src/components/` (Navbar, Hero, etc.) are not imported by any active route — they are unused legacy code.
 
 The hero's player count (`getPlayerCount()`) is a **deterministic pseudo-random calculation** seeded by date, not real Firestore data. It increments predictably over 3-hour slots since a hardcoded start date.
+
+The `--footer-height` CSS custom property is kept up-to-date via a `ResizeObserver` on the footer element (used for sticky-footer layout math in CSS).
 
 ### i18n (`src/i18n.jsx`)
 
@@ -44,7 +46,7 @@ All user-facing text lives here. **Always add/update translations for all 7 lang
 
 ### Firebase (`src/lib/firebase.js`)
 
-Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here. Collections:
+Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here — **except `HandViewer.jsx`**, which initializes its own Firebase app instance directly (using `getApps().length` guard to avoid duplicate initialization). Collections:
 - `waitlist` — email sign-ups with optional first/last name
 - `nickname_claims` — username reservations (checks `usernames` collection for live-app conflicts)
 - `contact_submissions` — contact form entries
@@ -67,7 +69,7 @@ Password gate (`ADMIN_PASS` hardcoded). Tabs for waitlist users, nickname claims
 
 ### Legacy files
 
-`index-legacy.html`, `script.js`, and `styles.css` in the project root are the old vanilla JS version of the page. They are **not part of the React app**. `FIGMA_RULES.md` also describes this old vanilla JS architecture and is stale.
+`index-legacy.html`, `script.js`, and `styles.css` in the project root are the old vanilla JS version of the page. They are **not part of the React app**. `FIGMA_RULES.md` and `LANDING_PAGE_DOCS.md` both describe an older architecture (references `TestPage.jsx` and outdated component names like `TPBgSection`, `TPProblems`, `TPReserveUsername`) — they are stale and should not be relied on.
 
 ## LLM Discovery (`public/llms.txt`)
 

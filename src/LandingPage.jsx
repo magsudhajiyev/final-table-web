@@ -39,35 +39,6 @@ const IMG_TAB_ICON_3    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="
 const IMG_TAB_ICON_4    = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>')}`
 
 /* ────────────────────────────────────────────────────── */
-/*  LOADER                                                */
-/* ────────────────────────────────────────────────────── */
-function TPLoader({ onDone }) {
-  const [phase, setPhase] = useState(0)
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    const timers = [
-      setTimeout(() => setPhase(1), 150),   // icon fades in
-      setTimeout(() => setPhase(2), 750),   // words slide in from below
-      setTimeout(() => setPhase(3), 1650),  // words converge back into icon
-      setTimeout(() => setPhase(4), 2100),  // icon expands, overlay fades
-      setTimeout(() => { document.body.style.overflow = ''; onDone() }, 2750),
-    ]
-    return () => { timers.forEach(clearTimeout); document.body.style.overflow = '' }
-  }, [])
-
-  return (
-    <div className={`tp-loader tp-loader-ph${phase}`}>
-      <div className="tp-loader-stage">
-        <img src="/loader-icon.svg" className="tp-loader-icon" alt="" aria-hidden="true" />
-        <img src="/loader-final.svg" className="tp-loader-word tp-loader-final" alt="" aria-hidden="true" />
-        <img src="/loader-table.svg" className="tp-loader-word tp-loader-table" alt="" aria-hidden="true" />
-      </div>
-    </div>
-  )
-}
-
-/* ────────────────────────────────────────────────────── */
 /*  HOW-IT-WORKS heading helper                           */
 /* ────────────────────────────────────────────────────── */
 function HowTitle({ text }) {
@@ -268,29 +239,7 @@ function TPHero() {
   const [email, setEmail] = useState('')
   const [platform, setPlatform] = useState('ios')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
-  const sectionRef = useRef(null)
-  const contentRef = useRef(null)
 
-  useEffect(() => {
-    const isMobile = () => window.innerWidth <= 768
-
-    const handleScroll = () => {
-      if (isMobile()) return
-      const section = sectionRef.current
-      const content = contentRef.current
-      if (!section || !content) return
-
-      const progress = Math.min(Math.max(window.scrollY / (section.offsetHeight * 0.65), 0), 1)
-      const eased = progress * progress
-
-      content.style.filter    = `blur(${eased * 14}px)`
-      content.style.opacity   = `${1 - eased * 0.9}`
-      content.style.transform = `translateY(${eased * -24}px)`
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -308,10 +257,10 @@ function TPHero() {
   }
 
   return (
-    <section className="tp-hero" ref={sectionRef} data-nav-theme="light">
+    <section className="tp-hero" data-nav-theme="light">
       <div className="tp-hero-inner">
         <div className="tp-hero-row">
-          <div className="tp-hero-content" ref={contentRef}>
+          <div className="tp-hero-content">
 
             {/* Badge */}
             <div className="tp-hero-badge">
@@ -1063,9 +1012,9 @@ function TPFeaturesShowcase() {
   const { t } = useT()
 
   const cards = [
-    { img: '/nwa_opponents.gif', title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
-    { img: '/nwa_chart.gif',     title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
-    { img: '/nwa_session.gif',   title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
+    { img: '/nwa_opponents.gif',  title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
+    { img: '/nwa_chart.gif',      title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
+    { video: '/ai_analysis.mp4',  title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
   ]
 
   return (
@@ -1081,7 +1030,9 @@ function TPFeaturesShowcase() {
           {cards.map((card, ci) => (
             <div key={ci} className={`fv-card${ci === 0 ? ' fv-card-featured' : ''}`}>
               <div className="fv-card-img-wrap">
-                <img src={card.img} alt="" className="fv-card-img" />
+                {card.video
+                  ? <video src={card.video} className="fv-card-img" autoPlay loop muted playsInline />
+                  : <img src={card.img} alt="" className="fv-card-img" />}
               </div>
               <div className="fv-card-body">
                 <h3 className="fv-card-title">{card.title}</h3>
@@ -1296,10 +1247,10 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
-  const [loaderDone] = useState(true)
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
+    if (window.matchMedia('(pointer: coarse)').matches) return
     const lenis = new Lenis({
       duration: 1.8,
       easing: t => 1 - Math.pow(1 - t, 4),
@@ -1324,7 +1275,6 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
-      {!loaderDone && <TPLoader onDone={() => { sessionStorage.setItem('ft_loader_done', '1'); setLoaderDone(true) }} />}
       <TPNavbar />
       <div className="tp-page-body">
         <main>
