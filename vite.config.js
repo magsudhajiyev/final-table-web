@@ -61,12 +61,15 @@ function apiDevPlugin() {
           payload.html = html
         }
         try {
+          console.log('[send-email] API key:', key.slice(0, 10) + '...')
+          console.log('[send-email] Payload:', JSON.stringify(payload, null, 2))
           const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           })
           const data = await response.text()
+          console.log('[send-email] Response:', response.status, data)
           if (!response.ok) console.error('[send-email] Resend error:', response.status, data)
           res.statusCode = response.status
           res.setHeader('Content-Type', 'application/json')
