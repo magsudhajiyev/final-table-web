@@ -178,6 +178,10 @@ export async function setInboxEmailStatus(emailId, status) {
 export async function getAllInboxStatuses() {
   const snapshot = await getDocs(collection(db, 'inbox_status'))
   const map = {}
-  snapshot.docs.forEach(d => { map[d.id] = d.data().status })
+  snapshot.docs.forEach(d => { map[d.id] = d.data() })
   return map
+}
+
+export async function markInboxEmailRead(emailId) {
+  await setDoc(doc(db, 'inbox_status', emailId), { read: true, updatedAt: serverTimestamp() }, { merge: true })
 }

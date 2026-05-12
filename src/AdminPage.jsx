@@ -8,7 +8,7 @@ import {
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
   saveEmailLog, getEmailLogs,
   saveInboxReply, getInboxReplies,
-  setInboxEmailStatus, getAllInboxStatuses
+  setInboxEmailStatus, getAllInboxStatuses, markInboxEmailRead
 } from './lib/firebase'
 import './AdminPage.css'
 
@@ -1183,7 +1183,7 @@ function EmailTab({ onToast }) {
    INBOX TAB
    ══════════════════════════════════════════════ */
 
-function InboxTab({ onToast }) {
+function InboxTab({ onToast, onMarkRead }) {
   const [folder, setFolder] = useState('inbox') // inbox | archived | deleted
   const [allEmails, setAllEmails] = useState([])
   const [statuses, setStatuses] = useState({}) // { emailId: 'deleted' | 'archived' }
@@ -1228,7 +1228,7 @@ function InboxTab({ onToast }) {
   const filteredEmails = useMemo(() => {
     return allEmails.filter(e => {
       const id = e.email_id || e.id
-      const st = statuses[id]
+      const st = statuses[id]?.status
       if (folder === 'inbox') return !st || (st !== 'deleted' && st !== 'archived')
       if (folder === 'archived') return st === 'archived'
       if (folder === 'deleted') return st === 'deleted'
@@ -1271,12 +1271,20 @@ function InboxTab({ onToast }) {
     }
   }, [onToast])
 
-  const handleSelect = (email) => {
+  const handleSelect = async (email) => {
     const id = email.email_id || email.id
     setSelectedId(id)
     setReplying(false)
     setReplyBody('')
     fetchDetail(id)
+    // Mark as read
+    if (!statuses[id]?.read) {
+      try {
+        await markInboxEmailRead(id)
+        setStatuses(prev => ({ ...prev, [id]: { ...prev[id], read: true } }))
+        onMarkRead?.()
+      } catch {}
+    }
   }
 
   const handleReply = async () => {
@@ -1309,7 +1317,7 @@ function InboxTab({ onToast }) {
   const handleSetStatus = async (emailId, status) => {
     try {
       await setInboxEmailStatus(emailId, status)
-      setStatuses(prev => ({ ...prev, [emailId]: status }))
+      setStatuses(prev => ({ ...prev, [emailId]: { ...prev[emailId], status } }))
       if (selectedId === emailId) { setSelectedId(null); setDetail(null) }
       onToast(status === 'deleted' ? 'Moved to Deleted' : status === 'archived' ? 'Archived' : 'Restored to Inbox', 'success')
     } catch (err) {
@@ -1347,7 +1355,7 @@ function InboxTab({ onToast }) {
             return (
               <div
                 key={id}
-                className={`adm-inbox-item${selectedId === id ? ' active' : ''}`}
+                className={`adm-inbox-item${selectedId === id ? ' active' : ''}${!statuses[id]?.read ? ' unread' : ''}`}
                 onClick={() => handleSelect(e)}
               >
                 <div className="adm-inbox-item-from">{e.from}</div>
@@ -1459,9 +1467,48 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
   const [toast, setToast] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [inboxCount, setInboxCount] = useState(0)
 
   const handleLogout = () => { sessionStorage.removeItem('admin_auth'); window.location.reload() }
   const showToast = useCallback((message, type) => setToast({ message, type, key: Date.now() }), [])
+
+  // Poll inbox count
+  const fetchInboxCount = useCallback(async () => {
+    try {
+      const [res, statusMap] = await Promise.all([
+        fetch('/api/list-inbox?limit=50'),
+        getAllInboxStatuses()
+      ])
+      if (!res.ok) return
+      const json = await res.json()
+      const count = (json.data || []).filter(e => {
+        const id = e.email_id || e.id
+        const st = statusMap[id]
+        const status = st?.status
+        if (status === 'deleted' || status === 'archived') return false
+        return !st?.read
+      }).length
+      setInboxCount(prev => {
+        if (count > prev && prev > 0) {
+          // New email arrived — flash title
+          let flash = true
+          const flashInterval = setInterval(() => {
+            document.title = flash ? `(${count}) New email — FT Admin` : 'FT Admin'
+            flash = !flash
+          }, 1000)
+          setTimeout(() => { clearInterval(flashInterval); document.title = count > 0 ? `(${count}) FT Admin` : 'FT Admin' }, 8000)
+        }
+        document.title = count > 0 ? `(${count}) FT Admin` : 'FT Admin'
+        return count
+      })
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    fetchInboxCount()
+    const interval = setInterval(fetchInboxCount, 15000) // poll every 15s
+    return () => { clearInterval(interval); document.title = 'FT Admin' }
+  }, [fetchInboxCount])
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -1469,7 +1516,7 @@ function Dashboard() {
     { id: 'users', label: 'Users' },
     { id: 'contacts', label: 'Contacts' },
     { id: 'hands', label: 'Shared Hands' },
-    { id: 'inbox', label: 'Inbox' },
+    { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
     { id: 'email', label: 'Email' },
   ]
 
@@ -1491,6 +1538,7 @@ function Dashboard() {
           {tabs.map(t => (
             <button key={t.id} className={`adm-sidebar-item${activeTab === t.id ? ' active' : ''}`} onClick={() => selectTab(t.id)}>
               {t.label}
+              {t.badge > 0 && <span className="adm-sidebar-badge">{t.badge}</span>}
             </button>
           ))}
         </nav>
@@ -1502,7 +1550,7 @@ function Dashboard() {
         {activeTab === 'users' && <UsersTab onToast={showToast} />}
         {activeTab === 'contacts' && <ContactsTab />}
         {activeTab === 'hands' && <SharedHandsTab />}
-        {activeTab === 'inbox' && <InboxTab onToast={showToast} />}
+        {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}
       </main>
       {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} key={toast.key} />}
