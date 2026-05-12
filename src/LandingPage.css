@@ -4658,21 +4658,33 @@ html {
         letter-spacing: -0.04em;
     }
     .tp-hero-form {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
         gap: 8px;
+        max-width: 100%;
     }
     .tp-hero-email-input {
-        flex: none;
-        width: 100%;
+        flex: 1 1 auto;
+        min-width: 0;
         border-radius: 24px;
         height: 44px;
+        order: 1;
     }
     .tp-hero-submit-btn {
+        order: 2;
+        flex: 0 0 auto;
+        width: auto;
         border-radius: 24px;
-        justify-content: center;
         padding: 0 20px;
+        height: 44px;
+    }
+    .fc-platform-toggle-inline {
+        order: 3;
         width: 100%;
+        border-radius: 24px;
+    }
+    .fc-platform-toggle-inline .fc-platform-btn {
         height: 44px;
     }
 }
