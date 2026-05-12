@@ -172,13 +172,13 @@ export default function PrivacyPage() {
         <ul>
           <li><strong>Controller:</strong> Magsud Hajiyev (sole proprietor)</li>
           <li><strong>Country:</strong> Republic of Azerbaijan</li>
-          <li><strong>Contact:</strong> <a href="mailto:support@finaltable.io">support@finaltable.io</a></li>
+          <li><strong>Contact:</strong> <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></li>
           <li><strong>App:</strong> Final Table (Poker Friend) — a poker hand tracking and analytics app</li>
         </ul>
         <p>For the purposes of the EU/UK General Data Protection Regulation (GDPR), Magsud Hajiyev is the <strong>data controller</strong> for personal information processed through the Service.</p>
 
         <h2>2. Age Requirement</h2>
-        <p>The Service is intended solely for adults <strong>18 years of age or older</strong>. We do not knowingly collect personal information from anyone under 18. If we learn that we have collected information from a person under 18, we will delete it. If you believe a minor has provided us personal information, contact <a href="mailto:support@finaltable.io">support@finaltable.io</a>.</p>
+        <p>The Service is intended solely for adults <strong>18 years of age or older</strong>. We do not knowingly collect personal information from anyone under 18. If we learn that we have collected information from a person under 18, we will delete it. If you believe a minor has provided us personal information, contact <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>.</p>
 
         <h2>3. Information We Collect</h2>
 
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
           <li><strong>Poker data:</strong> Hand logs, actions, board cards, hole cards, pot sizes, session details, buy-ins, cash-outs, stack history, bankroll goals, tags, notes, and similar content you create in the app.</li>
           <li><strong>Opponent profiles:</strong> Names, colors, and notes you associate with poker opponents.</li>
           <li><strong>Club / event data:</strong> Club memberships, roles, events, rankings, seat assignments, and any QR-based identifiers you generate or receive.</li>
-          <li><strong>Support communications:</strong> Messages, screenshots, and metadata you send to <a href="mailto:support@finaltable.io">support@finaltable.io</a> or submit through in-app help.</li>
+          <li><strong>Support communications:</strong> Messages, screenshots, and metadata you send to <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> or submit through in-app help.</li>
         </ul>
 
         <h3>3.2 Voice Audio (Dealer Mode Only)</h3>
@@ -299,7 +299,7 @@ export default function PrivacyPage() {
           <li><strong>Withdraw consent</strong> you previously gave (for voice recording, notifications, or optional analytics).</li>
           <li><strong>Lodge a complaint</strong> with your local data protection authority. In the EU/UK, you can contact your national regulator.</li>
         </ul>
-        <p><strong>How to exercise:</strong> Email <a href="mailto:support@finaltable.io">support@finaltable.io</a> from the address associated with your account. We will respond within 30 days (extendable to 60 days for complex requests).</p>
+        <p><strong>How to exercise:</strong> Email <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> from the address associated with your account. We will respond within 30 days (extendable to 60 days for complex requests).</p>
         <p><strong>California residents (CCPA/CPRA):</strong> You have additional rights to know what personal information we collect, to request deletion, to correct inaccurate data, and to opt out of "sharing" for cross-context behavioral advertising. We do <strong>not</strong> sell personal information and we do <strong>not</strong> share it for cross-context behavioral advertising.</p>
         <p><strong>In-app deletion:</strong> You can delete your account and all associated poker, opponent, and club data from Profile → Settings → Delete Account. Subscription cancellations must be managed through the Apple App Store or Google Play.</p>
 
@@ -317,7 +317,7 @@ export default function PrivacyPage() {
         <p>
           <strong>Magsud Hajiyev</strong><br />
           Sole Proprietor — Republic of Azerbaijan<br />
-          Email: <a href="mailto:support@finaltable.io">support@finaltable.io</a>
+          Email: <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>
         </p>
 
         <div className="legal-disclaimer">

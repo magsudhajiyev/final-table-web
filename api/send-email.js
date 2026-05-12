@@ -8,14 +8,14 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'RESEND_API_KEY not configured on server' })
   }
 
-  const { to, subject, html, templateId, variables } = req.body || {}
+  const { to, subject, html, templateId, variables, headers } = req.body || {}
   if (!to) {
     return res.status(400).json({ error: 'Missing required field: to' })
   }
 
   // Build payload — template mode or raw HTML mode
   const payload = {
-    from: 'Final Table <hello@finaltable.io>',
+    from: 'Final Table <contact@finaltable.io>',
     to: Array.isArray(to) ? to : [to],
   }
 
@@ -31,6 +31,8 @@ export default async function handler(req, res) {
     payload.subject = subject
     payload.html = html
   }
+
+  if (headers) payload.headers = headers
 
   try {
     const response = await fetch('https://api.resend.com/emails', {

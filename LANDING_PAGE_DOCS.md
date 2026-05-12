@@ -750,7 +750,7 @@ Player pips: filled circles for seated players, hollow for empty seats.
 | Detail 1 label | `RESPONSE TIME` |
 | Detail 1 value | `Usually within 24 hours` |
 | Detail 2 label | `SUPPORT EMAIL` |
-| Detail 2 value | `support@finaltable.app` |
+| Detail 2 value | `contact@finaltable.io` |
 
 ### Right column -- Contact form
 

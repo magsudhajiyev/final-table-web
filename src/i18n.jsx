@@ -129,7 +129,7 @@ const en = {
   'cta.titleLine2': 'before anyone else does.',
   'cta.body': "Claim your permanent handle ahead of launch. Usernames are first-come, first-served — once it's gone, it's gone.",
   'cta.proof': (p) => <><strong>{p.count}+</strong> players already on the waitlist</>,
-  'cta.support': () => <>Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Questions? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Claim your handle',
   'cta.cardSub': 'Free · Takes 10 seconds',
   'cta.labelEmail': 'Email',
@@ -176,7 +176,7 @@ const en = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Not three minutes.</span></p>
     </>
   ),
-  'footer.support': () => <>Questions? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Questions? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Resources',
   'footer.company': 'Company',
   'footer.privacy': 'Privacy Policy',
@@ -320,7 +320,7 @@ const pl = {
   'cta.titleLine2': 'zanim ktoś inny to zrobi.',
   'cta.body': 'Zabezpiecz swój nick przed startem. Nicki są na zasadzie kto pierwszy, ten lepszy — jak zniknie, to zniknie.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> graczy już na liście oczekujących</>,
-  'cta.support': () => <>Pytania? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Pytania? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Zabezpiecz swój nick',
   'cta.cardSub': 'Darmowe · 10 sekund',
   'cta.labelEmail': 'Email',
@@ -355,7 +355,7 @@ const pl = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Nie w trzy minuty.</span></p>
     </>
   ),
-  'footer.support': () => <>Pytania? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Pytania? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Zasoby',
   'footer.company': 'Firma',
   'footer.privacy': 'Polityka Prywatności',
@@ -498,7 +498,7 @@ const ru = {
   'cta.titleLine2': 'пока кто-то другой не сделал это.',
   'cta.body': 'Закрепи свой постоянный ник до запуска. Ники — кто первый, тот и забрал. Как уйдёт — уйдёт.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> игроков уже в списке ожидания</>,
-  'cta.support': () => <>Вопросы? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Вопросы? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Закрепи свой ник',
   'cta.cardSub': 'Бесплатно · 10 секунд',
   'cta.labelEmail': 'Email',
@@ -533,7 +533,7 @@ const ru = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Не за три минуты.</span></p>
     </>
   ),
-  'footer.support': () => <>Вопросы? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Вопросы? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Ресурсы',
   'footer.company': 'Компания',
   'footer.privacy': 'Политика Конфиденциальности',
@@ -676,7 +676,7 @@ const fr = {
   'cta.titleLine2': 'avant tout le monde.',
   'cta.body': 'Sécurisez votre pseudo permanent avant le lancement. Les pseudos sont attribués par ordre d\'arrivée — une fois pris, c\'est pris.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> joueurs déjà sur la liste d'attente</>,
-  'cta.support': () => <>Questions ? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Questions ? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Réservez votre pseudo',
   'cta.cardSub': 'Gratuit · 10 secondes',
   'cta.labelEmail': 'Email',
@@ -711,7 +711,7 @@ const fr = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Pas en trois minutes.</span></p>
     </>
   ),
-  'footer.support': () => <>Questions ? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Questions ? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Ressources',
   'footer.company': 'Entreprise',
   'footer.privacy': 'Politique de Confidentialité',
@@ -854,7 +854,7 @@ const es = {
   'cta.titleLine2': 'antes que nadie.',
   'cta.body': 'Asegura tu nick permanente antes del lanzamiento. Los nicks se asignan por orden de llegada — una vez tomado, desaparece.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> jugadores ya en la lista de espera</>,
-  'cta.support': () => <>¿Preguntas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>¿Preguntas? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Reserva tu nick',
   'cta.cardSub': 'Gratis · 10 segundos',
   'cta.labelEmail': 'Email',
@@ -889,7 +889,7 @@ const es = {
       <p className="mf-hl-p"><span className="mf-hl-sans">No en tres minutos.</span></p>
     </>
   ),
-  'footer.support': () => <>¿Preguntas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>¿Preguntas? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Recursos',
   'footer.company': 'Empresa',
   'footer.privacy': 'Política de Privacidad',
@@ -1032,7 +1032,7 @@ const de = {
   'cta.titleLine2': 'bevor es jemand anderes tut.',
   'cta.body': 'Sichere dir deinen permanenten Nick vor dem Launch. Nicks werden nach dem Prinzip „Wer zuerst kommt" vergeben — einmal weg, ist er weg.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> Spieler bereits auf der Warteliste</>,
-  'cta.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Fragen? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Sichere deinen Nick',
   'cta.cardSub': 'Kostenlos · 10 Sekunden',
   'cta.labelEmail': 'Email',
@@ -1067,7 +1067,7 @@ const de = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Nicht in drei Minuten.</span></p>
     </>
   ),
-  'footer.support': () => <>Fragen? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Fragen? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Ressourcen',
   'footer.company': 'Unternehmen',
   'footer.privacy': 'Datenschutz',
@@ -1210,7 +1210,7 @@ const pt = {
   'cta.titleLine2': 'antes de qualquer um.',
   'cta.body': 'Garanta seu nick permanente antes do lançamento. Nicks são por ordem de chegada — uma vez tomado, já era.',
   'cta.proof': (p) => <><strong>{p.count}+</strong> jogadores já na lista de espera</>,
-  'cta.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'cta.support': () => <>Dúvidas? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'cta.cardTitle': 'Garanta seu nick',
   'cta.cardSub': 'Grátis · 10 segundos',
   'cta.labelEmail': 'Email',
@@ -1245,7 +1245,7 @@ const pt = {
       <p className="mf-hl-p"><span className="mf-hl-sans">Não em três minutos.</span></p>
     </>
   ),
-  'footer.support': () => <>Dúvidas? <a href="mailto:support@finaltable.app">support@finaltable.app</a></>,
+  'footer.support': () => <>Dúvidas? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
   'footer.resources': 'Recursos',
   'footer.company': 'Empresa',
   'footer.privacy': 'Política de Privacidade',

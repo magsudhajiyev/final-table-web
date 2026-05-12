@@ -6,6 +6,14 @@ import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
 const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru' }
+
+function sendWelcomeEmail(email) {
+  fetch('/api/send-welcome', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ to: email })
+  }).catch(() => {}) // fire-and-forget
+}
 function Flag({ locale }) {
   return <span className={`fi fi-${FLAG_ISO[locale]} tp-flag`} />
 }
@@ -291,6 +299,7 @@ function TPHero() {
     try {
       const result = await submitToWaitlist(email, '', '', platform)
       if (result?.status === 'already') { setStatus('already'); return }
+      if (result?.status === 'new') sendWelcomeEmail(email)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -698,6 +707,7 @@ function TPBottomCTA() {
     try {
       const result = await submitToWaitlist(email, '', '', platform)
       if (result?.status === 'already') { setStatus('already'); return }
+      if (result?.status === 'new') sendWelcomeEmail(email)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -1119,7 +1129,8 @@ function TPFinalCTA() {
     try {
       const result = await submitNicknameClaim(form.username, form.email, form.firstName, form.lastName, platform)
       if (result.taken) { setStatus('taken'); return }
-      await submitToWaitlist(form.email, form.firstName, form.lastName, platform).catch(() => {})
+      const wlResult = await submitToWaitlist(form.email, form.firstName, form.lastName, platform).catch(() => ({}))
+      if (wlResult?.status === 'new') sendWelcomeEmail(form.email)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -1285,7 +1296,7 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
-  const [loaderDone, setLoaderDone] = useState(() => sessionStorage.getItem('ft_loader_done') === '1')
+  const [loaderDone] = useState(true)
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return

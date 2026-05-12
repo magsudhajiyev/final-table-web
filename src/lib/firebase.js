@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, getDoc, orderBy, updateDoc, deleteDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, setDoc, serverTimestamp, query, where, getDocs, doc, getDoc, orderBy, updateDoc, deleteDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDTw_1lOHmIl_gDY3ex-N_l8NLxRzy6AtA",
@@ -153,4 +153,31 @@ export async function getEmailLogs() {
     id: d.id, ...d.data(),
     sentAt: d.data().sentAt?.toDate?.() || null
   }))
+}
+
+// Inbox replies
+export async function saveInboxReply(data) {
+  return addDoc(collection(db, 'inbox_replies'), { ...data, sentAt: serverTimestamp() })
+}
+
+export async function getInboxReplies(emailId) {
+  const q = query(collection(db, 'inbox_replies'), where('emailId', '==', emailId))
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(d => ({
+    id: d.id, ...d.data(),
+    sentAt: d.data().sentAt?.toDate?.() || null
+  })).sort((a, b) => (a.sentAt || 0) - (b.sentAt || 0))
+}
+
+// Inbox email status (soft delete / archive)
+export async function setInboxEmailStatus(emailId, status) {
+  // status: 'deleted' | 'archived' | null (null = restore to inbox)
+  await setDoc(doc(db, 'inbox_status', emailId), { status, updatedAt: serverTimestamp() }, { merge: true })
+}
+
+export async function getAllInboxStatuses() {
+  const snapshot = await getDocs(collection(db, 'inbox_status'))
+  const map = {}
+  snapshot.docs.forEach(d => { map[d.id] = d.data().status })
+  return map
 }

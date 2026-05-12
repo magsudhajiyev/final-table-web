@@ -196,7 +196,7 @@ export default function TermsPage() {
         <ul>
           <li>Provide accurate and current information.</li>
           <li>Keep your credentials confidential.</li>
-          <li>Notify us immediately of any unauthorized use at <a href="mailto:support@finaltable.io">support@finaltable.io</a>.</li>
+          <li>Notify us immediately of any unauthorized use at <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>.</li>
           <li>Be responsible for all activity that occurs under your account.</li>
         </ul>
         <p>We may suspend or terminate accounts that we reasonably believe are fraudulent, abusive, or in violation of these Terms.</p>
@@ -223,7 +223,7 @@ export default function TermsPage() {
         <p>If you start a free trial, you may be charged the regular subscription price at the end of the trial unless you cancel before the trial ends. Only one trial per user/device/family as determined by the applicable app store.</p>
 
         <h3>4.5 Refunds</h3>
-        <p>Refunds are governed by the policies of the Apple App Store and Google Play. We generally do not issue refunds directly. If you believe you were charged in error, contact the applicable store first, and then contact us at <a href="mailto:support@finaltable.io">support@finaltable.io</a> if needed.</p>
+        <p>Refunds are governed by the policies of the Apple App Store and Google Play. We generally do not issue refunds directly. If you believe you were charged in error, contact the applicable store first, and then contact us at <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> if needed.</p>
 
         <h3>4.6 Taxes</h3>
         <p>Prices do not include taxes or similar levies. The app store may add applicable VAT, GST, or sales tax at checkout based on your billing country.</p>
@@ -364,7 +364,7 @@ export default function TermsPage() {
         <p>
           <strong>Magsud Hajiyev</strong><br />
           Sole Proprietor — Republic of Azerbaijan<br />
-          Email: <a href="mailto:support@finaltable.io">support@finaltable.io</a>
+          Email: <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>
         </p>
 
         <div className="legal-disclaimer">

@@ -6,7 +6,9 @@ import {
   getContactSubmissions, updateContactSubmission, deleteContactSubmission,
   getSharedHands, deleteSharedHand,
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
-  saveEmailLog, getEmailLogs
+  saveEmailLog, getEmailLogs,
+  saveInboxReply, getInboxReplies,
+  setInboxEmailStatus, getAllInboxStatuses
 } from './lib/firebase'
 import './AdminPage.css'
 
@@ -40,7 +42,7 @@ function exportCSV(rows, filename, columns) {
   URL.revokeObjectURL(url)
 }
 
-async function sendResendEmail(to, { subject, html, templateId, variables } = {}) {
+async function sendResendEmail(to, { subject, html, templateId, variables, headers } = {}) {
   const payload = { to }
   if (templateId) {
     payload.templateId = templateId
@@ -50,6 +52,7 @@ async function sendResendEmail(to, { subject, html, templateId, variables } = {}
     payload.subject = subject
     payload.html = html
   }
+  if (headers) payload.headers = headers
   const res = await fetch('/api/send-email', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -747,7 +750,7 @@ const BUILTIN_TEMPLATES = [
     id: '__welcome__',
     name: 'Welcome (Waitlist)',
     subject: 'Welcome to Final Table!',
-    body: `<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><title>Welcome to Final Table</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]--><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none}body{margin:0;padding:0;width:100%!important;height:100%!important}a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important}@media only screen and (max-width:620px){.email-container{width:100%!important;max-width:100%!important}.fluid{max-width:100%!important;height:auto!important}.stack-column{display:block!important;width:100%!important}.mobile-padding{padding-left:24px!important;padding-right:24px!important}}</style></head><body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif"><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all">You're on the waitlist! Here's what's next for your poker game.</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" align="center" class="email-container" style="max-width:680px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)"><tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr><tr><td style="padding:40px 48px 24px" class="mobile-padding"><img src="https://finaltable.io/logo.png" alt="Final Table" width="90" style="display:block;width:90px;height:auto"></td></tr><tr><td style="padding:0 48px 16px" class="mobile-padding"><h1 style="margin:0;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:32px;font-weight:700;line-height:1.15;color:#000000;letter-spacing:-0.01em">Final Table.</h1></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Hey, you took the first step toward becoming a better poker player. Wise choice, congratulations!</p><p style="margin:0 0 16px">We're building the best possible poker app for you to track your poker journey effortlessly, and Final Table is launching in the coming weeks.</p><p style="margin:0">We'd love to give you free, early access before anyone else, in exchange for your feedback. Our goal is to grow this app with you, and we always appreciate our users' honest input, because it's what shapes every feature we build.</p></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">One quick thing</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 10px">Visit our page and let us know which platform you're using, <strong style="color:#000">iOS</strong> or <strong style="color:#000">Android</strong>, so we can get your access ready. It takes 10 seconds.</p><p style="margin:0;font-size:13px;color:#999">Ignore this if you've already selected your platform.</p></td></tr><tr><td style="padding:0 48px 32px" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="border-radius:12px;background-color:#A2F69A"><a href="https://finaltable.io" target="_blank" style="display:inline-block;padding:14px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#000000;text-decoration:none;border-radius:12px;letter-spacing:-0.01em">Select Your Platform &rarr;</a></td></tr></table></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:28px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">What you'll get</p></td></tr><tr><td style="padding:0 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#4B5563" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Three-gesture logging</strong>: Log any action in three taps, fast enough to use one-handed between deals</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Opponent reads in real time</strong>: Get data-backed profiles on every player so you can make smarter decisions at the table</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Session + hand-level data</strong>: From quick session tracking to full hand-by-hand analysis</td></tr></table></td></tr><tr><td style="padding:8px 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Thanks,<br><strong style="color:#000">Magsud &amp; Tural</strong></p></td></tr><tr><td style="background-color:#FAFAFA;padding:28px 48px;border-top:1px solid #E5E7EB" class="mobile-padding"><p style="margin:0 0 6px;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;color:#999;font-style:italic;line-height:1.4">Log a hand in three gestures.<br>Not three minutes.</p><p style="margin:16px 0 0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;color:#999;line-height:1.6">&copy; 2026 Final Table &middot; <a href="https://finaltable.io" style="color:#999;text-decoration:underline">finaltable.io</a><br>Questions? <a href="mailto:support@finaltable.app" style="color:#999;text-decoration:underline">support@finaltable.app</a></p></td></tr></table></td></tr></table></body></html>`,
+    body: `<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><title>Welcome to Final Table</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]--><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none}body{margin:0;padding:0;width:100%!important;height:100%!important}a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important}@media only screen and (max-width:620px){.email-container{width:100%!important;max-width:100%!important}.fluid{max-width:100%!important;height:auto!important}.stack-column{display:block!important;width:100%!important}.mobile-padding{padding-left:24px!important;padding-right:24px!important}}</style></head><body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif"><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all">You're on the waitlist! Here's what's next for your poker game.</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" align="center" class="email-container" style="max-width:680px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)"><tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr><tr><td style="padding:40px 48px 24px" class="mobile-padding"><img src="https://finaltable.io/logo.png" alt="Final Table" width="90" style="display:block;width:90px;height:auto"></td></tr><tr><td style="padding:0 48px 16px" class="mobile-padding"><h1 style="margin:0;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:32px;font-weight:700;line-height:1.15;color:#000000;letter-spacing:-0.01em">Final Table.</h1></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Hey, you took the first step toward becoming a better poker player. Wise choice, congratulations!</p><p style="margin:0 0 16px">We're building the best possible poker app for you to track your poker journey effortlessly, and Final Table is launching in the coming weeks.</p><p style="margin:0">We'd love to give you free, early access before anyone else, in exchange for your feedback. Our goal is to grow this app with you, and we always appreciate our users' honest input, because it's what shapes every feature we build.</p></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">One quick thing</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 10px">Visit our page and let us know which platform you're using, <strong style="color:#000">iOS</strong> or <strong style="color:#000">Android</strong>, so we can get your access ready. It takes 10 seconds.</p><p style="margin:0;font-size:13px;color:#999">Ignore this if you've already selected your platform.</p></td></tr><tr><td style="padding:0 48px 32px" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="border-radius:12px;background-color:#A2F69A"><a href="https://finaltable.io" target="_blank" style="display:inline-block;padding:14px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#000000;text-decoration:none;border-radius:12px;letter-spacing:-0.01em">Select Your Platform &rarr;</a></td></tr></table></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:28px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">What you'll get</p></td></tr><tr><td style="padding:0 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#4B5563" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Three-gesture logging</strong>: Log any action in three taps, fast enough to use one-handed between deals</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Opponent reads in real time</strong>: Get data-backed profiles on every player so you can make smarter decisions at the table</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Session + hand-level data</strong>: From quick session tracking to full hand-by-hand analysis</td></tr></table></td></tr><tr><td style="padding:8px 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Thanks,<br><strong style="color:#000">Magsud &amp; Tural</strong></p></td></tr><tr><td style="background-color:#FAFAFA;padding:28px 48px;border-top:1px solid #E5E7EB" class="mobile-padding"><p style="margin:0 0 6px;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;color:#999;font-style:italic;line-height:1.4">Log a hand in three gestures.<br>Not three minutes.</p><p style="margin:16px 0 0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;color:#999;line-height:1.6">&copy; 2026 Final Table &middot; <a href="https://finaltable.io" style="color:#999;text-decoration:underline">finaltable.io</a><br>Questions? <a href="mailto:contact@finaltable.io" style="color:#999;text-decoration:underline">contact@finaltable.io</a></p></td></tr></table></td></tr></table></body></html>`,
     builtin: true,
   },
 ]
@@ -1177,6 +1180,278 @@ function EmailTab({ onToast }) {
 }
 
 /* ══════════════════════════════════════════════
+   INBOX TAB
+   ══════════════════════════════════════════════ */
+
+function InboxTab({ onToast }) {
+  const [folder, setFolder] = useState('inbox') // inbox | archived | deleted
+  const [allEmails, setAllEmails] = useState([])
+  const [statuses, setStatuses] = useState({}) // { emailId: 'deleted' | 'archived' }
+  const [loading, setLoading] = useState(true)
+  const [cursors, setCursors] = useState([])
+  const [hasMore, setHasMore] = useState(false)
+
+  const [selectedId, setSelectedId] = useState(null)
+  const [detail, setDetail] = useState(null)
+  const [loadingDetail, setLoadingDetail] = useState(false)
+  const [replies, setReplies] = useState([])
+
+  const [replying, setReplying] = useState(false)
+  const [replyBody, setReplyBody] = useState('')
+  const [sending, setSending] = useState(false)
+
+  const PAGE_SIZE = 50
+
+  const fetchInbox = useCallback(async (afterCursor) => {
+    setLoading(true)
+    try {
+      const [res, statusMap] = await Promise.all([
+        fetch(`/api/list-inbox?limit=${PAGE_SIZE}${afterCursor ? `&after=${afterCursor}` : ''}`),
+        getAllInboxStatuses()
+      ])
+      if (!res.ok) throw new Error('Failed to fetch inbox')
+      const json = await res.json()
+      setAllEmails(json.data || [])
+      setStatuses(statusMap)
+      setHasMore((json.data || []).length === PAGE_SIZE)
+    } catch (err) {
+      console.error(err)
+      onToast('Failed to load inbox', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }, [onToast])
+
+  useEffect(() => { fetchInbox() }, [fetchInbox])
+
+  // Filter emails by current folder
+  const filteredEmails = useMemo(() => {
+    return allEmails.filter(e => {
+      const id = e.email_id || e.id
+      const st = statuses[id]
+      if (folder === 'inbox') return !st || (st !== 'deleted' && st !== 'archived')
+      if (folder === 'archived') return st === 'archived'
+      if (folder === 'deleted') return st === 'deleted'
+      return false
+    })
+  }, [allEmails, statuses, folder])
+
+  const handleNext = () => {
+    if (!allEmails.length) return
+    const lastId = allEmails[allEmails.length - 1].email_id || allEmails[allEmails.length - 1].id
+    setCursors(prev => [...prev, lastId])
+    fetchInbox(lastId)
+  }
+
+  const handlePrev = () => {
+    setCursors(prev => {
+      const next = prev.slice(0, -1)
+      fetchInbox(next[next.length - 1] || undefined)
+      return next
+    })
+  }
+
+  const fetchDetail = useCallback(async (emailId) => {
+    setLoadingDetail(true)
+    setDetail(null)
+    setReplies([])
+    try {
+      const [res, savedReplies] = await Promise.all([
+        fetch(`/api/get-email?id=${emailId}`),
+        getInboxReplies(emailId).catch(err => { console.error('Failed to load replies:', err); return [] })
+      ])
+      if (!res.ok) throw new Error('Failed to fetch email')
+      setDetail(await res.json())
+      setReplies(savedReplies)
+    } catch (err) {
+      console.error(err)
+      onToast('Failed to load email', 'error')
+    } finally {
+      setLoadingDetail(false)
+    }
+  }, [onToast])
+
+  const handleSelect = (email) => {
+    const id = email.email_id || email.id
+    setSelectedId(id)
+    setReplying(false)
+    setReplyBody('')
+    fetchDetail(id)
+  }
+
+  const handleReply = async () => {
+    if (!replyBody.trim() || !detail) return
+    setSending(true)
+    try {
+      const replySubject = detail.subject?.startsWith('Re:') ? detail.subject : `Re: ${detail.subject}`
+      const replyHtml = replyBody.replace(/\n/g, '<br>')
+      await sendResendEmail(detail.from, {
+        subject: replySubject,
+        html: replyHtml,
+        headers: {
+          'In-Reply-To': detail.message_id,
+          'References': detail.message_id,
+        }
+      })
+      const now = new Date()
+      await saveInboxReply({ emailId: selectedId, to: detail.from, subject: replySubject, body: replyHtml })
+      setReplies(prev => [...prev, { emailId: selectedId, to: detail.from, subject: replySubject, body: replyHtml, sentAt: now }])
+      onToast('Reply sent', 'success')
+      setReplying(false)
+      setReplyBody('')
+    } catch (err) {
+      onToast('Failed to send reply: ' + err.message, 'error')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const handleSetStatus = async (emailId, status) => {
+    try {
+      await setInboxEmailStatus(emailId, status)
+      setStatuses(prev => ({ ...prev, [emailId]: status }))
+      if (selectedId === emailId) { setSelectedId(null); setDetail(null) }
+      onToast(status === 'deleted' ? 'Moved to Deleted' : status === 'archived' ? 'Archived' : 'Restored to Inbox', 'success')
+    } catch (err) {
+      onToast('Failed to update: ' + err.message, 'error')
+    }
+  }
+
+  const folderLabel = folder === 'inbox' ? 'Inbox' : folder === 'archived' ? 'Archived' : 'Deleted'
+
+  return (
+    <>
+      <div className="adm-header">
+        <h1 className="adm-page-title">{folderLabel}</h1>
+        <div className="adm-header-right">
+          <button className="adm-bulk-action" onClick={() => { setCursors([]); fetchInbox() }} disabled={loading}>
+            {loading ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
+      </div>
+
+      <div className="adm-email-subtabs">
+        {[{ id: 'inbox', label: 'Inbox' }, { id: 'archived', label: 'Archived' }, { id: 'deleted', label: 'Deleted' }].map(t => (
+          <button key={t.id} className={`adm-email-subtab${folder === t.id ? ' active' : ''}`} onClick={() => { setFolder(t.id); setSelectedId(null); setDetail(null) }}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="adm-inbox-split">
+        <div className="adm-inbox-list">
+          {loading && !allEmails.length && <div className="adm-empty" style={{ padding: 20 }}>Loading...</div>}
+          {!loading && !filteredEmails.length && <div className="adm-empty" style={{ padding: 20 }}>No emails in {folderLabel.toLowerCase()}</div>}
+          {filteredEmails.map(e => {
+            const id = e.email_id || e.id
+            return (
+              <div
+                key={id}
+                className={`adm-inbox-item${selectedId === id ? ' active' : ''}`}
+                onClick={() => handleSelect(e)}
+              >
+                <div className="adm-inbox-item-from">{e.from}</div>
+                <div className="adm-inbox-item-subject">{e.subject || '(no subject)'}</div>
+                <div className="adm-inbox-item-date">{formatDate(e.created_at)}</div>
+              </div>
+            )
+          })}
+          {(cursors.length > 0 || hasMore) && (
+            <div className="adm-inbox-pagination">
+              <button className="adm-bulk-action" disabled={cursors.length === 0} onClick={handlePrev}>Previous</button>
+              <button className="adm-bulk-action" disabled={!hasMore} onClick={handleNext}>Next</button>
+            </div>
+          )}
+        </div>
+
+        <div className="adm-inbox-detail">
+          {loadingDetail && <div className="adm-empty" style={{ padding: 40 }}>Loading email...</div>}
+          {!loadingDetail && !detail && !selectedId && (
+            <div className="adm-empty" style={{ padding: 40 }}>Select an email to view</div>
+          )}
+          {detail && (
+            <>
+              {/* Action buttons */}
+              <div className="adm-inbox-actions">
+                {folder === 'inbox' && (
+                  <>
+                    <button className="adm-bulk-action" onClick={() => handleSetStatus(selectedId, 'archived')}>Archive</button>
+                    <button className="adm-bulk-action adm-inbox-action-delete" onClick={() => handleSetStatus(selectedId, 'deleted')}>Delete</button>
+                  </>
+                )}
+                {folder === 'archived' && (
+                  <>
+                    <button className="adm-bulk-action" onClick={() => handleSetStatus(selectedId, null)}>Move to Inbox</button>
+                    <button className="adm-bulk-action adm-inbox-action-delete" onClick={() => handleSetStatus(selectedId, 'deleted')}>Delete</button>
+                  </>
+                )}
+                {folder === 'deleted' && (
+                  <>
+                    <button className="adm-bulk-action" onClick={() => handleSetStatus(selectedId, null)}>Restore to Inbox</button>
+                    <button className="adm-bulk-action" onClick={() => handleSetStatus(selectedId, 'archived')}>Archive</button>
+                  </>
+                )}
+              </div>
+
+              {/* Original email */}
+              <div className="adm-inbox-msg">
+                <div className="adm-inbox-msg-header">
+                  <div className="adm-inbox-msg-from">{detail.from}</div>
+                  <div className="adm-inbox-msg-date">{formatDate(detail.created_at)}</div>
+                </div>
+                <div className="adm-inbox-msg-meta">
+                  <span>To: {Array.isArray(detail.to) ? detail.to.join(', ') : detail.to}</span>
+                  <span>Subject: {detail.subject}</span>
+                </div>
+                <iframe
+                  className="adm-inbox-iframe"
+                  sandbox=""
+                  srcDoc={detail.html || `<pre style="font-family:sans-serif;padding:16px;white-space:pre-wrap">${(detail.text || '').replace(/</g, '&lt;')}</pre>`}
+                  title="Email content"
+                />
+              </div>
+
+              {/* Sent replies */}
+              {replies.map((r, i) => (
+                <div key={i} className="adm-inbox-msg adm-inbox-msg-reply">
+                  <div className="adm-inbox-msg-header">
+                    <div className="adm-inbox-msg-from">You (Final Table)</div>
+                    <div className="adm-inbox-msg-date">{formatDate(r.sentAt)}</div>
+                  </div>
+                  <div className="adm-inbox-msg-body" dangerouslySetInnerHTML={{ __html: r.body }} />
+                </div>
+              ))}
+
+              {/* Reply composer */}
+              {!replying ? (
+                <button className="adm-inbox-reply-btn" onClick={() => setReplying(true)}>Reply</button>
+              ) : (
+                <div className="adm-inbox-reply">
+                  <textarea
+                    className="adm-inbox-reply-textarea"
+                    placeholder="Type your reply..."
+                    value={replyBody}
+                    onChange={e => setReplyBody(e.target.value)}
+                    rows={5}
+                    autoFocus
+                  />
+                  <div className="adm-inbox-reply-actions">
+                    <button className="adm-modal-cancel" onClick={() => { setReplying(false); setReplyBody('') }}>Cancel</button>
+                    <button className="adm-modal-save" onClick={handleReply} disabled={sending || !replyBody.trim()}>
+                      {sending ? 'Sending...' : 'Send Reply'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════
    DASHBOARD SHELL
    ══════════════════════════════════════════════ */
 
@@ -1194,6 +1469,7 @@ function Dashboard() {
     { id: 'users', label: 'Users' },
     { id: 'contacts', label: 'Contacts' },
     { id: 'hands', label: 'Shared Hands' },
+    { id: 'inbox', label: 'Inbox' },
     { id: 'email', label: 'Email' },
   ]
 
@@ -1226,6 +1502,7 @@ function Dashboard() {
         {activeTab === 'users' && <UsersTab onToast={showToast} />}
         {activeTab === 'contacts' && <ContactsTab />}
         {activeTab === 'hands' && <SharedHandsTab />}
+        {activeTab === 'inbox' && <InboxTab onToast={showToast} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}
       </main>
       {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} key={toast.key} />}
