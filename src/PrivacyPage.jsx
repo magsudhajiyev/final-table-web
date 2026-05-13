@@ -200,7 +200,10 @@ export default function PrivacyPage() {
           <li>Voice logging is <strong>off by default</strong> and runs only while you actively enable it.</li>
         </ul>
 
-        <h3>3.3 Information Collected Automatically</h3>
+        <h3>3.3 Camera (QR Code Scanning)</h3>
+        <p>The app requests access to your device camera solely to scan QR codes for club seat assignments, table check-ins, and event registration. We do not capture, store, or transmit photos or video. Camera access is requested only when you initiate a QR scan and can be revoked at any time in your device settings.</p>
+
+        <h3>3.4 Information Collected Automatically</h3>
         <ul>
           <li><strong>Device &amp; usage data:</strong> Device model, operating system, app version, language, time zone, crash logs, and diagnostic information.</li>
           <li><strong>Analytics events:</strong> Screen views, feature usage, session duration, paywall interactions, and similar events (via Firebase Analytics).</li>
@@ -210,7 +213,7 @@ export default function PrivacyPage() {
           <li><strong>Approximate network data:</strong> IP address and connection metadata, used for security and debugging.</li>
         </ul>
 
-        <h3>3.4 Information From Third Parties</h3>
+        <h3>3.5 Information From Third Parties</h3>
         <ul>
           <li><strong>Google Sign-In:</strong> If you sign in with Google, we receive your name, email, and Google account identifier.</li>
           <li><strong>Apple / Google Play:</strong> We receive subscription purchase receipts and status via RevenueCat.</li>
