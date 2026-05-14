@@ -154,7 +154,7 @@ function apiDevPlugin() {
         }
         let body = ''
         for await (const chunk of req) body += chunk
-        const { to } = JSON.parse(body)
+        const { to, platform } = JSON.parse(body)
         if (!to) {
           res.statusCode = 400
           return res.end(JSON.stringify({ error: 'Missing required field: to' }))
@@ -175,6 +175,24 @@ function apiDevPlugin() {
           res.statusCode = response.status
           res.setHeader('Content-Type', 'application/json')
           res.end(data)
+          // Auto-fire iOS beta invite
+          if (platform === 'ios') {
+            setTimeout(async () => {
+              try {
+                const betaHtml = readFileSync(resolve(process.cwd(), 'src/email-templates/ios-beta.html'), 'utf-8')
+                await fetch('https://api.resend.com/emails', {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    from: 'Final Table <contact@finaltable.io>',
+                    to: Array.isArray(to) ? to : [to],
+                    subject: 'Your Final Table beta access is ready — iOS',
+                    html: betaHtml,
+                  }),
+                })
+              } catch (err) { console.error('[send-welcome] iOS beta invite failed:', err.message) }
+            }, 2000)
+          }
         } catch (err) {
           res.statusCode = 500
           res.end(JSON.stringify({ error: err.message }))

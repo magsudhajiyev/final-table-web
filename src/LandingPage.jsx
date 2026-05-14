@@ -7,11 +7,11 @@ import 'flag-icons/css/flag-icons.min.css'
 
 const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr' }
 
-function sendWelcomeEmail(email) {
+function sendWelcomeEmail(email, platform) {
   fetch('/api/send-welcome', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ to: email })
+    body: JSON.stringify({ to: email, platform })
   }).catch(() => {}) // fire-and-forget
 }
 function Flag({ locale }) {
@@ -248,7 +248,7 @@ function TPHero() {
     try {
       const result = await submitToWaitlist(email, '', '', platform)
       if (result?.status === 'already') { setStatus('already'); return }
-      if (result?.status === 'new') sendWelcomeEmail(email)
+      if (result?.status === 'new') sendWelcomeEmail(email, platform)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -660,7 +660,7 @@ function TPBottomCTA() {
     try {
       const result = await submitToWaitlist(email, '', '', platform)
       if (result?.status === 'already') { setStatus('already'); return }
-      if (result?.status === 'new') sendWelcomeEmail(email)
+      if (result?.status === 'new') sendWelcomeEmail(email, platform)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -1085,7 +1085,7 @@ function TPFinalCTA() {
       const result = await submitNicknameClaim(form.username, form.email, form.firstName, form.lastName, platform)
       if (result.taken) { setStatus('taken'); return }
       const wlResult = await submitToWaitlist(form.email, form.firstName, form.lastName, platform).catch(() => ({}))
-      if (wlResult?.status === 'new') sendWelcomeEmail(form.email)
+      if (wlResult?.status === 'new') sendWelcomeEmail(form.email, platform)
       setStatus('done')
     } catch {
       setStatus('error')
