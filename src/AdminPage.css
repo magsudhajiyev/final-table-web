@@ -297,10 +297,7 @@
 }
 .adm-menu-trigger:hover { background: #222; color: #ddd; }
 .adm-menu-dropdown {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  z-index: 50;
+  z-index: 200;
   min-width: 140px;
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
@@ -324,6 +321,14 @@
 .adm-menu-dropdown button:hover { background: #262626; }
 .adm-menu-danger { color: #e55 !important; }
 .adm-menu-danger:hover { background: #2a1515 !important; }
+/* ── Avatar ── */
+.adm-td-avatar { width: 36px; padding: 8px 4px 8px 16px; }
+.adm-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; }
+.adm-avatar-placeholder {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #2a2a2a; color: #aaa; font-size: 12px; font-weight: 600;
+}
 
 /* ── Modal ── */
 .adm-modal-overlay {

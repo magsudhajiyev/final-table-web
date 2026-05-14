@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, setDoc, serverTimestamp, query, where, getDocs, doc, getDoc, orderBy, updateDoc, deleteDoc } from 'firebase/firestore'
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDTw_1lOHmIl_gDY3ex-N_l8NLxRzy6AtA",
@@ -14,6 +15,23 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
+const auth = getAuth(app)
+
+export const SUPER_ADMIN_EMAIL = 'magsud94@gmail.com'
+
+export async function signInAdmin() {
+  const provider = new GoogleAuthProvider()
+  const result = await signInWithPopup(auth, provider)
+  if (result.user.email !== SUPER_ADMIN_EMAIL) {
+    await signOut(auth)
+    throw new Error('Access denied. Only the super admin can access this dashboard.')
+  }
+  return result.user
+}
+
+export async function signOutAdmin() { await signOut(auth) }
+
+export function onAuthChange(callback) { return onAuthStateChanged(auth, callback) }
 
 export async function submitToWaitlist(email, firstName = '', lastName = '', platform = '') {
   const normalizedEmail = email.toLowerCase().trim()
@@ -98,6 +116,17 @@ export async function getContactSubmissions() {
 
 export async function updateContactSubmission(id, data) { await updateDoc(doc(db, 'contact_submissions', id), data) }
 export async function deleteContactSubmission(id) { await deleteDoc(doc(db, 'contact_submissions', id)) }
+
+export async function getAppUsers() {
+  const snapshot = await getDocs(collection(db, 'users'))
+  return snapshot.docs.map(d => {
+    const data = d.data()
+    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null }
+  })
+}
+
+export async function updateAppUser(id, data) { await updateDoc(doc(db, 'users', id), data) }
+export async function deleteAppUser(id) { await deleteDoc(doc(db, 'users', id)) }
 
 export async function getSharedHands() {
   const snapshot = await getDocs(collection(db, 'shared_hands'))

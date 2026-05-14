@@ -3,16 +3,15 @@ import {
   getWaitlistUsers, getNicknameClaims,
   updateWaitlistUser, deleteWaitlistUser,
   updateNicknameClaim, deleteNicknameClaim,
-  getContactSubmissions, updateContactSubmission, deleteContactSubmission,
+  getAppUsers, updateAppUser, deleteAppUser,
   getSharedHands, deleteSharedHand,
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
   saveEmailLog, getEmailLogs,
   saveInboxReply, getInboxReplies,
-  setInboxEmailStatus, getAllInboxStatuses, markInboxEmailRead
+  setInboxEmailStatus, getAllInboxStatuses, markInboxEmailRead,
+  signInAdmin, signOutAdmin, onAuthChange, SUPER_ADMIN_EMAIL
 } from './lib/firebase'
 import './AdminPage.css'
-
-const ADMIN_PASS = '3vaolO5MfuVFn3qs'
 
 /* ══════════════════════════════════════════════
    UTILITIES
@@ -70,22 +69,30 @@ async function sendResendEmail(to, { subject, html, templateId, variables, heade
    ══════════════════════════════════════════════ */
 
 function LoginScreen({ onLogin }) {
-  const [pw, setPw] = useState('')
-  const [error, setError] = useState(false)
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (pw === ADMIN_PASS) { sessionStorage.setItem('admin_auth', '1'); onLogin() }
-    else { setError(true); setPw('') }
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const handleSignIn = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      await signInAdmin()
+      onLogin()
+    } catch (err) {
+      setError(err.message || 'Sign-in failed')
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <div className="adm-login-wrap">
-      <form className="adm-login-card" onSubmit={handleSubmit}>
+      <div className="adm-login-card">
         <h1 className="adm-login-title">Admin</h1>
-        <input className="adm-login-input" type="password" placeholder="Password" value={pw}
-          onChange={e => { setPw(e.target.value); setError(false) }} autoFocus />
-        {error && <p className="adm-login-error">Wrong password</p>}
-        <button className="adm-login-btn" type="submit">Log in</button>
-      </form>
+        <p style={{ color: '#888', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>Sign in with the authorized Google account</p>
+        {error && <p className="adm-login-error">{error}</p>}
+        <button className="adm-login-btn" onClick={handleSignIn} disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign in with Google'}
+        </button>
+      </div>
     </div>
   )
 }
@@ -123,6 +130,7 @@ function BulkBar({ count, onDeleteAll, extraActions }) {
 
 function RowMenu({ onEdit, onDelete, extraItems }) {
   const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState({ top: 0, left: 0, flipUp: false })
   const ref = useRef(null)
   useEffect(() => {
     if (!open) return
@@ -130,11 +138,29 @@ function RowMenu({ onEdit, onDelete, extraItems }) {
     document.addEventListener('mousedown', close)
     return () => document.removeEventListener('mousedown', close)
   }, [open])
+  const handleOpen = () => {
+    if (!open && ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      const flipUp = rect.bottom + 150 > window.innerHeight
+      setPos({
+        left: rect.right,
+        top: flipUp ? rect.top : rect.bottom,
+        flipUp,
+      })
+    }
+    setOpen(o => !o)
+  }
   return (
     <div className="adm-menu-wrap" ref={ref}>
-      <button className="adm-menu-trigger" onClick={() => setOpen(o => !o)}>⋮</button>
+      <button className="adm-menu-trigger" onClick={handleOpen}>⋮</button>
       {open && (
-        <div className="adm-menu-dropdown">
+        <div className="adm-menu-dropdown" style={{
+          position: 'fixed',
+          top: pos.flipUp ? 'auto' : pos.top,
+          bottom: pos.flipUp ? (window.innerHeight - pos.top) : 'auto',
+          left: pos.left,
+          transform: 'translateX(-100%)',
+        }}>
           {extraItems?.map((item, i) => (
             <button key={i} className={item.danger ? 'adm-menu-danger' : ''} onClick={() => { setOpen(false); item.onClick() }}>{item.label}</button>
           ))}
@@ -314,7 +340,7 @@ function OverviewTab() {
   useEffect(() => {
     (async () => {
       try {
-        const [w, u, c, h] = await Promise.all([getWaitlistUsers(), getNicknameClaims(), getContactSubmissions(), getSharedHands()])
+        const [w, u, h, au] = await Promise.all([getWaitlistUsers(), getNicknameClaims(), getSharedHands(), getAppUsers()])
         const now = new Date()
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
         const weekStart = new Date(todayStart); weekStart.setDate(weekStart.getDate() - 7)
@@ -331,7 +357,7 @@ function OverviewTab() {
         }
         const maxCount = Math.max(...days.map(d => d.count), 1)
 
-        setStats({ waitlist: w.length, users: u.length, contacts: c.length, hands: h.length, signupsToday, signupsWeek, days, maxCount })
+        setStats({ waitlist: w.length, nicknames: u.length, users: au.length, hands: h.length, signupsToday, signupsWeek, days, maxCount })
       } catch (err) { console.error(err) }
       finally { setLoading(false) }
     })()
@@ -345,8 +371,8 @@ function OverviewTab() {
       <div className="adm-header"><h1 className="adm-page-title">Overview</h1></div>
       <div className="adm-stats-grid">
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.waitlist}</div><div className="adm-stat-label">Waitlist</div></div>
-        <div className="adm-stat-card"><div className="adm-stat-value">{stats.users}</div><div className="adm-stat-label">Users</div></div>
-        <div className="adm-stat-card"><div className="adm-stat-value">{stats.contacts}</div><div className="adm-stat-label">Contacts</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats.users}</div><div className="adm-stat-label">App Users</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats.nicknames}</div><div className="adm-stat-label">Nickname Claims</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.hands}</div><div className="adm-stat-label">Shared Hands</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.signupsToday}</div><div className="adm-stat-label">Today</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.signupsWeek}</div><div className="adm-stat-label">This week</div></div>
@@ -456,7 +482,7 @@ function WaitlistTab() {
    USERS TAB
    ══════════════════════════════════════════════ */
 
-const USERS_FIELDS = [
+const NICKNAME_FIELDS = [
   { key: 'nickname', label: 'Username' },
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
@@ -464,7 +490,7 @@ const USERS_FIELDS = [
   { key: 'platform', label: 'Platform', type: 'select', options: ['', 'ios', 'android'] },
   { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] },
 ]
-const USERS_CSV_COLS = [
+const NICKNAME_CSV_COLS = [
   { key: 'nickname', label: 'Username' },
   { key: 'email', label: 'Email' },
   { key: 'firstName', label: 'First Name' },
@@ -474,7 +500,7 @@ const USERS_CSV_COLS = [
   { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
 ]
 
-function UsersTab({ onToast }) {
+function NicknameClaimsTab({ onToast }) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
@@ -503,10 +529,10 @@ function UsersTab({ onToast }) {
   return (
     <>
       <div className="adm-header">
-        <h1 className="adm-page-title">Users</h1>
+        <h1 className="adm-page-title">Nickname Claims</h1>
         <div className="adm-header-right">
           <span className="adm-count">{fs.filtered.length} of {data.length}</span>
-          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'users.csv', USERS_CSV_COLS)}>Export CSV</button>
+          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'nickname_claims.csv', NICKNAME_CSV_COLS)}>Export CSV</button>
           <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
         </div>
       </div>
@@ -553,7 +579,7 @@ function UsersTab({ onToast }) {
           </tbody>
         </table>
       </div>
-      {editing && <EditModal title="Edit User" fields={USERS_FIELDS}
+      {editing && <EditModal title="Edit Nickname Claim" fields={NICKNAME_FIELDS}
         initial={{ nickname: editing.nickname || '', email: editing.email || '', firstName: editing.firstName || '', lastName: editing.lastName || '', platform: editing.platform || '', status: editing.status || 'pending' }}
         onSave={async v => { await updateNicknameClaim(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={`@${deleting.nickname}`}
@@ -564,105 +590,97 @@ function UsersTab({ onToast }) {
 }
 
 /* ══════════════════════════════════════════════
-   CONTACTS TAB
+   APP USERS TAB
    ══════════════════════════════════════════════ */
 
-const CONTACTS_FIELDS = [
-  { key: 'name', label: 'Name' },
+const APP_USERS_FIELDS = [
+  { key: 'displayName', label: 'Display Name' },
   { key: 'email', label: 'Email' },
-  { key: 'message', label: 'Message', type: 'textarea' },
-  { key: 'status', label: 'Status', type: 'select', options: ['new', 'read', 'replied'] },
+  { key: 'username', label: 'Username' },
 ]
-const CONTACTS_CSV_COLS = [
-  { key: 'name', label: 'Name' },
+const APP_USERS_CSV_COLS = [
+  { key: 'displayName', label: 'Display Name' },
   { key: 'email', label: 'Email' },
-  { key: 'message', label: 'Message' },
-  { key: 'status', label: 'Status' },
-  { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
+  { key: 'username', label: 'Username' },
+  { label: 'Created', get: r => r.createdAt ? r.createdAt.toISOString() : '' },
 ]
 
-function ContactsTab() {
+function AppUsersTab() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
-  const [viewing, setViewing] = useState(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
-    try { setData(await getContactSubmissions()) } catch (err) { console.error(err) }
+    try { setData(await getAppUsers()) } catch (err) { console.error(err) }
     finally { setLoading(false) }
   }, [])
   useEffect(() => { fetchData() }, [fetchData])
 
-  const fs = useFilterSort(data, ['name', 'email', 'message'], 'status')
+  const fs = useFilterSort(data, ['displayName', 'email', 'username'])
 
   const handleBulkDelete = async () => {
-    if (!confirm(`Delete ${fs.selected.size} entries?`)) return
-    await Promise.all([...fs.selected].map(id => deleteContactSubmission(id)))
-    await fetchData()
-  }
-  const handleBulkMarkRead = async () => {
-    await Promise.all([...fs.selected].map(id => updateContactSubmission(id, { status: 'read' })))
+    if (!confirm(`Delete ${fs.selected.size} users? This action is irreversible.`)) return
+    await Promise.all([...fs.selected].map(id => deleteAppUser(id)))
     await fetchData()
   }
 
   return (
     <>
       <div className="adm-header">
-        <h1 className="adm-page-title">Contacts</h1>
+        <h1 className="adm-page-title">Users</h1>
         <div className="adm-header-right">
           <span className="adm-count">{fs.filtered.length} of {data.length}</span>
-          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'contacts.csv', CONTACTS_CSV_COLS)}>Export CSV</button>
+          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'users.csv', APP_USERS_CSV_COLS)}>Export CSV</button>
           <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
         </div>
       </div>
       <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo}
-        onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo}
-        statusFilter={fs.statusFilter} statusOptions={['new', 'read', 'replied']} onStatusFilter={fs.setStatusFilter} />
-      {fs.selected.size > 0 && (
-        <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} extraActions={
-          <button className="adm-bulk-action" onClick={handleBulkMarkRead}>Mark as Read</button>
-        } />
-      )}
+        onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo} />
+      {fs.selected.size > 0 && <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} />}
       <div className="adm-table-wrap">
         <table className="adm-table">
           <thead>
             <tr>
               <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Name</th><th>Email</th><th>Message</th><th>Status</th>
-              <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
+              <th>#</th>
+              <th></th>
+              <th>Display Name</th>
+              <th>Email</th>
+              <th>Username</th>
+              <SortableDate label="Created" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {fs.filtered.map((c, i) => (
-              <tr key={c.id} className={fs.selected.has(c.id) ? 'adm-row-selected' : ''}>
-                <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(c.id)} onChange={() => fs.toggleSelect(c.id)} /></td>
+            {fs.filtered.map((u, i) => (
+              <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
+                <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
                 <td className="adm-td-num">{i + 1}</td>
-                <td>{c.name || '—'}</td><td>{c.email}</td>
-                <td className="adm-td-message">{(c.message || '').slice(0, 60)}{(c.message || '').length > 60 ? '...' : ''}</td>
-                <td><span className={`adm-status adm-status-${c.status || 'new'}`}>{c.status || 'new'}</span></td>
-                <td className="adm-td-date">{formatDate(c.timestamp)}</td>
+                <td className="adm-td-avatar">
+                  {u.photoURL
+                    ? <img src={u.photoURL} alt="" className="adm-avatar" />
+                    : <span className="adm-avatar adm-avatar-placeholder">{(u.displayName || u.email || '?')[0].toUpperCase()}</span>}
+                </td>
+                <td>{u.displayName || '—'}</td>
+                <td>{u.email || '—'}</td>
+                <td className="adm-td-username">{u.username ? `@${u.username}` : '—'}</td>
+                <td className="adm-td-date">{formatDate(u.createdAt)}</td>
                 <td className="adm-td-actions">
-                  <RowMenu onEdit={() => setEditing(c)} onDelete={() => setDeleting(c)}
-                    extraItems={[{ label: 'View', onClick: () => setViewing(c) }]} />
+                  <RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} />
                 </td>
               </tr>
             ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="8" className="adm-empty">No entries found</td></tr>}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="8" className="adm-empty">No users found</td></tr>}
           </tbody>
         </table>
       </div>
-      {viewing && (
-        <ViewModal title={`Message from ${viewing.name || viewing.email}`} onClose={() => setViewing(null)}
-          content={<><p><strong>From:</strong> {viewing.name} ({viewing.email})</p><p><strong>Date:</strong> {formatDate(viewing.timestamp)}</p><hr className="adm-view-hr" /><p className="adm-view-message">{viewing.message}</p></>} />
-      )}
-      {editing && <EditModal title="Edit Contact" fields={CONTACTS_FIELDS}
-        initial={{ name: editing.name, email: editing.email, message: editing.message, status: editing.status || 'new' }}
-        onSave={async v => { await updateContactSubmission(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
-      {deleting && <DeleteConfirm label={deleting.email}
-        onConfirm={async () => { await deleteContactSubmission(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
+      {editing && <EditModal title="Edit User" fields={APP_USERS_FIELDS}
+        initial={{ displayName: editing.displayName || '', email: editing.email || '', username: editing.username || '' }}
+        onSave={async v => { await updateAppUser(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
+      {deleting && <DeleteConfirm label={deleting.displayName || deleting.email || deleting.id}
+        onConfirm={async () => { await deleteAppUser(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
     </>
   )
 }
@@ -1469,7 +1487,7 @@ function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [inboxCount, setInboxCount] = useState(0)
 
-  const handleLogout = () => { sessionStorage.removeItem('admin_auth'); window.location.reload() }
+  const handleLogout = async () => { await signOutAdmin() }
   const showToast = useCallback((message, type) => setToast({ message, type, key: Date.now() }), [])
 
   // Poll inbox count
@@ -1514,7 +1532,7 @@ function Dashboard() {
     { id: 'overview', label: 'Overview' },
     { id: 'waitlist', label: 'Waitlist' },
     { id: 'users', label: 'Users' },
-    { id: 'contacts', label: 'Contacts' },
+    { id: 'nicknames', label: 'Nickname Claims' },
     { id: 'hands', label: 'Shared Hands' },
     { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
     { id: 'email', label: 'Email' },
@@ -1547,8 +1565,8 @@ function Dashboard() {
       <main className="adm-main">
         {activeTab === 'overview' && <OverviewTab />}
         {activeTab === 'waitlist' && <WaitlistTab />}
-        {activeTab === 'users' && <UsersTab onToast={showToast} />}
-        {activeTab === 'contacts' && <ContactsTab />}
+        {activeTab === 'users' && <AppUsersTab />}
+        {activeTab === 'nicknames' && <NicknameClaimsTab onToast={showToast} />}
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}
@@ -1559,7 +1577,23 @@ function Dashboard() {
 }
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_auth') === '1')
-  if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />
+  const [authState, setAuthState] = useState('loading')
+
+  useEffect(() => {
+    return onAuthChange(user => {
+      if (user && user.email === SUPER_ADMIN_EMAIL) setAuthState('authenticated')
+      else setAuthState('unauthenticated')
+    })
+  }, [])
+
+  if (authState === 'loading') return (
+    <div className="adm-login-wrap">
+      <div className="adm-login-card" style={{ textAlign: 'center' }}>
+        <p style={{ color: '#888' }}>Checking authentication…</p>
+      </div>
+    </div>
+  )
+
+  if (authState === 'unauthenticated') return <LoginScreen onLogin={() => setAuthState('authenticated')} />
   return <Dashboard />
 }
