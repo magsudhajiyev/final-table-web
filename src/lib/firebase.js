@@ -121,7 +121,7 @@ export async function getAppUsers() {
   const snapshot = await getDocs(collection(db, 'users'))
   return snapshot.docs.map(d => {
     const data = d.data()
-    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null }
+    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, lastLogin: data.lastLogin?.toDate?.() || null }
   })
 }
 

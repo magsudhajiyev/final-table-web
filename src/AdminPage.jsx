@@ -284,7 +284,7 @@ function Toast({ message, type, onDone }) {
    FILTER + SORT HOOK
    ══════════════════════════════════════════════ */
 
-function useFilterSort(data, textKeys, statusKey) {
+function useFilterSort(data, textKeys, statusKey, dateKey = 'timestamp') {
   const [search, setSearch] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
@@ -300,22 +300,22 @@ function useFilterSort(data, textKeys, statusKey) {
     }
     if (dateFrom) {
       const from = new Date(dateFrom); from.setHours(0, 0, 0, 0)
-      items = items.filter(r => r.timestamp && r.timestamp >= from)
+      items = items.filter(r => r[dateKey] && r[dateKey] >= from)
     }
     if (dateTo) {
       const to = new Date(dateTo); to.setHours(23, 59, 59, 999)
-      items = items.filter(r => r.timestamp && r.timestamp <= to)
+      items = items.filter(r => r[dateKey] && r[dateKey] <= to)
     }
     if (statusFilter && statusKey) {
       items = items.filter(r => (r[statusKey] || '') === statusFilter)
     }
     items.sort((a, b) => {
-      const ta = a.timestamp ? a.timestamp.getTime() : 0
-      const tb = b.timestamp ? b.timestamp.getTime() : 0
+      const ta = a[dateKey] ? a[dateKey].getTime() : 0
+      const tb = b[dateKey] ? b[dateKey].getTime() : 0
       return sortOrder === 'desc' ? tb - ta : ta - tb
     })
     return items
-  }, [data, search, dateFrom, dateTo, statusFilter, sortOrder, textKeys, statusKey])
+  }, [data, search, dateFrom, dateTo, statusFilter, sortOrder, textKeys, statusKey, dateKey])
 
   useEffect(() => { setSelected(new Set()) }, [data])
 
@@ -603,6 +603,7 @@ const APP_USERS_CSV_COLS = [
   { key: 'email', label: 'Email' },
   { key: 'username', label: 'Username' },
   { label: 'Created', get: r => r.createdAt ? r.createdAt.toISOString() : '' },
+  { label: 'Last Login', get: r => r.lastLogin ? r.lastLogin.toISOString() : '' },
 ]
 
 function AppUsersTab() {
@@ -618,7 +619,7 @@ function AppUsersTab() {
   }, [])
   useEffect(() => { fetchData() }, [fetchData])
 
-  const fs = useFilterSort(data, ['displayName', 'email', 'username'])
+  const fs = useFilterSort(data, ['displayName', 'email', 'username'], null, 'createdAt')
 
   const handleBulkDelete = async () => {
     if (!confirm(`Delete ${fs.selected.size} users? This action is irreversible.`)) return
@@ -650,6 +651,7 @@ function AppUsersTab() {
               <th>Email</th>
               <th>Username</th>
               <SortableDate label="Created" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
+              <th>Last Login</th>
               <th></th>
             </tr>
           </thead>
@@ -667,12 +669,13 @@ function AppUsersTab() {
                 <td>{u.email || '—'}</td>
                 <td className="adm-td-username">{u.username ? `@${u.username}` : '—'}</td>
                 <td className="adm-td-date">{formatDate(u.createdAt)}</td>
+                <td className="adm-td-date">{formatDate(u.lastLogin)}</td>
                 <td className="adm-td-actions">
                   <RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} />
                 </td>
               </tr>
             ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="8" className="adm-empty">No users found</td></tr>}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="9" className="adm-empty">No users found</td></tr>}
           </tbody>
         </table>
       </div>
