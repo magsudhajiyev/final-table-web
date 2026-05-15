@@ -4,6 +4,7 @@ import {
   updateWaitlistUser, deleteWaitlistUser,
   updateNicknameClaim, deleteNicknameClaim,
   getAppUsers, updateAppUser, deleteAppUser,
+  getUserStats, getUserOpponents, getOpponentStats, getUserSessions, getUserSessionResults, getUserHands,
   getSharedHands, deleteSharedHand,
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
   saveEmailLog, getEmailLogs,
@@ -606,11 +607,196 @@ const APP_USERS_CSV_COLS = [
   { label: 'Last Login', get: r => r.lastLogin ? r.lastLogin.toISOString() : '' },
 ]
 
+function UserDetailView({ user, onBack }) {
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState(null)
+  const [opponents, setOpponents] = useState([])
+  const [sessions, setSessions] = useState([])
+  const [sessionResults, setSessionResults] = useState([])
+  const [hands, setHands] = useState([])
+  const [subTab, setSubTab] = useState('opponents')
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true)
+      try {
+        const uid = user.uid || user.id
+        const [st, opp, sess, sr, h] = await Promise.all([
+          getUserStats(uid),
+          getUserOpponents(uid),
+          getUserSessions(uid),
+          getUserSessionResults(uid),
+          getUserHands(uid),
+        ])
+        setStats(st)
+        // Join opponent stats
+        if (opp.length > 0) {
+          const os = await getOpponentStats(opp.map(o => o.id))
+          setOpponents(opp.map(o => ({ ...o, stats: os[o.id] || {} })))
+        }
+        setSessions(sess.sort((a, b) => (b.startTime || 0) - (a.startTime || 0)))
+        setSessionResults(sr.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)))
+        setHands(h.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)))
+      } catch (err) { console.error('UserDetailView fetch error:', err) }
+      finally { setLoading(false) }
+    })()
+  }, [user])
+
+  const pct = (num, den) => den > 0 ? ((num / den) * 100).toFixed(1) + '%' : '—'
+  const formatMin = (min) => {
+    if (!min) return '—'
+    if (min < 60) return `${min}m`
+    return `${Math.floor(min / 60)}h ${min % 60}m`
+  }
+
+  if (loading) return <div className="adm-loading">Loading user data...</div>
+
+  const winRate = stats ? pct(stats.wonHands || 0, stats.handsPlayed || 0) : '—'
+
+  return (
+    <>
+      {/* Header */}
+      <div className="adm-header" style={{ alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <button className="adm-refresh-btn" onClick={onBack} style={{ padding: '6px 12px' }}>&larr; Back</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {user.photoURL
+              ? <img src={user.photoURL} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+              : <span className="adm-avatar-placeholder" style={{ width: 40, height: 40, fontSize: 16 }}>{(user.displayName || user.email || '?')[0].toUpperCase()}</span>}
+            <div>
+              <h1 className="adm-page-title" style={{ margin: 0, fontSize: 20 }}>{user.displayName || '—'}</h1>
+              <p style={{ margin: 0, fontSize: 13, color: '#888' }}>
+                {user.email}{user.username ? ` · @${user.username}` : ''}
+                {user.createdAt ? ` · Joined ${formatDate(user.createdAt)}` : ''}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats cards */}
+      <div className="adm-stats-grid" style={{ marginBottom: 24 }}>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats?.totalSessions || 0}</div><div className="adm-stat-label">Sessions</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats?.totalHands || 0}</div><div className="adm-stat-label">Hands</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{winRate}</div><div className="adm-stat-label">Win Rate</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{formatMin(stats?.totalPlayTimeMinutes)}</div><div className="adm-stat-label">Play Time</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{opponents.length}</div><div className="adm-stat-label">Opponents</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{user.currentBankroll != null ? `$${Number(user.currentBankroll).toLocaleString()}` : '—'}</div><div className="adm-stat-label">Bankroll</div></div>
+      </div>
+
+      {/* Sub-tabs */}
+      <div className="adm-email-subtabs" style={{ marginBottom: 16 }}>
+        {[{ id: 'opponents', label: `Opponents (${opponents.length})` }, { id: 'sessions', label: `Sessions (${sessions.length + sessionResults.length})` }, { id: 'hands', label: `Hands (${hands.length})` }].map(t => (
+          <button key={t.id} className={`adm-email-subtab${subTab === t.id ? ' active' : ''}`} onClick={() => setSubTab(t.id)}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* Opponents */}
+      {subTab === 'opponents' && (
+        <div className="adm-table-wrap">
+          <table className="adm-table">
+            <thead>
+              <tr><th></th><th>Name</th><th>Hands</th><th>VPIP</th><th>PFR</th><th>3-Bet</th><th>C-Bet</th><th>Last Seen</th></tr>
+            </thead>
+            <tbody>
+              {opponents.map(o => (
+                <tr key={o.id}>
+                  <td style={{ width: 24 }}><span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: '50%', background: o.color || '#666' }} /></td>
+                  <td><strong>{o.name}</strong>{o.notes ? <span style={{ color: '#888', fontSize: 12, marginLeft: 8 }}>{o.notes}</span> : null}</td>
+                  <td>{o.stats.handsPlayed || 0}</td>
+                  <td>{pct(o.stats.vpipCount, o.stats.handsPlayed)}</td>
+                  <td>{pct(o.stats.pfrCount, o.stats.handsPlayed)}</td>
+                  <td>{pct(o.stats.threeBetCount, o.stats.threeBetOpportunity)}</td>
+                  <td>{pct(o.stats.cbetCount, o.stats.cbetOpportunity)}</td>
+                  <td className="adm-td-date">{formatDate(o.lastSeenAt)}</td>
+                </tr>
+              ))}
+              {opponents.length === 0 && <tr><td colSpan="8" className="adm-empty">No opponents tracked</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Sessions */}
+      {subTab === 'sessions' && (
+        <div className="adm-table-wrap">
+          <table className="adm-table">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Buy-In</th><th>Result</th><th>Hands</th><th>Duration</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              {sessions.map(s => {
+                const result = s.currentStack != null && s.totalBuyIn != null ? (s.currentStack - s.totalBuyIn) : null
+                const dur = s.startTime && s.endTime ? Math.round((s.endTime - s.startTime) / 60000) : null
+                return (
+                  <tr key={s.id}>
+                    <td><strong>{s.sessionName || '—'}</strong></td>
+                    <td><span className={`adm-status adm-status-${s.gameType || 'cash'}`}>{s.gameType || 'cash'}</span></td>
+                    <td>${Number(s.totalBuyIn || s.buyInAmount || 0).toLocaleString()}</td>
+                    <td style={{ color: result > 0 ? '#4ade80' : result < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
+                      {result != null ? (result >= 0 ? '+' : '') + '$' + Math.abs(result).toLocaleString() : '—'}
+                    </td>
+                    <td>{s.handsLogged || s.totalHands || 0}</td>
+                    <td>{dur != null ? formatMin(dur) : '—'}</td>
+                    <td className="adm-td-date">{formatDate(s.startTime)}</td>
+                  </tr>
+                )
+              })}
+              {sessionResults.map(sr => {
+                return (
+                  <tr key={sr.id}>
+                    <td><strong>Tournament Result</strong></td>
+                    <td><span className={`adm-status adm-status-${sr.gameType || 'tournament'}`}>{sr.gameType || 'tournament'}</span></td>
+                    <td>${Number(sr.buyInAmount || 0).toLocaleString()}</td>
+                    <td style={{ color: sr.amount > 0 ? '#4ade80' : sr.amount < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
+                      {sr.amount != null ? (sr.amount >= 0 ? '+' : '') + '$' + Math.abs(sr.amount).toLocaleString() : '—'}
+                    </td>
+                    <td>{sr.finishedPlace ? `#${sr.finishedPlace}${sr.fieldSize ? '/' + sr.fieldSize : ''}` : '—'}</td>
+                    <td>{sr.durationMinutes ? formatMin(sr.durationMinutes) : '—'}</td>
+                    <td className="adm-td-date">{formatDate(sr.timestamp)}</td>
+                  </tr>
+                )
+              })}
+              {sessions.length === 0 && sessionResults.length === 0 && <tr><td colSpan="7" className="adm-empty">No sessions found</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Hands */}
+      {subTab === 'hands' && (
+        <div className="adm-table-wrap">
+          <table className="adm-table">
+            <thead>
+              <tr><th>Hand #</th><th>Session</th><th>Position</th><th>Result</th><th>Pot</th><th>Game</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              {hands.map(h => (
+                <tr key={h.id}>
+                  <td><strong>#{h.handNumber || '—'}</strong></td>
+                  <td>{h.sessionName || '—'}</td>
+                  <td>{h.heroPositionName || '—'}</td>
+                  <td style={{ color: h.result === 'Won' ? '#4ade80' : h.result === 'Lost' ? '#f87171' : '#888', fontWeight: 600 }}>{h.result || '—'}</td>
+                  <td>${Number(h.potAmount || 0).toLocaleString()}</td>
+                  <td>{h.gameType || '—'}</td>
+                  <td className="adm-td-date">{formatDate(h.createdAt)}</td>
+                </tr>
+              ))}
+              {hands.length === 0 && <tr><td colSpan="7" className="adm-empty">No hands shared</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  )
+}
+
 function AppUsersTab() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
+  const [viewingUser, setViewingUser] = useState(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -626,6 +812,8 @@ function AppUsersTab() {
     await Promise.all([...fs.selected].map(id => deleteAppUser(id)))
     await fetchData()
   }
+
+  if (viewingUser) return <UserDetailView user={viewingUser} onBack={() => setViewingUser(null)} />
 
   return (
     <>
@@ -657,8 +845,8 @@ function AppUsersTab() {
           </thead>
           <tbody>
             {fs.filtered.map((u, i) => (
-              <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
-                <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
+              <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''} style={{ cursor: 'pointer' }} onClick={() => setViewingUser(u)}>
+                <td className="adm-td-check" onClick={e => e.stopPropagation()}><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
                 <td className="adm-td-num">{i + 1}</td>
                 <td className="adm-td-avatar">
                   {u.photoURL
@@ -670,8 +858,9 @@ function AppUsersTab() {
                 <td className="adm-td-username">{u.username ? `@${u.username}` : '—'}</td>
                 <td className="adm-td-date">{formatDate(u.createdAt)}</td>
                 <td className="adm-td-date">{formatDate(u.lastLogin)}</td>
-                <td className="adm-td-actions">
-                  <RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} />
+                <td className="adm-td-actions" onClick={e => e.stopPropagation()}>
+                  <RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)}
+                    extraItems={[{ label: 'View', onClick: () => setViewingUser(u) }]} />
                 </td>
               </tr>
             ))}

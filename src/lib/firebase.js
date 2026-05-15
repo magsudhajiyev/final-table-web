@@ -128,6 +128,54 @@ export async function getAppUsers() {
 export async function updateAppUser(id, data) { await updateDoc(doc(db, 'users', id), data) }
 export async function deleteAppUser(id) { await deleteDoc(doc(db, 'users', id)) }
 
+export async function getUserStats(userId) {
+  const d = await getDoc(doc(db, 'user_stats', userId))
+  if (!d.exists()) return null
+  return { id: d.id, ...d.data() }
+}
+
+export async function getUserOpponents(userId) {
+  const snap = await getDocs(query(collection(db, 'opponents'), where('userId', '==', userId)))
+  return snap.docs.map(d => {
+    const data = d.data()
+    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, lastSeenAt: data.lastSeenAt?.toDate?.() || null }
+  })
+}
+
+export async function getOpponentStats(opponentIds) {
+  if (!opponentIds.length) return {}
+  const results = {}
+  for (const id of opponentIds) {
+    const d = await getDoc(doc(db, 'opponent_stats', id))
+    if (d.exists()) results[id] = d.data()
+  }
+  return results
+}
+
+export async function getUserSessions(userId) {
+  const snap = await getDocs(query(collection(db, 'poker_sessions'), where('userId', '==', userId)))
+  return snap.docs.map(d => {
+    const data = d.data()
+    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, startTime: data.startTime?.toDate?.() || null, endTime: data.endTime?.toDate?.() || null }
+  })
+}
+
+export async function getUserSessionResults(userId) {
+  const snap = await getDocs(query(collection(db, 'session_results'), where('userId', '==', userId)))
+  return snap.docs.map(d => {
+    const data = d.data()
+    return { id: d.id, ...data, timestamp: data.timestamp?.toDate?.() || null }
+  })
+}
+
+export async function getUserHands(userId) {
+  const snap = await getDocs(query(collection(db, 'shared_hands'), where('createdBy', '==', userId)))
+  return snap.docs.map(d => {
+    const data = d.data()
+    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null }
+  })
+}
+
 export async function getSharedHands() {
   const snapshot = await getDocs(collection(db, 'shared_hands'))
   return snapshot.docs.map(d => {
