@@ -10,7 +10,7 @@ import {
   saveEmailLog, getEmailLogs,
   saveInboxReply, getInboxReplies,
   setInboxEmailStatus, getAllInboxStatuses, markInboxEmailRead,
-  signInAdmin, signOutAdmin, onAuthChange, SUPER_ADMIN_EMAIL
+  signInAdmin, signOutAdmin, onAuthChange, ADMIN_EMAILS
 } from './lib/firebase'
 import './AdminPage.css'
 
@@ -409,6 +409,7 @@ const WAITLIST_CSV_COLS = [
   { key: 'firstName', label: 'First Name' },
   { key: 'lastName', label: 'Last Name' },
   { key: 'platform', label: 'Platform' },
+  { label: 'Status', get: r => r.isUser ? 'Active User' : 'Waitlist Only' },
   { key: 'source', label: 'Source' },
   { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
 ]
@@ -418,10 +419,17 @@ function WaitlistTab() {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
+  const [userEmails, setUserEmails] = useState(new Set())
+  const [statusFilter, setStatusFilter] = useState('')
 
   const fetchData = useCallback(async () => {
     setLoading(true)
-    try { setData(await getWaitlistUsers()) } catch (err) { console.error(err) }
+    try {
+      const [w, users] = await Promise.all([getWaitlistUsers(), getAppUsers()])
+      const emails = new Set(users.map(u => (u.email || '').toLowerCase()))
+      setUserEmails(emails)
+      setData(w.map(entry => ({ ...entry, isUser: emails.has((entry.email || '').toLowerCase()) })))
+    } catch (err) { console.error(err) }
     finally { setLoading(false) }
   }, [])
   useEffect(() => { fetchData() }, [fetchData])
@@ -445,28 +453,44 @@ function WaitlistTab() {
         </div>
       </div>
       <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo} onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo} />
+      <div className="adm-email-filters" style={{ marginBottom: 12 }}>
+        <select className="adm-email-filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ width: 'auto' }}>
+          <option value="">All</option>
+          <option value="user">Active Users</option>
+          <option value="not_user">Not Yet Users</option>
+        </select>
+      </div>
       {fs.selected.size > 0 && <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} />}
       <div className="adm-table-wrap">
         <table className="adm-table">
           <thead>
             <tr>
               <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Source</th>
+              <th>#</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Status</th><th>Source</th>
               <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {fs.filtered.map((u, i) => (
+            {fs.filtered.filter(u => {
+              if (statusFilter === 'user') return u.isUser
+              if (statusFilter === 'not_user') return !u.isUser
+              return true
+            }).map((u, i) => (
               <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
                 <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
                 <td className="adm-td-num">{i + 1}</td>
-                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td><td>{u.platform || '—'}</td><td>{u.source || '—'}</td>
+                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td><td>{u.platform || '—'}</td>
+                <td>{u.isUser
+                  ? <span className="adm-status adm-status-approved" style={{ fontSize: 11 }}>Active User</span>
+                  : <span className="adm-status adm-status-pending" style={{ fontSize: 11 }}>Waitlist Only</span>}
+                </td>
+                <td>{u.source || '—'}</td>
                 <td className="adm-td-date">{formatDate(u.timestamp)}</td>
                 <td className="adm-td-actions"><RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} /></td>
               </tr>
             ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="9" className="adm-empty">No entries found</td></tr>}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="10" className="adm-empty">No entries found</td></tr>}
           </tbody>
         </table>
       </div>
@@ -1794,7 +1818,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     return onAuthChange(user => {
-      if (user && user.email === SUPER_ADMIN_EMAIL) setAuthState('authenticated')
+      if (user && ADMIN_EMAILS.includes(user.email)) setAuthState('authenticated')
       else setAuthState('unauthenticated')
     })
   }, [])

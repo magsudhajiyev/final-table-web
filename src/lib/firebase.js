@@ -18,13 +18,14 @@ const db = getFirestore(app)
 const auth = getAuth(app)
 
 export const SUPER_ADMIN_EMAIL = 'magsud94@gmail.com'
+export const ADMIN_EMAILS = ['magsud94@gmail.com', 'turalcumsud@gmail.com']
 
 export async function signInAdmin() {
   const provider = new GoogleAuthProvider()
   const result = await signInWithPopup(auth, provider)
-  if (result.user.email !== SUPER_ADMIN_EMAIL) {
+  if (!ADMIN_EMAILS.includes(result.user.email)) {
     await signOut(auth)
-    throw new Error('Access denied. Only the super admin can access this dashboard.')
+    throw new Error('Access denied. You are not authorized to access this dashboard.')
   }
   return result.user
 }
