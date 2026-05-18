@@ -91,7 +91,9 @@ function TPNavbar() {
 
   useEffect(() => {
     const handler = (e) => {
-      if (langRef.current && !langRef.current.contains(e.target) && mobileLangRef.current && !mobileLangRef.current.contains(e.target)) setLangOpen(false)
+      const inDesktop = langRef.current && langRef.current.contains(e.target)
+      const inMobile = mobileLangRef.current && mobileLangRef.current.contains(e.target)
+      if (!inDesktop && !inMobile) setLangOpen(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
@@ -194,6 +196,24 @@ function TPNavbar() {
         <a href="#faq" className="tp-nav-waitlist-btn" onClick={smoothScroll}>
           {t('nav.cta')}
         </a>
+        <div className="tp-mobile-lang-picker" ref={mobileLangRef}>
+          <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
+            <Flag locale={locale} />
+            <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {langOpen && (
+            <div className="tp-lang-dropdown">
+              {SUPPORTED.map(l => (
+                <button key={l} className={`tp-lang-option${l === locale ? ' tp-lang-option-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
+                  <Flag locale={l} />
+                  <span>{t(`lang.${l}`)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button
           className="tp-nav-hamburger"
           aria-label="Toggle menu"
@@ -208,23 +228,6 @@ function TPNavbar() {
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="/about">{t('about.nav')}</a>
         <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
-        <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
-          <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
-            <span><Flag locale={locale} /> {t(`lang.${locale}`)}</span>
-            <svg className={`tp-mobile-lang-chevron${langOpen ? ' tp-mobile-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-          {langOpen && (
-            <div className="tp-mobile-lang-grid">
-              {SUPPORTED.map(l => (
-                <button key={l} className={`tp-mobile-lang-btn${l === locale ? ' tp-mobile-lang-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
-                  <Flag locale={l} /> {t(`lang.${l}`)}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </header>
   )

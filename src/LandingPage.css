@@ -437,6 +437,11 @@ html {
 .tp-nav-waitlist-btn:hover { background: rgba(0,0,0,0.04); }
 
 /* ── Hamburger button (hidden on desktop) ── */
+.tp-mobile-lang-picker {
+    display: none;
+    position: relative;
+}
+
 .tp-nav-hamburger {
     display: none;
     flex-direction: column;
@@ -2516,9 +2521,9 @@ html {
     .tp-nav-links { display: none; }
     .tp-lang-picker { display: none; }
     .tp-nav-waitlist-btn { display: none; }
-    .tp-nav-mobile-lang { display: flex; flex-direction: column; }
     .tp-nav-cta { display: none; }
-    .tp-nav-hamburger { margin-left: auto; }
+    .tp-mobile-lang-picker { display: block; margin-left: auto; }
+    .tp-nav-hamburger { margin-left: 8px; }
     .tp-nav-hamburger { display: flex; }
     .tp-nav-mobile-menu {
         display: flex;

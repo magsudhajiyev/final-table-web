@@ -1019,6 +1019,7 @@ function EmailTab({ onToast }) {
 
   // Compose state
   const [platformFilter, setPlatformFilter] = useState('')
+  const [userStatusFilter, setUserStatusFilter] = useState('')
   const [recipientSearch, setRecipientSearch] = useState('')
   const [selected, setSelected] = useState(new Set())
   const [sendMode, setSendMode] = useState('html') // 'html' | 'template'
@@ -1042,8 +1043,9 @@ function EmailTab({ onToast }) {
   const fetchAll = useCallback(async () => {
     setLoading(true)
     try {
-      const [w, t, l] = await Promise.all([getWaitlistUsers(), getEmailTemplates(), getEmailLogs()])
-      setWaitlistData(w)
+      const [w, t, l, users] = await Promise.all([getWaitlistUsers(), getEmailTemplates(), getEmailLogs(), getAppUsers()])
+      const userEmails = new Set(users.map(u => (u.email || '').toLowerCase()))
+      setWaitlistData(w.map(entry => ({ ...entry, isUser: userEmails.has((entry.email || '').toLowerCase()) })))
       setTemplates(t)
       setLogs(l)
     } catch (err) { console.error(err) }
@@ -1072,6 +1074,10 @@ function EmailTab({ onToast }) {
       if (platformFilter === 'unspecified') items = items.filter(r => !r.platform)
       else items = items.filter(r => r.platform === platformFilter)
     }
+    if (userStatusFilter) {
+      if (userStatusFilter === 'active') items = items.filter(r => r.isUser)
+      else if (userStatusFilter === 'not_user') items = items.filter(r => !r.isUser)
+    }
     if (recipientSearch) {
       const q = recipientSearch.toLowerCase()
       items = items.filter(r =>
@@ -1081,7 +1087,7 @@ function EmailTab({ onToast }) {
       )
     }
     return items
-  }, [waitlistData, platformFilter, recipientSearch])
+  }, [waitlistData, platformFilter, userStatusFilter, recipientSearch])
 
   const toggleRecipient = (id) => setSelected(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
   const toggleAllRecipients = () => setSelected(s => s.size === filteredRecipients.length ? new Set() : new Set(filteredRecipients.map(r => r.id)))
@@ -1134,7 +1140,7 @@ function EmailTab({ onToast }) {
         body,
         recipientCount: recipients.length,
         recipientEmails: recipients.map(r => r.email),
-        filters: { platform: platformFilter || 'all', search: recipientSearch || '' },
+        filters: { platform: platformFilter || 'all', userStatus: userStatusFilter || 'all', search: recipientSearch || '' },
         status: failed.length === 0 ? 'sent' : failed.length === recipients.length ? 'failed' : 'partial',
         failedEmails: failed.map(f => f.email),
       })
@@ -1204,7 +1210,12 @@ function EmailTab({ onToast }) {
                 <option value="">All platforms</option>
                 <option value="ios">iOS</option>
                 <option value="android">Android</option>
-                <option value="unspecified">Unspecified</option>
+                <option value="unspecified">No platform</option>
+              </select>
+              <select className="adm-email-filter-select" value={userStatusFilter} onChange={e => { setUserStatusFilter(e.target.value); setSelected(new Set()) }}>
+                <option value="">All users</option>
+                <option value="active">Active users</option>
+                <option value="not_user">Not yet users</option>
               </select>
               <input className="adm-email-filter-search" type="text" placeholder="Search by name or email..." value={recipientSearch} onChange={e => setRecipientSearch(e.target.value)} />
             </div>
@@ -1221,6 +1232,7 @@ function EmailTab({ onToast }) {
                     <input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleRecipient(r.id)} />
                     <span className="adm-email-recipient-email">{r.email}</span>
                     <span className="adm-email-recipient-meta">
+                      {r.isUser && <span style={{ color: '#A2F69A', fontSize: '11px', fontWeight: 600, marginRight: 4 }}>ACTIVE</span>}
                       {r.firstName || r.lastName ? `${r.firstName || ''} ${r.lastName || ''}`.trim() : ''}
                       {r.platform ? ` · ${r.platform}` : ''}
                     </span>
