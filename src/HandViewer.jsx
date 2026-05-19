@@ -374,7 +374,7 @@ export default function HandViewer({ shareId }) {
 
         {/* CTA */}
         <div style={styles.cta}>
-          <a style={styles.ctaButton} href="https://apps.apple.com/app/final-table" target="_blank" rel="noopener noreferrer">
+          <a style={styles.ctaButton} href="https://www.finaltable.io">
             Download Final Table
           </a>
           <p style={styles.ctaTagline}>Track your poker hands and analyze your play</p>
