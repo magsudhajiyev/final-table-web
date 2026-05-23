@@ -2422,6 +2422,38 @@ html {
     flex-shrink: 0;
 }
 
+.mf-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 27px 0 32px;
+}
+
+.mf-bottom-row .mf-copy {
+    padding: 0;
+}
+
+.mf-discord-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.4);
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.mf-discord-link:hover {
+    color: #5865F2;
+}
+
+.mf-discord-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    display: block;
+}
+
 @media (max-width: 1100px) {
     .mf-inner { padding: 48px 48px 0; }
     .mf-grid { gap: 48px; }
