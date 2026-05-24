@@ -1027,7 +1027,7 @@ function TPFeaturesShowcase() {
 
   const cards = [
     { video: '/statistics.mp4',   title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
-    { img: '/nwa_chart.gif',      title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
+    { video: '/bankroll_chart.mp4', title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
     { video: '/ai_analysis.mp4',  title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
   ]
 
