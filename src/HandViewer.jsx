@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react'
-import { doc, getDoc, getFirestore } from 'firebase/firestore'
-import { initializeApp, getApps } from 'firebase/app'
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDTw_1lOHmIl_gDY3ex-N_l8NLxRzy6AtA",
-  authDomain: "poker-tracker-52df8.firebaseapp.com",
-  projectId: "poker-tracker-52df8",
-  storageBucket: "poker-tracker-52df8.firebasestorage.app",
-  messagingSenderId: "311745459306",
-  appId: "1:311745459306:web:4d53385d198139f8d00613",
-}
-
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
-const db = getFirestore(app)
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from './lib/firebase'
 
 // Position calculation (mirrors Flutter PokerPositions logic)
 function getPositionName(seatNumber, buttonPosition, playerCount) {

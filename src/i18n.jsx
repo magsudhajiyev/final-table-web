@@ -26,7 +26,7 @@ const en = {
   'nav.howItWorks': 'How it works?',
   'nav.compare': 'Compare',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Join waitlist',
+  'nav.cta': 'Download on iOS',
 
   // How it works section title
   'howSection.sans': 'How it ',
@@ -226,7 +226,7 @@ const pl = {
   'nav.howItWorks': 'Jak to działa?',
   'nav.compare': 'Porównaj',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Zarezerwuj nick',
+  'nav.cta': 'Pobierz na iOS',
 
   'howSection.sans': 'Jak to ',
   'howSection.italic': 'działa?',
@@ -405,7 +405,7 @@ const ru = {
   'nav.howItWorks': 'Как это работает?',
   'nav.compare': 'Сравнить',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Забронировать ник',
+  'nav.cta': 'Скачать на iOS',
 
   'howSection.sans': 'Как это ',
   'howSection.italic': 'работает?',
@@ -584,7 +584,7 @@ const fr = {
   'nav.howItWorks': 'Comment ça marche ?',
   'nav.compare': 'Comparer',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Réserver mon pseudo',
+  'nav.cta': 'Télécharger sur iOS',
 
   'howSection.sans': 'Comment ça ',
   'howSection.italic': 'marche ?',
@@ -763,7 +763,7 @@ const es = {
   'nav.howItWorks': '¿Cómo funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Reserva tu nick',
+  'nav.cta': 'Descargar en iOS',
 
   'howSection.sans': '¿Cómo ',
   'howSection.italic': 'funciona?',
@@ -942,7 +942,7 @@ const de = {
   'nav.howItWorks': 'So funktioniert\'s?',
   'nav.compare': 'Vergleich',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Nick reservieren',
+  'nav.cta': 'Auf iOS laden',
 
   'howSection.sans': 'So ',
   'howSection.italic': 'funktioniert\'s?',
@@ -1121,7 +1121,7 @@ const pt = {
   'nav.howItWorks': 'Como funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Reservar meu nick',
+  'nav.cta': 'Baixar no iOS',
 
   'howSection.sans': 'Como ',
   'howSection.italic': 'funciona?',
@@ -1300,7 +1300,7 @@ const tr = {
   'nav.howItWorks': 'Nasıl çalışır?',
   'nav.compare': 'Karşılaştır',
   'nav.faq': 'SSS',
-  'nav.cta': 'Kullanıcı adını al',
+  'nav.cta': "iOS'ta İndir",
 
   'howSection.sans': 'Nasıl ',
   'howSection.italic': 'çalışır?',
