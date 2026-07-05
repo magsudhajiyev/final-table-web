@@ -689,8 +689,28 @@ const DISCORD_URL = 'https://discord.gg/E5HQAWt2g'
 
 function TPCommunity() {
   const { t } = useT()
+  const sectionRef = useRef(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('tp-community--visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.25 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className="tp-community-section" data-nav-theme="dark">
+    <section ref={sectionRef} className="tp-community-section" data-nav-theme="dark">
       <div className="tp-community-inner">
         <div className="tp-community-left">
           <p className="tp-community-eyebrow">{t('community.eyebrow')}</p>
@@ -737,22 +757,39 @@ function TPCommunity() {
               <div className="tp-community-msg">
                 <div className="tp-community-msg-avatar tp-community-msg-avatar-1">AK</div>
                 <div className="tp-community-msg-bubble">
-                  <span className="tp-community-msg-user">Alex K.</span>
+                  <span className="tp-community-msg-head">
+                    <span className="tp-community-msg-user">Alex K.</span>
+                    <span className="tp-community-msg-time">9:12 PM</span>
+                  </span>
                   <span className="tp-community-msg-text">Just hit +$800 tonight, best session in months 🃏</span>
                 </div>
               </div>
               <div className="tp-community-msg">
                 <div className="tp-community-msg-avatar tp-community-msg-avatar-2">MR</div>
                 <div className="tp-community-msg-bubble">
-                  <span className="tp-community-msg-user">Mike R.</span>
+                  <span className="tp-community-msg-head">
+                    <span className="tp-community-msg-user">Mike R.</span>
+                    <span className="tp-community-msg-time">9:14 PM</span>
+                  </span>
                   <span className="tp-community-msg-text">The opponent reads feature is a game changer at 2/5</span>
                 </div>
               </div>
               <div className="tp-community-msg">
                 <div className="tp-community-msg-avatar tp-community-msg-avatar-3">SP</div>
                 <div className="tp-community-msg-bubble">
-                  <span className="tp-community-msg-user">Sara P.</span>
+                  <span className="tp-community-msg-head">
+                    <span className="tp-community-msg-user">Sara P.</span>
+                    <span className="tp-community-msg-time">9:17 PM</span>
+                  </span>
                   <span className="tp-community-msg-text">Finally tracking my live sessions properly 📊</span>
+                </div>
+              </div>
+              <div className="tp-community-msg tp-community-typing" aria-hidden="true">
+                <div className="tp-community-msg-avatar tp-community-msg-avatar-4">JD</div>
+                <div className="tp-community-msg-bubble tp-community-typing-bubble">
+                  <span className="tp-community-typing-dot" />
+                  <span className="tp-community-typing-dot" />
+                  <span className="tp-community-typing-dot" />
                 </div>
               </div>
             </div>

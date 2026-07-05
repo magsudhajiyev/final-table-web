@@ -5200,11 +5200,116 @@ html {
     .tp-community-left { flex: none; width: 100%; }
 }
 
+/* Message header row: name + timestamp */
+.tp-community-msg-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.tp-community-msg-time {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    color: #55555c;
+    letter-spacing: 0.01em;
+}
+
+/* Typing indicator — someone's always mid-message */
+.tp-community-msg-avatar-4 { background: #f0b232; }
+
+.tp-community-typing-bubble {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 14px;
+}
+
+.tp-community-typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #666;
+    animation: tp-typing-bounce 1.3s ease-in-out infinite;
+}
+
+.tp-community-typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.tp-community-typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes tp-typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+    30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Scroll reveal — stats land first, then messages arrive in order */
+.tp-community-left,
+.tp-community-stats,
+.tp-community-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.tp-community-msg {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.tp-community--visible .tp-community-left { opacity: 1; transform: none; }
+.tp-community--visible .tp-community-stats { opacity: 1; transform: none; transition-delay: 0.1s; }
+.tp-community--visible .tp-community-card { opacity: 1; transform: none; transition-delay: 0.2s, 0.2s, 0s, 0s; }
+.tp-community--visible .tp-community-msg:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.45s; }
+.tp-community--visible .tp-community-msg:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.65s; }
+.tp-community--visible .tp-community-msg:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.85s; }
+.tp-community--visible .tp-community-msg:nth-child(4) { opacity: 1; transform: none; transition-delay: 1.15s; }
+
+/* Card hover: a touch more presence */
+.tp-community-card {
+    transition: opacity 0.6s ease, transform 0.6s ease,
+        box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tp-community--visible .tp-community-card:hover {
+    transition-delay: 0s;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.45), 0 0 80px rgba(88,101,242,0.12);
+}
+
+/* CTA: keyboard focus + press state */
+.tp-community-btn:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 3px;
+}
+
+.tp-community-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tp-community-left,
+    .tp-community-stats,
+    .tp-community-card,
+    .tp-community-msg {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .tp-community-typing { display: none; }
+}
+
+@media (max-width: 1024px) {
+    .tp-community-section::before { right: 50%; transform: translateX(50%); top: -300px; }
+}
+
 @media (max-width: 640px) {
     .tp-community-section { padding: 64px 0 72px; }
     .tp-community-inner { padding: 0 16px; gap: 40px; }
-    .tp-community-stats { padding: 20px 16px; }
-    .tp-community-stat-divider { margin: 0 12px; }
+    .tp-community-stats { padding: 18px 12px; }
+    .tp-community-stat-divider { margin: 0 10px; }
+    .tp-community-stat-value { font-size: 24px; }
+    .tp-community-stat-label { font-size: 10px; letter-spacing: 0.01em; }
+    .tp-community-card { padding: 16px; }
 }
 
 /* ────────────────────────────────────────────────────── */
