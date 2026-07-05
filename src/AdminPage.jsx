@@ -1356,6 +1356,16 @@ function EmailTab({ onToast }) {
                 <tr><th>Name</th><th>Subject</th><th>Created</th><th></th></tr>
               </thead>
               <tbody>
+                {BUILTIN_TEMPLATES.map(t => (
+                  <tr key={t.id}>
+                    <td className="adm-td-template-name">⚡ {t.name}</td>
+                    <td>{t.subject || '—'}</td>
+                    <td className="adm-td-date">Built-in</td>
+                    <td className="adm-td-actions">
+                      <button className="adm-refresh-btn" onClick={() => loadTemplate(t)}>Use</button>
+                    </td>
+                  </tr>
+                ))}
                 {templates.map(t => (
                   <tr key={t.id}>
                     <td className="adm-td-template-name">{t.name}</td>
@@ -1370,7 +1380,7 @@ function EmailTab({ onToast }) {
                     </td>
                   </tr>
                 ))}
-                {templates.length === 0 && <tr><td colSpan="4" className="adm-empty">No templates saved yet</td></tr>}
+                {templates.length === 0 && <tr><td colSpan="4" className="adm-empty">No custom templates saved yet — built-ins above are always available</td></tr>}
               </tbody>
             </table>
           </div>
