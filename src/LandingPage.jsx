@@ -755,37 +755,37 @@ function TPCommunity() {
             </div>
             <div className="tp-community-messages">
               <div className="tp-community-msg">
-                <div className="tp-community-msg-avatar tp-community-msg-avatar-1">AK</div>
+                <div className="tp-community-msg-avatar tp-community-msg-avatar-1">M</div>
                 <div className="tp-community-msg-bubble">
                   <span className="tp-community-msg-head">
-                    <span className="tp-community-msg-user">Alex K.</span>
+                    <span className="tp-community-msg-user">{t('community.msg1.user')}</span>
                     <span className="tp-community-msg-time">9:12 PM</span>
                   </span>
-                  <span className="tp-community-msg-text">Just hit +$800 tonight, best session in months 🃏</span>
+                  <span className="tp-community-msg-text">{t('community.msg1.text')}</span>
                 </div>
               </div>
               <div className="tp-community-msg">
-                <div className="tp-community-msg-avatar tp-community-msg-avatar-2">MR</div>
+                <div className="tp-community-msg-avatar tp-community-msg-avatar-2">FT</div>
                 <div className="tp-community-msg-bubble">
                   <span className="tp-community-msg-head">
-                    <span className="tp-community-msg-user">Mike R.</span>
+                    <span className="tp-community-msg-user">{t('community.msg2.user')}</span>
                     <span className="tp-community-msg-time">9:14 PM</span>
                   </span>
-                  <span className="tp-community-msg-text">The opponent reads feature is a game changer at 2/5</span>
+                  <span className="tp-community-msg-text">{t('community.msg2.text')}</span>
                 </div>
               </div>
               <div className="tp-community-msg">
-                <div className="tp-community-msg-avatar tp-community-msg-avatar-3">SP</div>
+                <div className="tp-community-msg-avatar tp-community-msg-avatar-3">M</div>
                 <div className="tp-community-msg-bubble">
                   <span className="tp-community-msg-head">
-                    <span className="tp-community-msg-user">Sara P.</span>
+                    <span className="tp-community-msg-user">{t('community.msg3.user')}</span>
                     <span className="tp-community-msg-time">9:17 PM</span>
                   </span>
-                  <span className="tp-community-msg-text">Finally tracking my live sessions properly 📊</span>
+                  <span className="tp-community-msg-text">{t('community.msg3.text')}</span>
                 </div>
               </div>
               <div className="tp-community-msg tp-community-typing" aria-hidden="true">
-                <div className="tp-community-msg-avatar tp-community-msg-avatar-4">JD</div>
+                <div className="tp-community-msg-avatar tp-community-msg-avatar-4">YOU</div>
                 <div className="tp-community-msg-bubble tp-community-typing-bubble">
                   <span className="tp-community-typing-dot" />
                   <span className="tp-community-typing-dot" />

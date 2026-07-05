@@ -5215,7 +5215,7 @@ html {
 }
 
 /* Typing indicator — someone's always mid-message */
-.tp-community-msg-avatar-4 { background: #f0b232; }
+.tp-community-msg-avatar-4 { background: #f0b232; font-size: 9px; }
 
 .tp-community-typing-bubble {
     flex: 0 0 auto;

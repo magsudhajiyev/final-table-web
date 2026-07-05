@@ -67,13 +67,13 @@ const en = {
   // Community / Discord
   'community.eyebrow': 'Join the community',
   'community.title': () => <>Talk poker with players<br />who <em>actually play live.</em></>,
-  'community.sub': 'Share session stories, discuss strategy, get early feature previews, and help shape the direction of Final Table. Our Discord is where the real conversation happens.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Members',
-  'community.stat2.value': 'Daily',
-  'community.stat2.label': 'Active discussions',
-  'community.stat3.value': 'Direct',
-  'community.stat3.label': 'Access to founders',
+  'community.sub': 'We\'re just opening the doors — join as a founding member, talk live poker with us directly, and shape what Final Table becomes.',
+  'community.stat1.value': 'Day 1',
+  'community.stat1.label': 'Founding members',
+  'community.stat2.value': 'Direct',
+  'community.stat2.label': 'Line to the founders',
+  'community.stat3.value': 'First',
+  'community.stat3.label': 'Beta invites & previews',
   'community.cta': 'Join the Discord →',
 
   // Tabs (BgSection)
@@ -228,6 +228,12 @@ const en = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Founder',
+  'community.msg1.text': 'Welcome in 👋 Beta invites and sneak peeks drop here first.',
+  'community.msg2.user': 'Final Table Team',
+  'community.msg2.text': 'Tell us what to build next — roadmap votes happen in #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Founder',
+  'community.msg3.text': 'Post your best hand of the week in #hands — we break them down together 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -276,13 +282,13 @@ const pl = {
   // Community / Discord
   'community.eyebrow': 'Dołącz do społeczności',
   'community.title': () => <>Rozmawiaj o pokerze z graczami,<br />którzy <em>naprawdę grają na żywo.</em></>,
-  'community.sub': 'Dziel się historiami z sesji, omawiaj strategię, poznaj nowe funkcje jako pierwszy i pomagaj kształtować przyszłość Final Table. Nasza społeczność Discord to miejsce, gdzie toczą się prawdziwe rozmowy.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Członków',
-  'community.stat2.value': 'Codziennie',
-  'community.stat2.label': 'Aktywne dyskusje',
-  'community.stat3.value': 'Bezpośredni',
-  'community.stat3.label': 'Dostęp do twórców',
+  'community.sub': 'Dopiero otwieramy drzwi — dołącz jako członek-założyciel, rozmawiaj z nami o pokerze na żywo i współtwórz przyszłość Final Table.',
+  'community.stat1.value': 'Dzień 1',
+  'community.stat1.label': 'Członkowie-założyciele',
+  'community.stat2.value': 'Bezpośredni',
+  'community.stat2.label': 'Kontakt z twórcami',
+  'community.stat3.value': 'Najpierw',
+  'community.stat3.label': 'Zaproszenia do bety',
   'community.cta': 'Dołącz do Discorda →',
 
   'tabs.0.label': 'Przed sesją',
@@ -419,6 +425,12 @@ const pl = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Założyciel',
+  'community.msg1.text': 'Witaj 👋 Zaproszenia do bety i zapowiedzi pojawiają się tu najpierw.',
+  'community.msg2.user': 'Zespół Final Table',
+  'community.msg2.text': 'Powiedz nam, co budować dalej — głosowania na #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Założyciel',
+  'community.msg3.text': 'Wrzuć swoje najlepsze rozdanie tygodnia na #hands — rozbieramy je razem 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -467,13 +479,13 @@ const ru = {
   // Community / Discord
   'community.eyebrow': 'Присоединяйтесь к сообществу',
   'community.title': () => <>Обсуждайте покер с игроками,<br />которые <em>действительно играют вживую.</em></>,
-  'community.sub': 'Делитесь историями сессий, обсуждайте стратегию, получайте ранний доступ к новым функциям и помогайте формировать будущее Final Table. Наш Discord — место, где происходят настоящие разговоры.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Участников',
-  'community.stat2.value': 'Ежедневно',
-  'community.stat2.label': 'Активные обсуждения',
-  'community.stat3.value': 'Прямой',
-  'community.stat3.label': 'Доступ к основателям',
+  'community.sub': 'Мы только открываем двери — присоединяйтесь как один из первых, общайтесь с нами о живом покере напрямую и влияйте на будущее Final Table.',
+  'community.stat1.value': 'День 1',
+  'community.stat1.label': 'Первые участники',
+  'community.stat2.value': 'Напрямую',
+  'community.stat2.label': 'Связь с создателями',
+  'community.stat3.value': 'Первыми',
+  'community.stat3.label': 'Инвайты в бету',
   'community.cta': 'Присоединиться к Discord →',
 
   'tabs.0.label': 'До сессии',
@@ -610,6 +622,12 @@ const ru = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Магсуд · Основатель',
+  'community.msg1.text': 'Добро пожаловать 👋 Инвайты в бету и анонсы появляются здесь первыми.',
+  'community.msg2.user': 'Команда Final Table',
+  'community.msg2.text': 'Скажите, что делать дальше — голосование в #roadmap 🗳️',
+  'community.msg3.user': 'Магсуд · Основатель',
+  'community.msg3.text': 'Выкладывайте лучшую раздачу недели в #hands — разберём вместе 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -659,12 +677,12 @@ const fr = {
   'community.eyebrow': 'Rejoindre la communauté',
   'community.title': () => <>Parlez poker avec des joueurs<br />qui <em>jouent vraiment en live.</em></>,
   'community.sub': "Partagez vos récits de sessions, discutez stratégie, découvrez les nouvelles fonctionnalités en avant-première et contribuez à l'avenir de Final Table. Notre Discord est là où la vraie conversation se passe.",
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Membres',
-  'community.stat2.value': 'Quotidien',
-  'community.stat2.label': 'Discussions actives',
-  'community.stat3.value': 'Direct',
-  'community.stat3.label': 'Accès aux fondateurs',
+  'community.stat1.value': 'Jour 1',
+  'community.stat1.label': 'Membres fondateurs',
+  'community.stat2.value': 'Direct',
+  'community.stat2.label': 'Ligne avec les fondateurs',
+  'community.stat3.value': 'En premier',
+  'community.stat3.label': 'Invitations bêta',
   'community.cta': 'Rejoindre le Discord →',
 
   'tabs.0.label': 'Avant la session',
@@ -801,6 +819,12 @@ const fr = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Fondateur',
+  'community.msg1.text': 'Bienvenue 👋 Les invitations bêta et les avant-premières arrivent ici en premier.',
+  'community.msg2.user': 'Équipe Final Table',
+  'community.msg2.text': 'Dites-nous quoi construire — les votes ont lieu sur #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Fondateur',
+  'community.msg3.text': 'Postez votre meilleure main de la semaine sur #hands — on la décortique ensemble 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -849,13 +873,13 @@ const es = {
   // Community / Discord
   'community.eyebrow': 'Únete a la comunidad',
   'community.title': () => <>Habla de póker con jugadores<br />que <em>realmente juegan en vivo.</em></>,
-  'community.sub': 'Comparte historias de sesiones, debate estrategia, accede a previsualizaciones de funciones y ayuda a dar forma al futuro de Final Table. Nuestro Discord es donde ocurre la conversación real.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Miembros',
-  'community.stat2.value': 'A diario',
-  'community.stat2.label': 'Debates activos',
-  'community.stat3.value': 'Directo',
-  'community.stat3.label': 'Acceso a los fundadores',
+  'community.sub': 'Estamos abriendo las puertas — únete como miembro fundador, habla de póker en vivo directamente con nosotros y da forma al futuro de Final Table.',
+  'community.stat1.value': 'Día 1',
+  'community.stat1.label': 'Miembros fundadores',
+  'community.stat2.value': 'Directo',
+  'community.stat2.label': 'Línea con los fundadores',
+  'community.stat3.value': 'Primero',
+  'community.stat3.label': 'Invitaciones a la beta',
   'community.cta': 'Unirse al Discord →',
 
   'tabs.0.label': 'Antes de la sesión',
@@ -992,6 +1016,12 @@ const es = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Fundador',
+  'community.msg1.text': 'Bienvenido 👋 Las invitaciones a la beta y los adelantos llegan aquí primero.',
+  'community.msg2.user': 'Equipo Final Table',
+  'community.msg2.text': 'Dinos qué construir — las votaciones ocurren en #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Fundador',
+  'community.msg3.text': 'Publica tu mejor mano de la semana en #hands — la analizamos juntos 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -1040,13 +1070,13 @@ const de = {
   // Community / Discord
   'community.eyebrow': 'Tritt der Community bei',
   'community.title': () => <>Sprich über Poker mit Spielern,<br />die <em>wirklich live spielen.</em></>,
-  'community.sub': 'Teile Session-Geschichten, diskutiere Strategie, erhalte frühen Zugang zu neuen Features und hilf mit, die Zukunft von Final Table zu gestalten. Unser Discord ist der Ort, wo das echte Gespräch stattfindet.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Mitglieder',
-  'community.stat2.value': 'Täglich',
-  'community.stat2.label': 'Aktive Diskussionen',
-  'community.stat3.value': 'Direkter',
-  'community.stat3.label': 'Zugang zu den Gründern',
+  'community.sub': 'Wir öffnen gerade erst die Türen — werde Gründungsmitglied, sprich direkt mit uns über Live-Poker und gestalte die Zukunft von Final Table mit.',
+  'community.stat1.value': 'Tag 1',
+  'community.stat1.label': 'Gründungsmitglieder',
+  'community.stat2.value': 'Direkt',
+  'community.stat2.label': 'Draht zu den Gründern',
+  'community.stat3.value': 'Zuerst',
+  'community.stat3.label': 'Beta-Einladungen',
   'community.cta': 'Discord beitreten →',
 
   'tabs.0.label': 'Vor der Session',
@@ -1183,6 +1213,12 @@ const de = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Gründer',
+  'community.msg1.text': 'Willkommen 👋 Beta-Einladungen und Previews gibt es hier zuerst.',
+  'community.msg2.user': 'Final Table Team',
+  'community.msg2.text': 'Sag uns, was wir als Nächstes bauen sollen — Abstimmungen in #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Gründer',
+  'community.msg3.text': 'Poste deine beste Hand der Woche in #hands — wir analysieren sie gemeinsam 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -1231,13 +1267,13 @@ const pt = {
   // Community / Discord
   'community.eyebrow': 'Junte-se à comunidade',
   'community.title': () => <>Fale sobre poker com jogadores<br />que <em>realmente jogam ao vivo.</em></>,
-  'community.sub': 'Compartilhe histórias de sessões, discuta estratégia, acesse prévias de novos recursos e ajude a moldar o futuro do Final Table. Nosso Discord é onde a conversa de verdade acontece.',
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Membros',
-  'community.stat2.value': 'Diário',
-  'community.stat2.label': 'Discussões ativas',
-  'community.stat3.value': 'Direto',
-  'community.stat3.label': 'Acesso aos fundadores',
+  'community.sub': 'Estamos abrindo as portas agora — entre como membro fundador, fale de pôquer ao vivo diretamente conosco e ajude a moldar o futuro do Final Table.',
+  'community.stat1.value': 'Dia 1',
+  'community.stat1.label': 'Membros fundadores',
+  'community.stat2.value': 'Direto',
+  'community.stat2.label': 'Linha com os fundadores',
+  'community.stat3.value': 'Primeiro',
+  'community.stat3.label': 'Convites para a beta',
   'community.cta': 'Entrar no Discord →',
 
   'tabs.0.label': 'Antes da sessão',
@@ -1374,6 +1410,12 @@ const pt = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Fundador',
+  'community.msg1.text': 'Bem-vindo 👋 Convites para a beta e prévias chegam aqui primeiro.',
+  'community.msg2.user': 'Equipe Final Table',
+  'community.msg2.text': 'Diga o que devemos construir — as votações acontecem no #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Fundador',
+  'community.msg3.text': 'Poste sua melhor mão da semana no #hands — analisamos juntos 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
@@ -1423,12 +1465,12 @@ const tr = {
   'community.eyebrow': 'Topluluğa katılın',
   'community.title': () => <>Gerçekten canlı oynayan<br />oyuncularla <em>poker konuşun.</em></>,
   'community.sub': "Seans hikayelerinizi paylaşın, strateji tartışın, yeni özelliklere erken erişin ve Final Table'ın geleceğini şekillendirmeye yardımcı olun. Discord sunucumuz gerçek sohbetin yaşandığı yer.",
-  'community.stat1.value': '700+',
-  'community.stat1.label': 'Üye',
-  'community.stat2.value': 'Her gün',
-  'community.stat2.label': 'Aktif tartışmalar',
-  'community.stat3.value': 'Doğrudan',
-  'community.stat3.label': 'Kuruculara erişim',
+  'community.stat1.value': '1. Gün',
+  'community.stat1.label': 'Kurucu üyeler',
+  'community.stat2.value': 'Doğrudan',
+  'community.stat2.label': 'Kuruculara erişim',
+  'community.stat3.value': 'İlk',
+  'community.stat3.label': 'Beta davetleri',
   'community.cta': "Discord'a Katıl →",
 
   'tabs.0.label': 'Seanstan önce',
@@ -1565,6 +1607,12 @@ const tr = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'community.msg1.user': 'Magsud · Kurucu',
+  'community.msg1.text': 'Hoş geldin 👋 Beta davetleri ve ön izlemeler önce burada paylaşılır.',
+  'community.msg2.user': 'Final Table Ekibi',
+  'community.msg2.text': 'Sırada ne olsun, söyle — oylamalar #roadmap kanalında 🗳️',
+  'community.msg3.user': 'Magsud · Kurucu',
+  'community.msg3.text': 'Haftanın en iyi elini #hands kanalına at — birlikte inceleyelim 🃏',
 }
 
 /* ─────────────────────────────────────────────── */
