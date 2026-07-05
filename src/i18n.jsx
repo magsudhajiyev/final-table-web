@@ -26,7 +26,7 @@ const en = {
   'nav.howItWorks': 'How it works?',
   'nav.compare': 'Compare',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Download on iOS',
+  'nav.cta': 'Download the app',
 
   // How it works section title
   'howSection.sans': 'How it ',
@@ -168,7 +168,7 @@ const en = {
       <span className="bc-hl-sans">.</span>
     </>
   ),
-  'bottomCta.sub': 'Join the early waitlist and get notified the moment we go live.',
+  'bottomCta.sub': 'Download the app and start logging your hands right away.',
 
   // Footer
   'footer.tagline': () => (
@@ -204,8 +204,8 @@ const en = {
   'about.member1Bio': 'Software engineer passionate about building products that solve real problems. Leading the technical vision behind Final Table.',
   'about.member2Bio': 'Design-driven product thinker focused on creating intuitive experiences. Shaping the look, feel, and user experience of Final Table.',
   'about.ctaTitle': () => <>Want to be part of <em>the journey?</em></>,
-  'about.ctaBody': 'Final Table is in closed beta. Reserve your spot and be the first to know when we launch.',
-  'about.ctaBtn': 'Reserve my spot →',
+  'about.ctaBody': 'Final Table is live on iOS and Android. Download the app and start tracking your sessions today.',
+  'about.ctaBtn': 'Download the app →',
 
   // Language
   'lang.de': 'Deutsch',
@@ -226,7 +226,7 @@ const pl = {
   'nav.howItWorks': 'Jak to działa?',
   'nav.compare': 'Porównaj',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Pobierz na iOS',
+  'nav.cta': 'Pobierz aplikację',
 
   'howSection.sans': 'Jak to ',
   'howSection.italic': 'działa?',
@@ -384,8 +384,8 @@ const pl = {
   'about.member1Bio': 'Inżynier oprogramowania z pasją do tworzenia produktów rozwiązujących realne problemy. Prowadzi wizję techniczną Final Table.',
   'about.member2Bio': 'Myśliciel produktowy zorientowany na design, skupiony na tworzeniu intuicyjnych doświadczeń. Kształtuje wygląd i wrażenia użytkownika Final Table.',
   'about.ctaTitle': () => <>Chcesz być częścią <em>tej podróży?</em></>,
-  'about.ctaBody': 'Final Table jest w zamkniętej becie. Zarezerwuj swoje miejsce i bądź pierwszym, który dowie się o premierze.',
-  'about.ctaBtn': 'Zarezerwuj miejsce →',
+  'about.ctaBody': 'Final Table jest dostępny na iOS i Androida. Pobierz aplikację i zacznij śledzić swoje sesje już dziś.',
+  'about.ctaBtn': 'Pobierz aplikację →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -405,7 +405,7 @@ const ru = {
   'nav.howItWorks': 'Как это работает?',
   'nav.compare': 'Сравнить',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Скачать на iOS',
+  'nav.cta': 'Скачать приложение',
 
   'howSection.sans': 'Как это ',
   'howSection.italic': 'работает?',
@@ -563,8 +563,8 @@ const ru = {
   'about.member1Bio': 'Инженер-программист, увлечённый созданием продуктов, решающих реальные проблемы. Руководит технической визией Final Table.',
   'about.member2Bio': 'Продуктовый мыслитель, ориентированный на дизайн, создающий интуитивно понятные интерфейсы. Формирует внешний вид и пользовательский опыт Final Table.',
   'about.ctaTitle': () => <>Хотите стать частью <em>этого пути?</em></>,
-  'about.ctaBody': 'Final Table находится в закрытой бете. Забронируйте место и узнайте первыми о запуске.',
-  'about.ctaBtn': 'Забронировать место →',
+  'about.ctaBody': 'Final Table доступен на iOS и Android. Скачайте приложение и начните отслеживать свои сессии уже сегодня.',
+  'about.ctaBtn': 'Скачать приложение →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -584,7 +584,7 @@ const fr = {
   'nav.howItWorks': 'Comment ça marche ?',
   'nav.compare': 'Comparer',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Télécharger sur iOS',
+  'nav.cta': "Télécharger l'app",
 
   'howSection.sans': 'Comment ça ',
   'howSection.italic': 'marche ?',
@@ -742,8 +742,8 @@ const fr = {
   'about.member1Bio': 'Ingénieur logiciel passionné par la création de produits qui résolvent de vrais problèmes. Dirige la vision technique de Final Table.',
   'about.member2Bio': 'Penseur produit orienté design, concentré sur la création d\'expériences intuitives. Façonne l\'apparence et l\'expérience utilisateur de Final Table.',
   'about.ctaTitle': () => <>Vous voulez faire partie de <em>l'aventure ?</em></>,
-  'about.ctaBody': 'Final Table est en bêta fermée. Réservez votre place et soyez les premiers informés du lancement.',
-  'about.ctaBtn': 'Réserver ma place →',
+  'about.ctaBody': "Final Table est disponible sur iOS et Android. Téléchargez l'app et commencez à suivre vos sessions dès aujourd'hui.",
+  'about.ctaBtn': "Télécharger l'app →",
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -763,7 +763,7 @@ const es = {
   'nav.howItWorks': '¿Cómo funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Descargar en iOS',
+  'nav.cta': 'Descargar la app',
 
   'howSection.sans': '¿Cómo ',
   'howSection.italic': 'funciona?',
@@ -921,8 +921,8 @@ const es = {
   'about.member1Bio': 'Ingeniero de software apasionado por crear productos que resuelven problemas reales. Lidera la visión técnica de Final Table.',
   'about.member2Bio': 'Pensador de producto orientado al diseño, enfocado en crear experiencias intuitivas. Da forma a la apariencia y experiencia de usuario de Final Table.',
   'about.ctaTitle': () => <>¿Quieres ser parte de <em>el viaje?</em></>,
-  'about.ctaBody': 'Final Table está en beta cerrada. Reserva tu lugar y sé el primero en saber cuándo lanzamos.',
-  'about.ctaBtn': 'Reservar mi lugar →',
+  'about.ctaBody': 'Final Table ya está disponible en iOS y Android. Descarga la app y empieza a registrar tus sesiones hoy mismo.',
+  'about.ctaBtn': 'Descargar la app →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -942,7 +942,7 @@ const de = {
   'nav.howItWorks': 'So funktioniert\'s?',
   'nav.compare': 'Vergleich',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Auf iOS laden',
+  'nav.cta': 'App herunterladen',
 
   'howSection.sans': 'So ',
   'howSection.italic': 'funktioniert\'s?',
@@ -1100,8 +1100,8 @@ const de = {
   'about.member1Bio': 'Software-Ingenieur mit Leidenschaft für Produkte, die echte Probleme lösen. Leitet die technische Vision von Final Table.',
   'about.member2Bio': 'Designorientierter Produktdenker, der sich auf intuitive Erlebnisse konzentriert. Gestaltet das Erscheinungsbild und die Benutzererfahrung von Final Table.',
   'about.ctaTitle': () => <>Willst du Teil <em>der Reise sein?</em></>,
-  'about.ctaBody': 'Final Table befindet sich in der geschlossenen Beta. Reserviere deinen Platz und erfahre als Erster vom Launch.',
-  'about.ctaBtn': 'Platz reservieren →',
+  'about.ctaBody': 'Final Table ist jetzt für iOS und Android verfügbar. Lade die App herunter und tracke deine Sessions ab heute.',
+  'about.ctaBtn': 'App herunterladen →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -1121,7 +1121,7 @@ const pt = {
   'nav.howItWorks': 'Como funciona?',
   'nav.compare': 'Comparar',
   'nav.faq': 'FAQ',
-  'nav.cta': 'Baixar no iOS',
+  'nav.cta': 'Baixar o app',
 
   'howSection.sans': 'Como ',
   'howSection.italic': 'funciona?',
@@ -1279,8 +1279,8 @@ const pt = {
   'about.member1Bio': 'Engenheiro de software apaixonado por criar produtos que resolvem problemas reais. Lidera a visão técnica do Final Table.',
   'about.member2Bio': 'Pensador de produto orientado ao design, focado em criar experiências intuitivas. Molda a aparência e a experiência do usuário do Final Table.',
   'about.ctaTitle': () => <>Quer fazer parte <em>dessa jornada?</em></>,
-  'about.ctaBody': 'O Final Table está em beta fechado. Reserve seu lugar e seja o primeiro a saber quando lançarmos.',
-  'about.ctaBtn': 'Reservar meu lugar →',
+  'about.ctaBody': 'O Final Table está disponível no iOS e Android. Baixe o app e comece a registrar suas sessões hoje mesmo.',
+  'about.ctaBtn': 'Baixar o app →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',
@@ -1300,7 +1300,7 @@ const tr = {
   'nav.howItWorks': 'Nasıl çalışır?',
   'nav.compare': 'Karşılaştır',
   'nav.faq': 'SSS',
-  'nav.cta': "iOS'ta İndir",
+  'nav.cta': 'Uygulamayı İndir',
 
   'howSection.sans': 'Nasıl ',
   'howSection.italic': 'çalışır?',
@@ -1458,8 +1458,8 @@ const tr = {
   'about.member1Bio': 'Gerçek sorunları çözen ürünler yaratma tutkusuna sahip yazılım mühendisi. Final Table\'ın teknik vizyonuna liderlik ediyor.',
   'about.member2Bio': 'Sezgisel deneyimler oluşturmaya odaklı, tasarım odaklı ürün düşünürü. Final Table\'ın görünümünü ve kullanıcı deneyimini şekillendiriyor.',
   'about.ctaTitle': () => <>Bu yolculuğun <em>bir parçası olmak ister misiniz?</em></>,
-  'about.ctaBody': 'Final Table kapalı betadadır. Yerinizi ayırtın ve çıkış yaptığımızda ilk siz öğrenin.',
-  'about.ctaBtn': 'Yerimi ayırt →',
+  'about.ctaBody': "Final Table artık iOS ve Android'de mevcut. Uygulamayı indirin ve oturumlarınızı takip etmeye hemen başlayın.",
+  'about.ctaBtn': 'Uygulamayı İndir →',
 
   'lang.de': 'Deutsch',
   'lang.en': 'English',

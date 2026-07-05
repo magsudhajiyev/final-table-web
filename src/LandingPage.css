@@ -2328,6 +2328,14 @@ html {
     font-weight: 400;
 }
 
+.mf-store-btns {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
 .mf-tagline {
     font-size: 16px;
     color: #d8d8d8;
@@ -4580,15 +4588,6 @@ html {
 }
 .tp-appstore-badge-link:hover {
     opacity: 0.85;
-}
-.tp-appstore-android-note {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    color: #999;
-    margin: 0;
 }
 
 /* ── Spotlight reserve success modal ── */

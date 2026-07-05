@@ -65,7 +65,6 @@ function AboutNavbar() {
           <a href="/#features">{t('nav.features')}</a>
           <a href="/#compare">{t('nav.compare')}</a>
           <a href="/about" className="tp-nav-link-active">{t('about.nav')}</a>
-          <a href="/#faq">{t('nav.faq')}</a>
         </div>
         <div className="tp-lang-picker" ref={langRef}>
           <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
@@ -86,7 +85,7 @@ function AboutNavbar() {
             </div>
           )}
         </div>
-        <a href="/#faq" className="tp-nav-waitlist-btn">
+        <a href="/#reserve-form" className="tp-nav-waitlist-btn">
           {t('nav.cta')}
         </a>
         <button
@@ -102,7 +101,6 @@ function AboutNavbar() {
         <a href="/#features">{t('nav.features')}</a>
         <a href="/#compare">{t('nav.compare')}</a>
         <a href="/about">{t('about.nav')}</a>
-        <a href="/#faq">{t('nav.faq')}</a>
         <div className="tp-nav-mobile-lang" ref={mobileLangRef}>
           <button className="tp-mobile-lang-current" onClick={() => setLangOpen(o => !o)}>
             <span><Flag locale={locale} /> {t(`lang.${locale}`)}</span>
@@ -140,7 +138,6 @@ function AboutFooter() {
     { title: t('nav.features'),     href: '/#features' },
     { title: t('nav.compare'),      href: '/#compare' },
     { title: t('about.nav'),        href: '/about' },
-    { title: t('nav.faq'),          href: '/#faq' },
   ]
 
   return (
@@ -245,7 +242,7 @@ export default function AboutPage() {
           <div className="about-inner">
             <h2 className="about-h2">{t('about.ctaTitle')}</h2>
             <p className="about-cta-body">{t('about.ctaBody')}</p>
-            <a href="/#faq" className="about-cta-btn">{t('about.ctaBtn')}</a>
+            <a href="/#reserve-form" className="about-cta-btn">{t('about.ctaBtn')}</a>
           </div>
         </section>
 
