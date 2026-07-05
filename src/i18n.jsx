@@ -64,6 +64,18 @@ const en = {
   'compare.card4.desc': 'Dealers run the table hands-free with voice commands. Players follow along on their own phones in real time.',
   'compare.comingSoon': 'COMING SOON · VENUE PARTNERSHIPS',
 
+  // Community / Discord
+  'community.eyebrow': 'Join the community',
+  'community.title': () => <>Talk poker with players<br />who <em>actually play live.</em></>,
+  'community.sub': 'Share session stories, discuss strategy, get early feature previews, and help shape the direction of Final Table. Our Discord is where the real conversation happens.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Members',
+  'community.stat2.value': 'Daily',
+  'community.stat2.label': 'Active discussions',
+  'community.stat3.value': 'Direct',
+  'community.stat3.label': 'Access to founders',
+  'community.cta': 'Join the Discord →',
+
   // Tabs (BgSection)
   'tabs.0.label': 'Before the session',
   'tabs.1.label': 'At the table',
@@ -261,6 +273,18 @@ const pl = {
   'compare.card4.desc': 'Dealerzy prowadzą stół głosem. Gracze śledzą grę na swoich telefonach w czasie rzeczywistym.',
   'compare.comingSoon': 'WKRÓTCE · PARTNERSTWA Z OBIEKTAMI',
 
+  // Community / Discord
+  'community.eyebrow': 'Dołącz do społeczności',
+  'community.title': () => <>Rozmawiaj o pokerze z graczami,<br />którzy <em>naprawdę grają na żywo.</em></>,
+  'community.sub': 'Dziel się historiami z sesji, omawiaj strategię, poznaj nowe funkcje jako pierwszy i pomagaj kształtować przyszłość Final Table. Nasza społeczność Discord to miejsce, gdzie toczą się prawdziwe rozmowy.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Członków',
+  'community.stat2.value': 'Codziennie',
+  'community.stat2.label': 'Aktywne dyskusje',
+  'community.stat3.value': 'Bezpośredni',
+  'community.stat3.label': 'Dostęp do twórców',
+  'community.cta': 'Dołącz do Discorda →',
+
   'tabs.0.label': 'Przed sesją',
   'tabs.1.label': 'Przy stole',
   'tabs.2.label': 'Po sesji',
@@ -439,6 +463,18 @@ const ru = {
   'compare.card4.title': 'Режим Дилера',
   'compare.card4.desc': 'Дилеры ведут стол голосовыми командами. Игроки следят за игрой на своих телефонах в реальном времени.',
   'compare.comingSoon': 'СКОРО · ПАРТНЁРСТВА С ЗАВЕДЕНИЯМИ',
+
+  // Community / Discord
+  'community.eyebrow': 'Присоединяйтесь к сообществу',
+  'community.title': () => <>Обсуждайте покер с игроками,<br />которые <em>действительно играют вживую.</em></>,
+  'community.sub': 'Делитесь историями сессий, обсуждайте стратегию, получайте ранний доступ к новым функциям и помогайте формировать будущее Final Table. Наш Discord — место, где происходят настоящие разговоры.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Участников',
+  'community.stat2.value': 'Ежедневно',
+  'community.stat2.label': 'Активные обсуждения',
+  'community.stat3.value': 'Прямой',
+  'community.stat3.label': 'Доступ к основателям',
+  'community.cta': 'Присоединиться к Discord →',
 
   'tabs.0.label': 'До сессии',
   'tabs.1.label': 'За столом',
@@ -619,6 +655,18 @@ const fr = {
   'compare.card4.desc': 'Les dealers gèrent la table par commandes vocales. Les joueurs suivent en temps réel sur leurs téléphones.',
   'compare.comingSoon': 'BIENTÔT · PARTENARIATS AVEC LES SALLES',
 
+  // Community / Discord
+  'community.eyebrow': 'Rejoindre la communauté',
+  'community.title': () => <>Parlez poker avec des joueurs<br />qui <em>jouent vraiment en live.</em></>,
+  'community.sub': "Partagez vos récits de sessions, discutez stratégie, découvrez les nouvelles fonctionnalités en avant-première et contribuez à l'avenir de Final Table. Notre Discord est là où la vraie conversation se passe.",
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Membres',
+  'community.stat2.value': 'Quotidien',
+  'community.stat2.label': 'Discussions actives',
+  'community.stat3.value': 'Direct',
+  'community.stat3.label': 'Accès aux fondateurs',
+  'community.cta': 'Rejoindre le Discord →',
+
   'tabs.0.label': 'Avant la session',
   'tabs.1.label': 'À la table',
   'tabs.2.label': 'Après la session',
@@ -797,6 +845,18 @@ const es = {
   'compare.card4.title': 'Modo Dealer',
   'compare.card4.desc': 'Los dealers dirigen la mesa con comandos de voz. Los jugadores siguen en tiempo real desde sus teléfonos.',
   'compare.comingSoon': 'PRÓXIMAMENTE · ALIANZAS CON SALAS',
+
+  // Community / Discord
+  'community.eyebrow': 'Únete a la comunidad',
+  'community.title': () => <>Habla de póker con jugadores<br />que <em>realmente juegan en vivo.</em></>,
+  'community.sub': 'Comparte historias de sesiones, debate estrategia, accede a previsualizaciones de funciones y ayuda a dar forma al futuro de Final Table. Nuestro Discord es donde ocurre la conversación real.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Miembros',
+  'community.stat2.value': 'A diario',
+  'community.stat2.label': 'Debates activos',
+  'community.stat3.value': 'Directo',
+  'community.stat3.label': 'Acceso a los fundadores',
+  'community.cta': 'Unirse al Discord →',
 
   'tabs.0.label': 'Antes de la sesión',
   'tabs.1.label': 'En la mesa',
@@ -977,6 +1037,18 @@ const de = {
   'compare.card4.desc': 'Dealer leiten den Tisch per Sprachbefehl. Spieler verfolgen das Spiel in Echtzeit auf ihren Handys.',
   'compare.comingSoon': 'DEMNÄCHST · PARTNERSCHAFTEN MIT SPIELSTÄTTEN',
 
+  // Community / Discord
+  'community.eyebrow': 'Tritt der Community bei',
+  'community.title': () => <>Sprich über Poker mit Spielern,<br />die <em>wirklich live spielen.</em></>,
+  'community.sub': 'Teile Session-Geschichten, diskutiere Strategie, erhalte frühen Zugang zu neuen Features und hilf mit, die Zukunft von Final Table zu gestalten. Unser Discord ist der Ort, wo das echte Gespräch stattfindet.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Mitglieder',
+  'community.stat2.value': 'Täglich',
+  'community.stat2.label': 'Aktive Diskussionen',
+  'community.stat3.value': 'Direkter',
+  'community.stat3.label': 'Zugang zu den Gründern',
+  'community.cta': 'Discord beitreten →',
+
   'tabs.0.label': 'Vor der Session',
   'tabs.1.label': 'Am Tisch',
   'tabs.2.label': 'Nach der Session',
@@ -1156,6 +1228,18 @@ const pt = {
   'compare.card4.desc': 'Dealers comandam a mesa por voz. Jogadores acompanham em tempo real nos seus celulares.',
   'compare.comingSoon': 'EM BREVE · PARCERIAS COM CASAS DE JOGO',
 
+  // Community / Discord
+  'community.eyebrow': 'Junte-se à comunidade',
+  'community.title': () => <>Fale sobre poker com jogadores<br />que <em>realmente jogam ao vivo.</em></>,
+  'community.sub': 'Compartilhe histórias de sessões, discuta estratégia, acesse prévias de novos recursos e ajude a moldar o futuro do Final Table. Nosso Discord é onde a conversa de verdade acontece.',
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Membros',
+  'community.stat2.value': 'Diário',
+  'community.stat2.label': 'Discussões ativas',
+  'community.stat3.value': 'Direto',
+  'community.stat3.label': 'Acesso aos fundadores',
+  'community.cta': 'Entrar no Discord →',
+
   'tabs.0.label': 'Antes da sessão',
   'tabs.1.label': 'Na mesa',
   'tabs.2.label': 'Depois da sessão',
@@ -1334,6 +1418,18 @@ const tr = {
   'compare.card4.title': 'Krupiye Modu',
   'compare.card4.desc': 'Krupiyeler masayı sesli komutlarla yönetir. Oyuncular kendi telefonlarından gerçek zamanlı takip eder.',
   'compare.comingSoon': 'YAKINDA · MEKAN ORTAKLIKLARI',
+
+  // Community / Discord
+  'community.eyebrow': 'Topluluğa katılın',
+  'community.title': () => <>Gerçekten canlı oynayan<br />oyuncularla <em>poker konuşun.</em></>,
+  'community.sub': "Seans hikayelerinizi paylaşın, strateji tartışın, yeni özelliklere erken erişin ve Final Table'ın geleceğini şekillendirmeye yardımcı olun. Discord sunucumuz gerçek sohbetin yaşandığı yer.",
+  'community.stat1.value': '700+',
+  'community.stat1.label': 'Üye',
+  'community.stat2.value': 'Her gün',
+  'community.stat2.label': 'Aktif tartışmalar',
+  'community.stat3.value': 'Doğrudan',
+  'community.stat3.label': 'Kuruculara erişim',
+  'community.cta': "Discord'a Katıl →",
 
   'tabs.0.label': 'Seanstan önce',
   'tabs.1.label': 'Masada',
