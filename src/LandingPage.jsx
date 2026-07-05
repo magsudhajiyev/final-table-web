@@ -706,11 +706,6 @@ function TPCommunity() {
         <div className="tp-community-right">
           <div className="tp-community-stats">
             <div className="tp-community-stat">
-              <span className="tp-community-stat-value">{t('community.stat1.value')}</span>
-              <span className="tp-community-stat-label">{t('community.stat1.label')}</span>
-            </div>
-            <div className="tp-community-stat-divider" />
-            <div className="tp-community-stat">
               <span className="tp-community-stat-value">{t('community.stat2.value')}</span>
               <span className="tp-community-stat-label">{t('community.stat2.label')}</span>
             </div>
