@@ -179,9 +179,9 @@ export default function DeleteAccountPage() {
 
         <h3>Option B — By email (no app needed)</h3>
         <ol>
-          <li>Email <strong>[[PLACEHOLDER_DELETION_EMAIL]]</strong> from the email address associated with your Final Table account.</li>
+          <li>Email <strong><a href="mailto:contact@finaltable.io">contact@finaltable.io</a></strong> from the email address associated with your Final Table account.</li>
           <li>Use the subject line <strong>"Account deletion request"</strong> and include the email address of the account you want deleted.</li>
-          <li>We verify that the request comes from the account owner and then delete the account and data listed below. We complete verified requests within <strong>[[PLACEHOLDER_DELETION_SLA]]</strong> days and confirm by reply when done.</li>
+          <li>We verify that the request comes from the account owner and then delete the account and data listed below. We complete verified requests within <strong>30</strong> days and confirm by reply when done.</li>
         </ol>
 
         <h2>2. What is deleted</h2>
@@ -201,16 +201,16 @@ export default function DeleteAccountPage() {
         <h2>3. What is kept, and why</h2>
         <ul>
           <li><strong>Subscription and purchase records:</strong> transaction records are held by Apple, Google Play, and RevenueCat under their own retention rules, and we retain related records as needed for legal, tax, and accounting obligations. We cannot delete records held by Apple or Google — you can manage those through your App Store or Google Play account.</li>
-          <li><strong>Backups:</strong> deleted data may persist in our encrypted backups for up to <strong>[[PLACEHOLDER_BACKUP_RETENTION]]</strong> days before it is purged.</li>
+          <li><strong>Backups:</strong> deleted data may persist in our encrypted backups for up to <strong>90</strong> days before it is purged.</li>
           <li><strong>De-identified data:</strong> aggregated or de-identified data that can no longer be linked to you (for example, anonymized hand statistics used to improve our analysis features, as described in our <a href="/privacy">Privacy Policy</a>) may be retained.</li>
-          <li><strong>Shared club and event data:</strong> [[PLACEHOLDER_CLUB_DATA_POLICY — what happens to clubs you own/admin and to hands logged into shared club events when your account is deleted]]</li>
+          <li><strong>Shared club and event data:</strong> records that belong to a shared club or event — hands logged in a shared dealer session, event results, seat assignments, and rankings — are part of that club's shared history and are not automatically removed, because other members rely on them. After deletion they are no longer linked to a Final Table account. If you own or admin a club, the club and its records are not deleted automatically — email <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> to have a club you own, or specific club records about you, removed.</li>
         </ul>
 
         <h2>4. Timeline</h2>
         <ul>
           <li><strong>In-app deletion:</strong> takes effect immediately.</li>
-          <li><strong>Email requests:</strong> completed within <strong>[[PLACEHOLDER_DELETION_SLA]]</strong> days of verifying your identity.</li>
-          <li><strong>Backups:</strong> purged within <strong>[[PLACEHOLDER_BACKUP_RETENTION]]</strong> days of deletion.</li>
+          <li><strong>Email requests:</strong> completed within <strong>30</strong> days of verifying your identity.</li>
+          <li><strong>Backups:</strong> purged within <strong>90</strong> days of deletion.</li>
         </ul>
 
         <h2>5. Questions</h2>
