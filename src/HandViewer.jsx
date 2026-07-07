@@ -159,11 +159,19 @@ export default function HandViewer({ shareId }) {
   // their cards into one BOARD strip (mirrors the app's hand details).
   // Covers preflop, flop AND turn all-ins; previously only the preflop
   // case rendered, so run-out cards were missing from shared hands.
+  const flopIsRunout = flop.length > 0 && !(streets.flop || []).length
+  const turnIsRunout = !!turn && !(streets.turn || []).length
+  const riverIsRunout = !!river && !(streets.river || []).length
   const runoutCards = []
-  if (flop.length > 0 && !(streets.flop || []).length) runoutCards.push(...flop)
-  if (turn && !(streets.turn || []).length) runoutCards.push(turn)
-  if (river && !(streets.river || []).length) runoutCards.push(river)
+  if (flopIsRunout) runoutCards.push(...flop)
+  if (turnIsRunout) runoutCards.push(turn)
+  if (riverIsRunout) runoutCards.push(river)
   const showBoardSection = runoutCards.length > 0
+  // Single-street run-out keeps its street name (all-in on the turn shows
+  // just the river card → "RIVER"); multi-street run-outs are "RUNOUT".
+  const runoutLabel = riverIsRunout && !turnIsRunout && !flopIsRunout ? 'RIVER'
+    : turnIsRunout && !riverIsRunout && !flopIsRunout ? 'TURN'
+    : 'RUNOUT'
 
   // Pot
   const pot = d.potAmount || 0
@@ -346,7 +354,7 @@ export default function HandViewer({ shareId }) {
           <div style={styles.streetSection}>
             <div style={styles.streetHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={styles.streetName}>BOARD</span>
+                <span style={styles.streetName}>{runoutLabel}</span>
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                   {runoutCards.map((c, i) => <PlayingCard key={i} card={c} size="tiny" />)}
                 </div>
