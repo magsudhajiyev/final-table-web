@@ -483,6 +483,39 @@ function ResultBadge({ result }) {
   )
 }
 
+function SuitIcon({ suit, size, color }) {
+  // ♠ = \u2660, ♥ = \u2665, ♦ = \u2666, ♣ = \u2663
+  if (suit === '\u2665') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 21C12 21 3 14.5 3 8.5C3 5.46 5.46 3 8.5 3C10.24 3 11.79 3.85 12 5C12.21 3.85 13.76 3 15.5 3C18.54 3 21 5.46 21 8.5C21 14.5 12 21 12 21Z"/>
+      </svg>
+    )
+  }
+  if (suit === '\u2666') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3L20 12L12 21L4 12L12 3Z"/>
+      </svg>
+    )
+  }
+  if (suit === '\u2660') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3C12 3 3 9.5 3 14C3 16.76 5.24 19 8 19C9.28 19 10.44 18.54 11.33 17.77C11 18.83 10.27 19.72 9 20.5H15C13.73 19.72 13 18.83 12.67 17.77C13.56 18.54 14.72 19 16 19C18.76 19 21 16.76 21 14C21 9.5 12 3 12 3Z"/>
+      </svg>
+    )
+  }
+  if (suit === '\u2663') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3C10.34 3 9 4.34 9 6C9 6.93 9.43 7.75 10.09 8.31C7.29 8.88 5 11.21 5 14C5 16.76 7.24 19 10 19C10.36 19 10.71 18.96 11.04 18.89C10.71 19.74 10.08 20.5 9 21H15C13.92 20.5 13.29 19.74 12.96 18.89C13.29 18.96 13.64 19 14 19C16.76 19 19 16.76 19 14C19 11.21 16.71 8.88 13.91 8.31C14.57 7.75 15 6.93 15 6C15 4.34 13.66 3 12 3Z"/>
+      </svg>
+    )
+  }
+  return <span style={{ fontSize: size }}>{suit}</span>
+}
+
 function PlayingCard({ card, size = 'normal' }) {
   if (!card) return null
   const rank = card.slice(0, -1)
@@ -491,9 +524,9 @@ function PlayingCard({ card, size = 'normal' }) {
   const color = isRed ? '#D32F2F' : '#1a1a1a'
 
   const dims = {
-    normal: { width: 30, height: 40, rankSize: 12, suitSize: 10, radius: 6 },
-    small: { width: 24, height: 32, rankSize: 10, suitSize: 8, radius: 4 },
-    tiny: { width: 24, height: 32, rankSize: 10, suitSize: 8, radius: 4 },
+    normal: { width: 34, height: 44, rankSize: 13, suitPx: 14, radius: 6 },
+    small:  { width: 28, height: 36, rankSize: 11, suitPx: 11, radius: 5 },
+    tiny:   { width: 28, height: 36, rankSize: 11, suitPx: 11, radius: 5 },
   }
   const d = dims[size] || dims.normal
 
@@ -503,11 +536,12 @@ function PlayingCard({ card, size = 'normal' }) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Roboto Mono', monospace", fontWeight: 700, color, lineHeight: 1,
       border: '1px solid rgba(255,255,255,0.2)',
-      boxShadow: size === 'normal' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
+      boxShadow: size === 'normal' ? '0 2px 6px rgba(0,0,0,0.25)' : '0 1px 3px rgba(0,0,0,0.15)',
       flexShrink: 0,
+      gap: 2,
     }}>
       <span style={{ fontSize: d.rankSize }}>{rank}</span>
-      <span style={{ fontSize: d.suitSize, marginTop: 1 }}>{suit}</span>
+      <SuitIcon suit={suit} size={d.suitPx} color={color} />
     </div>
   )
 }
