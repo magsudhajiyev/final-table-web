@@ -154,14 +154,16 @@ export default function HandViewer({ shareId }) {
     streets[street].push(a)
   }
 
-  // Check if all-in preflop with no postflop actions
-  const hasAllInPreflop = (streets.preflop || []).some(a => {
-    const act = (a.action || '').toLowerCase().replace(/[\s-]/g, '')
-    return act === 'allin' || act === 'all-in' || act === 'all in' ||
-      ((act === 'raise' || act === 'bet') && a.amount && a.playerStack && a.amount >= a.playerStack - 0.01)
-  })
-  const noPostflopActions = !streets.flop && !streets.turn && !streets.river
-  const showBoardSection = hasAllInPreflop && noPostflopActions && flop.length > 0
+  // Streets that were DEALT but have no recorded actions are an all-in
+  // run-out — players were already all-in on an earlier street. Collapse
+  // their cards into one BOARD strip (mirrors the app's hand details).
+  // Covers preflop, flop AND turn all-ins; previously only the preflop
+  // case rendered, so run-out cards were missing from shared hands.
+  const runoutCards = []
+  if (flop.length > 0 && !(streets.flop || []).length) runoutCards.push(...flop)
+  if (turn && !(streets.turn || []).length) runoutCards.push(turn)
+  if (river && !(streets.river || []).length) runoutCards.push(river)
+  const showBoardSection = runoutCards.length > 0
 
   // Pot
   const pot = d.potAmount || 0
@@ -339,16 +341,14 @@ export default function HandViewer({ shareId }) {
           )
         })}
 
-        {/* All-in board section (no postflop actions) */}
+        {/* All-in run-out board strip (streets dealt with no actions) */}
         {showBoardSection && (
           <div style={styles.streetSection}>
             <div style={styles.streetHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={styles.streetName}>BOARD</span>
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                  {flop.map((c, i) => <PlayingCard key={`f${i}`} card={c} size="tiny" />)}
-                  {turn && <PlayingCard card={turn} size="tiny" />}
-                  {river && <PlayingCard card={river} size="tiny" />}
+                  {runoutCards.map((c, i) => <PlayingCard key={i} card={c} size="tiny" />)}
                 </div>
               </div>
             </div>
