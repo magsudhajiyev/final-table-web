@@ -119,15 +119,77 @@ export async function updateContactSubmission(id, data) { await updateDoc(doc(db
 export async function deleteContactSubmission(id) { await deleteDoc(doc(db, 'contact_submissions', id)) }
 
 export async function getAppUsers() {
-  const snapshot = await getDocs(collection(db, 'users'))
-  return snapshot.docs.map(d => {
+  // Fetch Firestore users + Auth users, merge by UID
+  const [snapshot, authUsers] = await Promise.all([
+    getDocs(collection(db, 'users')),
+    fetchAuthUsers(),
+  ])
+
+  const firestoreMap = {}
+  snapshot.docs.forEach(d => {
     const data = d.data()
-    return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, lastLogin: data.lastLogin?.toDate?.() || null }
+    firestoreMap[d.id] = { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, lastLogin: data.lastLogin?.toDate?.() || null }
   })
+
+  // Auth-only users (exist in Auth but not Firestore)
+  const merged = []
+  const seen = new Set()
+  for (const au of authUsers) {
+    seen.add(au.uid)
+    if (firestoreMap[au.uid]) {
+      // Firestore doc exists — use it, but fill in lastLogin from Auth if missing
+      const fsUser = firestoreMap[au.uid]
+      if (!fsUser.lastLogin && au.lastLogin) fsUser.lastLogin = new Date(au.lastLogin)
+      fsUser._provider = au.provider
+      merged.push(fsUser)
+    } else {
+      // Auth-only user — no Firestore doc
+      merged.push({
+        id: au.uid,
+        uid: au.uid,
+        email: au.email,
+        displayName: au.displayName,
+        photoURL: au.photoURL,
+        _provider: au.provider,
+        _authOnly: true,
+        createdAt: au.createdAt ? new Date(au.createdAt) : null,
+        lastLogin: au.lastLogin ? new Date(au.lastLogin) : null,
+      })
+    }
+  }
+  // Include any Firestore users not in Auth (shouldn't happen, but safety)
+  for (const [uid, fsUser] of Object.entries(firestoreMap)) {
+    if (!seen.has(uid)) merged.push(fsUser)
+  }
+
+  return merged
+}
+
+async function fetchAuthUsers() {
+  try {
+    const res = await fetch('/api/list-auth-users')
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.users || []
+  } catch {
+    return []
+  }
 }
 
 export async function updateAppUser(id, data) { await updateDoc(doc(db, 'users', id), data) }
-export async function deleteAppUser(id) { await deleteDoc(doc(db, 'users', id)) }
+export async function deleteAppUser(id) {
+  // Delete from Auth first, then Firestore
+  const uid = id.startsWith('appuser_') ? id.replace('appuser_', '') : id
+  try {
+    await fetch('/api/delete-auth-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid }),
+    })
+  } catch { /* Auth deletion failed — continue with Firestore cleanup */ }
+  // Delete Firestore doc (may not exist for auth-only users)
+  try { await deleteDoc(doc(db, 'users', uid)) } catch { /* ignore if doc doesn't exist */ }
+}
 
 export async function getUserStats(userId) {
   const d = await getDoc(doc(db, 'user_stats', userId))

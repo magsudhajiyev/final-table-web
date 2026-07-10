@@ -346,19 +346,19 @@ function OverviewTab() {
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
         const weekStart = new Date(todayStart); weekStart.setDate(weekStart.getDate() - 7)
 
-        const signupsToday = w.filter(r => r.timestamp && r.timestamp >= todayStart).length
-        const signupsWeek = w.filter(r => r.timestamp && r.timestamp >= weekStart).length
+        const usersToday = au.filter(r => r.createdAt && r.createdAt >= todayStart).length
+        const usersWeek = au.filter(r => r.createdAt && r.createdAt >= weekStart).length
 
         const days = []
         for (let i = 29; i >= 0; i--) {
           const d = new Date(todayStart); d.setDate(d.getDate() - i)
           const next = new Date(d); next.setDate(next.getDate() + 1)
-          const count = w.filter(r => r.timestamp && r.timestamp >= d && r.timestamp < next).length
+          const count = au.filter(r => r.createdAt && r.createdAt >= d && r.createdAt < next).length
           days.push({ label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), count })
         }
         const maxCount = Math.max(...days.map(d => d.count), 1)
 
-        setStats({ waitlist: w.length, nicknames: u.length, users: au.length, hands: h.length, signupsToday, signupsWeek, days, maxCount })
+        setStats({ waitlist: w.length, nicknames: u.length, users: au.length, hands: h.length, usersToday, usersWeek, days, maxCount })
       } catch (err) { console.error(err) }
       finally { setLoading(false) }
     })()
@@ -375,11 +375,11 @@ function OverviewTab() {
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.users}</div><div className="adm-stat-label">App Users</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.nicknames}</div><div className="adm-stat-label">Nickname Claims</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.hands}</div><div className="adm-stat-label">Shared Hands</div></div>
-        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.signupsToday}</div><div className="adm-stat-label">Today</div></div>
-        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.signupsWeek}</div><div className="adm-stat-label">This week</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersToday}</div><div className="adm-stat-label">New users today</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersWeek}</div><div className="adm-stat-label">New users this week</div></div>
       </div>
       <div className="adm-chart-section">
-        <h2 className="adm-chart-title">Waitlist signups — last 30 days</h2>
+        <h2 className="adm-chart-title">App user signups — last 30 days</h2>
         <div className="adm-chart">
           {stats.days.map((d, i) => (
             <div key={i} className="adm-chart-col" title={`${d.label}: ${d.count}`}>
@@ -428,7 +428,23 @@ function WaitlistTab() {
       const [w, users] = await Promise.all([getWaitlistUsers(), getAppUsers()])
       const emails = new Set(users.map(u => (u.email || '').toLowerCase()))
       setUserEmails(emails)
-      setData(w.map(entry => ({ ...entry, isUser: emails.has((entry.email || '').toLowerCase()) })))
+      const waitlistEmails = new Set(w.map(e => (e.email || '').toLowerCase()))
+      const appOnlyUsers = users
+        .filter(u => u.email && !waitlistEmails.has(u.email.toLowerCase()))
+        .map(u => ({
+          id: `appuser_${u.id}`,
+          email: u.email,
+          firstName: u.displayName ? u.displayName.split(' ')[0] : '',
+          lastName: u.displayName ? u.displayName.split(' ').slice(1).join(' ') : '',
+          platform: '',
+          source: 'app',
+          timestamp: u.createdAt,
+          isUser: true,
+        }))
+      setData([
+        ...w.map(entry => ({ ...entry, isUser: emails.has((entry.email || '').toLowerCase()) })),
+        ...appOnlyUsers,
+      ])
     } catch (err) { console.error(err) }
     finally { setLoading(false) }
   }, [])
@@ -877,7 +893,10 @@ function AppUsersTab() {
                     ? <img src={u.photoURL} alt="" className="adm-avatar" />
                     : <span className="adm-avatar adm-avatar-placeholder">{(u.displayName || u.email || '?')[0].toUpperCase()}</span>}
                 </td>
-                <td>{u.displayName || '—'}</td>
+                <td>
+                  {u.displayName || '—'}
+                  {u._authOnly && <span className="adm-status adm-status-pending" style={{ fontSize: 10, marginLeft: 6 }}>Auth only</span>}
+                </td>
                 <td>{u.email || '—'}</td>
                 <td className="adm-td-username">{u.username ? `@${u.username}` : '—'}</td>
                 <td className="adm-td-date">{formatDate(u.createdAt)}</td>
@@ -1059,7 +1078,24 @@ function EmailTab({ onToast }) {
     try {
       const [w, t, l, users] = await Promise.all([getWaitlistUsers(), getEmailTemplates(), getEmailLogs(), getAppUsers()])
       const userEmails = new Set(users.map(u => (u.email || '').toLowerCase()))
-      setWaitlistData(w.map(entry => ({ ...entry, isUser: userEmails.has((entry.email || '').toLowerCase()) })))
+      const waitlistEmails = new Set(w.map(e => (e.email || '').toLowerCase()))
+      // Merge app users who never joined the waitlist as synthetic entries
+      const appOnlyUsers = users
+        .filter(u => u.email && !waitlistEmails.has(u.email.toLowerCase()))
+        .map(u => ({
+          id: `appuser_${u.id}`,
+          email: u.email,
+          firstName: u.displayName ? u.displayName.split(' ')[0] : '',
+          lastName: u.displayName ? u.displayName.split(' ').slice(1).join(' ') : '',
+          platform: '',
+          source: 'app',
+          timestamp: u.createdAt,
+          isUser: true,
+        }))
+      setWaitlistData([
+        ...w.map(entry => ({ ...entry, isUser: userEmails.has((entry.email || '').toLowerCase()) })),
+        ...appOnlyUsers,
+      ])
       setTemplates(t)
       setLogs(l)
     } catch (err) { console.error(err) }
