@@ -167,7 +167,10 @@ export async function getAppUsers() {
 
 async function fetchAuthUsers() {
   try {
-    const res = await fetch('/api/list-auth-users')
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+    const res = await fetch('/api/list-auth-users', { signal: controller.signal })
+    clearTimeout(timeout)
     if (!res.ok) return []
     const data = await res.json()
     return data.users || []

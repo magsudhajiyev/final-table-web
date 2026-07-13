@@ -659,24 +659,26 @@ function UserDetailView({ user, onBack }) {
   useEffect(() => {
     (async () => {
       setLoading(true)
+      const uid = user.uid || user.id
+      // Fetch each independently so one failure doesn't block the rest
+      const safe = (fn) => fn.catch(err => { console.error('UserDetailView query error:', err); return null })
+      const [st, opp, sess, sr, h] = await Promise.all([
+        safe(getUserStats(uid)),
+        safe(getUserOpponents(uid)),
+        safe(getUserSessions(uid)),
+        safe(getUserSessionResults(uid)),
+        safe(getUserHands(uid)),
+      ])
       try {
-        const uid = user.uid || user.id
-        const [st, opp, sess, sr, h] = await Promise.all([
-          getUserStats(uid),
-          getUserOpponents(uid),
-          getUserSessions(uid),
-          getUserSessionResults(uid),
-          getUserHands(uid),
-        ])
         setStats(st)
         // Join opponent stats
-        if (opp.length > 0) {
-          const os = await getOpponentStats(opp.map(o => o.id))
+        if (opp && opp.length > 0) {
+          const os = await getOpponentStats(opp.map(o => o.id)).catch(() => ({}))
           setOpponents(opp.map(o => ({ ...o, stats: os[o.id] || {} })))
         }
-        setSessions(sess.sort((a, b) => (b.startTime || 0) - (a.startTime || 0)))
-        setSessionResults(sr.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)))
-        setHands(h.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)))
+        if (sess) setSessions(sess.sort((a, b) => (b.startTime || 0) - (a.startTime || 0)))
+        if (sr) setSessionResults(sr.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)))
+        if (h) setHands(h.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)))
       } catch (err) { console.error('UserDetailView fetch error:', err) }
       finally { setLoading(false) }
     })()
