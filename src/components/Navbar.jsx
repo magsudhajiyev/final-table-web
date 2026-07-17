@@ -55,7 +55,6 @@ export default function Navbar() {
             </svg>
           </button>
           <a href="#contact" className="btn btn-secondary nav-contact-btn desktop-cta">Contact</a>
-          <a href="#download" className="btn btn-primary desktop-cta">Download App</a>
         </div>
 
         <button
@@ -75,7 +74,6 @@ export default function Navbar() {
             <li className="mobile-nav-item"><a href="#features" className="mobile-nav-link" onClick={handleNavClick}>Features</a></li>
             <li className="mobile-nav-item"><a href="#about" className="mobile-nav-link" onClick={handleNavClick}>About Us</a></li>
             <li className="mobile-nav-item"><a href="#contact" className="mobile-nav-link" onClick={handleNavClick}>Contact</a></li>
-            <li className="mobile-nav-item"><a href="#download" className="mobile-nav-link cta-link" onClick={handleNavClick}>Download App</a></li>
           </ul>
         </nav>
       </div>

@@ -131,35 +131,22 @@ export async function getAppUsers() {
     firestoreMap[d.id] = { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null, lastLogin: data.lastLogin?.toDate?.() || null }
   })
 
-  // Auth-only users (exist in Auth but not Firestore)
+  // Build Auth lookup by UID
+  const authMap = {}
+  for (const au of authUsers) authMap[au.uid] = au
+
+  // Only show Firestore users, enrich with Auth data
   const merged = []
-  const seen = new Set()
-  for (const au of authUsers) {
-    seen.add(au.uid)
-    if (firestoreMap[au.uid]) {
-      // Firestore doc exists — use it, but fill in lastLogin from Auth if missing
-      const fsUser = firestoreMap[au.uid]
-      if (!fsUser.lastLogin && au.lastLogin) fsUser.lastLogin = new Date(au.lastLogin)
-      fsUser._provider = au.provider
-      merged.push(fsUser)
-    } else {
-      // Auth-only user — no Firestore doc
-      merged.push({
-        id: au.uid,
-        uid: au.uid,
-        email: au.email,
-        displayName: au.displayName,
-        photoURL: au.photoURL,
-        _provider: au.provider,
-        _authOnly: true,
-        createdAt: au.createdAt ? new Date(au.createdAt) : null,
-        lastLogin: au.lastLogin ? new Date(au.lastLogin) : null,
-      })
-    }
-  }
-  // Include any Firestore users not in Auth (shouldn't happen, but safety)
   for (const [uid, fsUser] of Object.entries(firestoreMap)) {
-    if (!seen.has(uid)) merged.push(fsUser)
+    const au = authMap[uid]
+    if (au) {
+      if (!fsUser.createdAt && au.createdAt) fsUser.createdAt = new Date(au.createdAt)
+      if (!fsUser.lastLogin && au.lastLogin) fsUser.lastLogin = new Date(au.lastLogin)
+      if (!fsUser.email && au.email) fsUser.email = au.email
+      if (!fsUser.displayName && au.displayName) fsUser.displayName = au.displayName
+      fsUser._provider = au.provider
+    }
+    merged.push(fsUser)
   }
 
   return merged

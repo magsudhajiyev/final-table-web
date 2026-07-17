@@ -1,10 +1,10 @@
 import admin from 'firebase-admin'
 
-if (!admin.apps.length) {
+if (admin.getApps().length === 0) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
   if (serviceAccount) {
     admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(serviceAccount)),
+      credential: admin.cert(JSON.parse(serviceAccount)),
     })
   } else {
     admin.initializeApp({

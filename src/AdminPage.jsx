@@ -428,6 +428,8 @@ function WaitlistTab() {
       const [w, users] = await Promise.all([getWaitlistUsers(), getAppUsers()])
       const emails = new Set(users.map(u => (u.email || '').toLowerCase()))
       setUserEmails(emails)
+      const userNameByEmail = {}
+      users.forEach(u => { if (u.email && u.displayName) userNameByEmail[u.email.toLowerCase()] = u.displayName })
       const waitlistEmails = new Set(w.map(e => (e.email || '').toLowerCase()))
       const appOnlyUsers = users
         .filter(u => u.email && !waitlistEmails.has(u.email.toLowerCase()))
@@ -442,7 +444,14 @@ function WaitlistTab() {
           isUser: true,
         }))
       setData([
-        ...w.map(entry => ({ ...entry, isUser: emails.has((entry.email || '').toLowerCase()) })),
+        ...w.map(entry => {
+          const isUser = emails.has((entry.email || '').toLowerCase())
+          if (isUser && !entry.firstName && !entry.lastName) {
+            const dn = userNameByEmail[(entry.email || '').toLowerCase()]
+            if (dn) return { ...entry, isUser, firstName: dn.split(' ')[0], lastName: dn.split(' ').slice(1).join(' ') }
+          }
+          return { ...entry, isUser }
+        }),
         ...appOnlyUsers,
       ])
     } catch (err) { console.error(err) }
@@ -1081,6 +1090,9 @@ function EmailTab({ onToast }) {
       const [w, t, l, users] = await Promise.all([getWaitlistUsers(), getEmailTemplates(), getEmailLogs(), getAppUsers()])
       const userEmails = new Set(users.map(u => (u.email || '').toLowerCase()))
       const waitlistEmails = new Set(w.map(e => (e.email || '').toLowerCase()))
+      // Build a lookup of app user displayName by email for backfilling
+      const userNameByEmail = {}
+      users.forEach(u => { if (u.email && u.displayName) userNameByEmail[u.email.toLowerCase()] = u.displayName })
       // Merge app users who never joined the waitlist as synthetic entries
       const appOnlyUsers = users
         .filter(u => u.email && !waitlistEmails.has(u.email.toLowerCase()))
@@ -1095,7 +1107,17 @@ function EmailTab({ onToast }) {
           isUser: true,
         }))
       setWaitlistData([
-        ...w.map(entry => ({ ...entry, isUser: userEmails.has((entry.email || '').toLowerCase()) })),
+        ...w.map(entry => {
+          const isUser = userEmails.has((entry.email || '').toLowerCase())
+          // Backfill name from app user if waitlist entry has no name
+          if (isUser && !entry.firstName && !entry.lastName) {
+            const dn = userNameByEmail[(entry.email || '').toLowerCase()]
+            if (dn) {
+              return { ...entry, isUser, firstName: dn.split(' ')[0], lastName: dn.split(' ').slice(1).join(' '), _nameFromApp: true }
+            }
+          }
+          return { ...entry, isUser }
+        }),
         ...appOnlyUsers,
       ])
       setTemplates(t)
@@ -1135,7 +1157,8 @@ function EmailTab({ onToast }) {
       items = items.filter(r =>
         (r.email || '').toLowerCase().includes(q) ||
         (r.firstName || '').toLowerCase().includes(q) ||
-        (r.lastName || '').toLowerCase().includes(q)
+        (r.lastName || '').toLowerCase().includes(q) ||
+        (`${r.firstName || ''} ${r.lastName || ''}`).toLowerCase().includes(q)
       )
     }
     return items

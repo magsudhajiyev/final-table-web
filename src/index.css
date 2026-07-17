@@ -1388,13 +1388,13 @@ body.dark-theme .showcase-card p {
     background: #222;
     border: 1px solid #333;
     border-radius: 12px;
-    padding: 8px 16px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
     transition: background 0.3s;
-    width: 180px;
+    width: 220px;
 }
 
 .store-button:hover {
@@ -1402,7 +1402,7 @@ body.dark-theme .showcase-card p {
 }
 
 .store-badge {
-    width: 180px;
+    width: 220px;
     height: auto;
     cursor: pointer;
     transition: opacity 0.3s;

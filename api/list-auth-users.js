@@ -1,4 +1,5 @@
-import admin from './_admin.js'
+import './_admin.js'
+import { getAuth } from 'firebase-admin/auth'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -6,10 +7,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    const auth = getAuth()
     const users = []
     let nextPageToken
     do {
-      const listResult = await admin.auth().listUsers(1000, nextPageToken)
+      const listResult = await auth.listUsers(1000, nextPageToken)
       for (const user of listResult.users) {
         users.push({
           uid: user.uid,

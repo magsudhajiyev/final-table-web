@@ -1,4 +1,5 @@
-import admin from './_admin.js'
+import './_admin.js'
+import { getAuth } from 'firebase-admin/auth'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,7 +12,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    await admin.auth().deleteUser(uid)
+    const auth = getAuth()
+    await auth.deleteUser(uid)
     return res.status(200).json({ success: true })
   } catch (err) {
     // If user already deleted from Auth, treat as success
