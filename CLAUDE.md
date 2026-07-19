@@ -20,6 +20,7 @@ This is a **React + Vite SPA** for the **Final Table** poker manager app landing
 - `/` → `LandingPage` (wrapped in `I18nProvider`)
 - `/about` → `AboutPage`
 - `/privacy`, `/terms` → legal pages
+- `/delete-account` → `DeleteAccountPage` (account-deletion request flow, wrapped in `I18nProvider`)
 - `/admin` → `AdminPage` (password-protected, hardcoded `ADMIN_PASS`)
 - `/hand/:shareId` → `HandViewer` (shared hand replay, reads `shared_hands` Firestore collection)
 
@@ -46,11 +47,16 @@ All user-facing text lives here. **Always add/update translations for all 7 lang
 
 ### Firebase (`src/lib/firebase.js`)
 
-Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here — **except `HandViewer.jsx`**, which initializes its own Firebase app instance directly (using `getApps().length` guard to avoid duplicate initialization). Collections:
+Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here — **except `HandViewer.jsx`**, which initializes its own Firebase app instance directly (using `getApps().length` guard to avoid duplicate initialization). Firestore security rules live in `firestore.rules` (deployed via `firebase.json` / Firebase CLI). Collections:
 - `waitlist` — email sign-ups with optional first/last name
 - `nickname_claims` — username reservations (checks `usernames` collection for live-app conflicts)
 - `contact_submissions` — contact form entries
 - `shared_hands` — hand replay data written by the mobile app, read by `HandViewer`
+- `users` — the live app's user records; the admin dashboard reads these (synced with Firebase Auth)
+- Live-app data queried by the admin dashboard for user detail/deletion: `opponents`, `poker_sessions`, `session_results` (all keyed by `userId`)
+- Admin email tooling: `email_templates`, `email_logs`, `inbox_replies`, `inbox_status`
+
+The `firebase-admin` package is a dependency for server-side Auth/Firestore operations (admin dashboard syncs with Firebase Auth and deletes users from both Auth + Firestore). Note recent work standardized on the firebase-admin v13 API.
 
 ### Admin page (`src/AdminPage.jsx`)
 

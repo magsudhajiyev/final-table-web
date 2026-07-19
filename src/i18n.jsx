@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru', 'tr']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru', 'tr', 'uk']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -14,6 +14,7 @@ function detectLocale() {
   if (lang.startsWith('de')) return 'de'
   if (lang.startsWith('pt')) return 'pt'
   if (lang.startsWith('tr')) return 'tr'
+  if (lang.startsWith('uk')) return 'uk'
   return 'en'
 }
 
@@ -228,6 +229,7 @@ const en = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Founder',
   'community.msg1.text': 'Welcome in 👋 Beta invites and sneak peeks drop here first.',
   'community.msg2.user': 'Final Table Team',
@@ -425,6 +427,7 @@ const pl = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Założyciel',
   'community.msg1.text': 'Witaj 👋 Zaproszenia do bety i zapowiedzi pojawiają się tu najpierw.',
   'community.msg2.user': 'Zespół Final Table',
@@ -622,6 +625,7 @@ const ru = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Магсуд · Основатель',
   'community.msg1.text': 'Добро пожаловать 👋 Инвайты в бету и анонсы появляются здесь первыми.',
   'community.msg2.user': 'Команда Final Table',
@@ -819,6 +823,7 @@ const fr = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Fondateur',
   'community.msg1.text': 'Bienvenue 👋 Les invitations bêta et les avant-premières arrivent ici en premier.',
   'community.msg2.user': 'Équipe Final Table',
@@ -1016,6 +1021,7 @@ const es = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bienvenido 👋 Las invitaciones a la beta y los adelantos llegan aquí primero.',
   'community.msg2.user': 'Equipo Final Table',
@@ -1213,6 +1219,7 @@ const de = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Gründer',
   'community.msg1.text': 'Willkommen 👋 Beta-Einladungen und Previews gibt es hier zuerst.',
   'community.msg2.user': 'Final Table Team',
@@ -1410,6 +1417,7 @@ const pt = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bem-vindo 👋 Convites para a beta e prévias chegam aqui primeiro.',
   'community.msg2.user': 'Equipe Final Table',
@@ -1607,6 +1615,7 @@ const tr = {
   'lang.pt': 'Português',
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
   'community.msg1.user': 'Magsud · Kurucu',
   'community.msg1.text': 'Hoş geldin 👋 Beta davetleri ve ön izlemeler önce burada paylaşılır.',
   'community.msg2.user': 'Final Table Ekibi',
@@ -1616,9 +1625,216 @@ const tr = {
 }
 
 /* ─────────────────────────────────────────────── */
+/*  UKRAINIAN                                      */
+/* ─────────────────────────────────────────────── */
+const uk = {
+  'nav.features': 'Можливості',
+  'nav.howItWorks': 'Як це працює?',
+  'nav.compare': 'Порівняти',
+  'nav.faq': 'Питання',
+  'nav.cta': 'Завантажити застосунок',
+
+  'howSection.sans': 'Як це ',
+  'howSection.italic': 'працює?',
+
+  'hero.h1': () => (
+    <>
+      <span className="tp-hero-hl-sans">Записуй роздачу в</span>
+      <span className="tp-hero-hl-italic">три жести</span>
+      <span className="tp-hero-hl-sans">А не за три хвилини.</span>
+    </>
+  ),
+  'hero.sub': 'Final Table — це трекер живого покеру, створений для гри за столом. Достатньо швидкий, щоб записати роздачу однією рукою між здачами. Достатньо точний, щоб потім вивчати кожну сесію.',
+  'hero.emailPlaceholder': 'Введіть свою пошту',
+  'hero.errorGeneric': 'Щось пішло не так. Спробуйте ще раз.',
+  'hero.btnLoading': 'Резервуємо…',
+  'hero.btnSubmit': 'Зарезервувати місце',
+  'hero.proof': (p) => `Безкоштовно · Займе 10 секунд · ${p.count}+ гравців уже зарезервували`,
+  'hero.successText': 'Ви у списку! Ми напишемо, коли Final Table відкриється.',
+  'hero.already': 'Ви вже у списку! Ми повідомимо вас про запуск.',
+  'hero.resetBtn': 'Зарезервувати ще',
+
+  'compare.eyebrow': 'ЩО РОБИТЬ ЙОГО ОСОБЛИВИМ?',
+  'compare.title': () => <>Створений для <em>живої гри</em>.<br />Розроблений для <em>гравця за столом</em>.</>,
+  'compare.subtitle': 'Трекери живого покеру існують. Але жоден із них не почувається частиною столу. Final Table відчувається як частина гри.',
+  'compare.card1.title': 'Запис у три жести',
+  'compare.card1.desc': 'Записуйте будь-яку дію — рейз, колл, фолд — у три дотики. Без набору тексту, без меню. Достатньо швидко, щоб користуватися між роздачами, не збиваючись з ритму.',
+  'compare.card2.title': 'Читання суперників у реальному часі',
+  'compare.card2.desc': 'Будуйте профілі на основі статистики для кожного гравця, з яким граєте. Знайте їхній VPIP, агресію та схильності, перш ніж діяти.',
+  'compare.card3.title': 'Дані на рівні сесії та роздачі',
+  'compare.card3.desc': 'Відстежуйте все — від швидкого buy-in/cash-out до повного запису дій по кожній роздачі. Використовуйте те, що підходить вашій грі.',
+  'compare.card4.title': 'Режим дилера',
+  'compare.card4.desc': 'Дилери ведуть стіл без рук за допомогою голосових команд. Гравці стежать за грою на своїх телефонах у реальному часі.',
+  'compare.comingSoon': 'СКОРО · ПАРТНЕРСТВА З ЗАКЛАДАМИ',
+
+  // Community / Discord
+  'community.eyebrow': 'Приєднуйтесь до спільноти',
+  'community.title': () => <>Говоріть про покер із гравцями,<br />які <em>справді грають наживо.</em></>,
+  'community.sub': 'Ми щойно відкриваємо двері — приєднуйтесь як засновник, спілкуйтеся з нами про живий покер напряму й формуйте те, чим стане Final Table.',
+  'community.stat1.value': 'День 1',
+  'community.stat1.label': 'Учасники-засновники',
+  'community.stat2.value': 'Прямий',
+  'community.stat2.label': 'Зв’язок із засновниками',
+  'community.stat3.value': 'Перші',
+  'community.stat3.label': 'Бета-запрошення та превʼю',
+  'community.cta': 'Приєднатися до Discord →',
+
+  'tabs.0.label': 'До сесії',
+  'tabs.1.label': 'За столом',
+  'tabs.2.label': 'Після сесії',
+  'tabs.3.label': 'З часом',
+  'tabs.0.eyebrow': 'ДО СЕСІЇ',
+  'tabs.0.title': 'Сідай за стіл, знаючи,\nз ким граєш.',
+  'tabs.0.body': 'Переглядайте профілі суперників та історію роздач ще до того, як сядете за стіл. Знайте, хто грає тайтово, хто дико, і де гроші.',
+  'tabs.1.eyebrow': 'ЗА СТОЛОМ',
+  'tabs.1.title': 'Три жести.\nЖодної втрати ритму.',
+  'tabs.1.body': 'Записуйте будь-яку дію — рейз, колл, фолд — простими свайпами й дотиками. Стежте за ходом сесії. Достатньо швидко, щоб користуватися однією рукою між роздачами.',
+  'tabs.2.eyebrow': 'ПІСЛЯ СЕСІЇ',
+  'tabs.2.title': 'Побач витоки,\nяких не відчував.',
+  'tabs.2.body': 'Переглядайте кожну роздачу, помічайте закономірності у своїй грі, діліться роздачами з друзями, експортуйте дані у форматі, сумісному з солверами, і порівнюйте свої рішення з еталонами GTO. Дані кажуть правду.',
+
+  'notHud.title': () => <><span className="nh-hl-sans">Чим Final Table</span><span className="nh-hl-italic"> не є?</span></>,
+  'notHud.item1Title': 'Не HUD',
+  'notHud.item1Desc': 'Final Table не показує статистику чи дані гравців під час живої гри. Це інструмент для запису, а не heads-up display.',
+  'notHud.item2Title': 'Заблоковано під час сесій',
+  'notHud.item2Desc': 'Поки сесія активна, застосунок блокується в режимі запису. Ви не можете переглядати роздачі, ділитися даними, використовувати AI-аналіз чи доступ до аналітики, доки сесія не завершиться.',
+  'notHud.item3Title': 'Створено для чесної гри',
+  'notHud.item3Desc': 'Усе відбувається після сесії. Переглядайте, діліться й аналізуйте — але ніколи за столом із нечесною перевагою.',
+
+  'tabs.3.eyebrow': 'З ЧАСОМ',
+  'tabs.3.title': 'Дізнайся свій справжній\nвінрейт. Нарешті.',
+  'tabs.3.body': 'Відстежуйте свій реальний $/год за лімітами, казино та типом гри. Ухвалюйте рішення про ліміти на основі даних, а не інтуїції.',
+
+  'problems.0.stat': () => <>Гравці живого покеру грають у середньому<br /><strong>~25–30 роздач/годину</strong>.</>,
+  'problems.0.question': 'Скільки з цих роздач ви насправді памʼятаєте?',
+  'problems.0.body': 'Final Table відстежує кожну роздачу, яку ви граєте, щоб ви могли переглянути кожну дію й знайти витоки, про які навіть не здогадувалися.',
+  'problems.1.stat': 'Спитайте будь-якого живого гравця про його вінрейт. Більшість вгадують.',
+  'problems.1.question': 'Ви справді знаєте свій $/год за лімітами, казино чи типом гри?',
+  'problems.1.body': 'Final Table точно відстежує кожну сесію — вінрейт, тривалість, ліміти — тож ви завжди точно знаєте, де перебуваєте.',
+  'problems.2.stat': 'Позиція — найбільша окрема перевага в покері.',
+  'problems.2.question': 'Ви знаєте свою реальну статистику з BTN проти BB проти UTG?',
+  'problems.2.body': 'Final Table розкладає ваші показники за позиціями, тож ви бачите, де заробляєте, а де втрачаєте фішки.',
+  'problems.3.stat': () => <>«Він завжди 3-бетить легко.» «Вона ніколи не фолдить на рівері.»</>,
+  'problems.3.question': 'Це справжні рідери чи просто відчуття від однієї запамʼятовуваної роздачі?',
+  'problems.3.body': 'Final Table будує профілі суперників із записаних роздач — реальна статистика, реальні схильності — щоб ваші рідери спиралися на дані, а не на памʼять.',
+
+  'features.title': () => <>Пристібайтеся —<br /><em>попереду ще більше</em>.</>,
+  'features.subtitle': 'Запис роздач — лише верхівка айсберга. Final Table має багато інших розумних можливостей.',
+  'features.opponentProfiles.title': 'Статистика',
+  'features.opponentProfiles.desc': 'Дивіться свою статистику, що накопичується з часом, щоб визначити свій стиль гри. Відстежуйте VPIP, агресію, вінрейти та інше — цифри не брешуть.',
+  'features.bankroll.title': 'Облік банкролу',
+  'features.bankroll.desc': 'Встановіть ціль банкролу й спостерігайте за прогресом. Дивіться свою погодинну ставку, чистий прибуток, ROI та багато інших метрик банкролу.',
+  'features.sessionLogger.title': 'AI-аналіз',
+  'features.sessionLogger.desc': 'Отримуйте інсайти на основі AI щодо вашої гри. Аналізуйте історії роздач, виявляйте закономірності та отримуйте персоналізовані рекомендації для покращення гри.',
+  'features.handReview.title': 'Огляд роздач',
+  'features.handReview.desc': 'Відтворюйте кожну записану роздачу. Проходьте кожну вулицю, порівнюйте свої рішення з еталонами GTO й знаходьте витоки, яких не відчували за столом.',
+  'features.mtt.title': 'Мультитурніри',
+  'features.mtt.desc': 'Проводьте живі турніри з кількома столами, рейтингами в реальному часі та розподілом призів. Створюйте клуби, керуйте учасниками й ролями — усе з застосунку.',
+  'features.dealerMode.title': 'Режим дилера',
+  'features.dealerMode.comingSoon': 'СКОРО',
+  'features.dealerMode.desc': 'Дилери можуть вести стіл без рук за допомогою голосових команд. Гравці стежать за грою на своїх телефонах у реальному часі.',
+
+  'cta.eyebrow': 'Ранній доступ',
+  'cta.title': () => <>Зарезервуйте свій нікнейм<br />раніше за інших.</>,
+  'cta.titleLine1': 'Зарезервуйте свій нікнейм',
+  'cta.titleLine2': 'раніше за інших.',
+  'cta.body': 'Забронюйте свій постійний нікнейм ще до запуску. Нікнейми надаються за принципом «першим прийшов — першим отримав» — щойно його зайняли, він зайнятий.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> гравців уже у списку очікування</>,
+  'cta.support': () => <>Питання? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'cta.cardTitle': 'Забронюйте нікнейм',
+  'cta.cardSub': 'Безкоштовно · Займе 10 секунд',
+  'cta.labelEmail': 'Пошта',
+  'cta.emailPlaceholder': 'you@example.com',
+  'cta.hintEmail': 'Ваша майбутня пошта для входу — змінити пізніше не можна.',
+  'cta.labelUsername': 'Нікнейм',
+  'cta.usernamePlaceholder': 'вашнікнейм',
+  'cta.hintUsername': 'Лише літери, цифри та підкреслення. 3–20 символів.',
+  'cta.errorTaken': 'Цей нікнейм уже зайнятий. Спробуйте інший.',
+  'cta.errorGeneric': 'Щось пішло не так. Спробуйте ще раз.',
+  'cta.btnLoading': 'Резервуємо…',
+  'cta.btnSubmit': 'Зарезервувати місце →',
+  'cta.successChip': '✓ Зарезервовано',
+  'cta.successTitle': 'Ви у списку.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> зарезервовано за вами. Ми напишемо, коли Final Table відкриється.</>
+  ),
+  'cta.resetBtn': 'Зарезервувати ще',
+
+  'faq.0.q': 'Чи можу я змінити нікнейм пізніше?',
+  'faq.0.a': 'Після резервування ваш нікнейм фіксується. Обирайте уважно — це стане вашим постійним нікнеймом у Final Table.',
+  'faq.1.q': 'Чи резервування безкоштовне?',
+  'faq.1.a': 'Так, якщо цей нікнейм не зайнятий — ви можете.',
+  'faq.2.q': 'Що, якщо мій нікнейм зайнятий?',
+  'faq.2.a': 'Нікнейми надаються за принципом «першим прийшов — першим отримав». Якщо ваш обраний зайнятий, спробуйте варіацію — підкреслення та цифри дозволені.',
+  'faq.3.q': 'Коли запуститься застосунок?',
+  'faq.3.a': 'Final Table у закритій беті. Учасники списку очікування отримують ранній доступ до публічного запуску.',
+
+  'bottomCta.title': () => (
+    <>
+      <span className="bc-hl-sans">Готові</span>
+      <span className="bc-hl-italic"> відстежувати свої роздачі?</span>
+      <span className="bc-hl-sans">.</span>
+    </>
+  ),
+  'bottomCta.sub': 'Завантажте застосунок і почніть записувати свої роздачі прямо зараз.',
+
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Записуй роздачу в </span><span className="mf-hl-italic">три жести.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">А не за три хвилини.</span></p>
+    </>
+  ),
+  'footer.support': () => <>Питання? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'footer.resources': 'Ресурси',
+  'footer.company': 'Компанія',
+  'footer.privacy': 'Політика конфіденційності',
+  'footer.terms': 'Умови використання',
+  'footer.copy': (p) => `© Final Table. Усі права захищені ${p.year}`,
+
+  // About
+  'about.nav': 'Про нас',
+  'about.missionEyebrow': 'Наша місія',
+  'about.missionTitle': () => <>Зробити живий покер<br /><em>розумнішим для всіх.</em></>,
+  'about.missionP1': 'Final Table почався з розчарування, якого ми не могли позбутися.',
+  'about.missionP2': 'Занурившись у живі турніри, ми постійно натикалися на одну й ту саму стіну: немає доброго способу зафіксувати те, що насправді відбувається за столом. Ми любимо живу гру, але покладатися на памʼять, щоб через кілька днів пригадати кілька роздач, — це не навчання, а ностальгія. А без реальних даних сесій витоки в нашій грі лишалися невидимими.',
+  'about.missionP3': 'Наявні інструменти були гіршими за ніщо. Застарілі, незручні, важкі — такі, що ви ніколи не дістанете їх посеред сесії, бо вони повністю вибивають вас із гри. Уже 2026 рік. Це відчувалося неправильним.',
+  'about.missionP4': 'Тож ми створили той, який хотіли самі — і зробили це єдиним чесним способом, яким можна створити такий застосунок: живучи з ним. Вісім місяців прототипування, використання в реальних сесіях, вивчення того, що працює, розбір того, що не працює, і знову гра. Знову й знову. Кожна взаємодія була випробувана під світлом казино, на реальних роздачах, зі справжніми грошима на кону.',
+  'about.missionP5': 'Final Table — для кожного живого гравця, який колись завершував сесію, знаючи, що зіграв щось неправильно, але не міг пригадати що саме. Кожна роздача розповідає історію. Ми просто дбаємо про те, щоб ви її не втратили.',
+  'about.value1Title': 'Спочатку швидкість',
+  'about.value1Desc': 'Якщо це сповільнює вас за столом — це не варте створення. Кожна функція розроблена працювати за секунди, а не за хвилини.',
+  'about.value2Title': 'Дані понад інтуїцію',
+  'about.value2Desc': 'Відчуття брешуть, дані — ні. Ми допомагаємо замінити здогади реальними цифрами — вінрейти, схильності, закономірності.',
+  'about.value3Title': 'Створено для живої гри',
+  'about.value3Desc': 'Не порт з онлайну. Кожна взаємодія, кожен екран розроблені для хаосу й швидкості живого покерного столу.',
+  'about.teamEyebrow': 'Команда',
+  'about.teamTitle': () => <>Люди, які створюють <em>Final Table</em></>,
+  'about.member1Bio': 'Інженер-програміст, захоплений створенням продуктів, що вирішують реальні проблеми. Веде технічне бачення Final Table.',
+  'about.member2Bio': 'Продуктовий мислитель, орієнтований на дизайн і створення інтуїтивних вражень. Формує вигляд, відчуття та користувацький досвід Final Table.',
+  'about.ctaTitle': () => <>Хочете бути частиною <em>цієї подорожі?</em></>,
+  'about.ctaBody': 'Final Table доступний на iOS та Android. Завантажте застосунок і почніть відстежувати свої сесії вже сьогодні.',
+  'about.ctaBtn': 'Завантажити застосунок →',
+
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
+  'community.msg1.user': 'Magsud · Засновник',
+  'community.msg1.text': 'Ласкаво просимо 👋 Бета-запрошення та превʼю зʼявляються тут першими.',
+  'community.msg2.user': 'Команда Final Table',
+  'community.msg2.text': 'Скажіть, що будувати далі — голосування за роадмап у #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Засновник',
+  'community.msg3.text': 'Викладайте свою найкращу роздачу тижня в #hands — розбираємо разом 🃏',
+}
+
+/* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es, de, pt, tr }
+const translations = { en, pl, ru, fr, es, de, pt, tr, uk }
 
 const I18nContext = createContext()
 

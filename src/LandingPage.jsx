@@ -4,7 +4,7 @@ import { useT, SUPPORTED } from './i18n'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr', uk: 'ua' }
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/final-table/id6760188970'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finaltable.app'
