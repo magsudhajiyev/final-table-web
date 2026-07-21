@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, forwardRef } from 'react'
 import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
+import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
@@ -81,8 +82,6 @@ function HiwTitle({ text }) {
 /* ────────────────────────────────────────────────────── */
 function TPNavbar() {
   const { t, locale, setLocale } = useT()
-  const [scrolled, setScrolled] = useState(false)
-  const [theme, setTheme] = useState('light') // 'dark' | 'light'
   const [menuOpen, setMenuOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -100,32 +99,10 @@ function TPNavbar() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40)
-      if (menuOpen) setMenuOpen(false)
-    }
+    const onScroll = () => { if (menuOpen) setMenuOpen(false) }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [menuOpen])
-
-  // Switch theme by checking which section the nav centre is over
-  useEffect(() => {
-    const getTheme = () => {
-      const navMid = 26 // half of 52px nav height
-      const sections = document.querySelectorAll('[data-nav-theme]')
-      let next = 'light'
-      sections.forEach(section => {
-        const rect = section.getBoundingClientRect()
-        if (rect.top <= navMid && rect.bottom > navMid) {
-          next = section.dataset.navTheme
-        }
-      })
-      setTheme(next)
-    }
-    window.addEventListener('scroll', getTheme, { passive: true })
-    getTheme()
-    return () => window.removeEventListener('scroll', getTheme)
-  }, [])
 
   useEffect(() => {
     const NAV_IDS = ['how-it-works', 'features', 'compare', 'faq']
@@ -143,10 +120,6 @@ function TPNavbar() {
     return () => window.removeEventListener('scroll', updateActive)
   }, [])
 
-  const isLight = theme === 'light'
-  const logo    = '/logo.png'
-  const iconSrc = '/assets/logo_cion.svg'
-
   const smoothScroll = (e) => {
     const href = e.currentTarget.getAttribute('href')
     if (href && href.startsWith('#')) {
@@ -162,44 +135,47 @@ function TPNavbar() {
   }
 
   return (
-    <header className={`tp-nav-wrap tp-nav-${theme}${scrolled ? ' tp-nav-scrolled' : ''}${menuOpen ? ' tp-nav-menu-open' : ''}`}>
+    <header className={`tp-nav-wrap${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
-        <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
-          <img src={logo} alt="Final Table" className="tp-nav-logo-img" />
-        </a>
-        <div className="tp-nav-sep" />
-        <div className="tp-nav-links">
-          <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
-          <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
-          <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
-          <a href="/about">{t('about.nav')}</a>
-          <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.faq')}</a>
+        <div className="tp-nav-left">
+          <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+            <FinalTableLogo className="tp-nav-logo-svg" />
+          </a>
+          <div className="tp-nav-links">
+            <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+            <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
+            <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
+            <a href="/about">{t('about.nav')}</a>
+            <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.contact')}</a>
+          </div>
         </div>
-        <div className="tp-lang-picker" ref={langRef}>
-          <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
-            <Flag locale={locale} />
-            <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-          {langOpen && (
-            <div className="tp-lang-dropdown">
-              {SUPPORTED.map(l => (
-                <button key={l} className={`tp-lang-option${l === locale ? ' tp-lang-option-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
-                  <Flag locale={l} />
-                  <span>{t(`lang.${l}`)}</span>
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="tp-nav-right">
+          <a href="#" className="tp-nav-download-btn" target="_blank" rel="noopener noreferrer">
+            {t('nav.download')}
+          </a>
+          <div className="tp-lang-picker" ref={langRef}>
+            <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)} aria-label="Change language">
+              <Flag locale={locale} />
+              <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {langOpen && (
+              <div className="tp-lang-dropdown">
+                {SUPPORTED.map(l => (
+                  <button key={l} className={`tp-lang-option${l === locale ? ' tp-lang-option-active' : ''}`} onClick={() => { setLocale(l); setLangOpen(false) }}>
+                    <Flag locale={l} />
+                    <span>{t(`lang.${l}`)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <a href="#faq" className="tp-nav-waitlist-btn" onClick={smoothScroll}>
-          {t('nav.cta')}
-        </a>
         <div className="tp-mobile-lang-picker" ref={mobileLangRef}>
-          <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)}>
+          <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)} aria-label="Change language">
             <Flag locale={locale} />
-            <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
+            <svg className={`tp-lang-chevron${langOpen ? ' tp-lang-chevron-open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
@@ -227,7 +203,7 @@ function TPNavbar() {
         <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
         <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="/about">{t('about.nav')}</a>
-        <a href="#faq" onClick={smoothScroll}>{t('nav.faq')}</a>
+        <a href="#faq" onClick={smoothScroll}>{t('nav.contact')}</a>
       </div>
     </header>
   )
@@ -237,120 +213,185 @@ function TPNavbar() {
 /*  HERO                                                  */
 /* ────────────────────────────────────────────────────── */
 
+function HeroDots() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const parent = canvas.parentElement
+
+    const state = {
+      dpr: Math.min(window.devicePixelRatio || 1, 2),
+      w: 0,
+      h: 0,
+      mx: -9999,
+      my: -9999,
+      raf: 0,
+    }
+
+    const SPACING = 14
+    const BASE_R = 0.7
+    const MAX_R = 1.6
+    const RADIUS = 260
+
+    const resize = () => {
+      const rect = parent.getBoundingClientRect()
+      state.w = rect.width
+      state.h = rect.height
+      canvas.width = Math.floor(rect.width * state.dpr)
+      canvas.height = Math.floor(rect.height * state.dpr)
+      canvas.style.width = rect.width + 'px'
+      canvas.style.height = rect.height + 'px'
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0)
+    }
+
+    const onMove = (e) => {
+      const rect = canvas.getBoundingClientRect()
+      state.mx = e.clientX - rect.left
+      state.my = e.clientY - rect.top
+    }
+    const onLeave = () => { state.mx = -9999; state.my = -9999 }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, state.w, state.h)
+      const { mx, my } = state
+      const cols = Math.ceil(state.w / SPACING) + 1
+      const rows = Math.ceil(state.h / SPACING) + 1
+      const offX = (state.w - (cols - 1) * SPACING) / 2
+      const offY = (state.h - (rows - 1) * SPACING) / 2
+      const baseAlpha = 0.14
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = offX + i * SPACING
+          const y = offY + j * SPACING
+          const dx = x - mx
+          const dy = y - my
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const t = Math.max(0, 1 - dist / RADIUS)
+          const r = BASE_R + (MAX_R - BASE_R) * t
+          const alpha = baseAlpha + 0.4 * t
+          const shade = Math.round(255 - 90 * t)
+          ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, ${alpha})`
+          ctx.beginPath()
+          ctx.arc(x, y, r, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+      state.raf = requestAnimationFrame(draw)
+    }
+
+    resize()
+    draw()
+
+    const ro = new ResizeObserver(resize)
+    ro.observe(parent)
+    window.addEventListener('mousemove', onMove)
+    parent.addEventListener('mouseleave', onLeave)
+
+    return () => {
+      cancelAnimationFrame(state.raf)
+      ro.disconnect()
+      window.removeEventListener('mousemove', onMove)
+      parent.removeEventListener('mouseleave', onLeave)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="tp-hero-dots" aria-hidden="true" />
+}
+
 function TPHero() {
   const { t } = useT()
-  const [email, setEmail] = useState('')
-  const [platform, setPlatform] = useState('ios')
-  const [status, setStatus] = useState('idle') // idle | loading | done | error
+  const heroRef = useRef(null)
+  const phonesRef = useRef(null)
 
+  useEffect(() => {
+    const phones = phonesRef.current
+    if (!phones) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { phones.classList.add('in-view'); obs.disconnect() } },
+      { threshold: 0.15 }
+    )
+    obs.observe(phones)
+    return () => obs.disconnect()
+  }, [])
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-    if (status === 'loading') return
-    setStatus('loading')
-    try {
-      const result = await submitToWaitlist(email, '', '', platform)
-      if (result?.status === 'already') { setStatus('already'); return }
-      if (result?.status === 'new') sendWelcomeEmail(email, platform)
-      setStatus('done')
-    } catch {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 3000)
+  useEffect(() => {
+    const hero = heroRef.current
+    const phones = phonesRef.current
+    if (!hero || !phones) return
+    const centerSlot = phones.querySelector('.tp-hero-phone-slot-center')
+    const sideSlots = phones.querySelectorAll('.tp-hero-phone-slot-left, .tp-hero-phone-slot-right')
+
+    let raf = 0
+    const update = () => {
+      raf = 0
+      if (window.innerWidth < 768) {
+        if (centerSlot) centerSlot.style.transform = ''
+        sideSlots.forEach(el => { el.style.transform = '' })
+        return
+      }
+      const rect = hero.getBoundingClientRect()
+      const progress = Math.max(0, Math.min(1, -rect.top / rect.height))
+      if (centerSlot) centerSlot.style.transform = `translateY(${progress * 40}px)`
+      sideSlots.forEach(el => { el.style.transform = `translateY(${progress * 20}px)` })
     }
-  }
+
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
 
   return (
-    <section className="tp-hero" data-nav-theme="light">
+    <section ref={heroRef} className="tp-hero" data-nav-theme="dark">
+      <HeroDots />
       <div className="tp-hero-inner">
-        <div className="tp-hero-row">
-          <div className="tp-hero-content">
-
-            {/* Badge */}
-            <div className="tp-hero-badge">
-              <img src="/Apple_logo_black.svg" alt="" className="tp-hero-badge-icon" />
-              Public launch on iOS soon
-            </div>
-
-            <h1 className="tp-hero-h1">{t('hero.h1')}</h1>
-            <p className="tp-hero-sub">{t('hero.sub')}</p>
-
-            <div id="reserve-form">
-              {status === 'done' || status === 'already' ? (
-                <div className="tp-hero-waitlist-success">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17L4 12" />
-                  </svg>
-                  <span className="tp-hero-success-text">{status === 'already' ? t('hero.already') : t('hero.successText')}</span>
-                  <button className="tp-hero-reset-btn" onClick={() => { setStatus('idle'); setEmail('') }}>
-                    {t('hero.resetBtn')}
-                  </button>
-                </div>
-              ) : (
-                <form className="tp-hero-form" onSubmit={handleSubmit}>
-                  <input
-                    type="email"
-                    name="email"
-                    className="tp-hero-email-input"
-                    placeholder={t('hero.emailPlaceholder')}
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                  />
-                  <div className="fc-platform-toggle fc-platform-toggle-inline">
-                    <button type="button" className={`fc-platform-btn${platform === 'ios' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('ios')}>
-                      <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-62.1 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-                      iOS
-                    </button>
-                    <button type="button" className={`fc-platform-btn${platform === 'android' ? ' fc-platform-active' : ''}`} onClick={() => setPlatform('android')}>
-                      <svg width="14" height="14" viewBox="0 0 576 512" fill="currentColor"><path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24m273.7-144.48l47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a306.2 306.2 0 0 0-134.63 0l-48.54-84.07a10 10 0 1 0-17.27 10l47.94 83C208.09 194.27 160 270.33 160 360h416c0-89.67-48.09-165.73-136.85-202.55"/></svg>
-                      Android
-                    </button>
-                  </div>
-                  <button
-                    type="submit"
-                    className="tp-hero-submit-btn"
-                    disabled={status === 'loading'}
-                  >
-                    {status === 'loading' ? t('hero.btnLoading') : t('hero.btnSubmit')}
-                    {status !== 'loading' && (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </button>
-                  {status === 'error' && <p className="tp-hero-form-error">{t('hero.errorGeneric')}</p>}
-                </form>
-              )}
-            </div>
-
-            {/* Social proof */}
-            <div className="tp-hero-proof-row">
-              <div className="tp-hero-avatars">
-                <img src="/avatar_1.png" alt="" className="tp-hero-avatar" />
-                <img src="/avatar_2.png" alt="" className="tp-hero-avatar" />
-                <img src="/avatar_3.png" alt="" className="tp-hero-avatar" />
-                <img src="/avatar_4.png" alt="" className="tp-hero-avatar" />
-                <img src="/avatar_5.png" alt="" className="tp-hero-avatar" />
-              </div>
-              <p className="tp-hero-proof-text">
-                <strong>{getPlayerCount()}+ players</strong>{' '}
-                <span>already signed up</span>
-              </p>
-            </div>
-
-          </div>
-          <div className="tp-hero-phone" aria-hidden="true">
-            <video
-              src="/hero_hand_logging_website_v1.webm"
-              className="tp-hero-phone-img"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
+        <div className="tp-hero-content">
+          <h1 className="tp-hero-h1">
+            {t('hero.h1').map((line, i) => (
+              <span key={i} className="tp-hero-h1-line">{line}</span>
+            ))}
+          </h1>
+          <p className="tp-hero-sub">{t('hero.sub')}</p>
+          <div className="tp-hero-ctas">
+            <a href="#" className="tp-hero-cta" target="_blank" rel="noopener noreferrer">
+              {t('nav.download')}
+            </a>
           </div>
         </div>
-        <div className="tp-hero-divider" />
+        <div ref={phonesRef} className="tp-hero-phones" aria-hidden="true">
+          <svg className="tp-hero-lines" viewBox="0 0 1400 520" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="tpHeroLineFade" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+                <stop offset="15%" stopColor="rgba(255,255,255,0.55)" />
+                <stop offset="50%" stopColor="rgba(255,255,255,0.85)" />
+                <stop offset="85%" stopColor="rgba(255,255,255,0.55)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+              </linearGradient>
+            </defs>
+            <path className="tp-hero-line tp-hero-line-1" d="M -40 220 C 260 220, 400 470, 700 470 S 1140 220, 1440 220" />
+            <path className="tp-hero-line tp-hero-line-2" d="M -40 260 C 280 260, 420 500, 700 500 S 1120 260, 1440 260" />
+            <path className="tp-hero-line tp-hero-line-3" d="M -40 190 C 240 190, 380 440, 700 440 S 1160 190, 1440 190" />
+          </svg>
+          <div className="tp-hero-phone-slot tp-hero-phone-slot-left">
+            <img src="/hero_phone_left.png" alt="" className="tp-hero-phone tp-hero-phone-left" />
+          </div>
+          <div className="tp-hero-phone-slot tp-hero-phone-slot-right">
+            <img src="/hero_phone_right.png" alt="" className="tp-hero-phone tp-hero-phone-right" />
+          </div>
+          <div className="tp-hero-phone-slot tp-hero-phone-slot-center">
+            <img src="/hero_phone_center.png" alt="" className="tp-hero-phone tp-hero-phone-center" />
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -544,56 +585,70 @@ function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
 /* ────────────────────────────────────────────────────── */
 function TPHowItWorks() {
   const { t } = useT()
+  const [active, setActive] = useState(0)
+
+  const states = [
+    { key: 'hiw', color: '/hiw_opponents_color.png', dashed: '/hiw_opponents.png' },
+    { key: 'hiw.stats', color: '/hiw_stats_color.png', dashed: '/hiw_stats.png' },
+    { key: 'hiw.session', color: '/hiw_session_analytics_color.png', dashed: '/hiw_session_analytics.png' },
+  ]
+  const navIcons = ['/hiw_tab_users.svg', '/hiw_tab_stats.svg', '/hiw_tab_clock.svg']
+
+  const cur = states[active]
+
+  // Figma X positions per phone (left edge, on 1512-wide canvas). Frame is always centered at 756.
+  const phonePositions = [572, 974, 1387]
+  // Distance we need to shift everything so the active phone lands at slot 0 (opponents position = 572).
+  const trackShift = phonePositions[0] - phonePositions[active]
+
   return (
-    <section className="hiw-section" id="how-it-works" data-nav-theme="light">
-      <div className="hiw-inner">
+    <section className="hiw-section" id="how-it-works" data-nav-theme="dark">
+      <div className="hiw-canvas">
+        <div className="hiw-text">
+          <p className="hiw-eyebrow">{t('hiw.section.title')}</p>
+          <h2 className="hiw-title">
+            {t(`${cur.key}.title`).map((line, i) => (
+              <span key={i} className="hiw-title-line">{line}</span>
+            ))}
+          </h2>
+          <p className="hiw-body">{t(`${cur.key}.body`)}</p>
+        </div>
 
-        <h2 className="hiw-title">
-          <span className="hiw-title-sans">{t('howSection.sans')}</span>
-          <span className="hiw-title-italic">{t('howSection.italic')}</span>
-        </h2>
+        <div className="hiw-track" style={{ transform: `translateX(${trackShift}px)` }}>
+          {states.map((s, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`hiw-slide ${i === active ? 'is-active' : ''}`}
+              style={{ left: `${phonePositions[i]}px` }}
+              onClick={() => setActive(i)}
+              aria-label={s.key}
+            >
+              <img
+                src={i === active ? s.color : s.dashed}
+                alt=""
+                className="hiw-slide-img"
+              />
+            </button>
+          ))}
+        </div>
 
-        <div className="hiw-row">
+        <img src="/hiw_iphone.png" alt="" className="hiw-frame-overlay" aria-hidden="true" />
 
-          <div className="hiw-card">
-            <div className="hiw-img-area">
-              <div className="hiw-img-wrap">
-                <img src="/hiw_before.jpg" alt="" className="hiw-img" />
-              </div>
-            </div>
-            <div className="hiw-body">
-              <p className="hiw-eyebrow">{t('tabs.0.label')}</p>
-              <HiwTitle text={t('tabs.0.title')} />
-              <p className="hiw-desc">{t('tabs.0.body')}</p>
-            </div>
-          </div>
-
-          <div className="hiw-card">
-            <div className="hiw-img-area">
-              <div className="hiw-img-wrap">
-                <img src="/hiw_table.png" alt="" className="hiw-img" />
-              </div>
-            </div>
-            <div className="hiw-body">
-              <p className="hiw-eyebrow">{t('tabs.1.label')}</p>
-              <HiwTitle text={t('tabs.1.title')} />
-              <p className="hiw-desc">{t('tabs.1.body')}</p>
-            </div>
-          </div>
-
-          <div className="hiw-card">
-            <div className="hiw-img-area">
-              <div className="hiw-img-wrap">
-                <img src="/hiw_after.png" alt="" className="hiw-img" />
-              </div>
-            </div>
-            <div className="hiw-body">
-              <p className="hiw-eyebrow">{t('tabs.2.label')}</p>
-              <HiwTitle text={t('tabs.2.title')} />
-              <p className="hiw-desc">{t('tabs.2.body')}</p>
-            </div>
-          </div>
-
+        <div className="hiw-mini-nav" role="tablist" aria-label="How it works stages">
+          <span className="hiw-mini-highlight" data-pos={active} />
+          {navIcons.map((src, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`hiw-mini-btn ${i === active ? 'is-active' : ''}`}
+              onClick={() => setActive(i)}
+              aria-selected={i === active}
+              role="tab"
+            >
+              <img src={src} alt="" />
+            </button>
+          ))}
         </div>
       </div>
     </section>
@@ -631,7 +686,7 @@ function TPNotHud() {
     { titleKey: 'notHud.item3Title', descKey: 'notHud.item3Desc' },
   ]
   return (
-    <section className="nh-section" data-nav-theme="light">
+    <section className="nh-section" data-nav-theme="dark">
       <div className="nh-inner">
         <h2 className="nh-title">{t('notHud.title')}</h2>
         <div className="nh-grid" ref={gridRef}>
@@ -641,6 +696,199 @@ function TPNotHud() {
               <p className="nh-card-desc">{t(descKey)}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
+/*  BUCKLE UP — features preview with scroll-linked phone */
+/* ────────────────────────────────────────────────────── */
+function TPBuckleUp() {
+  const { t } = useT()
+  const [active, setActive] = useState(0)
+  const cp0 = useRef(null)
+  const cp1 = useRef(null)
+  const cp2 = useRef(null)
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(Number(e.target.dataset.state))
+        })
+      },
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
+    )
+    ;[cp0, cp1, cp2].forEach((r) => r.current && obs.observe(r.current))
+    return () => obs.disconnect()
+  }, [])
+
+  const features = [
+    { key: 'buckle.stats', screen: '/hiw_stats_color.png', ref: cp0 },
+    { key: 'buckle.bankroll', screen: '/hiw_session_analytics_color.png', ref: cp1 },
+    { key: 'buckle.ai', screen: '/hiw_opponents_color.png', ref: cp2 },
+  ]
+
+  return (
+    <section className="bu-section" data-nav-theme="dark">
+      <div className="bu-inner">
+        <div className="bu-left">
+          <div className="bu-header">
+            <h2 className="bu-title">
+              {t('buckle.title').map((line, j) => (
+                <span key={j} className="bu-title-line">{line}</span>
+              ))}
+            </h2>
+            <p className="bu-subtitle">{t('buckle.subtitle')}</p>
+          </div>
+          <div className="bu-features">
+            {features.map((f, i) => (
+              <div key={i} ref={f.ref} data-state={i} className="bu-feature">
+                <div className="bu-feature-line" aria-hidden="true" />
+                <div className="bu-feature-body">
+                  <h3 className="bu-feature-title">{t(`${f.key}.title`)}</h3>
+                  <p className="bu-feature-desc">{t(`${f.key}.desc`)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <aside className="bu-visual">
+          <div className="bu-phone">
+            {features.map((f, i) => (
+              <img
+                key={i}
+                src={f.screen}
+                alt=""
+                className="bu-phone-screen"
+                style={{ opacity: active === i ? 1 : 0 }}
+              />
+            ))}
+            <img src="/hiw_iphone.png" alt="" className="bu-phone-frame" />
+          </div>
+        </aside>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
+/*  BUILT FOR THE LIVE GAME — 2x2 feature grid            */
+/* ────────────────────────────────────────────────────── */
+function TPBuiltForLive() {
+  const { t } = useT()
+  const cards = [
+    { titleKey: 'live.gesture.title', descKey: 'live.gesture.desc' },
+    { titleKey: 'live.reads.title', descKey: 'live.reads.desc' },
+    { titleKey: 'live.session.title', descKey: 'live.session.desc' },
+    { titleKey: 'live.dealer.title', descKey: 'live.dealer.desc', badge: true },
+  ]
+
+  return (
+    <section className="bfl-section" data-nav-theme="dark">
+      <div className="bfl-inner">
+        <div className="bfl-header">
+          <p className="bfl-eyebrow">{t('live.eyebrow')}</p>
+          <h2 className="bfl-title">
+            {t('live.title').map((line, j) => (
+              <span key={j} className="bfl-title-line">{line}</span>
+            ))}
+          </h2>
+        </div>
+        <div className="bfl-grid">
+          {cards.map(({ titleKey, descKey, badge }, i) => (
+            <div key={i} className="bfl-card">
+              <div className="bfl-card-media" aria-hidden="true" />
+              <h3 className="bfl-card-title">{t(titleKey)}</h3>
+              <p className="bfl-card-desc">{t(descKey)}</p>
+              {badge && (
+                <div className="bfl-card-badge">
+                  <span className="bfl-badge-pill">{t('live.dealer.badge')}</span>
+                  <span className="bfl-badge-tag">{t('live.dealer.tag')}</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
+/*  DISCORD — JOIN THE COMMUNITY                          */
+/* ────────────────────────────────────────────────────── */
+function TPDiscord() {
+  const { t } = useT()
+
+  const messages = [
+    { key: 'msg1', avatarColor: '#5865f2', initial: 'M', showRole: true },
+    { key: 'msg2', avatarColor: '#43b581', initial: 'FT', showRole: false },
+    { key: 'msg3', avatarColor: '#f47fff', initial: 'M', showRole: true },
+  ]
+
+  return (
+    <section className="dc-section" data-nav-theme="dark">
+      <div className="dc-inner">
+        <div className="dc-left">
+          <p className="dc-eyebrow">{t('discord.eyebrow')}</p>
+          <h2 className="dc-title">{t('discord.title')}</h2>
+          <p className="dc-body">{t('discord.body')}</p>
+          <a
+            className="dc-cta"
+            href="https://discord.gg/finaltable"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3.2a.075.075 0 0 0-.079.037c-.34.6-.717 1.383-.98 1.998a18.27 18.27 0 0 0-5 0 12.6 12.6 0 0 0-.995-1.998.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 5.664 4.37a.07.07 0 0 0-.032.027C2.533 8.66 1.678 12.82 2.098 16.928a.083.083 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.027c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.09 13.09 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128 12.28 12.28 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.699.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-4.744-.838-8.87-3.548-12.532a.06.06 0 0 0-.031-.028zM8.02 14.422c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.956-2.419 2.157-2.419 1.211 0 2.176 1.095 2.157 2.419 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.419 2.157-2.419 1.211 0 2.175 1.095 2.157 2.419 0 1.333-.946 2.418-2.157 2.418z" fill="#000"/>
+            </svg>
+            <span>{t('discord.cta')}</span>
+          </a>
+        </div>
+        <div className="dc-right">
+          <div className="dc-card">
+            <div className="dc-tabs">
+              <span className="dc-tab">{t('discord.tab1')}</span>
+              <span className="dc-tab-sep" aria-hidden="true" />
+              <span className="dc-tab">{t('discord.tab2')}</span>
+            </div>
+            <div className="dc-inner-card">
+              <div className="dc-server-head">
+                <div className="dc-server-logo" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3.2a.075.075 0 0 0-.079.037c-.34.6-.717 1.383-.98 1.998a18.27 18.27 0 0 0-5 0 12.6 12.6 0 0 0-.995-1.998.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 5.664 4.37a.07.07 0 0 0-.032.027C2.533 8.66 1.678 12.82 2.098 16.928a.083.083 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.027c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.09 13.09 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128 12.28 12.28 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.699.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-4.744-.838-8.87-3.548-12.532a.06.06 0 0 0-.031-.028z" fill="#fff"/>
+                  </svg>
+                </div>
+                <span className="dc-server-name">{t('discord.server.name')}</span>
+                <span className="dc-server-type">{t('discord.server.type')}</span>
+                <span className="dc-server-status"><span className="dc-status-dot" aria-hidden="true" />{t('discord.status')}</span>
+              </div>
+              <div className="dc-messages">
+                {messages.map(({ key, avatarColor, initial, showRole }) => (
+                  <div key={key} className="dc-msg">
+                    <div className="dc-avatar" style={{ background: avatarColor }}>{initial}</div>
+                    <div className="dc-msg-body">
+                      <div className="dc-msg-head">
+                        <span className="dc-msg-name">{t(`discord.${key}.name`)}</span>
+                        {showRole && <span className="dc-msg-role">{t(`discord.${key}.role`)}</span>}
+                        <span className="dc-msg-time">{t(`discord.${key}.time`)}</span>
+                      </div>
+                      <p className="dc-msg-text">{t(`discord.${key}.text`)}</p>
+                    </div>
+                  </div>
+                ))}
+                <div className="dc-typing">
+                  <div className="dc-avatar dc-avatar-you" style={{ background: '#faa61a' }}>YOU</div>
+                  <div className="dc-typing-bubble" aria-hidden="true">
+                    <span className="dc-dot" /><span className="dc-dot" /><span className="dc-dot" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1022,45 +1270,6 @@ function TPProblems() {
   )
 }
 
-function TPFeaturesShowcase() {
-  const { t } = useT()
-
-  const cards = [
-    { video: '/statistics.mp4',   title: t('features.opponentProfiles.title'), desc: t('features.opponentProfiles.desc') },
-    { video: '/bankroll_chart.mp4', title: t('features.bankroll.title'),         desc: t('features.bankroll.desc') },
-    { video: '/ai_analysis.mp4',  title: t('features.sessionLogger.title'),    desc: t('features.sessionLogger.desc') },
-  ]
-
-  return (
-    <section className="fv-section" id="features" data-nav-theme="dark">
-      <div className="fv-inner">
-        <div className="fv-header">
-          <h2 className="fv-title">
-            {t('features.title')}
-          </h2>
-          <p className="fv-subtitle">{t('features.subtitle')}</p>
-        </div>
-        <div className="fv-row">
-          {cards.map((card, ci) => (
-            <div key={ci} className={`fv-card${ci === 0 ? ' fv-card-featured' : ''}`}>
-              <div className="fv-card-img-wrap">
-                {card.video
-                  ? <video src={card.video} className="fv-card-img" autoPlay loop muted playsInline />
-                  : <img src={card.img} alt="" className="fv-card-img" />}
-              </div>
-              <div className="fv-card-body">
-                <h3 className="fv-card-title">{card.title}</h3>
-                <p className="fv-card-desc">{card.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-
 /* ────────────────────────────────────────────────────── */
 /*  FINAL CTA  (Figma 110:9602)                          */
 /* ────────────────────────────────────────────────────── */
@@ -1295,10 +1504,9 @@ export default function LandingPage() {
           <TPHero />
           <TPHowItWorks />
           <TPNotHud />
-          <TPFeaturesShowcase />
-          <TPComparison />
-          <TPFinalCTA />
-          <TPBottomCTA />
+          <TPBuckleUp />
+          <TPBuiltForLive />
+          <TPDiscord />
         </main>
       </div>
       <TPFooter ref={footerRef} />
