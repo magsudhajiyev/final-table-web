@@ -2,11 +2,15 @@ import { useState, useEffect, useRef, forwardRef } from 'react'
 import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
+import { ThemeToggle } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
 const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr', uk: 'ua' }
+
+const APP_STORE_URL = 'https://apps.apple.com/us/app/final-table/id6760188970'
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finaltable.app'
 
 function sendWelcomeEmail(email, platform) {
   fetch('/api/send-welcome', {
@@ -150,7 +154,7 @@ function TPNavbar() {
           </div>
         </div>
         <div className="tp-nav-right">
-          <a href="#" className="tp-nav-download-btn" target="_blank" rel="noopener noreferrer">
+          <a href={APP_STORE_URL} className="tp-nav-download-btn" target="_blank" rel="noopener noreferrer">
             {t('nav.download')}
           </a>
           <div className="tp-lang-picker" ref={langRef}>
@@ -393,10 +397,10 @@ function TPHero() {
           </h1>
           <p className="tp-hero-sub">{t('hero.sub')}</p>
           <div className="tp-hero-ctas">
-            <a href="#" className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+            <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="tp-hero-store-img" />
             </a>
-            <a href="#" className="tp-hero-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+            <a href={PLAY_STORE_URL} className="tp-hero-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
               <img src="/store_googleplay.svg" alt="" className="tp-hero-store-img" />
             </a>
           </div>
@@ -1211,7 +1215,7 @@ function GestureLoggingAnim() {
 
 function OpponentRadarAnim() {
   const nodes = [
-    { angle: 0, label: 'VPIP 24%' },
+    { angle: 0, label: 'Agg% 24%' },
     { angle: 60, label: 'PFR 18%' },
     { angle: 120, label: 'Aggressive' },
     { angle: 180, label: '3-Bet 9%' },
@@ -1441,10 +1445,10 @@ function TPBuiltForLive() {
             <div className="bfl-card bfl-card-download">
               <p className="bfl-download-label">{t('live.download')}</p>
               <div className="bfl-download-badges">
-                <a href="#" className="bfl-store-btn" aria-label="Download on the App Store">
+                <a href={APP_STORE_URL} className="bfl-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
                   <img src="/store_appstore.svg" alt="" className="bfl-store-img" />
                 </a>
-                <a href="#" className="bfl-store-btn" aria-label="Get it on Google Play">
+                <a href={PLAY_STORE_URL} className="bfl-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
                   <img src="/store_googleplay.svg" alt="" className="bfl-store-img" />
                 </a>
               </div>
@@ -1511,10 +1515,10 @@ function TPBottomHero() {
             ))}
           </p>
           <div className="bh-badges">
-            <a href="#" className="bh-store-btn" aria-label="Download on the App Store">
+            <a href={APP_STORE_URL} className="bh-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="bh-store-img" />
             </a>
-            <a href="#" className="bh-store-btn" aria-label="Get it on Google Play">
+            <a href={PLAY_STORE_URL} className="bh-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
               <img src="/store_googleplay.svg" alt="" className="bh-store-img" />
             </a>
           </div>
@@ -2076,25 +2080,7 @@ const TPFooter = forwardRef(function TPFooter(_, ref) {
                       </svg>
                     </a>
                   </div>
-                  <div className="mf-theme-toggle">
-                    <button type="button" className="mf-theme-btn mf-theme-btn-active" aria-label="Light theme">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4" />
-                        <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" />
-                      </svg>
-                    </button>
-                    <button type="button" className="mf-theme-btn" aria-label="Dark theme">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                      </svg>
-                    </button>
-                    <button type="button" className="mf-theme-btn" aria-label="Auto theme">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 2a10 10 0 0 1 0 20V2z" fill="rgba(255,255,255,0.55)" />
-                      </svg>
-                    </button>
-                  </div>
+                  <ThemeToggle />
                 </div>
               </div>
 

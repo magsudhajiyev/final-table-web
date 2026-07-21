@@ -2242,11 +2242,14 @@ html {
     border: none;
     border-radius: 60px;
     cursor: pointer;
-    color: inherit;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.2s, background 0.2s;
 }
+.mf-theme-btn:hover { color: rgba(255, 255, 255, 0.85); }
 
 .mf-theme-btn-active {
     background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .mf-theme-btn svg {
@@ -2469,12 +2472,13 @@ html {
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
-    .tp-nav { padding: 12px 20px; }
+    .tp-nav-wrap { padding: 16px 20px; }
+    .tp-nav { padding: 0; }
     .tp-nav-right { display: none; }
-    .tp-nav-left { gap: 0; }
+    .tp-nav-left { gap: 0; margin-right: auto; }
     .tp-nav-links { display: none; }
-    .tp-mobile-lang-picker { display: block; margin-left: auto; }
-    .tp-nav-hamburger { display: flex; margin-left: 8px; }
+    .tp-mobile-lang-picker { display: block; }
+    .tp-nav-hamburger { display: flex; margin-left: 16px; }
     .tp-nav-mobile-menu {
         display: flex;
         width: 100%;
@@ -6829,19 +6833,16 @@ html {
 
 @media (max-width: 900px) {
     .bh-section {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
         padding: 120px 24px;
         text-align: center;
     }
-    .bh-phone {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 260px;
+    .bh-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
     }
+    /* Mobile: drop the phone mockup, keep only the CTA (title + body + badges) */
+    .bh-phone { display: none; }
     .bh-title { white-space: normal; align-items: center; }
     .bh-right { align-items: center; }
 }
@@ -6850,7 +6851,6 @@ html {
     .bh-section { padding: 80px 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; }
     .bh-title { font-size: 22px; }
     .bh-body { font-size: 15px; }
-    .bh-phone { width: 220px; }
     .bh-badges { flex-wrap: wrap; justify-content: center; }
 }
 

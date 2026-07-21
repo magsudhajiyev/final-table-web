@@ -1,7 +1,27 @@
-/* ── About page — consistent with LandingPage design system ── */
-
+/* ── About page — consistent with LandingPage design system ──
+   Themed via custom properties. Defaults below are DARK (matching the home
+   page); a `.light-theme` block near the end flips them to the light palette.
+   The active theme class lives on <body> (see src/theme.jsx). */
 .about-main {
+  --ab-surface:      #0c0c0c;   /* section background */
+  --ab-card:         #141414;   /* card background */
+  --ab-border:       rgba(255, 255, 255, 0.08);
+  --ab-heading:      #ffffff;   /* h1/h2/titles */
+  --ab-text:         rgba(255, 255, 255, 0.62);  /* body / secondary */
+  --ab-avatar-bg:    #ffffff;
+  --ab-avatar-fg:    #0c0c0c;
+  --ab-btn-bg:       #ffffff;
+  --ab-btn-fg:       #0c0c0c;
+  --ab-nav-bg:       #0c0c0c;
+
   padding-top: 0;
+  background: var(--ab-surface);
+}
+
+/* The shared navbar is styled for dark home-page sections; keep it on a solid
+   surface that tracks the active theme. */
+.legal-root .tp-nav-wrap {
+  background: var(--ab-nav-bg, #0c0c0c);
 }
 
 /* ── Shared inner wrapper (matches landing page 1440/98px pattern) ── */
@@ -17,7 +37,7 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: -0.02em;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0 0 18px;
   line-height: 1.5;
 }
@@ -27,7 +47,7 @@
 ════════════════════════════════════════════════ */
 .about-mission {
   padding: 140px 0 80px;
-  background: #fff;
+  background: var(--ab-surface);
 }
 .about-mission .about-inner {
   display: flex;
@@ -41,7 +61,7 @@
   line-height: 1.1;
   letter-spacing: -0.05em;
   margin: 0 0 28px;
-  color: #000;
+  color: var(--ab-heading);
   max-width: 700px;
 }
 .about-h1 em {
@@ -54,7 +74,7 @@
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.65;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0;
   max-width: 560px;
   letter-spacing: -0.02em;
@@ -65,8 +85,8 @@
 ════════════════════════════════════════════════ */
 .about-values {
   padding: 56px 0;
-  background: #fff;
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  background: var(--ab-surface);
+  border-top: 1px solid var(--ab-border);
 }
 .about-values-grid {
   display: grid;
@@ -75,8 +95,8 @@
 }
 .about-value-card {
   padding: 32px 28px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: var(--ab-card);
+  border: 1px solid var(--ab-border);
   border-radius: 24px;
 }
 .about-value-title {
@@ -85,14 +105,14 @@
   font-weight: 500;
   margin: 0 0 10px;
   letter-spacing: -0.02em;
-  color: #000;
+  color: var(--ab-heading);
   line-height: 1.3;
 }
 .about-value-desc {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.65;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -102,8 +122,8 @@
 ════════════════════════════════════════════════ */
 .about-team {
   padding: 56px 0;
-  background: #fff;
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  background: var(--ab-surface);
+  border-top: 1px solid var(--ab-border);
 }
 .about-h2 {
   font-family: var(--font-sans);
@@ -111,7 +131,7 @@
   font-weight: 500;
   letter-spacing: -0.02em;
   margin: 0 0 40px;
-  color: #000;
+  color: var(--ab-heading);
   line-height: 1.2;
 }
 .about-h2 em {
@@ -127,8 +147,8 @@
 }
 .about-team-card {
   padding: 40px 36px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: var(--ab-card);
+  border: 1px solid var(--ab-border);
   border-radius: 24px;
   text-align: center;
 }
@@ -136,8 +156,8 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #000;
-  color: #fff;
+  background: var(--ab-avatar-bg);
+  color: var(--ab-avatar-fg);
   font-family: var(--font-sans);
   font-size: 20px;
   font-weight: 600;
@@ -153,14 +173,14 @@
   font-weight: 500;
   letter-spacing: -0.02em;
   margin: 0 0 6px;
-  color: #000;
+  color: var(--ab-heading);
   line-height: 1.3;
 }
 .about-team-role {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 400;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0 0 16px;
   letter-spacing: -0.01em;
 }
@@ -168,7 +188,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.65;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0 0 20px;
   letter-spacing: -0.01em;
 }
@@ -179,7 +199,7 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
-  color: #0a66c2;
+  color: #4a9eff;
   text-decoration: none;
   transition: opacity 0.2s;
 }
@@ -190,8 +210,8 @@
 ════════════════════════════════════════════════ */
 .about-cta {
   padding: 80px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
-  background: #fff;
+  border-top: 1px solid var(--ab-border);
+  background: var(--ab-surface);
 }
 .about-cta .about-inner {
   display: flex;
@@ -206,7 +226,7 @@
 .about-cta-body {
   font-family: var(--font-sans);
   font-size: 16px;
-  color: #848484;
+  color: var(--ab-text);
   margin: 0;
   max-width: 480px;
   letter-spacing: -0.02em;
@@ -217,8 +237,8 @@
   align-items: center;
   gap: 6px;
   padding: 14px 28px;
-  background: #000;
-  color: #fff;
+  background: var(--ab-btn-bg);
+  color: var(--ab-btn-fg);
   font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 500;
@@ -229,6 +249,26 @@
   margin-top: 8px;
 }
 .about-cta-btn:hover { opacity: 0.85; }
+
+/* ════════════════════════════════════════════════
+   LIGHT THEME — flip the tokens to the light palette.
+   `.light-theme` is set on <body> by the theme provider.
+════════════════════════════════════════════════ */
+body.light-theme .about-main {
+  --ab-surface:   #ffffff;
+  --ab-card:      #ffffff;
+  --ab-border:    rgba(0, 0, 0, 0.07);
+  --ab-heading:   #000000;
+  --ab-text:      #848484;
+  --ab-avatar-bg: #000000;
+  --ab-avatar-fg: #ffffff;
+  --ab-btn-bg:    #000000;
+  --ab-btn-fg:    #ffffff;
+  /* The shared navbar's logo fills and controls are hardcoded white, so keep
+     the nav dark in both themes — a dark bar over light content is standard. */
+  --ab-nav-bg:    #0c0c0c;
+}
+body.light-theme .about-team-linkedin { color: #0a66c2; }
 
 /* ════════════════════════════════════════════════
    RESPONSIVE
