@@ -3803,9 +3803,18 @@ html {
     background: #0c0c0c;
     color: #ffffff;
     position: relative;
-    overflow: hidden;
+    /* Tall wrapper: 100vh pinned + 200vh of scroll travel (two transitions) */
+    height: 300vh;
     padding: 0;
+}
+
+.hiw-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
+    align-items: center;
     justify-content: center;
 }
 
@@ -3814,6 +3823,8 @@ html {
     width: 1512px;
     height: 1050px;
     flex-shrink: 0;
+    /* Scaled via JS to fit the pinned viewport (see TPHowItWorks) */
+    transform-origin: center center;
 }
 
 .hiw-text {
@@ -3821,7 +3832,8 @@ html {
     left: 56px;
     top: 50%;
     transform: translateY(-50%);
-    width: 454px;
+    /* Keep a clear gap to the phone bezel (frame starts at x≈520) */
+    width: 400px;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -3860,125 +3872,207 @@ html {
     margin: 0;
 }
 
-.hiw-track {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-    pointer-events: none;
+/* Cross-fading per-stage text blocks (eyebrow above stays fixed) */
+.hiw-text-stack {
+    position: relative;
+    height: 260px;
 }
-
-.hiw-slide {
+.hiw-stage-text {
     position: absolute;
-    top: 119px;
-    width: 367.954px;
-    height: 800px;
-    padding: 0;
-    margin: 0;
-    background: none;
-    border: 0;
-    cursor: pointer;
-    opacity: 1;
-    transition: opacity 500ms ease;
-    pointer-events: auto;
-}
-.hiw-slide-img {
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    opacity: 0;
+    transition: opacity 380ms ease;
     pointer-events: none;
 }
+.hiw-stage-text.is-active { opacity: 1; }
 
-/* iPhone frame overlay - always centered */
-.hiw-frame-overlay {
+/* Color screens live inside a clip box matching the frame's transparent window.
+   Whatever part of a sliding screen is inside the window shows in color.
+   The container ends at the y=910 cut line, cropping the bottom of the screens. */
+.hiw-clip {
     position: absolute;
-    top: 106px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 390px;
-    height: 800px;
+    left: 533.79px;
+    top: 161.02px;
+    width: 444.42px;
+    height: 748.98px;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+.hiw-screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    will-change: transform;
+}
+
+/* Fixed iPhone frame — never moves; screens slide in beneath its bezel.
+   Bottom 25% is cropped (cut line at canvas y=910, just above the mini-nav). */
+.hiw-frame {
+    position: absolute;
+    left: 471.15px;
+    top: 100px;
+    width: 572.94px;
+    height: auto;
+    clip-path: inset(0 0 270px 0);
     z-index: 3;
     pointer-events: none;
-    object-fit: cover;
 }
 
-/* Mini nav below phones */
-.hiw-mini-nav {
+/* Dashed screens: clip-path keeps only the part right of the window edge visible
+   (left inset, set from JS) and crops the bottom at the same y=910 cut line.
+   They sit UNDER the frame, so the sliver passes beneath the bezel (never over it)
+   and is only visible in the open black area right of the phone. */
+.hiw-dashed {
     position: absolute;
-    left: 843.5px;
-    top: 920px;
-    width: 402px;
-    height: 88px;
-    padding: 16px 16px 8px;
+    left: 0;
+    top: 161.02px;
+    width: 444.42px;
+    height: auto;
+    z-index: 2;
+    display: block;
+    pointer-events: none;
+    will-change: transform, clip-path;
+}
+
+/* App tab bar (Figma 2081:18100, scaled 1.75x) floating over the phone's
+   cut-off bottom, centered on the frame and overhanging it like a zoomed-in
+   app UI. Straddles the y=910 crop line. */
+.hiw-nav {
+    position: absolute;
+    /* Centered on the phone (frame center x = 757.6) */
+    left: 757.6px;
+    top: 855px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
+    transform: translateX(-50%) scale(0.9);
     z-index: 10;
 }
 
-.hiw-mini-nav::before {
-    content: '';
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 234px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.06);
+.hiw-nav-pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18.4px;
+    padding: 25.8px 29.5px;
+    /* Figma 0.06 dialed down 25% (opacity on the wrapper would kill backdrop-filter) */
+    background: rgba(255, 255, 255, 0.045);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 999px;
 }
 
-.hiw-mini-highlight {
+.hiw-nav-highlight {
     position: absolute;
-    top: 21.5px;
-    height: 48px;
-    width: 62px;
-    border-radius: 80px;
-    background: rgba(255, 255, 255, 0.16);
+    top: 10.1px;
+    width: 114.2px;
+    height: 88.4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
     transition: left 500ms cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
-    z-index: 1;
 }
-.hiw-mini-highlight[data-pos="0"] { left: calc(50% - 111px); }
-.hiw-mini-highlight[data-pos="1"] { left: calc(50% - 33px); }
-.hiw-mini-highlight[data-pos="2"] { left: calc(50% + 45px); }
+.hiw-nav-highlight[data-pos="0"] { left: 112.3px; }
+.hiw-nav-highlight[data-pos="1"] { left: 211.7px; }
+.hiw-nav-highlight[data-pos="2"] { left: 311.1px; }
 
-.hiw-mini-btn {
+.hiw-nav-item {
     position: relative;
-    z-index: 2;
-    width: 44px;
-    height: 44px;
-    margin: 0 8px;
+    z-index: 1;
+    width: 81px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+}
+
+.hiw-nav-btn {
     background: none;
     border: 0;
     padding: 0;
     cursor: pointer;
 }
-.hiw-mini-btn img {
-    width: 32px;
-    height: 32px;
-    display: block;
-    opacity: 0.7;
-    transition: opacity 200ms ease;
-}
-.hiw-mini-btn.is-active img,
-.hiw-mini-btn:hover img { opacity: 1; }
 
-/* Scale down on smaller viewports (proportional) */
-@media (max-width: 1512px) {
-    .hiw-canvas {
-        transform-origin: top center;
-        transform: scale(calc(100vw / 1512));
-        margin-bottom: calc((100vw / 1512 - 1) * 1050px);
+.hiw-nav-ico {
+    position: relative;
+    width: 58.9px;
+    height: 58.9px;
+}
+.hiw-nav-vec {
+    position: absolute;
+    inset: 0;
+}
+.hiw-nav-vec img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 0.75;
+}
+/* Per-icon vector insets from Figma keep each glyph's designed size */
+.hiw-nav-vec--home  { inset: 9.37% 12.5% 12.5% 12.5%; }
+.hiw-nav-vec--users { inset: 18.75% 3.12% 12.39% 3.12%; }
+.hiw-nav-vec--stats { inset: 12.5% 9.38% 15.63% 9.38%; }
+.hiw-nav-vec--clock { inset: 0; }
+
+/* Mobile text copy lives outside the scaled canvas; hidden on desktop */
+.hiw-text--mobile { display: none; }
+
+/* ── Mobile: single phone, auto-cycling tabs, crossfading screens ── */
+@media (max-width: 768px) {
+    .hiw-section {
+        height: auto;
+        padding: 88px 0 8px;
     }
+    .hiw-sticky {
+        position: relative;
+        /* height set from JS to the scaled canvas height */
+        height: auto;
+        /* Swallow most of the empty canvas area above the phone (100px at scale) */
+        margin-top: -10vw;
+    }
+    /* Desktop text inside the canvas is replaced by the mobile copy above it */
+    .hiw-canvas .hiw-text { display: none; }
+    .hiw-text--mobile {
+        display: flex;
+        position: static;
+        transform: none;
+        width: auto;
+        padding: 0 24px;
+        margin-bottom: 8px;
+    }
+    .hiw-text--mobile .hiw-title {
+        font-size: 30px;
+        letter-spacing: -1.2px;
+    }
+    /* Grid-stack the stage texts so the block sizes to the tallest stage */
+    .hiw-text--mobile .hiw-text-stack {
+        display: grid;
+        height: auto;
+    }
+    .hiw-text--mobile .hiw-stage-text {
+        position: static;
+        grid-area: 1 / 1;
+    }
+    /* Full-size nav on mobile (the 10% shrink is desktop-only) */
+    .hiw-nav { transform: translateX(-50%); }
+    /* No dashed screens queuing in from the right */
+    .hiw-dashed { display: none; }
+    /* Screens sit in the frame window and crossfade instead of sliding */
+    .hiw-screen {
+        transform: none !important;
+        opacity: 0;
+        transition: opacity 600ms ease;
+    }
+    .hiw-screen.is-on { opacity: 1; }
 }
 
 /* ────────────────────────────────────────────────────── */

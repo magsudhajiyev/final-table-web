@@ -14,47 +14,56 @@ No test suite or linter configured.
 
 ## Architecture
 
-This is a **React + Vite SPA** for the **Final Table** poker manager app landing page.
+This is a **React + Vite SPA** for the **Final Table** poker manager app landing page, deployed on Vercel.
 
 **Entry point:** `src/main.jsx` — handles all routing manually with `window.location.pathname` comparisons (no React Router). Routes:
 - `/` → `LandingPage` (wrapped in `I18nProvider`)
 - `/about` → `AboutPage`
 - `/privacy`, `/terms` → legal pages
-- `/admin` → `AdminPage` (password-protected, hardcoded `ADMIN_PASS`)
+- `/admin` → `AdminPage`
 - `/hand/:shareId` → `HandViewer` (shared hand replay, reads `shared_hands` Firestore collection)
 
-Vercel rewrites all paths to `/index.html` (`vercel.json`).
+`vercel.json` rewrites each of these specific paths (not a catch-all) to `/index.html`.
 
 ### Landing page (`src/LandingPage.jsx`)
 
-This is a ~1300-line monolithic file. All section components are defined inline here with a `TP` prefix. Render order: `TPNavbar → TPHero → TPHowItWorks → TPNotHud → TPFeaturesShowcase → TPComparison → TPFinalCTA → TPBottomCTA → TPFooter`. The `LandingPage` default export owns Lenis smooth scroll and exposes it on `window.__lenis`.
+This is a ~1600-line monolithic file. All section components are defined inline here with a `TP` prefix. Render order: `TPNavbar → TPHero → TPHowItWorks → TPNotHud → TPBuckleUp → TPBuiltForLive → TPDiscord → TPFooter`. Several other `TP` components exist in the file but are **not rendered** (`TPComparison`, `TPBgSection`, `TPProblems`, `TPBottomCTA`, `TPFinalCTA`) — dead sections kept around. The `LandingPage` default export owns Lenis smooth scroll (skipped on touch devices) and exposes it on `window.__lenis`.
 
 > **Note:** `src/App.jsx` and `src/components/` (Navbar, Hero, etc.) are not imported by any active route — they are unused legacy code.
 
-The hero's player count (`getPlayerCount()`) is a **deterministic pseudo-random calculation** seeded by date, not real Firestore data. It increments predictably over 3-hour slots since a hardcoded start date.
+The hero's player count (`getPlayerCount()`) is a **deterministic pseudo-random calculation** seeded by date, not real Firestore data. It increments predictably over 3-hour slots since a hardcoded start date (currently only referenced by the unrendered CTA sections).
 
 The `--footer-height` CSS custom property is kept up-to-date via a `ResizeObserver` on the footer element (used for sticky-footer layout math in CSS).
 
 ### i18n (`src/i18n.jsx`)
 
-All user-facing text lives here. **Always add/update translations for all 7 languages when changing any copy:** `de`, `en`, `es`, `fr`, `pl`, `pt`, `ru`.
+All user-facing text lives here. **Always add/update translations for all 9 languages when changing any copy:** `de`, `en`, `es`, `fr`, `pl`, `pt`, `ru`, `tr`, `uk`.
 
 - `I18nProvider` detects locale from `localStorage` (`ft_lang`) or `navigator.language`
 - `useT()` hook returns a translation function `t(key, params?)`
-- Translation values can be strings or render functions returning JSX (e.g., `hero.h1`, `compare.title`)
-- Language switcher flag icons use the `flag-icons` npm package; `FLAG_ISO` in `LandingPage.jsx` maps locale codes to ISO country codes (`pt` → `br`, `en` → `gb`)
+- Translation values can be strings or render functions returning JSX (e.g., `hero.h1`)
+- Language switcher flag icons use the `flag-icons` npm package; `FLAG_ISO` in `LandingPage.jsx` maps locale codes to ISO country codes (`pt` → `br`, `en` → `gb`, `uk` → `ua`)
 
 ### Firebase (`src/lib/firebase.js`)
 
-Firebase is imported via the **npm package** (not CDN). All Firestore operations are centralized here — **except `HandViewer.jsx`**, which initializes its own Firebase app instance directly (using `getApps().length` guard to avoid duplicate initialization). Collections:
-- `waitlist` — email sign-ups with optional first/last name
+Firebase is imported via the **npm package** (not CDN), config hardcoded in the file. All Firestore operations are centralized here — **except `HandViewer.jsx`**, which initializes its own Firebase app instance directly (using `getApps().length` guard to avoid duplicate initialization). Collections:
+- `waitlist` — email sign-ups with optional first/last name and platform (ios/android)
 - `nickname_claims` — username reservations (checks `usernames` collection for live-app conflicts)
 - `contact_submissions` — contact form entries
 - `shared_hands` — hand replay data written by the mobile app, read by `HandViewer`
 
+Also exports admin auth: Google sign-in via Firebase Auth popup, gated by a hardcoded `ADMIN_EMAILS` allowlist.
+
+### Serverless API (`api/`)
+
+Vercel serverless functions wrapping the **Resend** email API. The key lives server-side in the `RESEND_API_KEY` env var (`.env` locally / Vercel env in prod) — never in client code.
+- `send-email.js` — generic send (raw HTML or Resend template mode), used by AdminPage bulk email
+- `send-welcome.js` — waitlist welcome email; auto-sends the iOS TestFlight beta invite when `platform === 'ios'`. **The email HTML is inlined in this file** — the `.html` files in `src/email-templates/` are unreferenced source copies, so editing them alone changes nothing.
+- `get-email.js`, `list-inbox.js`, `list-templates.js` — Resend read endpoints used by the admin dashboard
+
 ### Admin page (`src/AdminPage.jsx`)
 
-Password gate (`ADMIN_PASS` hardcoded). Tabs for waitlist users, nickname claims, contact submissions, and shared hands. Supports CSV export and bulk email via Resend API (key entered at runtime, stored in `sessionStorage`).
+Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no password gate anymore). Tabs for waitlist users, nickname claims, contact submissions, and shared hands. Supports CSV export and bulk email through the `/api/*` Resend endpoints (raw HTML or Resend template mode).
 
 ### Animations & scroll
 
@@ -69,7 +78,7 @@ Password gate (`ADMIN_PASS` hardcoded). Tabs for waitlist users, nickname claims
 
 ### Legacy files
 
-`index-legacy.html`, `script.js`, and `styles.css` in the project root are the old vanilla JS version of the page. They are **not part of the React app**. `FIGMA_RULES.md` and `LANDING_PAGE_DOCS.md` both describe an older architecture (references `TestPage.jsx` and outdated component names like `TPBgSection`, `TPProblems`, `TPReserveUsername`) — they are stale and should not be relied on.
+`index-legacy.html`, `script.js`, and `styles.css` in the project root are the old vanilla JS version of the page. They are **not part of the React app**. `FIGMA_RULES.md` and `LANDING_PAGE_DOCS.md` describe an older architecture — they are stale and should not be relied on.
 
 ## LLM Discovery (`public/llms.txt`)
 
@@ -79,4 +88,4 @@ Password gate (`ADMIN_PASS` hardcoded). Tabs for waitlist users, nickname claims
 
 - **Never push to remote without explicit user approval.**
 - **Never commit unless explicitly asked.**
-- **Translate every added text** into all 7 languages in `src/i18n.jsx` whenever user-facing copy is added or changed.
+- **Translate every added text** into all 9 languages in `src/i18n.jsx` whenever user-facing copy is added or changed.

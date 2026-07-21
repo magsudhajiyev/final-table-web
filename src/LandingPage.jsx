@@ -586,69 +586,237 @@ function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
 function TPHowItWorks() {
   const { t } = useT()
   const [active, setActive] = useState(0)
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 768px)').matches)
+  const wrapperRef = useRef(null)
+  const stickyRef = useRef(null)
+  const autoRef = useRef(null)
+  const canvasRef = useRef(null)
+  const statsDashedRef = useRef(null)
+  const statsColorRef = useRef(null)
+  const sessDashedRef = useRef(null)
+  const sessColorRef = useRef(null)
 
-  const states = [
-    { key: 'hiw', color: '/hiw_opponents_color.png', dashed: '/hiw_opponents.png' },
-    { key: 'hiw.stats', color: '/hiw_stats_color.png', dashed: '/hiw_stats.png' },
-    { key: 'hiw.session', color: '/hiw_session_analytics_color.png', dashed: '/hiw_session_analytics.png' },
+  const stages = [{ key: 'hiw' }, { key: 'hiw.stats' }, { key: 'hiw.session' }]
+  const navTabs = [
+    { src: '/hiw_nav_users.svg', mod: 'users' },
+    { src: '/hiw_nav_stats.svg', mod: 'stats' },
+    { src: '/hiw_nav_clock.svg', mod: 'clock' },
   ]
-  const navIcons = ['/hiw_tab_users.svg', '/hiw_tab_stats.svg', '/hiw_tab_clock.svg']
 
-  const cur = states[active]
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const onChange = () => setIsMobile(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
-  // Figma X positions per phone (left edge, on 1512-wide canvas). Frame is always centered at 756.
-  const phonePositions = [572, 974, 1387]
-  // Distance we need to shift everything so the active phone lands at slot 0 (opponents position = 572).
-  const trackShift = phonePositions[0] - phonePositions[active]
+  useEffect(() => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+
+    if (isMobile) {
+      // Mobile: no scroll choreography — stages auto-cycle and screens
+      // crossfade in place (dashed screens are hidden in CSS). The canvas
+      // is scaled so the nav bar (widest element, 690px) spans the viewport.
+      const applyScale = () => {
+        const canvas = canvasRef.current
+        const sticky = stickyRef.current
+        if (!canvas || !sticky) return
+        const s = Math.min(1, window.innerWidth / 720)
+        canvas.style.transform = `scale(${s.toFixed(4)})`
+        sticky.style.height = `${Math.round(1050 * s)}px`
+      }
+      window.addEventListener('resize', applyScale)
+      applyScale()
+      autoRef.current = setInterval(() => setActive(a => (a + 1) % 3), 4000)
+      return () => {
+        window.removeEventListener('resize', applyScale)
+        clearInterval(autoRef.current)
+        autoRef.current = null
+      }
+    }
+
+    const sticky = stickyRef.current
+    if (sticky) sticky.style.height = ''
+
+    // Geometry on the 1512x1050 canvas (frame window measured from hiw2_frame.png alpha,
+    // enlarged ~27% with the bottom 25% cropped at the y=910 cut line).
+    const WIN_X = 533.79           // settled screen position (window left edge)
+    const WIN_R = 533.79 + 444.42  // window right edge — the color/dashed split line
+    const PARK = 1032              // parked "next up" slot
+    const ENTER = 1420             // where a queued screen fades in from
+    const BOT = 217.3              // dashed bottom inset so the crop lands on y=910
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const LERP = reduce ? 1 : 0.16
+
+    // Scroll-linked until halfway (0..0.5 -> 0..40% in), then the target jumps to
+    // fully-in and the LERP eases it home. Reversing past 0.5 jumps the target back
+    // to 40%-in: a fast eased ~60% slide-out, then scroll-linked the rest of the way.
+    const inFrac = (p) => (p >= 0.5 ? 1 : Math.max(0, p) * 0.8)
+    const clamp01 = (v) => Math.max(0, Math.min(1, v))
+
+    const pos = { stats: PARK, sess: ENTER, sessOp: 0 }
+    let rafId = null
+    let running = false
+    let activeIdx = 0
+
+    const apply = () => {
+      const sd = statsDashedRef.current, sc = statsColorRef.current
+      const zd = sessDashedRef.current, zc = sessColorRef.current
+      if (sd) {
+        sd.style.transform = `translateX(${pos.stats.toFixed(2)}px)`
+        sd.style.clipPath = `inset(0 0 ${BOT}px ${Math.max(0, WIN_R - pos.stats).toFixed(2)}px)`
+      }
+      if (sc) sc.style.transform = `translateX(${(pos.stats - WIN_X).toFixed(2)}px)`
+      if (zd) {
+        zd.style.transform = `translateX(${pos.sess.toFixed(2)}px)`
+        zd.style.clipPath = `inset(0 0 ${BOT}px ${Math.max(0, WIN_R - pos.sess).toFixed(2)}px)`
+        zd.style.opacity = pos.sessOp.toFixed(3)
+      }
+      if (zc) zc.style.transform = `translateX(${(pos.sess - WIN_X).toFixed(2)}px)`
+    }
+
+    const tick = () => {
+      const rect = wrapper.getBoundingClientRect()
+      const total = rect.height - window.innerHeight
+      // fi: 0..2 across the two transitions (stats in, then sessions in)
+      const fi = total > 0 ? clamp01(-rect.top / total) * 2 : 0
+
+      const tStats = PARK + (WIN_X - PARK) * inFrac(clamp01(fi))
+      let tSess, tSessOp
+      if (fi < 1) {
+        // queued: fade + drift in from the right, driven by the same commit curve
+        // as the slide-in — so when stats snaps into the frame, sessions snaps
+        // forward into the parking slot (same rest gap) and waits there.
+        const q = inFrac(clamp01(fi))
+        tSess = ENTER + (PARK - ENTER) * q
+        tSessOp = q
+      } else {
+        tSess = PARK + (WIN_X - PARK) * inFrac(fi - 1)
+        tSessOp = 1
+      }
+
+      const a = fi < 0.5 ? 0 : fi < 1.5 ? 1 : 2
+      if (a !== activeIdx) { activeIdx = a; setActive(a) }
+
+      pos.stats += (tStats - pos.stats) * LERP
+      pos.sess += (tSess - pos.sess) * LERP
+      pos.sessOp += (tSessOp - pos.sessOp) * LERP
+      const needsMore =
+        Math.abs(pos.stats - tStats) > 0.05 ||
+        Math.abs(pos.sess - tSess) > 0.05 ||
+        Math.abs(pos.sessOp - tSessOp) > 0.002
+      if (!needsMore) { pos.stats = tStats; pos.sess = tSess; pos.sessOp = tSessOp }
+      apply()
+
+      if (needsMore) rafId = requestAnimationFrame(tick)
+      else running = false
+    }
+
+    const onScroll = () => {
+      if (!running) { running = true; rafId = requestAnimationFrame(tick) }
+    }
+
+    // Scale the fixed 1512x1050 canvas to fit inside the pinned viewport
+    const applyScale = () => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const s = Math.min(1, window.innerWidth / 1512, window.innerHeight / 1050)
+      canvas.style.transform = `scale(${s.toFixed(4)})`
+    }
+    const onResize = () => { applyScale(); onScroll() }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    applyScale()
+    tick()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [isMobile])
+
+  const jumpTo = (i) => {
+    if (autoRef.current) {
+      // Mobile auto-cycle: jump straight to the stage and restart the timer
+      clearInterval(autoRef.current)
+      autoRef.current = setInterval(() => setActive(a => (a + 1) % 3), 4000)
+      setActive(i)
+      return
+    }
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+    const rect = wrapper.getBoundingClientRect()
+    const total = rect.height - window.innerHeight
+    const target = window.scrollY + rect.top + (i / 2) * total
+    if (window.__lenis) window.__lenis.scrollTo(target)
+    else window.scrollTo({ top: target, behavior: 'smooth' })
+  }
+
+  const textInner = (
+    <>
+      <p className="hiw-eyebrow">{t('hiw.section.title')}</p>
+      <div className="hiw-text-stack">
+        {stages.map((s, i) => (
+          <div key={s.key} className={`hiw-stage-text${i === active ? ' is-active' : ''}`}>
+            <h2 className="hiw-title">
+              {t(`${s.key}.title`).map((line, j) => (
+                <span key={j} className="hiw-title-line">{line}</span>
+              ))}
+            </h2>
+            <p className="hiw-body">{t(`${s.key}.body`)}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  )
 
   return (
-    <section className="hiw-section" id="how-it-works" data-nav-theme="dark">
-      <div className="hiw-canvas">
-        <div className="hiw-text">
-          <p className="hiw-eyebrow">{t('hiw.section.title')}</p>
-          <h2 className="hiw-title">
-            {t(`${cur.key}.title`).map((line, i) => (
-              <span key={i} className="hiw-title-line">{line}</span>
-            ))}
-          </h2>
-          <p className="hiw-body">{t(`${cur.key}.body`)}</p>
-        </div>
+    <section className="hiw-section" id="how-it-works" ref={wrapperRef} data-nav-theme="dark">
+      {/* Mobile-only copy of the text, outside the scaled canvas so it stays crisp */}
+      <div className="hiw-text hiw-text--mobile">{textInner}</div>
+      <div className="hiw-sticky" ref={stickyRef}>
+        <div className="hiw-canvas" ref={canvasRef}>
+          <div className="hiw-text">{textInner}</div>
 
-        <div className="hiw-track" style={{ transform: `translateX(${trackShift}px)` }}>
-          {states.map((s, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`hiw-slide ${i === active ? 'is-active' : ''}`}
-              style={{ left: `${phonePositions[i]}px` }}
-              onClick={() => setActive(i)}
-              aria-label={s.key}
-            >
-              <img
-                src={i === active ? s.color : s.dashed}
-                alt=""
-                className="hiw-slide-img"
-              />
-            </button>
-          ))}
-        </div>
+          {/* Color screens, clipped to the frame's screen window. Stack order = stage order.
+              On mobile they crossfade in place via .is-on instead of sliding. */}
+          <div className="hiw-clip" aria-hidden="true">
+            <img src="/hiw2_opponents_color.png" alt="" className={`hiw-screen${active === 0 ? ' is-on' : ''}`} />
+            <img ref={statsColorRef} src="/hiw2_stats_color.png" alt="" className={`hiw-screen${active === 1 ? ' is-on' : ''}`} style={{ transform: 'translateX(498.21px)' }} />
+            <img ref={sessColorRef} src="/hiw2_sessions_color.png" alt="" className={`hiw-screen${active === 2 ? ' is-on' : ''}`} style={{ transform: 'translateX(886.21px)' }} />
+          </div>
 
-        <img src="/hiw_iphone.png" alt="" className="hiw-frame-overlay" aria-hidden="true" />
+          {/* Fixed iPhone frame (transparent screen window) */}
+          <img src="/hiw2_frame.png" alt="" className="hiw-frame" aria-hidden="true" />
 
-        <div className="hiw-mini-nav" role="tablist" aria-label="How it works stages">
-          <span className="hiw-mini-highlight" data-pos={active} />
-          {navIcons.map((src, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`hiw-mini-btn ${i === active ? 'is-active' : ''}`}
-              onClick={() => setActive(i)}
-              aria-selected={i === active}
-              role="tab"
-            >
-              <img src={src} alt="" />
-            </button>
-          ))}
+          {/* Dashed screens: visible only right of the window edge (clip-path), slide under the bezel */}
+          <img ref={statsDashedRef} src="/hiw2_stats_dashed.png" alt="" className="hiw-dashed" style={{ transform: 'translateX(1032px)', clipPath: 'inset(0 0 217.3px 0)' }} aria-hidden="true" />
+          <img ref={sessDashedRef} src="/hiw2_sessions_dashed.png" alt="" className="hiw-dashed" style={{ transform: 'translateX(1420px)', clipPath: 'inset(0 0 217.3px 0)', opacity: 0 }} aria-hidden="true" />
+
+          {/* App tab bar (Figma 2081:18100) floating over the phone's cut-off bottom */}
+          <div className="hiw-nav">
+            <div className="hiw-nav-pill" role="tablist" aria-label="How it works stages">
+              <span className="hiw-nav-highlight" data-pos={active} />
+              <span className="hiw-nav-item" aria-hidden="true">
+                <span className="hiw-nav-ico"><span className="hiw-nav-vec hiw-nav-vec--home"><img src="/hiw_nav_home.svg" alt="" /></span></span>
+              </span>
+              {navTabs.map((tab, i) => (
+                <button
+                  key={tab.mod}
+                  type="button"
+                  className={`hiw-nav-item hiw-nav-btn${i === active ? ' is-active' : ''}`}
+                  onClick={() => jumpTo(i)}
+                  aria-selected={i === active}
+                  role="tab"
+                >
+                  <span className="hiw-nav-ico"><span className={`hiw-nav-vec hiw-nav-vec--${tab.mod}`}><img src={tab.src} alt="" /></span></span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
