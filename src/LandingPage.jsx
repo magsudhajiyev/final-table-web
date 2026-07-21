@@ -6,7 +6,7 @@ import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr', uk: 'ua' }
 
 function sendWelcomeEmail(email, platform) {
   fetch('/api/send-welcome', {
