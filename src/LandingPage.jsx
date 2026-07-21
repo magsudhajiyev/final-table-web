@@ -300,10 +300,30 @@ function HeroDots() {
   return <canvas ref={canvasRef} className="tp-hero-dots" aria-hidden="true" />
 }
 
+const HERO_H1_ROTATORS = {
+  en: { prefix: 'Log a hand ', words: ['in three gestures', 'effortlessly', 'in seconds'], suffix: '.' },
+  de: { prefix: 'Erfasse eine Hand ', words: ['in drei Gesten', 'mühelos', 'in Sekunden'], suffix: '.' },
+  es: { prefix: 'Registra una mano ', words: ['en tres gestos', 'sin esfuerzo', 'en segundos'], suffix: '.' },
+  fr: { prefix: 'Enregistre une main ', words: ['en trois gestes', 'sans effort', 'en quelques secondes'], suffix: '.' },
+  pl: { prefix: 'Zapisz rozdanie ', words: ['w trzech gestach', 'bez wysiłku', 'w sekundę'], suffix: '.' },
+  pt: { prefix: 'Registre uma mão ', words: ['em três gestos', 'sem esforço', 'em segundos'], suffix: '.' },
+  ru: { prefix: 'Запиши раздачу ', words: ['за три жеста', 'без усилий', 'за секунды'], suffix: '.' },
+  tr: { prefix: 'Bir eli ', words: ['üç hareketle', 'zahmetsizce', 'saniyeler içinde'], suffix: ' kaydet.' },
+  uk: { prefix: 'Записуй роздачу ', words: ['в три жести', 'без зусиль', 'за секунди'], suffix: '.' },
+}
+
 function TPHero() {
-  const { t } = useT()
+  const { t, locale } = useT()
   const heroRef = useRef(null)
   const phonesRef = useRef(null)
+  const rot = HERO_H1_ROTATORS[locale]
+  const [rotIdx, setRotIdx] = useState(0)
+
+  useEffect(() => {
+    if (!rot) return
+    const id = setInterval(() => setRotIdx(i => (i + 1) % rot.words.length), 2200)
+    return () => clearInterval(id)
+  }, [rot])
 
   useEffect(() => {
     const phones = phonesRef.current
@@ -354,9 +374,22 @@ function TPHero() {
       <div className="tp-hero-inner">
         <div className="tp-hero-content">
           <h1 className="tp-hero-h1">
-            {t('hero.h1').map((line, i) => (
-              <span key={i} className="tp-hero-h1-line">{line}</span>
-            ))}
+            {rot ? (
+              <>
+                <span className="tp-hero-h1-line">
+                  {rot.prefix}
+                  <span className="tp-hero-h1-rot">
+                    <span key={rotIdx} className="tp-hero-h1-rot-word">{rot.words[rotIdx]}</span>
+                  </span>
+                  {rot.suffix}
+                </span>
+                <span className="tp-hero-h1-line">{t('hero.h1')[1]}</span>
+              </>
+            ) : (
+              t('hero.h1').map((line, i) => (
+                <span key={i} className="tp-hero-h1-line">{line}</span>
+              ))
+            )}
           </h1>
           <p className="tp-hero-sub">{t('hero.sub')}</p>
           <div className="tp-hero-ctas">
@@ -815,22 +848,26 @@ function TPHowItWorks() {
 function TPNotHud() {
   const { t } = useT()
   const gridRef = useRef(null)
+  const titleRef = useRef(null)
 
   useEffect(() => {
     const cards = gridRef.current?.querySelectorAll('.nh-card')
-    if (!cards) return
+    const title = titleRef.current
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('nh-card--visible')
+            entry.target.classList.add(
+              entry.target.classList.contains('nh-title') ? 'nh-title--visible' : 'nh-card--visible'
+            )
             observer.unobserve(entry.target)
           }
         })
       },
       { threshold: 0.15 }
     )
-    cards.forEach(card => observer.observe(card))
+    cards?.forEach(card => observer.observe(card))
+    if (title) observer.observe(title)
     return () => observer.disconnect()
   }, [])
 
@@ -842,7 +879,7 @@ function TPNotHud() {
   return (
     <section className="nh-section" data-nav-theme="dark">
       <div className="nh-inner">
-        <h2 className="nh-title">{t('notHud.title')}</h2>
+        <h2 className="nh-title" ref={titleRef}>{t('notHud.title')}</h2>
         <div className="nh-grid" ref={gridRef}>
           {cards.map(({ titleKey, descKey }, i) => (
             <div key={titleKey} className="nh-card" style={{ transitionDelay: `${i * 100}ms` }}>
@@ -864,12 +901,26 @@ function TPBuckleUp() {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const sectionRef = useRef(null)
+  const titleRef = useRef(null)
 
   const features = [
     { key: 'buckle.stats', image: '/buckle_stats.png' },
     { key: 'buckle.bankroll', image: '/buckle_bankroll.png' },
     { key: 'buckle.ai', image: '/buckle_handphone.png' },
   ]
+
+  useEffect(() => {
+    const el = titleRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { el.classList.add('bu-title--visible'); obs.disconnect() }
+      },
+      { threshold: 0.4 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -902,7 +953,7 @@ function TPBuckleUp() {
       <div className="bu-inner">
         <div className="bu-left">
           <div className="bu-header">
-            <h2 className="bu-title">
+            <h2 className="bu-title" ref={titleRef}>
               {t('buckle.title').map((line, j) => (
                 <span key={j} className="bu-title-line">{line}</span>
               ))}
@@ -1362,17 +1413,6 @@ function TPBuiltForLive() {
                 ))}
               </p>
             </div>
-            <div className="bfl-intro-download">
-              <p className="bfl-download-label">{t('live.download')}</p>
-              <div className="bfl-download-badges">
-                <a href="#" className="bfl-store-btn" aria-label="Download on the App Store">
-                  <img src="/store_appstore.svg" alt="" className="bfl-store-img" />
-                </a>
-                <a href="#" className="bfl-store-btn" aria-label="Get it on Google Play">
-                  <img src="/store_googleplay.svg" alt="" className="bfl-store-img" />
-                </a>
-              </div>
-            </div>
           </div>
           {topCards.map(({ titleKey, descKey, media }, i) => (
             <div key={i} className="bfl-card bfl-card-feature">
@@ -1421,12 +1461,46 @@ function TPBuiltForLive() {
 /* ────────────────────────────────────────────────────── */
 function TPBottomHero() {
   const { t } = useT()
+  const titleRef = useRef(null)
+
+  const titleLines = t('bh.title')
+
+  useEffect(() => {
+    const el = titleRef.current
+    if (!el) return
+    const N = titleLines.length
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const rect = el.getBoundingClientRect()
+      const vh = window.innerHeight
+      const progress = (vh - rect.top) / (vh * 0.9)
+      const total = Math.min(1, Math.max(0, progress))
+      for (let i = 0; i < N; i++) {
+        const p = Math.min(1, Math.max(0, total * N - i))
+        el.style.setProperty(`--scrub-${i}`, (p * 100).toFixed(1) + '%')
+      }
+    }
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [titleLines.length])
+
   return (
     <section className="bh-section" data-nav-theme="dark">
       <div className="bh-inner">
-        <h2 className="bh-title">
-          {t('bh.title').map((line, i) => (
-            <span key={i} className="bh-title-line">{line}</span>
+        <h2 className="bh-title bh-title--scrub" ref={titleRef}>
+          {titleLines.map((line, i) => (
+            <span key={i} className="bh-title-line">
+              {line}
+              <span className="bh-title-line-fill" aria-hidden="true">{line}</span>
+            </span>
           ))}
         </h2>
         <img src="/bottom_hero_phone.png" alt="" className="bh-phone" aria-hidden="true" />
@@ -2470,8 +2544,8 @@ export default function LandingPage() {
     if (typeof Lenis === 'undefined') return
     if (window.matchMedia('(pointer: coarse)').matches) return
     const lenis = new Lenis({
-      duration: 1.8,
-      easing: t => 1 - Math.pow(1 - t, 4),
+      duration: 1.1,
+      easing: t => 1 - Math.pow(1 - t, 3),
     })
     window.__lenis = lenis
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf) }

@@ -469,6 +469,27 @@ html {
     display: block;
 }
 
+/* Rotating word swap: fixed inline slot; each word slides+fades in on mount
+   (React remount via key). Underline hints at the rotating nature. */
+.tp-hero-h1-rot {
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+    color: #A2F69A;
+}
+.tp-hero-h1-rot-word {
+    display: inline-block;
+    animation: tp-hero-h1-rot-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform, opacity, filter;
+}
+@keyframes tp-hero-h1-rot-in {
+    from { opacity: 0; transform: translateY(0.4em); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0);      filter: blur(0);   }
+}
+@media (prefers-reduced-motion: reduce) {
+    .tp-hero-h1-rot-word { animation: none; }
+}
+
 /* ── Subheadline ── */
 .tp-hero-sub {
     font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
@@ -5042,9 +5063,14 @@ html {
     margin: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 44px;
-    font-weight: 600;
-    line-height: 1.1;
+    font-weight: 500;
+    line-height: 1.2;
     letter-spacing: -2.25px;
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(8px);
+    transition: opacity 700ms ease, filter 700ms ease, transform 700ms ease;
+    will-change: opacity, filter, transform;
     color: #ffffff;
     text-align: center;
     width: 100%;
@@ -5143,7 +5169,7 @@ html {
     max-width: 1400px;
     margin: 0 auto;
     height: 100vh;
-    padding: 80px 0;
+    padding: 128px 0 80px;
     box-sizing: border-box;
 }
 
@@ -5171,8 +5197,34 @@ html {
     color: #ffffff;
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(8px);
+    transition: opacity 700ms ease, filter 700ms ease, transform 700ms ease;
+    will-change: opacity, filter, transform;
 }
 .bu-title-line { display: block; }
+
+.bu-title--visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+.nh-title--visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nh-title, .bu-title {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        transition: none;
+    }
+}
 
 .bu-subtitle {
     margin: 0;
@@ -5267,7 +5319,7 @@ html {
 .bu-visual {
     width: 652px;
     height: 683px;
-    max-height: calc(100vh - 160px);
+    max-height: calc(100vh - 208px);
     flex-shrink: 0;
     background: #161719;
     border-radius: 8px;
@@ -5282,7 +5334,7 @@ html {
     left: 50%;
     width: 910.667px;
     height: 683px;
-    transform: translate(calc(-50% + 20px), calc(-50% + 1px));
+    transform: translate(calc(-50% + 20px), calc(-50% + 48px));
     object-fit: cover;
     pointer-events: none;
     max-width: none;
@@ -5337,7 +5389,7 @@ html {
 .bfl-inner {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 12px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
@@ -5345,7 +5397,7 @@ html {
 
 .bfl-row {
     display: flex;
-    gap: 24px;
+    gap: 12px;
     width: 100%;
     align-items: stretch;
 }
@@ -5356,12 +5408,47 @@ html {
 }
 
 .bfl-card {
+    position: relative;
     background: #161719;
     border: 1px solid #2c2c2e;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+}
+
+/* Rotating green light border on hover. The conic gradient is masked to the
+   1px border ring; @property lets the angle animate smoothly. */
+@property --bfl-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+.bfl-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--bfl-angle), transparent 72%, rgba(163, 255, 120, 0.6) 82%, #A3FF78 86%, rgba(163, 255, 120, 0.6) 92%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+    z-index: 1;
+}
+.bfl-card:hover::before {
+    opacity: 1;
+    animation: bfl-card-glow 2.8s linear infinite;
+}
+@keyframes bfl-card-glow {
+    to { --bfl-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bfl-card:hover::before { animation: none; }
 }
 
 /* Intro card (row 1, first) */
@@ -6656,7 +6743,29 @@ html {
     flex-direction: column;
 }
 
-.bh-title-line { display: block; }
+.bh-title-line { display: block; position: relative; }
+
+/* Scroll-scrub fill (per line): base text sits at #454545. Each line has a
+   white overlay revealed left-to-right via clip-path, mapped from --scrub-i
+   set on the container (line 0 fills 0-50%, line 1 fills 50-100%, etc.). */
+.bh-title--scrub {
+    color: #454545;
+}
+.bh-title-line-fill {
+    position: absolute;
+    inset: 0;
+    color: #ffffff;
+    pointer-events: none;
+}
+.bh-title-line:nth-child(1) .bh-title-line-fill {
+    clip-path: inset(0 calc(100% - var(--scrub-0, 0%)) 0 0);
+}
+.bh-title-line:nth-child(2) .bh-title-line-fill {
+    clip-path: inset(0 calc(100% - var(--scrub-1, 0%)) 0 0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .bh-title-line-fill { clip-path: inset(0 0 0 0) !important; }
+}
 
 .bh-phone {
     position: absolute;

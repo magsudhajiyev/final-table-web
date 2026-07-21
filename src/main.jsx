@@ -6,6 +6,7 @@ import AboutPage from './AboutPage'
 import PrivacyPage from './PrivacyPage'
 import TermsPage from './TermsPage'
 import AdminPage from './AdminPage'
+import Loader from './Loader'
 import { I18nProvider } from './i18n'
 import './index.css'
 
@@ -24,6 +25,7 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <Loader />
     <App />
   </React.StrictMode>
 )
