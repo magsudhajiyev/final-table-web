@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useT, SUPPORTED } from './i18n'
+import { TPFooter, TPNavbar } from './LandingPage'
 import './LandingPage.css'
 import './LegalPage.css'
 import 'flag-icons/css/flag-icons.min.css'
@@ -159,7 +160,7 @@ function LegalFooter() {
 export default function PrivacyPage() {
   return (
     <div className="tp-root legal-root">
-      <LegalNavbar />
+      <TPNavbar />
       <main className="legal-main" data-nav-theme="light">
         <h1>Privacy Policy</h1>
         <p className="legal-effective"><strong>Effective Date:</strong> May 1, 2026 &nbsp;·&nbsp; <strong>Last Updated:</strong> April 16, 2026</p>
@@ -327,7 +328,7 @@ export default function PrivacyPage() {
           This document is provided for transparency and App Store compliance. It is not legal advice. Consult a qualified attorney in your jurisdiction if you require legal guidance.
         </div>
       </main>
-      <LegalFooter />
+      <TPFooter />
     </div>
   )
 }

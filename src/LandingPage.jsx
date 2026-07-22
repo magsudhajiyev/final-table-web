@@ -168,7 +168,7 @@ function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) 
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
-function TPNavbar() {
+export function TPNavbar() {
   const { t, locale, setLocale } = useT()
   const { theme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -176,6 +176,11 @@ function TPNavbar() {
   const [activeSection, setActiveSection] = useState('')
   const langRef = useRef(null)
   const mobileLangRef = useRef(null)
+  // When not on the landing page (e.g., /privacy, /terms) hash-only nav
+  // links should send users home to that anchor instead of trying to
+  // scroll on the current page (where those sections don't exist).
+  const onLanding = typeof window !== 'undefined' && window.location.pathname === '/'
+  const hashHref = (id) => (onLanding ? `#${id}` : `/#${id}`)
 
   useEffect(() => {
     const handler = (e) => {
@@ -211,7 +216,9 @@ function TPNavbar() {
 
   const smoothScroll = (e) => {
     const href = e.currentTarget.getAttribute('href')
-    if (href && href.startsWith('#')) {
+    // Only intercept in-page hash-only clicks on the landing page.
+    // On other routes, allow the browser to navigate (/#faq → landing + scroll).
+    if (href && href.startsWith('#') && onLanding) {
       e.preventDefault()
       setMenuOpen(false)
       if (window.__lenis) {
@@ -227,17 +234,26 @@ function TPNavbar() {
     <header className={`tp-nav-wrap${menuOpen ? ' tp-nav-menu-open' : ''}`}>
       <nav className="tp-nav">
         <div className="tp-nav-left">
-          <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+          <a
+            href={onLanding ? '#' : '/'}
+            className="tp-nav-logo"
+            onClick={(e) => {
+              if (!onLanding) return
+              e.preventDefault()
+              if (window.__lenis) window.__lenis.scrollTo(0)
+              else window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+          >
             {theme === 'light'
               ? <img src="/light_nav_logo.svg" alt="Final Table" className="tp-nav-logo-svg" />
               : <FinalTableLogo className="tp-nav-logo-svg" />}
           </a>
           <div className="tp-nav-links">
-            <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
-            <a href="#features" className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
-            <a href="#compare" className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
+            <a href={hashHref('how-it-works')} className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+            <a href={hashHref('features')} className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
+            <a href={hashHref('compare')} className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
             <a href="/about">{t('about.nav')}</a>
-            <a href="#faq" className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.contact')}</a>
+            <a href={hashHref('faq')} className={activeSection === 'faq' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.contact')}</a>
           </div>
         </div>
         <div className="tp-nav-right">
@@ -294,11 +310,11 @@ function TPNavbar() {
         </button>
       </nav>
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
-        <a href="#how-it-works" onClick={smoothScroll}>{t('nav.howItWorks')}</a>
-        <a href="#features" onClick={smoothScroll}>{t('nav.features')}</a>
-        <a href="#compare" onClick={smoothScroll}>{t('nav.compare')}</a>
+        <a href={hashHref('how-it-works')} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
+        <a href={hashHref('features')} onClick={smoothScroll}>{t('nav.features')}</a>
+        <a href={hashHref('compare')} onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="/about">{t('about.nav')}</a>
-        <a href="#faq" onClick={smoothScroll}>{t('nav.contact')}</a>
+        <a href={hashHref('faq')} onClick={smoothScroll}>{t('nav.contact')}</a>
       </div>
     </header>
   )
@@ -2328,7 +2344,7 @@ function FooterMatrixRain() {
 }
 
 
-const TPFooter = forwardRef(function TPFooter(_, ref) {
+export const TPFooter = forwardRef(function TPFooter(_, ref) {
   const { t, locale } = useT()
   const year = new Date().getFullYear()
 
