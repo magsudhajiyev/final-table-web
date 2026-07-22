@@ -162,6 +162,207 @@ html {
     overflow-x: clip;
 }
 
+/* ─────────────────────────────────────────────────────────
+   LIGHT THEME — base + Hero + Navbar
+   Applied via body.light-theme (set by ThemeProvider).
+───────────────────────────────────────────────────────── */
+body.light-theme,
+body.light-theme .tp-root {
+    background: #EDEDED;
+    color: #0c0c0c;
+}
+
+/* Hero */
+body.light-theme .tp-hero { background: #EDEDED; }
+body.light-theme .tp-hero-h1 { color: #0c0c0c; }
+body.light-theme .tp-hero-sub { color: rgba(12, 12, 12, 0.72); }
+body.light-theme .tp-hero-h1-rot { color: #2FA84F; }
+
+/* Navbar */
+body.light-theme .tp-nav-wrap {
+    background: rgba(237, 237, 237, 0.72);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+body.light-theme .tp-nav-links a { color: #0c0c0c; }
+body.light-theme .tp-nav-download-btn {
+    background: #0c0c0c;
+    color: #ffffff;
+    border-color: #0c0c0c;
+}
+
+/* How It Works */
+body.light-theme .hiw-section {
+    background: #EDEDED;
+    color: #0c0c0c;
+}
+body.light-theme .hiw-eyebrow,
+body.light-theme .hiw-title { color: #0c0c0c; }
+body.light-theme .hiw-body { color: rgba(12, 12, 12, 0.76); }
+
+/* What Final Table isn't */
+body.light-theme .nh-section {
+    background: #EDEDED;
+    color: #0c0c0c;
+}
+body.light-theme .nh-title,
+body.light-theme .nh-card-title { color: #0c0c0c; }
+body.light-theme .nh-card-desc { color: rgba(12, 12, 12, 0.6); }
+body.light-theme .nh-card + .nh-card { border-left-color: rgba(0, 0, 0, 0.14); }
+
+/* Buckle Up */
+body.light-theme .bu-section {
+    background: #EDEDED;
+    color: #0c0c0c;
+}
+body.light-theme .bu-title { color: #0c0c0c; }
+body.light-theme .bu-subtitle,
+body.light-theme .bu-feature-desc { color: rgba(12, 12, 12, 0.62); }
+body.light-theme .bu-feature-title { color: rgba(12, 12, 12, 0.35); }
+body.light-theme .bu-feature.is-active .bu-feature-title { color: #0c0c0c; }
+body.light-theme .bu-feature-line { background: rgba(0, 0, 0, 0.14); }
+body.light-theme .bu-feature-line-fill { background: rgba(12, 12, 12, 0.85); }
+body.light-theme .bu-visual { background: #DDDDDD; }
+
+/* Built for the live game — bento grid */
+body.light-theme .bfl-section {
+    background: #EDEDED;
+    color: #0c0c0c;
+}
+body.light-theme .bfl-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+body.light-theme .bfl-intro-eyebrow { color: rgba(12, 12, 12, 0.55); }
+body.light-theme .bfl-intro-title,
+body.light-theme .bfl-feature-title,
+body.light-theme .bfl-dealer-tag { color: #0c0c0c; }
+body.light-theme .bfl-feature-desc { color: rgba(12, 12, 12, 0.72); }
+body.light-theme .bfl-feature-media { background: #F2F2F2; }
+body.light-theme .bfl-card-download {
+    background: linear-gradient(90deg, #FFFFFF 0%, #F6F6F6 100%);
+}
+body.light-theme .bfl-download-label { color: rgba(12, 12, 12, 0.72); }
+body.light-theme .bfl-dealer-pill {
+    background: rgba(12, 12, 12, 0.08);
+    color: #0c0c0c;
+}
+
+/* ── Bento animations: invert white strokes/fills to dark for light theme ── */
+
+/* Dot-grid backdrop under rr/tg/sh/db wraps */
+body.light-theme .bfl-card-feature:has(.rr-wrap),
+body.light-theme .bfl-card-feature:has(.tg-wrap),
+body.light-theme .bfl-card-feature:has(.sh-wrap),
+body.light-theme .bfl-card-image:has(.db-wrap) {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1.2px, transparent 1.2px);
+}
+
+/* Radar (rr-*) */
+body.light-theme .rr-ring { border-color: rgba(0,0,0,0.14); }
+body.light-theme .rr-sweep {
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(0,0,0,0.18) 16deg, transparent 55deg, transparent 360deg);
+}
+body.light-theme .rr-center-dot {
+    background: #0c0c0c;
+    box-shadow: 0 0 8px rgba(0,0,0,0.35);
+}
+body.light-theme .rr-node-dot {
+    border-color: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.45);
+}
+body.light-theme .rr-node-tag {
+    border-color: rgba(0,0,0,0.18);
+    color: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.03);
+}
+body.light-theme .rr-node-dot { animation-name: rrNodeDotLight; }
+body.light-theme .rr-node-tag { animation-name: rrNodeTagLight; }
+@keyframes rrNodeDotLight {
+    0%   { background: #0c0c0c; border-color: #0c0c0c; box-shadow: 0 0 8px rgba(0,0,0,0.6); }
+    9%   { background: rgba(0,0,0,0.45); border-color: rgba(0,0,0,0.55); box-shadow: none; }
+    100% { background: rgba(0,0,0,0.45); border-color: rgba(0,0,0,0.55); box-shadow: none; }
+}
+@keyframes rrNodeTagLight {
+    0%   { color: #0c0c0c; border-color: rgba(0,0,0,0.45); opacity: 1; }
+    9%   { color: rgba(0,0,0,0.6); border-color: rgba(0,0,0,0.18); opacity: 0.65; }
+    100% { color: rgba(0,0,0,0.6); border-color: rgba(0,0,0,0.18); opacity: 0.65; }
+}
+
+/* Gesture-logging technical drawing (gla-*) */
+body.light-theme .gla-wrap { color: #0c0c0c; }
+body.light-theme .gla-index,
+body.light-theme .gla-dim-label { color: rgba(0,0,0,0.35); }
+body.light-theme .gla-shaft,
+body.light-theme .gla-tick { background: rgba(0,0,0,0.28); }
+body.light-theme .gla-phone { border-color: rgba(0,0,0,0.55); }
+body.light-theme .gla-reg::before,
+body.light-theme .gla-reg::after { background: rgba(0,0,0,0.28); }
+body.light-theme .gla-rmark,
+body.light-theme .gla-cam,
+body.light-theme .gla-speaker { border-color: rgba(0,0,0,0.28); }
+body.light-theme .gla-guide-h {
+    background: repeating-linear-gradient(90deg, rgba(0,0,0,0.14) 0 3px, transparent 3px 7px);
+}
+body.light-theme .gla-guide-v {
+    background: repeating-linear-gradient(180deg, rgba(0,0,0,0.14) 0 3px, transparent 3px 7px);
+}
+body.light-theme .gla-cursor {
+    color: #0c0c0c;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.35));
+}
+body.light-theme .gla-dot { background: rgba(12,12,12,0.25); }
+
+/* Touch/gesture (tg-*) */
+body.light-theme .tg-hand path { fill: rgba(0,0,0,0.85); }
+body.light-theme .tg-title { color: #0c0c0c; }
+body.light-theme .tg-sub { color: rgba(0,0,0,0.6); }
+body.light-theme .tg-dot { background: rgba(0,0,0,0.2); }
+body.light-theme .tg-dot.tg-dot-on { background: #0c0c0c; }
+body.light-theme .tg-pcard { border-color: rgba(0,0,0,0.4); }
+
+/* Session + hand-level data (sh-*) */
+body.light-theme .sh-wrap { color: #0c0c0c; }
+body.light-theme .sh-toggle,
+body.light-theme .sh-toggle-slider { border-color: rgba(0,0,0,0.14); }
+body.light-theme .sh-toggle-slider { background: rgba(0,0,0,0.06); }
+body.light-theme .sh-toggle-opt { color: rgba(0,0,0,0.55); }
+body.light-theme .sh-wrap:not(.sh-detailed) .sh-toggle-quick,
+body.light-theme .sh-detailed .sh-toggle-det,
+body.light-theme .sh-label,
+body.light-theme .sh-amount,
+body.light-theme .sh-value { color: #0c0c0c; }
+body.light-theme .sh-quicknet { color: rgba(0,0,0,0.4); }
+body.light-theme .sh-top,
+body.light-theme .sh-bottom,
+body.light-theme .sh-list { border-color: rgba(0,0,0,0.1); }
+body.light-theme .sh-chip { color: rgba(0,0,0,0.6); }
+
+/* Dealer broadcast (db-*) */
+body.light-theme .db-wrap { color: #0c0c0c; }
+body.light-theme .db-table path {
+    fill: rgba(255,255,255,0.55);
+    stroke: rgba(0,0,0,0.18);
+}
+body.light-theme .db-seat {
+    border-color: rgba(0,0,0,0.35);
+    background: rgba(0,0,0,0.03);
+}
+body.light-theme .db-seat.db-active {
+    border-color: #0c0c0c;
+    background: rgba(0,0,0,0.08);
+    box-shadow: 0 0 10px rgba(0,0,0,0.35);
+}
+body.light-theme .db-seat.db-inhand {
+    border-color: rgba(0,0,0,0.65);
+    background: rgba(0,0,0,0.06);
+    box-shadow: 0 0 5px rgba(0,0,0,0.25);
+}
+body.light-theme .db-chip {
+    color: rgba(0,0,0,0.8);
+    border-color: rgba(0,0,0,0.32);
+    background: rgba(0,0,0,0.04);
+}
+
 /* ── Navbar ── */
 .tp-nav-wrap {
     position: fixed;
@@ -275,6 +476,64 @@ html {
 }
 
 .tp-nav-download-btn:hover { opacity: 0.85; }
+
+/* ── Animated dot-matrix download button (nav) ── */
+.dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 6px 18px;
+    background: #111111;
+    border: none;
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+.dl-btn:hover { transform: scale(1.02); }
+.dl-btn:active { transform: scale(0.98); }
+.dl-btn:focus-visible { outline: 2px solid #A3FF78; outline-offset: 4px; }
+
+.dl-btn-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.25px;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.dl-btn-matrix {
+    width: 34px;
+    height: 34px;
+    background: #2e2e2c;
+    border-radius: 50%;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 1px;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.dl-btn-dot {
+    display: block;
+    border-radius: 1px;
+    background: #4d4d4a;
+    transition: background 0.18s ease;
+}
+.dl-btn-dot--hidden { background: transparent; }
+.dl-btn-dot--lit    { background: #A3FF78; }
+.dl-btn-dot--tray   { background: #8a8a86; }
+
+@media (prefers-reduced-motion: reduce) {
+    .dl-btn { transition: none; }
+    .dl-btn-dot { transition: none; }
+}
+
+/* Light-theme keeps the pill dark (same as the plain button before) so
+   the accent color still pops. If you want inverted, tell me. */
 
 /* ── Language picker ── */
 .tp-lang-picker {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, forwardRef } from 'react'
 import { submitToWaitlist, submitNicknameClaim } from './lib/firebase'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
-import { ThemeToggle } from './theme'
+import { ThemeToggle, useTheme } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
@@ -82,10 +82,66 @@ function HiwTitle({ text }) {
 }
 
 /* ────────────────────────────────────────────────────── */
+/*  DOWNLOAD BUTTON  (nav, animated dot-matrix arrow)     */
+/* ────────────────────────────────────────────────────── */
+const DL_COLS = 9, DL_ROWS = 9, DL_CX = 4, DL_CY = 4, DL_R = 4.35
+const DL_TICK_MS = 150
+const DL_ARROW = [
+  [0, 4], [1, 4], [2, 4], [3, 4],
+  [4, 2], [4, 3], [4, 4], [4, 5], [4, 6],
+  [5, 3], [5, 4], [5, 5],
+  [6, 4],
+]
+const DL_ARROW_HEIGHT = 7
+const DL_TRAY = new Set([[7, 3], [7, 4], [7, 5]].map(([r, c]) => r * DL_COLS + c))
+
+function TPDownloadBtn({ label, href }) {
+  const [offset, setOffset] = useState(-DL_ARROW_HEIGHT)
+
+  useEffect(() => {
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) { setOffset(0); return }
+    const id = setInterval(() => {
+      setOffset(o => (o > DL_ROWS ? -DL_ARROW_HEIGHT : o + 1))
+    }, DL_TICK_MS)
+    return () => clearInterval(id)
+  }, [])
+
+  const litSet = new Set()
+  DL_ARROW.forEach(([r, c]) => {
+    const rr = r + offset
+    if (rr >= 0 && rr < 7) litSet.add(rr * DL_COLS + c)
+  })
+
+  const cells = []
+  for (let r = 0; r < DL_ROWS; r++) {
+    for (let c = 0; c < DL_COLS; c++) {
+      const inside = Math.hypot(c - DL_CX, r - DL_CY) <= DL_R
+      const idx = r * DL_COLS + c
+      const isLit = litSet.has(idx)
+      const isTray = !isLit && DL_TRAY.has(idx)
+      const cls = 'dl-btn-dot' +
+        (!inside ? ' dl-btn-dot--hidden' : '') +
+        (isLit ? ' dl-btn-dot--lit' : '') +
+        (isTray ? ' dl-btn-dot--tray' : '')
+      cells.push(<span key={idx} className={cls} />)
+    }
+  }
+
+  return (
+    <a href={href} className="dl-btn" target="_blank" rel="noopener noreferrer" aria-label={label}>
+      <span className="dl-btn-label">{label}</span>
+      <span className="dl-btn-matrix" aria-hidden="true">{cells}</span>
+    </a>
+  )
+}
+
+/* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
 function TPNavbar() {
   const { t, locale, setLocale } = useT()
+  const { theme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -143,7 +199,9 @@ function TPNavbar() {
       <nav className="tp-nav">
         <div className="tp-nav-left">
           <a href="#" className="tp-nav-logo" onClick={(e) => { e.preventDefault(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
-            <FinalTableLogo className="tp-nav-logo-svg" />
+            {theme === 'light'
+              ? <img src="/light_nav_logo.svg" alt="Final Table" className="tp-nav-logo-svg" />
+              : <FinalTableLogo className="tp-nav-logo-svg" />}
           </a>
           <div className="tp-nav-links">
             <a href="#how-it-works" className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
@@ -154,9 +212,7 @@ function TPNavbar() {
           </div>
         </div>
         <div className="tp-nav-right">
-          <a href={APP_STORE_URL} className="tp-nav-download-btn" target="_blank" rel="noopener noreferrer">
-            {t('nav.download')}
-          </a>
+          <TPDownloadBtn label={t('nav.download')} href={APP_STORE_URL} />
           <div className="tp-lang-picker" ref={langRef}>
             <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)} aria-label="Change language">
               <Flag locale={locale} />
@@ -265,6 +321,7 @@ function HeroDots() {
       const rows = Math.ceil(state.h / SPACING) + 1
       const offX = (state.w - (cols - 1) * SPACING) / 2
       const offY = (state.h - (rows - 1) * SPACING) / 2
+      const isLight = document.body.classList.contains('light-theme')
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
@@ -275,7 +332,11 @@ function HeroDots() {
           const dist = Math.sqrt(dx * dx + dy * dy)
           const t = Math.max(0, 1 - dist / RADIUS)
           const alpha = BASE_ALPHA + 0.4 * t
-          const shade = Math.round(255 - 90 * t)
+          // Dark theme: near-white dots that brighten on hover.
+          // Light theme: near-black dots that darken on hover.
+          const shade = isLight
+            ? Math.round(90 - 90 * t)
+            : Math.round(255 - 90 * t)
           ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, ${alpha})`
           ctx.beginPath()
           ctx.arc(x, y, R, 0, Math.PI * 2)
@@ -902,15 +963,16 @@ function TPNotHud() {
 /* ────────────────────────────────────────────────────── */
 function TPBuckleUp() {
   const { t } = useT()
+  const { theme } = useTheme()
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const sectionRef = useRef(null)
   const titleRef = useRef(null)
 
   const features = [
-    { key: 'buckle.stats', image: '/buckle_stats.png' },
-    { key: 'buckle.bankroll', image: '/buckle_bankroll.png' },
-    { key: 'buckle.ai', image: '/buckle_handphone.png' },
+    { key: 'buckle.stats', image: theme === 'light' ? '/buckle_stats_light.png' : '/buckle_stats.png' },
+    { key: 'buckle.bankroll', image: theme === 'light' ? '/buckle_bankroll_light.png' : '/buckle_bankroll.png' },
+    { key: 'buckle.ai', image: theme === 'light' ? '/buckle_ai_light.png' : '/buckle_ai.png' },
   ]
 
   useEffect(() => {
