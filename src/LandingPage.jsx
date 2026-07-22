@@ -6,7 +6,7 @@ import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr', uk: 'ua' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', tr: 'tr', uk: 'ua' }
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/final-table/id6760188970'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finaltable.app'
@@ -2399,7 +2399,7 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
   ]
 
   const flagIso = FLAG_ISO[locale] || 'gb'
-  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ru: 'Русский', tr: 'Türkçe' }[locale] || 'English'
+  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ro: 'Română', ru: 'Русский', tr: 'Türkçe' }[locale] || 'English'
 
   return (
     <footer ref={ref} className="mf-footer">

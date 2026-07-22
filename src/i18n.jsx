@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ru', 'tr', 'uk']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ro', 'ru', 'tr', 'uk']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -13,6 +13,7 @@ function detectLocale() {
   if (lang.startsWith('es')) return 'es'
   if (lang.startsWith('de')) return 'de'
   if (lang.startsWith('pt')) return 'pt'
+  if (lang.startsWith('ro')) return 'ro'
   if (lang.startsWith('tr')) return 'tr'
   if (lang.startsWith('uk')) return 'uk'
   return 'en'
@@ -289,6 +290,7 @@ const en = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Founder',
   'community.msg1.text': 'Welcome in 👋 Beta invites and sneak peeks drop here first.',
   'community.msg2.user': 'Final Table Team',
@@ -546,6 +548,7 @@ const pl = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Założyciel',
   'community.msg1.text': 'Witaj 👋 Zaproszenia do bety i zapowiedzi pojawiają się tu najpierw.',
   'community.msg2.user': 'Zespół Final Table',
@@ -803,6 +806,7 @@ const ru = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Магсуд · Основатель',
   'community.msg1.text': 'Добро пожаловать 👋 Инвайты в бету и анонсы появляются здесь первыми.',
   'community.msg2.user': 'Команда Final Table',
@@ -1060,6 +1064,7 @@ const fr = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Fondateur',
   'community.msg1.text': 'Bienvenue 👋 Les invitations bêta et les avant-premières arrivent ici en premier.',
   'community.msg2.user': 'Équipe Final Table',
@@ -1317,6 +1322,7 @@ const es = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bienvenido 👋 Las invitaciones a la beta y los adelantos llegan aquí primero.',
   'community.msg2.user': 'Equipo Final Table',
@@ -1574,6 +1580,7 @@ const de = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Gründer',
   'community.msg1.text': 'Willkommen 👋 Beta-Einladungen und Previews gibt es hier zuerst.',
   'community.msg2.user': 'Final Table Team',
@@ -1831,6 +1838,7 @@ const pt = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bem-vindo 👋 Convites para a beta e prévias chegam aqui primeiro.',
   'community.msg2.user': 'Equipe Final Table',
@@ -2088,6 +2096,7 @@ const tr = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Kurucu',
   'community.msg1.text': 'Hoş geldin 👋 Beta davetleri ve ön izlemeler önce burada paylaşılır.',
   'community.msg2.user': 'Final Table Ekibi',
@@ -2367,6 +2376,7 @@ const uk = {
   'lang.ru': 'Русский',
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
+  'lang.ro': 'Română',
   'community.msg1.user': 'Magsud · Засновник',
   'community.msg1.text': 'Ласкаво просимо 👋 Бета-запрошення та превʼю зʼявляються тут першими.',
   'community.msg2.user': 'Команда Final Table',
@@ -2375,10 +2385,287 @@ const uk = {
   'community.msg3.text': 'Викладайте свою найкращу роздачу тижня в #hands — розбираємо разом 🃏',
 }
 
+const ro = {
+  // Navbar
+  'nav.features': 'Funcții',
+  'nav.howItWorks': 'Cum funcționează?',
+  'nav.compare': 'Comparație',
+  'nav.faq': 'Întrebări frecvente',
+  'nav.contact': 'Contact',
+  'nav.cta': 'Intră pe lista de așteptare',
+  'nav.download': 'Descarcă aplicația',
+  'nav.downloadIos': 'Descarcă pentru iOS',
+  'nav.downloadAndroid': 'Descarcă pentru Android',
+
+  // How it works section title
+  'howSection.sans': 'Cum ',
+  'howSection.italic': 'funcționează?',
+  'hiw.section.title': 'Cum funcționează?',
+  'hiw.label': 'Înainte de sesiune',
+  'hiw.title': ['Intră știind', 'cu cine joci.'],
+  'hiw.body': 'Analizează profilurile adversarilor și istoricul mâinilor înainte să te așezi la masă. Află cine e tight, cine e imprevizibil și unde se află banii.',
+  'hiw.stats.label': 'La masă',
+  'hiw.stats.title': ['Trei gesturi.', 'Zero flow pierdut.'],
+  'hiw.stats.body': 'Înregistrează orice acțiune — raise, call, fold — doar prin swipe și tap. Urmărește progresul sesiunii. Suficient de rapid ca să-l folosești cu o singură mână, între mâini.',
+  'hiw.session.label': 'După sesiune',
+  'hiw.session.title': ['Vezi scurgerile', 'pe care nu le simțeai.'],
+  'hiw.session.body': 'Analizează fiecare mână, identifică tipare în jocul tău, împarte orice mână cu prietenii, exportă date compatibile cu solverele și compară-ți deciziile cu bazele GTO. Datele spun adevărul.',
+
+  // Hero
+  'hero.h1': ['Înregistrează o mână în trei gesturi.', 'Nu în trei minute.'],
+  'hero.sub': 'Final Table este trackerul de poker live construit pentru masă. Suficient de rapid ca să înregistrezi o mână cu o singură mână, între distribuiri. Suficient de precis ca să studiezi fiecare sesiune mai târziu.',
+  'hero.downloadIos': 'Descarcă pe iOS',
+  'hero.downloadAndroid': 'Descarcă pe Android',
+  'hero.emailPlaceholder': 'Introdu adresa ta de email',
+  'hero.errorGeneric': 'Ceva nu a mers bine. Te rugăm să încerci din nou.',
+  'hero.btnLoading': 'Se rezervă…',
+  'hero.btnSubmit': 'Rezervă-mi locul',
+  'hero.proof': (p) => `Gratuit · Durează 10 secunde · ${p.count}+ jucători și-au rezervat deja locul`,
+  'hero.successText': 'Ești pe listă! Te vom contacta când Final Table se lansează.',
+  'hero.already': 'Ești deja pe listă! Îți vom da de veste când lansăm.',
+  'hero.resetBtn': 'Rezervă altul',
+
+  // Comparison
+  'compare.eyebrow': 'Ce îl face diferit?',
+  'compare.title': () => <>Construit pentru <em>jocul live</em>.<br />Gândit pentru <em>jucătorul de la masă</em>.</>,
+  'compare.subtitle': 'Trackere de poker live există. Niciunul nu pare că își are locul la masă. Final Table pare parte din joc.',
+  'compare.card1.title': 'Înregistrare în trei gesturi',
+  'compare.card1.desc': 'Înregistrează orice acțiune — raise, call, fold — în trei atingeri. Fără tastare, fără meniuri. Suficient de rapid ca să-l folosești între mâini fără să pierzi ritmul.',
+  'compare.card2.title': 'Citirea adversarilor în timp real',
+  'compare.card2.desc': 'Construiește profiluri bazate pe statistici pentru fiecare jucător pe care îl întâlnești. Află VPIP-ul, agresivitatea și tendințele lor înainte să acționezi.',
+  'compare.card3.title': 'Date la nivel de sesiune și de mână',
+  'compare.card3.desc': 'Urmărește totul, de la un simplu buy-in/cash-out până la înregistrarea completă a acțiunilor mână cu mână. Folosește ce ți se potrivește.',
+  'compare.card4.title': 'Mod Dealer',
+  'compare.card4.desc': 'Dealerii conduc masa fără mâini, prin comenzi vocale. Jucătorii urmăresc totul pe propriile telefoane, în timp real.',
+  'compare.comingSoon': 'ÎN CURÂND · PARTENERIATE CU LOCAȚII',
+
+  // Community / Discord
+  'community.eyebrow': 'Alătură-te comunității',
+  'community.title': () => <>Vorbește despre poker cu jucători<br />care <em>chiar joacă live.</em></>,
+  'community.sub': 'Tocmai deschidem ușile — alătură-te ca membru fondator, vorbește direct cu noi despre poker live și modelează ce va deveni Final Table.',
+  'community.stat1.value': 'Ziua 1',
+  'community.stat1.label': 'Membri fondatori',
+  'community.stat2.value': 'Direct',
+  'community.stat2.label': 'Legătură cu fondatorii',
+  'community.stat3.value': 'Primii',
+  'community.stat3.label': 'Invitații beta și avanpremiere',
+  'community.cta': 'Alătură-te pe Discord →',
+
+  // Tabs (BgSection)
+  'tabs.0.label': 'Înainte de sesiune',
+  'tabs.1.label': 'La masă',
+  'tabs.2.label': 'După sesiune',
+  'tabs.3.label': 'În timp',
+  'tabs.0.eyebrow': 'ÎNAINTE DE SESIUNE',
+  'tabs.0.title': 'Intră știind\ncu cine joci.',
+  'tabs.0.body': 'Analizează profilurile adversarilor și istoricul mâinilor înainte să te așezi la masă. Află cine e tight, cine e imprevizibil și unde se află banii.',
+  'tabs.1.eyebrow': 'LA MASĂ',
+  'tabs.1.title': 'Trei gesturi.\nZero flow pierdut.',
+  'tabs.1.body': 'Înregistrează orice acțiune — raise, call, fold — doar prin swipe și tap. Urmărește progresul sesiunii. Suficient de rapid ca să-l folosești cu o singură mână, între mâini.',
+  'tabs.2.eyebrow': 'DUPĂ SESIUNE',
+  'tabs.2.title': 'Vezi scurgerile\npe care nu le simțeai.',
+  'tabs.2.body': 'Analizează fiecare mână, identifică tipare în jocul tău, împarte orice mână cu prietenii, exportă date compatibile cu solverele și compară-ți deciziile cu bazele GTO. Datele spun adevărul.',
+
+  // What Final Table isn't
+  'notHud.title': 'Ce nu este Final Table?',
+  'notHud.item1Title': 'Nu este un HUD',
+  'notHud.item1Desc': 'Final Table nu afișează statistici sau date despre jucători în timpul jocului live. Este un logger, nu un heads-up display.',
+  'notHud.item2Title': 'Blocat în timpul sesiunilor',
+  'notHud.item2Desc': 'Cât timp o sesiune este activă, aplicația se blochează în modul de înregistrare. Nu poți naviga prin mâini, împărtăși date, folosi analiza AI sau accesa statistici până când sesiunea nu se încheie.',
+  'notHud.item3Title': 'Construit pentru joc corect',
+  'notHud.item3Desc': 'Totul se întâmplă după sesiune. Analizează, împarte și analizează — dar niciodată la masă cu un avantaj incorect.',
+  'buckle.title': ['Pregătește-te -', 'urmează mai multe'],
+  'buckle.subtitle': 'Înregistrarea mâinilor este doar vârful aisbergului. Final Table are multe alte funcții inteligente.',
+  'buckle.stats.title': 'Statistici',
+  'buckle.stats.desc': 'Vezi-ți statisticile generate în timp pentru a-ți identifica stilul de joc. Urmărește VPIP, agresivitatea, ratele de câștig și multe altele — cifrele nu mint.',
+  'buckle.bankroll.title': 'Urmărirea bankroll-ului',
+  'buckle.bankroll.desc': 'Setează un obiectiv de bankroll și urmărește-ți progresul. Vezi-ți rata orară, profitul net, ROI-ul și multe alte valori de bankroll.',
+  'buckle.ai.title': 'Analiză AI',
+  'buckle.ai.desc': 'Primește informații bazate pe AI despre jocul tău. Analizează istoricul mâinilor, identifică tipare și primește recomandări personalizate pentru a-ți îmbunătăți jocul.',
+  'live.eyebrow': 'Ce îl face diferit?',
+  'live.title': ['Construit pentru jocul live.', 'Gândit pentru jucătorul de la masă.'],
+  'live.gesture.title': 'Înregistrare în trei gesturi',
+  'live.gesture.desc': 'Înregistrează orice acțiune — raise, call, fold — în trei atingeri. Fără tastare, fără meniuri. Suficient de rapid ca să-l folosești între mâini fără să pierzi ritmul.',
+  'live.reads.title': 'Citirea adversarilor în timp real',
+  'live.reads.desc': 'Construiește profiluri bazate pe statistici pentru fiecare jucător pe care îl întâlnești. Află VPIP-ul, agresivitatea și tendințele lor înainte să acționezi.',
+  'live.session.title': 'Date la nivel de sesiune și de mână',
+  'live.session.desc': 'Urmărește totul, de la un simplu buy-in/cash-out până la înregistrarea completă a acțiunilor mână cu mână. Folosește ce ți se potrivește.',
+  'live.dealer.title': 'Mod Dealer',
+  'live.dealer.desc': 'Dealerii conduc masa fără mâini, prin comenzi vocale. Jucătorii urmăresc totul pe propriile telefoane, în timp real.',
+  'live.dealer.badge': 'În curând',
+  'live.dealer.tag': 'Parteneriat cu locații',
+  'live.download': 'Descarcă aplicația:',
+  'bh.title': ['Înregistrează o mână în trei gesturi,', 'nu în trei minute'],
+  'bh.body': ['Descarcă aplicația și începe să-ți', 'înregistrezi mâinile chiar acum.'],
+  'footer.followUs': 'Urmărește-ne pe:',
+  'footer.copyright': ({ year }) => `© ${year}, Final Table. Toate drepturile rezervate.`,
+  'footer.termsHead': 'Termeni',
+  'footer.termsOfUse': 'Termeni de utilizare',
+  'footer.privacyPolicy': 'Politica de confidențialitate',
+  'footer.contactHead': 'Contact',
+  'discord.eyebrow': 'Alătură-te comunității',
+  'discord.title': 'Vorbește despre poker cu jucători care chiar joacă live.',
+  'discord.body': 'Tocmai deschidem ușile — alătură-te ca membru fondator, vorbește direct cu noi despre poker live și modelează ce va deveni Final Table.',
+  'discord.cta': 'Alătură-te pe Discord',
+  'discord.tab1': 'Legătură cu fondatorii',
+  'discord.tab2': 'Invitații beta și avanpremiere',
+  'discord.server.name': 'Final Table',
+  'discord.server.type': 'Server Discord',
+  'discord.status': 'Online',
+  'discord.msg1.name': 'Magsud',
+  'discord.msg1.role': 'Fondator',
+  'discord.msg1.time': '21:12',
+  'discord.msg1.text': '👋 Bine ai venit. Invitațiile beta și avanpremierele apar aici primele.',
+  'discord.msg2.name': 'Echipa Final Table',
+  'discord.msg2.time': '21:14',
+  'discord.msg2.text': 'Spune-ne ce să construim în continuare — voturile pentru roadmap au loc în #roadmap 🗳️',
+  'discord.msg3.name': 'Magsud',
+  'discord.msg3.role': 'Fondator',
+  'discord.msg3.time': '21:17',
+  'discord.msg3.text': 'Postează cea mai bună mână a săptămânii în #hands — le analizăm împreună 🃏',
+
+  'tabs.3.eyebrow': 'ÎN TIMP',
+  'tabs.3.title': 'Află-ți rata reală\nde câștig. În sfârșit.',
+  'tabs.3.body': 'Urmărește-ți adevăratul $/oră pe mize, cazino și tip de joc. Ia decizii despre mize bazate pe date, nu pe intuiție.',
+
+  // Problems (Stack Cards)
+  'problems.0.stat': () => <>Jucătorii de poker live joacă<br /><strong>~25–30 de mâini/oră</strong> în medie.</>,
+  'problems.0.question': 'Câte dintre acele mâini îți amintești cu adevărat?',
+  'problems.0.body': 'Final Table urmărește fiecare mână pe care o joci, ca să poți analiza fiecare acțiune și să găsești scurgeri de care nu știai.',
+  'problems.1.stat': 'Întreabă orice jucător live care e rata lui de câștig. Majoritatea ghicesc.',
+  'problems.1.question': 'Îți cunoști cu adevărat $/oră pe mize, cazino sau tip de joc?',
+  'problems.1.body': 'Final Table urmărește fiecare sesiune cu precizie — rată de câștig, durată, mize — ca să știi mereu exact unde te afli.',
+  'problems.2.stat': 'Poziția este cel mai mare avantaj din poker.',
+  'problems.2.question': 'Îți cunoști statisticile reale de pe BTN vs BB vs UTG?',
+  'problems.2.body': 'Final Table îți defalcă performanța pe poziții, ca să vezi unde faci bani și unde pierzi fise.',
+  'problems.3.stat': () => <>„El mereu dă 3-bet light." „Ea nu dă niciodată fold pe river."</>,
+  'problems.3.question': 'Sunt acelea citiri reale sau doar impresii dintr-o singură mână memorabilă?',
+  'problems.3.body': 'Final Table construiește profiluri de adversari din mâinile înregistrate — statistici reale, tendințe reale — ca citirile tale să fie susținute de date, nu de memorie.',
+
+  // Features Showcase
+  'features.title': () => <>Pregătește-te —<br /><em>urmează mai multe</em>.</>,
+  'features.subtitle': 'Înregistrarea mâinilor este doar vârful aisbergului. Final Table are multe alte funcții inteligente.',
+  'features.opponentProfiles.title': 'Statistici',
+  'features.opponentProfiles.desc': 'Vezi-ți statisticile generate în timp pentru a-ți identifica stilul de joc. Urmărește VPIP, agresivitatea, ratele de câștig și multe altele — cifrele nu mint.',
+  'features.bankroll.title': 'Urmărirea bankroll-ului',
+  'features.bankroll.desc': 'Setează un obiectiv de bankroll și urmărește-ți progresul. Vezi-ți rata orară, profitul net, ROI-ul și multe alte valori de bankroll.',
+  'features.sessionLogger.title': 'Analiză AI',
+  'features.sessionLogger.desc': 'Primește informații bazate pe AI despre jocul tău. Analizează istoricul mâinilor, identifică tipare și primește recomandări personalizate pentru a-ți îmbunătăți jocul.',
+  'features.handReview.title': 'Analiza mâinilor',
+  'features.handReview.desc': 'Reia fiecare mână pe care ai înregistrat-o. Parcurge fiecare stradă, compară-ți deciziile cu bazele GTO și identifică scurgerile pe care nu le simțeai la masă.',
+  'features.mtt.title': 'Turnee multi-masă',
+  'features.mtt.desc': 'Organizează turnee live cu mai multe mese, clasamente în timp real și distribuirea premiilor. Creează cluburi, gestionează membri și roluri — totul din aplicație.',
+  'features.dealerMode.title': 'Mod Dealer',
+  'features.dealerMode.comingSoon': 'ÎN CURÂND',
+  'features.dealerMode.desc': 'Dealerii pot conduce o masă fără mâini, folosind comenzi vocale. Jucătorii urmăresc totul pe propriile telefoane, în timp real.',
+
+  // Final CTA
+  'cta.eyebrow': 'Acces anticipat',
+  'cta.title': () => <>Rezervă-ți numele de utilizator<br />înainte s-o facă altcineva.</>,
+  'cta.titleLine1': 'Rezervă-ți numele de utilizator',
+  'cta.titleLine2': 'înainte s-o facă altcineva.',
+  'cta.body': 'Revendică-ți numele permanent înainte de lansare. Numele de utilizator se acordă în ordinea sosirii — odată ce dispare, dispare.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> jucători sunt deja pe lista de așteptare</>,
+  'cta.support': () => <>Întrebări? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'cta.cardTitle': 'Revendică-ți numele',
+  'cta.cardSub': 'Gratuit · Durează 10 secunde',
+  'cta.labelEmail': 'Email',
+  'cta.emailPlaceholder': 'tu@exemplu.com',
+  'cta.hintEmail': 'Viitorul tău email de autentificare — nu poate fi schimbat ulterior.',
+  'cta.labelUsername': 'Nume de utilizator',
+  'cta.usernamePlaceholder': 'numeletau',
+  'cta.hintUsername': 'Doar litere, cifre și underscore. 3–20 de caractere.',
+  'cta.errorTaken': 'Acest nume de utilizator este deja luat. Încearcă altul.',
+  'cta.errorGeneric': 'Ceva nu a mers bine. Te rugăm să încerci din nou.',
+  'cta.btnLoading': 'Se rezervă…',
+  'cta.btnSubmit': 'Rezervă-mi locul →',
+  'cta.successChip': '✓ Rezervat',
+  'cta.successTitle': 'Ești pe listă.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> este rezervat pentru tine. Te vom contacta când Final Table se lansează.</>
+  ),
+  'cta.resetBtn': 'Rezervă altul',
+
+  // FAQ
+  'faq.0.q': 'Îmi pot schimba numele de utilizator mai târziu?',
+  'faq.0.a': 'Odată rezervat, numele tău de utilizator este blocat. Alege cu grijă — acesta devine numele tău permanent în Final Table.',
+  'faq.1.q': 'Rezervarea este gratuită?',
+  'faq.1.a': 'Da, atâta timp cât acel nume de utilizator nu este luat, poți.',
+  'faq.2.q': 'Ce se întâmplă dacă numele meu de utilizator este luat?',
+  'faq.2.a': 'Numele de utilizator se acordă în ordinea sosirii. Dacă numele preferat a dispărut, încearcă o variantă — underscore-urile și cifrele sunt permise.',
+  'faq.3.q': 'Când se va lansa aplicația?',
+  'faq.3.a': 'Final Table este în beta închisă. Membrii listei de așteptare primesc acces anticipat înainte de lansarea publică.',
+
+  // Bottom CTA
+  'bottomCta.title': () => (
+    <>
+      <span className="bc-hl-sans">Gata să-ți</span>
+      <span className="bc-hl-italic"> urmărești mâinile?</span>
+      <span className="bc-hl-sans">.</span>
+    </>
+  ),
+  'bottomCta.sub': 'Descarcă aplicația și începe să-ți înregistrezi mâinile chiar acum.',
+
+  // Footer
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Înregistrează o mână în </span><span className="mf-hl-italic">trei gesturi.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Nu în trei minute.</span></p>
+    </>
+  ),
+  'footer.support': () => <>Întrebări? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'footer.resources': 'Resurse',
+  'footer.company': 'Companie',
+  'footer.privacy': 'Politica de confidențialitate',
+  'footer.terms': 'Termeni de utilizare',
+  'footer.copy': (p) => `© Final Table. Toate drepturile rezervate ${p.year}`,
+
+  // About
+  'about.nav': 'Despre',
+  'about.missionEyebrow': 'Misiunea noastră',
+  'about.missionTitle': () => <>Facem pokerul live<br /><em>mai inteligent pentru toți.</em></>,
+  'about.missionP1': 'Final Table a pornit de la o frustrare de care nu ne puteam desprinde.',
+  'about.missionP2': 'După ce ne-am aruncat în evenimentele live, tot dădeam de același zid: nu există o modalitate bună de a surprinde ce se întâmplă cu adevărat la masă. Iubim jocul live, dar să te bazezi pe memorie ca să-ți amintești câteva mâini după zile întregi nu înseamnă studiu — înseamnă nostalgie. Iar fără date reale de sesiune, scurgerile din jocul nostru rămâneau invizibile.',
+  'about.missionP3': 'Instrumentele existente erau mai rele decât nimic. Învechite, greoaie, complicate — genul de lucru pe care nu l-ai scoate niciodată în mijlocul unei sesiuni, pentru că te-ar scoate complet din joc. Suntem în 2026. Asta ni s-a părut greșit.',
+  'about.missionP4': 'Așa că am construit-o pe cea pe care ne-o doream — și am construit-o în singurul mod în care o aplicație ca aceasta poate fi construită cinstit: trăind cu ea. Opt luni de prototipare, ducând-o în sesiuni reale, studiind ce funcționa, desfăcând ce nu funcționa și jucând din nou. Iar și iar. Fiecare interacțiune a fost testată sub presiune, în lumina cazinoului, pe mâini reale, cu bani reali în joc.',
+  'about.missionP5': 'Final Table este pentru fiecare jucător live care a terminat vreodată o sesiune știind că a jucat ceva greșit, dar fără să-și mai amintească ce. Fiecare mână spune o poveste. Noi ne asigurăm doar că nu trebuie s-o pierzi.',
+  'about.value1Title': 'Viteza pe primul loc',
+  'about.value1Desc': 'Dacă te încetinește la masă, nu merită construit. Fiecare funcție este gândită să funcționeze în secunde, nu în minute.',
+  'about.value2Title': 'Date în locul intuiției',
+  'about.value2Desc': 'Impresiile mint, datele nu. Te ajutăm să înlocuiești presupunerile cu cifre reale — rate de câștig, tendințe, tipare.',
+  'about.value3Title': 'Construit pentru live',
+  'about.value3Desc': 'Nu un port din mediul online. Fiecare interacțiune, fiecare ecran este gândit pentru haosul și viteza unei mese de poker live.',
+  'about.teamEyebrow': 'Echipa',
+  'about.teamTitle': () => <>Oamenii din spatele <em>Final Table</em></>,
+  'about.member1Bio': 'Inginer software pasionat de crearea de produse care rezolvă probleme reale. Conduce viziunea tehnică din spatele Final Table.',
+  'about.member2Bio': 'Gânditor de produs orientat spre design, concentrat pe crearea de experiențe intuitive. Modelează aspectul, senzația și experiența utilizatorului Final Table.',
+  'about.ctaTitle': () => <>Vrei să faci parte din <em>călătorie?</em></>,
+  'about.ctaBody': 'Final Table este disponibil pe iOS și Android. Descarcă aplicația și începe să-ți urmărești sesiunile chiar azi.',
+  'about.ctaBtn': 'Descarcă aplicația →',
+
+  // Language
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
+  'lang.ro': 'Română',
+  'community.msg1.user': 'Magsud · Fondator',
+  'community.msg1.text': 'Bine ai venit 👋 Invitațiile beta și avanpremierele apar aici primele.',
+  'community.msg2.user': 'Echipa Final Table',
+  'community.msg2.text': 'Spune-ne ce să construim în continuare — voturile pentru roadmap au loc în #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Fondator',
+  'community.msg3.text': 'Postează cea mai bună mână a săptămânii în #hands — le analizăm împreună 🃏',
+}
+
 /* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es, de, pt, tr, uk }
+const translations = { en, pl, ru, fr, es, de, pt, ro, tr, uk }
 
 const I18nContext = createContext()
 

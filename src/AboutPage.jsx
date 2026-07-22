@@ -10,7 +10,7 @@ import 'flag-icons/css/flag-icons.min.css'
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/final-table/id6760188970'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ru: 'ru', tr: 'tr', uk: 'ua' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', tr: 'tr', uk: 'ua' }
 function Flag({ locale }) {
   return <span className={`fi fi-${FLAG_ISO[locale]} tp-flag`} />
 }
@@ -148,7 +148,7 @@ function AboutFooter() {
   ]
 
   const flagIso = FLAG_ISO[locale] || 'gb'
-  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ru: 'Русский', tr: 'Türkçe' }[locale] || 'English'
+  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ro: 'Română', ru: 'Русский', tr: 'Türkçe' }[locale] || 'English'
 
   return (
     <footer className="mf-footer">
