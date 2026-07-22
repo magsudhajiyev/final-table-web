@@ -1727,14 +1727,43 @@ function DealerBroadcastAnim() {
 
 function TPBuiltForLive() {
   const { t } = useT()
+  const sectionRef = useRef(null)
   const topCards = [
     { titleKey: 'live.gesture.title', descKey: 'live.gesture.desc', media: <ThreeGestureAnim /> },
     { titleKey: 'live.reads.title', descKey: 'live.reads.desc', media: <OpponentRadarAnim /> },
     { titleKey: 'live.session.title', descKey: 'live.session.desc', media: <SessionHandAnim /> },
   ]
 
+  // Start the hover beam at the pointer position: on pointerenter, compute
+  // the angle from card center to the pointer and set a negative
+  // animation-delay so the rotating conic gradient begins there. The beam
+  // core sits ~86% around the gradient (≈310°) from the conic `from` angle,
+  // so we back that off to make the bright center land at the pointer.
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const cards = section.querySelectorAll('.bfl-card')
+    const DURATION_S = 2.8
+    const BEAM_CORE_DEG = 310
+    const onEnter = (e) => {
+      const card = e.currentTarget
+      const rect = card.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      // Conic-gradient angles: 0° = up, increasing clockwise
+      const mouseDeg = ((Math.atan2(dy, dx) * 180) / Math.PI + 90 + 360) % 360
+      const fromDeg = ((mouseDeg - BEAM_CORE_DEG) % 360 + 360) % 360
+      const delay = -(fromDeg / 360) * DURATION_S
+      card.style.setProperty('--bfl-delay', `${delay.toFixed(3)}s`)
+    }
+    cards.forEach(c => c.addEventListener('pointerenter', onEnter))
+    return () => cards.forEach(c => c.removeEventListener('pointerenter', onEnter))
+  }, [])
+
   return (
-    <section className="bfl-section" data-nav-theme="dark">
+    <section ref={sectionRef} className="bfl-section" data-nav-theme="dark">
       <div className="bfl-inner">
         <div className="bfl-row bfl-row-top">
           <div className="bfl-card bfl-card-intro">

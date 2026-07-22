@@ -2465,6 +2465,12 @@ body.light-theme .db-chip {
     display: flex;
     flex-direction: column;
     gap: 96px;
+    /* Cap the text content to the 1400px grid while the card bg and the
+       poker-cards hero image below still span full width. */
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .mf-row {
@@ -6182,6 +6188,7 @@ body.light-theme .db-chip {
 .bfl-card:hover::before {
     opacity: 1;
     animation: bfl-card-glow 2.8s linear infinite;
+    animation-delay: var(--bfl-delay, 0s);
 }
 @keyframes bfl-card-glow {
     to { --bfl-angle: 360deg; }
