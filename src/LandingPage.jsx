@@ -2347,7 +2347,6 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
   const companyLinks = [
     { title: t('nav.howItWorks'), href: '#how-it-works' },
     { title: t('nav.features'),   href: '#features' },
-    { title: t('nav.compare'),    href: '#compare' },
     { title: t('about.nav'),      href: '/about' },
   ]
   const termsLinks = [
@@ -2878,6 +2877,25 @@ function TPFinalCTA() {
 
 export default function LandingPage() {
   const footerRef = useRef(null)
+
+  // Strip any hash from the URL on landing. If it targets a valid section,
+  // scroll there first; then replace the URL so it stays clean (finaltable.io).
+  useEffect(() => {
+    const hash = window.location.hash
+    if (!hash) return
+    const el = document.querySelector(hash)
+    const clean = () => history.replaceState(null, '', window.location.pathname + window.location.search)
+    if (el) {
+      // Wait a tick for layout + Lenis to be ready
+      requestAnimationFrame(() => {
+        if (window.__lenis) window.__lenis.scrollTo(hash, { immediate: false })
+        else el.scrollIntoView({ behavior: 'smooth' })
+        clean()
+      })
+    } else {
+      clean()
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof Lenis === 'undefined') return
