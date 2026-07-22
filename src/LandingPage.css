@@ -478,6 +478,10 @@ body.light-theme .db-chip {
 .tp-nav-download-btn:hover { opacity: 0.85; }
 
 /* ── Animated dot-matrix download button (nav) ── */
+.dl-btn-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
 .dl-btn {
     display: inline-flex;
     align-items: center;
@@ -532,8 +536,44 @@ body.light-theme .db-chip {
     .dl-btn-dot { transition: none; }
 }
 
-/* Light-theme keeps the pill dark (same as the plain button before) so
-   the accent color still pops. If you want inverted, tell me. */
+/* Dropdown menu below the pill */
+.dl-btn-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    z-index: 110;
+    animation: dl-btn-menu-in 140ms ease-out;
+}
+.dl-btn-menu-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: #ffffff;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    text-decoration: none;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+}
+.dl-btn-menu-item:hover { background: rgba(255, 255, 255, 0.08); }
+.dl-btn-menu-item svg { flex-shrink: 0; opacity: 0.85; }
+@keyframes dl-btn-menu-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ── Language picker ── */
 .tp-lang-picker {
@@ -7355,7 +7395,7 @@ body.light-theme .db-chip {
     left: 603px;
     width: 846px;
     height: 470px;
-    background: rgba(12, 12, 12, 0.85);
+    background: rgba(12, 12, 12, 0.85) url('/community_chat.png') center/cover no-repeat;
     border-radius: 4px;
     z-index: 1;
 }

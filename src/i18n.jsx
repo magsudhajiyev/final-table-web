@@ -30,6 +30,8 @@ const en = {
   'nav.contact': 'Contact',
   'nav.cta': 'Join waitlist',
   'nav.download': 'Download app',
+  'nav.downloadIos': 'Download for iOS',
+  'nav.downloadAndroid': 'Download for Android',
 
   // How it works section title
   'howSection.sans': 'How it ',
@@ -306,6 +308,8 @@ const pl = {
   'nav.contact': 'Kontakt',
   'nav.cta': 'Zarezerwuj nick',
   'nav.download': 'Pobierz aplikację',
+  'nav.downloadIos': 'Pobierz na iOS',
+  'nav.downloadAndroid': 'Pobierz na Androida',
 
   'howSection.sans': 'Jak to ',
   'howSection.italic': 'działa?',
@@ -561,6 +565,8 @@ const ru = {
   'nav.contact': 'Контакты',
   'nav.cta': 'Забронировать ник',
   'nav.download': 'Скачать приложение',
+  'nav.downloadIos': 'Скачать для iOS',
+  'nav.downloadAndroid': 'Скачать для Android',
 
   'howSection.sans': 'Как это ',
   'howSection.italic': 'работает?',
@@ -816,6 +822,8 @@ const fr = {
   'nav.contact': 'Contact',
   'nav.cta': 'Réserver mon pseudo',
   'nav.download': 'Télécharger l\'app',
+  'nav.downloadIos': 'Télécharger pour iOS',
+  'nav.downloadAndroid': 'Télécharger pour Android',
 
   'howSection.sans': 'Comment ça ',
   'howSection.italic': 'marche ?',
@@ -1071,6 +1079,8 @@ const es = {
   'nav.contact': 'Contacto',
   'nav.cta': 'Reserva tu nick',
   'nav.download': 'Descargar app',
+  'nav.downloadIos': 'Descargar para iOS',
+  'nav.downloadAndroid': 'Descargar para Android',
 
   'howSection.sans': '¿Cómo ',
   'howSection.italic': 'funciona?',
@@ -1326,6 +1336,8 @@ const de = {
   'nav.contact': 'Kontakt',
   'nav.cta': 'Nick reservieren',
   'nav.download': 'App herunterladen',
+  'nav.downloadIos': 'Für iOS herunterladen',
+  'nav.downloadAndroid': 'Für Android herunterladen',
 
   'howSection.sans': 'So ',
   'howSection.italic': 'funktioniert\'s?',
@@ -1581,6 +1593,8 @@ const pt = {
   'nav.contact': 'Contato',
   'nav.cta': 'Reservar meu nick',
   'nav.download': 'Baixar app',
+  'nav.downloadIos': 'Baixar para iOS',
+  'nav.downloadAndroid': 'Baixar para Android',
 
   'howSection.sans': 'Como ',
   'howSection.italic': 'funciona?',
@@ -1836,6 +1850,8 @@ const tr = {
   'nav.contact': 'İletişim',
   'nav.cta': 'Kullanıcı adını al',
   'nav.download': 'Uygulamayı indir',
+  'nav.downloadIos': 'iOS için indir',
+  'nav.downloadAndroid': 'Android için indir',
 
   'howSection.sans': 'Nasıl ',
   'howSection.italic': 'çalışır?',
@@ -2092,6 +2108,8 @@ const uk = {
   'nav.contact': 'Контакти',
   'nav.cta': 'Долучитися до списку',
   'nav.download': 'Завантажити застосунок',
+  'nav.downloadIos': 'Завантажити для iOS',
+  'nav.downloadAndroid': 'Завантажити для Android',
 
   // How it works section title
   'howSection.sans': 'Як це ',
