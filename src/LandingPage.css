@@ -2435,6 +2435,12 @@ body.light-theme .db-chip {
     flex-direction: column;
     align-items: stretch;
 }
+.mf-support a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.mf-support a:hover { opacity: 0.85; }
 
 .mf-top-line {
     height: 1px;

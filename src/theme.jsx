@@ -16,10 +16,10 @@ function detectMode() {
   return 'dark'
 }
 
-/** Resolve a mode ('light' | 'dark' | 'auto') to the concrete theme applied. */
-function resolveTheme(mode) {
-  if (mode === 'auto') return prefersDark() ? 'dark' : 'light'
-  return mode
+/** Resolve a mode ('light' | 'dark' | 'auto') to the concrete theme applied.
+ *  Light mode is temporarily disabled — always resolve to dark. */
+function resolveTheme(_mode) {
+  return 'dark'
 }
 
 function applyTheme(theme) {
@@ -72,8 +72,12 @@ export function useTheme() {
   return ctx
 }
 
-/* ── Shared footer theme toggle (light / dark / auto) ── */
+/* ── Shared footer theme toggle (light / dark / auto)
+   Hidden while light mode is disabled. */
 export function ThemeToggle() {
+  return null
+
+  // eslint-disable-next-line no-unreachable
   const { mode, setMode } = useTheme()
   return (
     <div className="mf-theme-toggle" role="group" aria-label="Theme">
