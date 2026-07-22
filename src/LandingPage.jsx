@@ -251,7 +251,6 @@ export function TPNavbar() {
           <div className="tp-nav-links">
             <a href={hashHref('how-it-works')} className={activeSection === 'how-it-works' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
             <a href={hashHref('features')} className={activeSection === 'features' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.features')}</a>
-            <a href={hashHref('compare')} className={activeSection === 'compare' ? 'tp-nav-active' : ''} onClick={smoothScroll}>{t('nav.compare')}</a>
             <a href="/about">{t('about.nav')}</a>
           </div>
         </div>
@@ -311,7 +310,6 @@ export function TPNavbar() {
       <div className={`tp-nav-mobile-menu${menuOpen ? ' tp-nav-mobile-menu-open' : ''}`}>
         <a href={hashHref('how-it-works')} onClick={smoothScroll}>{t('nav.howItWorks')}</a>
         <a href={hashHref('features')} onClick={smoothScroll}>{t('nav.features')}</a>
-        <a href={hashHref('compare')} onClick={smoothScroll}>{t('nav.compare')}</a>
         <a href="/about">{t('about.nav')}</a>
       </div>
     </header>
