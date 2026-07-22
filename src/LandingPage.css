@@ -6008,7 +6008,9 @@ body.light-theme .db-chip {
     left: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.9);
-    transition: height 120ms linear;
+    /* Height is written on every RAF from JS with LERP smoothing;
+       no CSS transition here (would fight the per-frame updates). */
+    will-change: height;
 }
 
 .bu-feature-body {
@@ -6083,7 +6085,7 @@ body.light-theme .db-chip {
     object-fit: cover;
     pointer-events: none;
     max-width: none;
-    transition: opacity 400ms ease;
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (max-width: 1200px) {

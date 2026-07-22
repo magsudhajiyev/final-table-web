@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useT, SUPPORTED } from './i18n'
 import { useTheme, ThemeToggle } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
+import { TPNavbar, TPFooter } from './LandingPage'
 import './LandingPage.css'
 import './AboutPage.css'
 import './LegalPage.css'
@@ -231,7 +232,7 @@ export default function AboutPage() {
   const { t } = useT()
   return (
     <div className="tp-root legal-root">
-      <AboutNavbar />
+      <TPNavbar />
       <main className="about-main" data-nav-theme="light">
 
         {/* Mission */}
@@ -301,7 +302,7 @@ export default function AboutPage() {
         </section>
 
       </main>
-      <AboutFooter />
+      <TPFooter />
     </div>
   )
 }

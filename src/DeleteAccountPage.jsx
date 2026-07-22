@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useT, SUPPORTED } from './i18n'
+import { TPNavbar, TPFooter } from './LandingPage'
 import './LandingPage.css'
 import './LegalPage.css'
 import 'flag-icons/css/flag-icons.min.css'
@@ -159,7 +160,7 @@ function LegalFooter() {
 export default function DeleteAccountPage() {
   return (
     <div className="tp-root legal-root">
-      <LegalNavbar />
+      <TPNavbar />
       <main className="legal-main" data-nav-theme="light">
         <h1>Delete Your Account &amp; Data</h1>
         <p className="legal-effective"><strong>App:</strong> Final Table &nbsp;·&nbsp; <strong>Developer:</strong> Magsud Hajiyev</p>
@@ -216,7 +217,7 @@ export default function DeleteAccountPage() {
         <h2>5. Questions</h2>
         <p>If anything here is unclear, or you want to exercise other privacy rights (access, correction, portability), see our <a href="/privacy">Privacy Policy</a> or contact us at <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>.</p>
       </main>
-      <LegalFooter />
+      <TPFooter />
     </div>
   )
 }

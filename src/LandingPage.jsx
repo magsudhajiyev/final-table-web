@@ -1244,9 +1244,9 @@ function TPBuckleUp() {
   const { t } = useT()
   const { theme } = useTheme()
   const [active, setActive] = useState(0)
-  const [progress, setProgress] = useState(0)
   const sectionRef = useRef(null)
   const titleRef = useRef(null)
+  const fillRefs = useRef([])
 
   const features = [
     { key: 'buckle.stats', image: theme === 'light' ? '/buckle_stats_light.png' : '/buckle_stats.png' },
@@ -1267,23 +1267,65 @@ function TPBuckleUp() {
     return () => obs.disconnect()
   }, [])
 
+  // Scroll-driven line fills. We keep `active` in React (so the correct
+  // phone image + active title styles apply), but drive the vertical
+  // fill of each feature line directly via refs with LERP smoothing so
+  // it glides instead of snapping frame-to-frame with the scroll.
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const LERP = reduce ? 1 : 0.12
+    const N = features.length
     let raf = 0
-    const update = () => {
-      raf = 0
+    let running = false
+    let current = 0
+    let target = 0
+    let lastIdx = 0
+
+    const applyFills = () => {
+      for (let i = 0; i < N; i++) {
+        const el = fillRefs.current[i]
+        if (!el) continue
+        const p = Math.max(0, Math.min(1, current * N - i))
+        el.style.height = (p * 100).toFixed(2) + '%'
+      }
+    }
+
+    const computeTarget = () => {
       const rect = section.getBoundingClientRect()
       const vh = window.innerHeight
       const scrollable = rect.height - vh
-      if (scrollable <= 0) { setActive(0); setProgress(0); return }
-      const p = Math.max(0, Math.min(1, -rect.top / scrollable))
-      setProgress(p)
-      const idx = Math.min(features.length - 1, Math.floor(p * features.length))
-      setActive(idx)
+      target = scrollable <= 0 ? 0 : Math.max(0, Math.min(1, -rect.top / scrollable))
     }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
-    update()
+
+    const tick = () => {
+      current += (target - current) * LERP
+      if (Math.abs(target - current) < 0.0004) current = target
+      applyFills()
+      const idx = Math.min(N - 1, Math.floor(current * N))
+      if (idx !== lastIdx) { lastIdx = idx; setActive(idx) }
+      if (Math.abs(target - current) > 0.0004) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        running = false
+      }
+    }
+
+    const start = () => {
+      if (!running) {
+        running = true
+        raf = requestAnimationFrame(tick)
+      }
+    }
+
+    const onScroll = () => { computeTarget(); start() }
+    computeTarget()
+    current = target
+    applyFills()
+    setActive(Math.min(N - 1, Math.floor(current * N)))
+
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     return () => {
@@ -1307,14 +1349,16 @@ function TPBuckleUp() {
           </div>
           <div className="bu-features">
             {features.map((f, i) => {
-              const featProgress = Math.max(0, Math.min(1, progress * features.length - i))
               return (
                 <div
                   key={i}
                   className={`bu-feature ${i === active ? 'is-active' : ''}`}
                 >
                   <div className="bu-feature-line" aria-hidden="true">
-                    <div className="bu-feature-line-fill" style={{ height: `${featProgress * 100}%` }} />
+                    <div
+                      className="bu-feature-line-fill"
+                      ref={el => { fillRefs.current[i] = el }}
+                    />
                   </div>
                   <div className="bu-feature-body">
                     <h3 className="bu-feature-title">{t(`${f.key}.title`)}</h3>
