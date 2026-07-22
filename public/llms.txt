@@ -191,7 +191,7 @@ Final Table fills that gap for **live poker**. You log hands manually at the tab
 - **What stats does it track?** — VPIP, PFR, 3-Bet, Fold-to-3-Bet, C-Bet, Steal, Check-Raise, Win Rate, Aggression Factor — all with position breakdowns. Plus session financials: buy-ins, cash-outs, net profit, hourly rate, and tournament-specific metrics.
 - **Can I track opponents?** — Yes. Opponent profiles are auto-built from logged hands. The app tracks the same 7 metrics for opponents and classifies their play style after 50+ hands.
 - **Is it free?** — Final Table is free during the closed beta. Pricing details for the full launch will be announced later.
-- **Is there an app I can download now?** — Not yet. Final Table is in closed beta. Join the waitlist at https://www.finaltable.io to reserve your username and get early access.
+- **Is there an app I can download now?** — Yes. Final Table is available on the App Store (https://apps.apple.com/us/app/final-table/id6760188970) and Google Play (https://play.google.com/store/apps/details?id=com.finaltable.app).
 - **How is it different from Poker Analytics 6?** — Poker Analytics 6 tracks sessions but not individual hands. Final Table lets you log every hand at the table with gestures, then review them with AI analysis after. It also adds auto-built opponent profiles, play style detection, solver export, and club management.
 - **How is it different from Poker Bankroll Tracker?** — Poker Bankroll Tracker is session-level only. Final Table adds hand-by-hand logging, auto-built opponent profiles, AI analysis, hand replay, solver export, sharing, tournament analytics, and club management.
 - **What currencies are supported?** — 22 currencies: USD, EUR, GBP, CAD, AUD, BRL, PLN, RUB, INR, JPY, CNY, KRW, SEK, MXN, TRY, CZK, NOK, DKK, CHF, ILS, UAH, ARS.
@@ -215,12 +215,13 @@ Free during closed beta. Three tiers planned for launch:
 
 ## Platform
 
-- Mobile app (iOS and Android)
+- iOS app: https://apps.apple.com/us/app/final-table/id6760188970
+- Android app: https://play.google.com/store/apps/details?id=com.finaltable.app
 - Web: https://www.finaltable.io
 
 ## How to Get Access
 
-Final Table is in closed beta. There is no app store listing yet. Join the waitlist and reserve your username at https://www.finaltable.io
+Download Final Table on the App Store (https://apps.apple.com/us/app/final-table/id6760188970) or Google Play (https://play.google.com/store/apps/details?id=com.finaltable.app). You can also reserve your username at https://www.finaltable.io
 
 ## Team
 
