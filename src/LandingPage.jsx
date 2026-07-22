@@ -1296,7 +1296,7 @@ function TPBuckleUp() {
   }, [features.length])
 
   return (
-    <section ref={sectionRef} className="bu-section" data-nav-theme="dark">
+    <section ref={sectionRef} id="features" className="bu-section" data-nav-theme="dark">
       <div className="bu-inner">
         <div className="bu-left">
           <div className="bu-header">
@@ -2652,7 +2652,7 @@ function TPFeaturesShowcase() {
   ]
 
   return (
-    <section className="fv-section" id="features" data-nav-theme="dark">
+    <section className="fv-section" data-nav-theme="dark">
       <div className="fv-inner">
         <div className="fv-header">
           <h2 className="fv-title">
