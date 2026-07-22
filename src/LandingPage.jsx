@@ -95,8 +95,10 @@ const DL_ARROW = [
 const DL_ARROW_HEIGHT = 7
 const DL_TRAY = new Set([[7, 3], [7, 4], [7, 5]].map(([r, c]) => r * DL_COLS + c))
 
-function TPDownloadBtn({ label, href }) {
+function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) {
   const [offset, setOffset] = useState(-DL_ARROW_HEIGHT)
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef(null)
 
   useEffect(() => {
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -106,6 +108,20 @@ function TPDownloadBtn({ label, href }) {
     }, DL_TICK_MS)
     return () => clearInterval(id)
   }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false)
+    }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
 
   const litSet = new Set()
   DL_ARROW.forEach(([r, c]) => {
@@ -129,10 +145,31 @@ function TPDownloadBtn({ label, href }) {
   }
 
   return (
-    <a href={href} className="dl-btn" target="_blank" rel="noopener noreferrer" aria-label={label}>
-      <span className="dl-btn-label">{label}</span>
-      <span className="dl-btn-matrix" aria-hidden="true">{cells}</span>
-    </a>
+    <div className="dl-btn-wrap" ref={wrapRef}>
+      <button
+        type="button"
+        className="dl-btn"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="dl-btn-label">{label}</span>
+        <span className="dl-btn-matrix" aria-hidden="true">{cells}</span>
+      </button>
+      {open && (
+        <div className="dl-btn-menu" role="menu">
+          <a href={iosHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.05 12.53c0-2.13 1.74-3.15 1.82-3.2-1-1.46-2.55-1.66-3.09-1.68-1.31-.13-2.56.77-3.23.77-.67 0-1.7-.75-2.8-.73-1.44.02-2.77.84-3.51 2.12-1.5 2.59-.38 6.42 1.07 8.52.71 1.03 1.55 2.18 2.65 2.14 1.07-.04 1.48-.69 2.77-.69 1.29 0 1.66.69 2.79.67 1.15-.02 1.88-1.04 2.58-2.08.82-1.19 1.15-2.36 1.17-2.42-.03-.01-2.24-.86-2.26-3.42zM15 5.85c.59-.72 1-1.71.89-2.71-.86.04-1.9.58-2.51 1.3-.55.63-1.03 1.65-.9 2.62.96.07 1.94-.49 2.52-1.21z"/></svg>
+            {iosLabel}
+          </a>
+          <a href={androidHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.87 3.23a11.5 11.5 0 0 0-9.76 0L5.25 5.9a.4.4 0 0 0-.69.4l1.84 3.18A10.85 10.85 0 0 0 1 18h22a10.85 10.85 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 1.25-1.25c0 .69-.56 1.25-1.25 1.25zm10 0a1.25 1.25 0 1 1 1.25-1.25c0 .69-.56 1.25-1.25 1.25z"/></svg>
+            {androidLabel}
+          </a>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -212,7 +249,13 @@ function TPNavbar() {
           </div>
         </div>
         <div className="tp-nav-right">
-          <TPDownloadBtn label={t('nav.download')} href={APP_STORE_URL} />
+          <TPDownloadBtn
+            label={t('nav.download')}
+            iosHref={APP_STORE_URL}
+            androidHref={PLAY_STORE_URL}
+            iosLabel={t('nav.downloadIos')}
+            androidLabel={t('nav.downloadAndroid')}
+          />
           <div className="tp-lang-picker" ref={langRef}>
             <button className="tp-lang-btn" onClick={() => setLangOpen(o => !o)} aria-label="Change language">
               <Flag locale={locale} />
