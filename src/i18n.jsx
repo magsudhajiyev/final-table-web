@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const STORAGE_KEY = 'ft_lang'
-const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ro', 'ru', 'tr', 'uk']
+const SUPPORTED = ['de', 'en', 'es', 'fr', 'pl', 'pt', 'ro', 'ru', 'sk', 'tr', 'uk']
 
 function detectLocale() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -14,6 +14,7 @@ function detectLocale() {
   if (lang.startsWith('de')) return 'de'
   if (lang.startsWith('pt')) return 'pt'
   if (lang.startsWith('ro')) return 'ro'
+  if (lang.startsWith('sk')) return 'sk'
   if (lang.startsWith('tr')) return 'tr'
   if (lang.startsWith('uk')) return 'uk'
   return 'en'
@@ -293,6 +294,7 @@ const en = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Founder',
   'community.msg1.text': 'Welcome in 👋 Beta invites and sneak peeks drop here first.',
   'community.msg2.user': 'Final Table Team',
@@ -553,6 +555,7 @@ const pl = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Założyciel',
   'community.msg1.text': 'Witaj 👋 Zaproszenia do bety i zapowiedzi pojawiają się tu najpierw.',
   'community.msg2.user': 'Zespół Final Table',
@@ -813,6 +816,7 @@ const ru = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Магсуд · Основатель',
   'community.msg1.text': 'Добро пожаловать 👋 Инвайты в бету и анонсы появляются здесь первыми.',
   'community.msg2.user': 'Команда Final Table',
@@ -1073,6 +1077,7 @@ const fr = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Fondateur',
   'community.msg1.text': 'Bienvenue 👋 Les invitations bêta et les avant-premières arrivent ici en premier.',
   'community.msg2.user': 'Équipe Final Table',
@@ -1333,6 +1338,7 @@ const es = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bienvenido 👋 Las invitaciones a la beta y los adelantos llegan aquí primero.',
   'community.msg2.user': 'Equipo Final Table',
@@ -1593,6 +1599,7 @@ const de = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Gründer',
   'community.msg1.text': 'Willkommen 👋 Beta-Einladungen und Previews gibt es hier zuerst.',
   'community.msg2.user': 'Final Table Team',
@@ -1853,6 +1860,7 @@ const pt = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Fundador',
   'community.msg1.text': 'Bem-vindo 👋 Convites para a beta e prévias chegam aqui primeiro.',
   'community.msg2.user': 'Equipe Final Table',
@@ -2113,6 +2121,7 @@ const tr = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Kurucu',
   'community.msg1.text': 'Hoş geldin 👋 Beta davetleri ve ön izlemeler önce burada paylaşılır.',
   'community.msg2.user': 'Final Table Ekibi',
@@ -2395,6 +2404,7 @@ const uk = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Засновник',
   'community.msg1.text': 'Ласкаво просимо 👋 Бета-запрошення та превʼю зʼявляються тут першими.',
   'community.msg2.user': 'Команда Final Table',
@@ -2674,6 +2684,7 @@ const ro = {
   'lang.tr': 'Türkçe',
   'lang.uk': 'Українська',
   'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
   'community.msg1.user': 'Magsud · Fondator',
   'community.msg1.text': 'Bine ai venit 👋 Invitațiile beta și avanpremierele apar aici primele.',
   'community.msg2.user': 'Echipa Final Table',
@@ -2682,10 +2693,290 @@ const ro = {
   'community.msg3.text': 'Postează cea mai bună mână a săptămânii în #hands — le analizăm împreună 🃏',
 }
 
+const sk = {
+  // Navbar
+  'nav.features': 'Funkcie',
+  'nav.howItWorks': 'Ako to funguje?',
+  'nav.compare': 'Porovnanie',
+  'nav.faq': 'Časté otázky',
+  'nav.contact': 'Kontakt',
+  'nav.cta': 'Pridať sa do poradovníka',
+  'nav.download': 'Stiahnuť aplikáciu',
+  'nav.downloadIos': 'Stiahnuť pre iOS',
+  'nav.downloadAndroid': 'Stiahnuť pre Android',
+
+  // How it works section title
+  'howSection.sans': 'Ako to ',
+  'howSection.italic': 'funguje?',
+  'hiw.section.title': 'Ako to funguje?',
+  'hiw.label': 'Pred seansou',
+  'hiw.title': ['Prídite s prehľadom', 'o tom, proti komu hráte.'],
+  'hiw.body': 'Prezrite si profily súperov a históriu minulých rozdaní ešte skôr, než si sadnete. Vedzte, kto hrá tesne, kto divoko a kde sú peniaze.',
+  'hiw.handlog.title': ['Zaznamenajte každé rozdanie', 'tromi gestami.'],
+  'hiw.handlog.body': 'Zachyťte akciu tak, ako sa deje — raise, call, fold — švihnutím a klepnutím. Žiadne písanie, žiadne menu. Každé rozdanie uložené na neskoršiu analýzu.',
+  'hiw.stats.label': 'Pri stole',
+  'hiw.stats.title': ['Tri gestá.', 'Žiadna strata plynulosti.'],
+  'hiw.stats.body': 'Zaznamenajte akúkoľvek akciu — raise, call, fold — len švihnutím a klepnutím. Sledujte priebeh svojej seansy. Dosť rýchle na jednoručné použitie medzi rozdaniami.',
+  'hiw.session.label': 'Po seanse',
+  'hiw.session.title': ['Objavte netesnosti', 'ktoré ste nemohli vycítiť.'],
+  'hiw.session.body': 'Prejdite si každé rozdanie, odhaľte vzorce vo svojej hre, zdieľajte rozdania s priateľmi, exportujte dáta o rozdaniach kompatibilné so solverom a porovnajte svoje rozhodnutia s GTO východiskami. Dáta hovoria pravdu.',
+
+  // Hero
+  'hero.h1': ['Zaznamenajte rozdanie tromi gestami.', 'Nie tromi minútami.'],
+  'hero.sub': 'Final Table je tracker živého pokru vytvorený pre stôl. Dosť rýchly na jednoručné zaznamenanie rozdania medzi rozdávaniami. Dosť presný na neskoršie štúdium každej seansy.',
+  'hero.downloadIos': 'Stiahnuť na iOS',
+  'hero.downloadAndroid': 'Stiahnuť na Android',
+  'hero.emailPlaceholder': 'Zadajte svoj e-mail',
+  'hero.errorGeneric': 'Niečo sa pokazilo. Skúste to znova, prosím.',
+  'hero.btnLoading': 'Rezervujem…',
+  'hero.btnSubmit': 'Rezervovať moje miesto',
+  'hero.proof': (p) => `Zadarmo · Trvá 10 sekúnd · ${p.count}+ hráčov si už rezervovalo miesto`,
+  'hero.successText': 'Ste na zozname! Ozveme sa vám, keď sa Final Table spustí.',
+  'hero.already': 'Už ste na zozname! Upozorníme vás, keď spustíme aplikáciu.',
+  'hero.resetBtn': 'Rezervovať ďalšie',
+
+  // Comparison
+  'compare.eyebrow': 'Čím sa to líši?',
+  'compare.title': () => <>Vytvorené pre <em>živú hru</em>.<br />Navrhnuté pre <em>hráča pri stole</em>.</>,
+  'compare.subtitle': 'Trackery živého pokru existujú. Žiadny z nich však nepôsobí, akoby patril k stolu. Final Table pôsobí ako súčasť hry.',
+  'compare.card1.title': 'Zaznamenávanie tromi gestami',
+  'compare.card1.desc': 'Zaznamenajte akúkoľvek akciu — raise, call, fold — tromi klepnutiami. Žiadne písanie, žiadne menu. Dosť rýchle na použitie medzi rozdaniami bez straty tempa.',
+  'compare.card2.title': 'Čítanie súperov v reálnom čase',
+  'compare.card2.desc': 'Vytvárajte štatisticky podložené profily každého hráča, proti ktorému hráte. Poznajte jeho VPIP, agresivitu a tendencie ešte pred svojím ťahom.',
+  'compare.card3.title': 'Dáta na úrovni seansy aj rozdania',
+  'compare.card3.desc': 'Sledujte všetko od rýchleho buy-in/cash-out až po kompletné zaznamenávanie akcie rozdanie po rozdaní. Použite to, čo sedí vašej hre.',
+  'compare.card4.title': 'Režim krupiéra',
+  'compare.card4.desc': 'Krupiéri riadia stôl bez rúk pomocou hlasových príkazov. Hráči sledujú dianie na svojich telefónoch v reálnom čase.',
+  'compare.comingSoon': 'ČOSKORO · PARTNERSTVÁ S PODNIKMI',
+
+  // Community / Discord
+  'community.eyebrow': 'Pridajte sa ku komunite',
+  'community.title': () => <>Bavte sa o pokri s hráčmi<br />ktorí <em>naozaj hrajú naživo.</em></>,
+  'community.sub': 'Práve otvárame dvere — pridajte sa ako zakladajúci člen, bavte sa s nami o živom pokri priamo a spoluvytvárajte to, čím sa Final Table stane.',
+  'community.stat1.value': 'Deň 1',
+  'community.stat1.label': 'Zakladajúci členovia',
+  'community.stat2.value': 'Priama',
+  'community.stat2.label': 'Linka k zakladateľom',
+  'community.stat3.value': 'Prvé',
+  'community.stat3.label': 'Beta pozvánky a náhľady',
+  'community.cta': 'Pridať sa na Discord →',
+
+  // Tabs (BgSection)
+  'tabs.0.label': 'Pred seansou',
+  'tabs.1.label': 'Pri stole',
+  'tabs.2.label': 'Po seanse',
+  'tabs.3.label': 'Postupom času',
+  'tabs.0.eyebrow': 'PRED SEANSOU',
+  'tabs.0.title': 'Prídite s prehľadom\no tom, proti komu hráte.',
+  'tabs.0.body': 'Prezrite si profily súperov a históriu minulých rozdaní ešte skôr, než si sadnete. Vedzte, kto hrá tesne, kto divoko a kde sú peniaze.',
+  'tabs.1.eyebrow': 'PRI STOLE',
+  'tabs.1.title': 'Tri gestá.\nŽiadna strata plynulosti.',
+  'tabs.1.body': 'Zaznamenajte akúkoľvek akciu — raise, call, fold — len švihnutím a klepnutím. Sledujte priebeh svojej seansy. Dosť rýchle na jednoručné použitie medzi rozdaniami.',
+  'tabs.2.eyebrow': 'PO SEANSE',
+  'tabs.2.title': 'Objavte netesnosti\nktoré ste nemohli vycítiť.',
+  'tabs.2.body': 'Prejdite si každé rozdanie, odhaľte vzorce vo svojej hre, zdieľajte rozdania s priateľmi, exportujte dáta o rozdaniach kompatibilné so solverom a porovnajte svoje rozhodnutia s GTO východiskami. Dáta hovoria pravdu.',
+
+  // What Final Table isn't
+  'notHud.title': 'Čo Final Table nie je?',
+  'notHud.item1Title': 'Nie je to HUD',
+  'notHud.item1Desc': 'Final Table počas živej hry nezobrazuje štatistiky ani dáta o hráčoch. Je to zaznamenávač, nie heads-up displej.',
+  'notHud.item2Title': 'Uzamknuté počas seáns',
+  'notHud.item2Desc': 'Kým je seansa aktívna, aplikácia sa uzamkne do režimu zaznamenávania. Nemôžete prehliadať rozdania, zdieľať dáta, používať AI analýzu ani pristupovať k analytike, kým seansa neskončí.',
+  'notHud.item3Title': 'Vytvorené pre férovú hru',
+  'notHud.item3Desc': 'Všetko sa deje po seanse. Prezerajte, zdieľajte a analyzujte — no nikdy nie pri stole s nečestnou výhodou.',
+  'buckle.title': ['Pripútajte sa -', 'prichádza toho viac'],
+  'buckle.subtitle': 'Zaznamenávanie rozdaní je len špičkou ľadovca. Final Table má mnoho ďalších inteligentných funkcií.',
+  'buckle.stats.title': 'Štatistiky',
+  'buckle.stats.desc': 'Sledujte svoje štatistiky vygenerované postupom času a identifikujte svoj štýl hry. Sledujte VPIP, agresivitu, win rate a ďalšie — čísla neklamú.',
+  'buckle.bankroll.title': 'Sledovanie bankrollu',
+  'buckle.bankroll.desc': 'Stanovte si cieľ pre bankroll a sledujte svoj pokrok. Vidíte svoju hodinovku, čistý zisk, ROI a mnoho ďalších metrík bankrollu.',
+  'buckle.ai.title': 'AI analýza',
+  'buckle.ai.desc': 'Získajte poznatky o svojej hre poháňané AI. Analyzujte históriu rozdaní, identifikujte vzorce a dostávajte personalizované odporúčania na zlepšenie vašej hry.',
+  'live.eyebrow': 'Čím sa to líši?',
+  'live.title': ['Vytvorené pre živú hru.', 'Navrhnuté pre hráča pri stole.'],
+  'live.gesture.title': 'Zaznamenávanie tromi gestami',
+  'live.gesture.desc': 'Zaznamenajte akúkoľvek akciu — raise, call, fold — tromi klepnutiami. Žiadne písanie, žiadne menu. Dosť rýchle na použitie medzi rozdaniami bez straty tempa.',
+  'live.reads.title': 'Čítanie súperov v reálnom čase',
+  'live.reads.desc': 'Vytvárajte štatisticky podložené profily každého hráča, proti ktorému hráte. Poznajte jeho VPIP, agresivitu a tendencie ešte pred svojím ťahom.',
+  'live.session.title': 'Dáta na úrovni seansy aj rozdania',
+  'live.session.desc': 'Sledujte všetko od rýchleho buy-in/cash-out až po kompletné zaznamenávanie akcie rozdanie po rozdaní. Použite to, čo sedí vašej hre.',
+  'live.dealer.title': 'Režim krupiéra',
+  'live.dealer.desc': 'Krupiéri riadia stôl bez rúk pomocou hlasových príkazov. Hráči sledujú dianie na svojich telefónoch v reálnom čase.',
+  'live.dealer.badge': 'Čoskoro',
+  'live.dealer.tag': 'Partnerstvo s podnikom',
+  'live.download': 'Stiahnite si aplikáciu:',
+  'bh.title': ['Zaznamenajte rozdanie tromi gestami,', 'nie tromi minútami'],
+  'bh.body': ['Stiahnite si aplikáciu a začnite', 'zaznamenávať svoje rozdania hneď teraz.'],
+  'footer.followUs': 'Sledujte nás na:',
+  'footer.copyright': ({ year }) => `© ${year}, Final Table. Všetky práva vyhradené.`,
+  'footer.termsHead': 'Podmienky',
+  'footer.termsOfUse': 'Podmienky používania',
+  'footer.privacyPolicy': 'Zásady ochrany súkromia',
+  'footer.contactHead': 'Kontakt',
+  'discord.eyebrow': 'Pridajte sa ku komunite',
+  'discord.title': 'Bavte sa o pokri s hráčmi, ktorí naozaj hrajú naživo.',
+  'discord.body': 'Práve otvárame dvere — pridajte sa ako zakladajúci člen, bavte sa s nami o živom pokri priamo a spoluvytvárajte to, čím sa Final Table stane.',
+  'discord.cta': 'Pridať sa na Discord',
+  'discord.tab1': 'Linka k zakladateľom',
+  'discord.tab2': 'Beta pozvánky a náhľady',
+  'discord.server.name': 'Final Table',
+  'discord.server.type': 'Discord server',
+  'discord.status': 'Online',
+  'discord.msg1.name': 'Magsud',
+  'discord.msg1.role': 'Zakladateľ',
+  'discord.msg1.time': '21:12',
+  'discord.msg1.text': '👋 Vitajte, beta pozvánky a náhľady sa objavia najprv tu.',
+  'discord.msg2.name': 'Tím Final Table',
+  'discord.msg2.time': '21:14',
+  'discord.msg2.text': 'Povedzte nám, čo máme vytvoriť ako ďalšie — hlasovanie o roadmape prebieha v #roadmap 🗳️',
+  'discord.msg3.name': 'Magsud',
+  'discord.msg3.role': 'Zakladateľ',
+  'discord.msg3.time': '21:17',
+  'discord.msg3.text': 'Zverejnite svoje najlepšie rozdanie týždňa v #hands — spoločne ich rozoberieme 🃏',
+
+  'tabs.3.eyebrow': 'POSTUPOM ČASU',
+  'tabs.3.title': 'Konečne spoznajte svoj\nskutočný win rate.',
+  'tabs.3.body': 'Sledujte svoj skutočný $/hod podľa stávok, kasína a typu hry. Robte rozhodnutia o stávkach na základe dát, nie pocitov.',
+
+  // Problems (Stack Cards)
+  'problems.0.stat': () => <>Hráči živého pokru odohrajú<br />v priemere <strong>~25-30 rozdaní/hodinu</strong>.</>,
+  'problems.0.question': 'Koľko z tých rozdaní si naozaj pamätáte?',
+  'problems.0.body': 'Final Table sleduje každé rozdanie, ktoré odohráte, takže si môžete prezrieť každú akciu a nájsť netesnosti, o ktorých ste nikdy nevedeli.',
+  'problems.1.stat': 'Opýtajte sa ktoréhokoľvek živého hráča na jeho win rate. Väčšina háda.',
+  'problems.1.question': 'Poznáte naozaj svoj $/hod podľa stávok, kasína alebo typu hry?',
+  'problems.1.body': 'Final Table sleduje každú seansu s presnosťou — win rate, trvanie, stávky — takže vždy presne viete, kde stojíte.',
+  'problems.2.stat': 'Pozícia je najväčšou samostatnou výhodou v pokri.',
+  'problems.2.question': 'Poznáte svoje skutočné štatistiky z BTN vs BB vs UTG?',
+  'problems.2.body': 'Final Table rozčleňuje váš výkon podľa pozície, takže vidíte, kde tlačíte peniaze a kde strácate žetóny.',
+  'problems.3.stat': () => <>„Vždy 3-betuje naľahko.“ „Nikdy nefolduje river.“</>,
+  'problems.3.question': 'Sú to skutočné čítania, alebo len pocity z jedného zapamätateľného rozdania?',
+  'problems.3.body': 'Final Table vytvára profily súperov zo zaznamenaných rozdaní — skutočné štatistiky, skutočné tendencie — takže vaše čítania sú podložené dátami, nie pamäťou.',
+
+  // Features Showcase
+  'features.title': () => <>Pripútajte sa —<br /><em>prichádza toho viac</em>.</>,
+  'features.subtitle': 'Zaznamenávanie rozdaní je len špičkou ľadovca. Final Table má mnoho ďalších inteligentných funkcií.',
+  'features.opponentProfiles.title': 'Štatistiky',
+  'features.opponentProfiles.desc': 'Sledujte svoje štatistiky vygenerované postupom času a identifikujte svoj štýl hry. Sledujte VPIP, agresivitu, win rate a ďalšie — čísla neklamú.',
+  'features.bankroll.title': 'Sledovanie bankrollu',
+  'features.bankroll.desc': 'Stanovte si cieľ pre bankroll a sledujte svoj pokrok. Vidíte svoju hodinovku, čistý zisk, ROI a mnoho ďalších metrík bankrollu.',
+  'features.sessionLogger.title': 'AI analýza',
+  'features.sessionLogger.desc': 'Získajte poznatky o svojej hre poháňané AI. Analyzujte históriu rozdaní, identifikujte vzorce a dostávajte personalizované odporúčania na zlepšenie vašej hry.',
+  'features.handReview.title': 'Analýza rozdaní',
+  'features.handReview.desc': 'Prehrajte si každé rozdanie, ktoré ste zaznamenali. Prejdite si každú ulicu, porovnajte svoje rozhodnutia s GTO východiskami a odhaľte netesnosti, ktoré ste pri stole nemohli vycítiť.',
+  'features.mtt.title': 'Multi-Table turnaje',
+  'features.mtt.desc': 'Organizujte živé turnaje s viacerými stolmi, rebríčkami v reálnom čase a rozdelením výhier. Vytvárajte kluby, spravujte členov a roly — všetko priamo z aplikácie.',
+  'features.dealerMode.title': 'Režim krupiéra',
+  'features.dealerMode.comingSoon': 'ČOSKORO',
+  'features.dealerMode.desc': 'Krupiéri môžu riadiť stôl bez rúk pomocou hlasových príkazov. Hráči sledujú dianie na svojich telefónoch v reálnom čase.',
+
+  // Final CTA
+  'cta.eyebrow': 'Skorý prístup',
+  'cta.title': () => <>Rezervujte si používateľské meno<br />skôr ako ktokoľvek iný.</>,
+  'cta.titleLine1': 'Rezervujte si používateľské meno',
+  'cta.titleLine2': 'skôr ako ktokoľvek iný.',
+  'cta.body': 'Získajte svoje trvalé meno pred spustením. Používateľské mená sa prideľujú v poradí prihlásenia — keď je preč, je preč.',
+  'cta.proof': (p) => <><strong>{p.count}+</strong> hráčov už v poradovníku</>,
+  'cta.support': () => <>Otázky? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'cta.cardTitle': 'Získajte svoje meno',
+  'cta.cardSub': 'Zadarmo · Trvá 10 sekúnd',
+  'cta.labelEmail': 'E-mail',
+  'cta.emailPlaceholder': 'vy@priklad.sk',
+  'cta.hintEmail': 'Váš budúci prihlasovací e-mail — neskôr sa nedá zmeniť.',
+  'cta.labelUsername': 'Používateľské meno',
+  'cta.usernamePlaceholder': 'vasemeno',
+  'cta.hintUsername': 'Iba písmená, čísla a podčiarkovníky. 3-20 znakov.',
+  'cta.errorTaken': 'Toto používateľské meno je už obsadené. Skúste iné.',
+  'cta.errorGeneric': 'Niečo sa pokazilo. Skúste to znova, prosím.',
+  'cta.btnLoading': 'Rezervujem…',
+  'cta.btnSubmit': 'Rezervovať moje miesto →',
+  'cta.successChip': '✓ Rezervované',
+  'cta.successTitle': 'Ste na zozname.',
+  'cta.successBody': (p) => (
+    <><span className="ru-username-preview">@{p.username}</span> je pre vás rezervované. Ozveme sa vám, keď sa Final Table spustí.</>
+  ),
+  'cta.resetBtn': 'Rezervovať ďalšie',
+
+  // FAQ
+  'faq.0.q': 'Môžem si neskôr zmeniť používateľské meno?',
+  'faq.0.a': 'Po rezervovaní je vaše používateľské meno uzamknuté. Vyberajte pozorne — stane sa vaším trvalým menom v aplikácii Final Table.',
+  'faq.1.q': 'Je rezervácia zadarmo?',
+  'faq.1.a': 'Áno, pokiaľ nie je dané používateľské meno obsadené, môžete.',
+  'faq.2.q': 'Čo ak je moje používateľské meno obsadené?',
+  'faq.2.a': 'Používateľské mená sa prideľujú v poradí prihlásenia. Ak je vaše preferované meno preč, skúste variáciu — podčiarkovníky a čísla sú povolené.',
+  'faq.3.q': 'Kedy sa aplikácia spustí?',
+  'faq.3.a': 'Final Table je v uzavretej beta verzii. Členovia poradovníka získajú skorý prístup ešte pred verejným spustením.',
+
+  // Bottom CTA
+  'bottomCta.title': () => (
+    <>
+      <span className="bc-hl-sans">Pripravení</span>
+      <span className="bc-hl-italic"> sledovať svoje rozdania?</span>
+      <span className="bc-hl-sans">.</span>
+    </>
+  ),
+  'bottomCta.sub': 'Stiahnite si aplikáciu a začnite zaznamenávať svoje rozdania hneď teraz.',
+
+  // Footer
+  'footer.tagline': () => (
+    <>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Zaznamenajte rozdanie </span><span className="mf-hl-italic">tromi gestami.</span></p>
+      <p className="mf-hl-p"><span className="mf-hl-sans">Nie tromi minútami.</span></p>
+    </>
+  ),
+  'footer.support': () => <>Otázky? <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></>,
+  'footer.resources': 'Zdroje',
+  'footer.company': 'Spoločnosť',
+  'footer.privacy': 'Zásady ochrany súkromia',
+  'footer.terms': 'Podmienky služby',
+  'footer.copy': (p) => `© Final Table. Všetky práva vyhradené ${p.year}`,
+
+  // About
+  'about.nav': 'O nás',
+  'about.missionEyebrow': 'Naša misia',
+  'about.missionTitle': () => <>Urobme živý poker<br /><em>múdrejším pre každého.</em></>,
+  'about.missionP1': 'Final Table sa začal frustráciou, ktorej sme sa nevedeli zbaviť.',
+  'about.missionP2': 'Keď sme sa ponorili do živých turnajov, stále sme narážali na tú istú stenu: neexistuje dobrý spôsob, ako zachytiť, čo sa pri stole naozaj deje. Milujeme živú hru, no spoliehať sa na pamäť pri vybavovaní si pár rozdaní o niekoľko dní neskôr nie je štúdium — je to nostalgia. A bez skutočných dát zo seáns zostávali netesnosti v našej hre neviditeľné.',
+  'about.missionP3': 'Nástroje, ktoré boli k dispozícii, boli horšie ako nič. Zastarané, ťažkopádne, ťažké — také, aké by ste uprostred seansy nikdy nevytiahli, pretože by vás úplne vytrhli z hry. Je rok 2026. To nám pripadalo nesprávne.',
+  'about.missionP4': 'Tak sme vytvorili ten, ktorý sme chceli — a vytvorili sme ho jediným spôsobom, akým sa taká aplikácia dá úprimne vytvoriť: tak, že sme s ňou žili. Osem mesiacov prototypovania, brania do skutočných seáns, štúdia toho, čo funguje, rozoberania toho, čo nie, a opätovného hrania. Znova a znova. Každá interakcia bola otestovaná pod tlakom v svetlách kasína, na skutočných rozdaniach, so skutočnými peniazmi v hre.',
+  'about.missionP5': 'Final Table je pre každého živého hráča, ktorý kedy dohral seansu s vedomím, že niečo zahral zle, no nevedel si spomenúť čo. Každé rozdanie rozpráva príbeh. My len dbáme na to, aby ste oň nemuseli prísť.',
+  'about.value1Title': 'Rýchlosť predovšetkým',
+  'about.value1Desc': 'Ak vás to pri stole spomaľuje, neoplatí sa to vytvárať. Každá funkcia je navrhnutá tak, aby fungovala v sekundách, nie minútach.',
+  'about.value2Title': 'Dáta nad pocitmi',
+  'about.value2Desc': 'Pocity klamú, dáta nie. Pomáhame vám nahradiť odhady skutočnými číslami — win rate, tendencie, vzorce.',
+  'about.value3Title': 'Vytvorené pre naživo',
+  'about.value3Desc': 'Nie je to prenos z online. Každá interakcia, každá obrazovka je navrhnutá pre chaos a rýchlosť stola živého pokru.',
+  'about.teamEyebrow': 'Tím',
+  'about.teamTitle': () => <>Ľudia, ktorí stoja za <em>Final Table</em></>,
+  'about.member1Bio': 'Softvérový inžinier zapálený pre tvorbu produktov, ktoré riešia skutočné problémy. Vedie technickú víziu za Final Table.',
+  'about.member2Bio': 'Produktový mysliteľ orientovaný na dizajn, zameraný na tvorbu intuitívnych zážitkov. Formuje vzhľad, dojem a používateľský zážitok Final Table.',
+  'about.ctaTitle': () => <>Chcete byť súčasťou <em>tejto cesty?</em></>,
+  'about.ctaBody': 'Final Table je dostupný na iOS a Androide. Stiahnite si aplikáciu a začnite sledovať svoje seansy už dnes.',
+  'about.ctaBtn': 'Stiahnuť aplikáciu →',
+
+  // Language
+  'lang.de': 'Deutsch',
+  'lang.en': 'English',
+  'lang.es': 'Español',
+  'lang.fr': 'Français',
+  'lang.pl': 'Polski',
+  'lang.pt': 'Português',
+  'lang.ru': 'Русский',
+  'lang.tr': 'Türkçe',
+  'lang.uk': 'Українська',
+  'lang.ro': 'Română',
+  'lang.sk': 'Slovenčina',
+  'community.msg1.user': 'Magsud · Zakladateľ',
+  'community.msg1.text': 'Vitajte 👋 Beta pozvánky a náhľady sa objavia najprv tu.',
+  'community.msg2.user': 'Tím Final Table',
+  'community.msg2.text': 'Povedzte nám, čo máme vytvoriť ako ďalšie — hlasovanie o roadmape prebieha v #roadmap 🗳️',
+  'community.msg3.user': 'Magsud · Zakladateľ',
+  'community.msg3.text': 'Zverejnite svoje najlepšie rozdanie týždňa v #hands — spoločne ich rozoberieme 🃏',
+}
+
 /* ─────────────────────────────────────────────── */
 /*  PROVIDER                                       */
 /* ─────────────────────────────────────────────── */
-const translations = { en, pl, ru, fr, es, de, pt, ro, tr, uk }
+const translations = { en, pl, ru, fr, es, de, pt, ro, sk, tr, uk }
 
 const I18nContext = createContext()
 

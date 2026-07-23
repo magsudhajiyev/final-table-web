@@ -5,7 +5,7 @@ import './LandingPage.css'
 import './LegalPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', tr: 'tr', uk: 'ua' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', sk: 'sk', tr: 'tr', uk: 'ua' }
 function Flag({ locale }) {
   return <span className={`fi fi-${FLAG_ISO[locale]} tp-flag`} />
 }

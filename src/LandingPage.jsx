@@ -6,7 +6,7 @@ import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
 import 'flag-icons/css/flag-icons.min.css'
 
-const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', tr: 'tr', uk: 'ua' }
+const FLAG_ISO = { de: 'de', en: 'gb', es: 'es', fr: 'fr', pl: 'pl', pt: 'br', ro: 'ro', ru: 'ru', sk: 'sk', tr: 'tr', uk: 'ua' }
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/final-table/id6760188970'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finaltable.app'
@@ -533,7 +533,9 @@ const HERO_H1_ROTATORS = {
   fr: { prefix: 'Enregistre une main ', words: ['en trois gestes', 'sans effort', 'en quelques secondes'], suffix: '.' },
   pl: { prefix: 'Zapisz rozdanie ', words: ['w trzech gestach', 'bez wysiłku', 'w sekundę'], suffix: '.' },
   pt: { prefix: 'Registre uma mão ', words: ['em três gestos', 'sem esforço', 'em segundos'], suffix: '.' },
+  ro: { prefix: 'Înregistrează o mână ', words: ['în trei gesturi', 'fără efort', 'în câteva secunde'], suffix: '.' },
   ru: { prefix: 'Запиши раздачу ', words: ['за три жеста', 'без усилий', 'за секунды'], suffix: '.' },
+  sk: { prefix: 'Zaznamenajte rozdanie ', words: ['tromi gestami', 'bez námahy', 'za pár sekúnd'], suffix: '.' },
   tr: { prefix: 'Bir eli ', words: ['üç hareketle', 'zahmetsizce', 'saniyeler içinde'], suffix: ' kaydet.' },
   uk: { prefix: 'Записуй роздачу ', words: ['в три жести', 'без зусиль', 'за секунди'], suffix: '.' },
 }
@@ -2510,7 +2512,7 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
   ]
 
   const flagIso = FLAG_ISO[locale] || 'gb'
-  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ro: 'Română', ru: 'Русский', tr: 'Türkçe' }[locale] || 'English'
+  const langLabel = { de: 'Deutsch', en: 'English', es: 'Español', fr: 'Français', pl: 'Polski', pt: 'Português', ro: 'Română', ru: 'Русский', sk: 'Slovenčina', tr: 'Türkçe' }[locale] || 'English'
 
   return (
     <footer ref={ref} className="mf-footer">
