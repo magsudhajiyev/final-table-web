@@ -510,7 +510,6 @@ body.light-theme .db-chip {
         opacity: 0;
     }
 }
-.tp-launch-close,
 .tp-launch-body,
 .tp-launch-footer {
     position: relative;
@@ -530,6 +529,7 @@ body.light-theme .db-chip {
     cursor: pointer;
     border-radius: 8px;
     display: inline-flex;
+    z-index: 2;
 }
 .tp-launch-close:hover { background: rgba(0, 0, 0, 0.06); }
 .tp-launch-body {
