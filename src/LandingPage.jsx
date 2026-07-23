@@ -1271,13 +1271,30 @@ function TPBuckleUp() {
   // phone image + active title styles apply), but drive the vertical
   // fill of each feature line directly via refs with LERP smoothing so
   // it glides instead of snapping frame-to-frame with the scroll.
+  //
+  // On mobile (max-width: 1000px, where .bu-inner is no longer sticky),
+  // skip the scroll animation entirely: fill every line to 100% and
+  // mark every feature as active so all descriptions are visible.
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
+    const N = features.length
+
+    const applyStatic = () => {
+      for (let i = 0; i < N; i++) {
+        const el = fillRefs.current[i]
+        if (el) el.style.height = '100%'
+      }
+    }
+
+    const mobileMQ = window.matchMedia('(max-width: 1000px)')
+    if (mobileMQ.matches) {
+      applyStatic()
+      return
+    }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const LERP = reduce ? 1 : 0.12
-    const N = features.length
     let raf = 0
     let running = false
     let current = 0
@@ -1921,7 +1938,7 @@ function TPBottomHero() {
             </span>
           ))}
         </h2>
-        <img src="/bottom_hero_phone.png" alt="" className="bh-phone" aria-hidden="true" />
+        <img src="/bh_phone_texture.png" alt="" className="bh-phone" aria-hidden="true" />
         <div className="bh-right">
           <p className="bh-body">
             {t('bh.body').map((line, i) => (
@@ -2385,8 +2402,24 @@ function FooterMatrixRain() {
 
 
 export const TPFooter = forwardRef(function TPFooter(_, ref) {
-  const { t, locale } = useT()
+  const { t, locale, setLocale } = useT()
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef(null)
   const year = new Date().getFullYear()
+
+  useEffect(() => {
+    if (!langOpen) return
+    const onDown = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false)
+    }
+    const onKey = (e) => { if (e.key === 'Escape') setLangOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [langOpen])
 
   const companyLinks = [
     { title: t('nav.howItWorks'), href: '#how-it-works' },
@@ -2459,12 +2492,37 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
 
             <div className="mf-bottom-row">
               <p className="mf-copy">{t('footer.copyright', { year })}</p>
-              <div className="mf-lang-pill" aria-hidden="true">
-                <span className={`fi fi-${flagIso} mf-lang-flag`} />
-                <span className="mf-lang-label">{langLabel}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+              <div className="mf-lang-picker" ref={langRef}>
+                <button
+                  type="button"
+                  className="mf-lang-pill"
+                  aria-label="Change language"
+                  aria-haspopup="menu"
+                  aria-expanded={langOpen}
+                  onClick={() => setLangOpen(o => !o)}
+                >
+                  <span className={`fi fi-${flagIso} mf-lang-flag`} />
+                  <span className="mf-lang-label">{t(`lang.${locale}`)}</span>
+                  <svg className={`mf-lang-chevron${langOpen ? ' mf-lang-chevron-open' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+                {langOpen && (
+                  <div className="mf-lang-dropdown" role="menu">
+                    {SUPPORTED.map(l => (
+                      <button
+                        key={l}
+                        type="button"
+                        role="menuitem"
+                        className={`mf-lang-option${l === locale ? ' mf-lang-option-active' : ''}`}
+                        onClick={() => { setLocale(l); setLangOpen(false) }}
+                      >
+                        <span className={`fi fi-${FLAG_ISO[l] || 'gb'} mf-lang-flag`} />
+                        <span>{t(`lang.${l}`)}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="mf-store-btns">
