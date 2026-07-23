@@ -242,6 +242,8 @@ export function TPAnnouncement() {
   })
   const barRef = useRef(null)
   const viewedRef = useRef(false)
+  const cardRef = useRef(null)
+  const returnFocusRef = useRef(null)
 
   useEffect(() => {
     const el = barRef.current
@@ -267,13 +269,48 @@ export function TPAnnouncement() {
 
   useEffect(() => {
     if (!popupOpen) return
-    const onKey = (e) => { if (e.key === 'Escape') setPopupOpen(false) }
+
+    // Remember where focus was so we can restore it on close.
+    returnFocusRef.current = document.activeElement
+    const card = cardRef.current
+
+    const focusablesIn = (root) => Array.from(
+      root.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(el => el.offsetParent !== null || el === document.activeElement)
+
+    // Move focus into the modal.
+    if (card) {
+      const first = focusablesIn(card)[0]
+      ;(first || card).focus()
+    }
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') { setPopupOpen(false); return }
+      if (e.key !== 'Tab' || !card) return
+      const nodes = focusablesIn(card)
+      if (nodes.length === 0) { e.preventDefault(); return }
+      const first = nodes[0]
+      const last = nodes[nodes.length - 1]
+      const active = document.activeElement
+      if (e.shiftKey) {
+        if (active === first || !card.contains(active)) { e.preventDefault(); last.focus() }
+      } else {
+        if (active === last || !card.contains(active)) { e.preventDefault(); first.focus() }
+      }
+    }
     document.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
+      // Restore focus to whatever opened the modal (announcement anchor).
+      const target = returnFocusRef.current
+      if (target && typeof target.focus === 'function') {
+        try { target.focus({ preventScroll: true }) } catch { target.focus() }
+      }
     }
   }, [popupOpen])
 
@@ -318,15 +355,15 @@ export function TPAnnouncement() {
         </a>
       )}
       {popupOpen && (
-        <div className="tp-launch-backdrop" onClick={() => setPopupOpen(false)} role="dialog" aria-modal="true" aria-label={t('announce.launched')}>
-          <div className="tp-launch-card" onClick={(e) => e.stopPropagation()}>
+        <div className="tp-launch-backdrop" onClick={() => setPopupOpen(false)}>
+          <div className="tp-launch-card" onClick={(e) => e.stopPropagation()} ref={cardRef} role="dialog" aria-modal="true" aria-labelledby="tp-launch-title" tabIndex={-1}>
             <TPConfetti />
             <button className="tp-launch-close" onClick={() => setPopupOpen(false)} aria-label={t('launch.close')} type="button">
               <X size={24} strokeWidth={2} />
             </button>
             <div className="tp-launch-body">
               <div className="tp-launch-emoji" aria-hidden="true">🎉</div>
-              <h2 className="tp-launch-title">{t('announce.launched')}</h2>
+              <h2 className="tp-launch-title" id="tp-launch-title">{t('announce.launched')}</h2>
               <p className="tp-launch-copy">{t('launch.body')}</p>
               <div className="tp-launch-stores">
                 <a href={APP_STORE_URL} className="tp-launch-store" onClick={onStoreClick('ios')} aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
