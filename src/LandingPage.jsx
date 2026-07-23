@@ -2468,6 +2468,10 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
                   </div>
                   <ThemeToggle />
                 </div>
+                <div className="mf-store-btns">
+                  <AppStoreButton />
+                  <GooglePlayButton />
+                </div>
               </div>
 
               <div className="mf-nav">
@@ -2489,7 +2493,9 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
                 </div>
               </div>
             </div>
+          </div>
 
+          <div className="mf-bottom-group">
             <div className="mf-bottom-row">
               <p className="mf-copy">{t('footer.copyright', { year })}</p>
               <div className="mf-lang-picker" ref={langRef}>
@@ -2525,15 +2531,10 @@ export const TPFooter = forwardRef(function TPFooter(_, ref) {
                 )}
               </div>
             </div>
-            <div className="mf-store-btns">
-              <AppStoreButton />
-              <GooglePlayButton />
-            </div>
-            <p className="mf-support">{t('footer.support')}</p>
-          </div>
 
-          <div className="mf-hero-card" aria-hidden="true">
-            <img src="/footer_card.png" alt="" className="mf-hero-img" />
+            <div className="mf-hero-card" aria-hidden="true">
+              <img src="/footer_card.png" alt="" className="mf-hero-img" />
+            </div>
           </div>
         </div>
       </div>
