@@ -218,10 +218,30 @@ function TPConfetti() {
   )
 }
 
+// Bump this when the offer/copy changes to re-show the bar to prior dismissers.
+const LAUNCH_ID = 'launch-2026-07'
+const ANNOUNCE_DISMISS_KEY = 'ft_announce_dismissed'
+
+/**
+ * Fire-and-forget analytics event. Dispatches a CustomEvent on window so any
+ * downstream tool (gtag, plausible, posthog…) can subscribe. Also logs in dev.
+ */
+function track(name, props = {}) {
+  try {
+    window.dispatchEvent(new CustomEvent('ft:track', { detail: { name, ...props } }))
+    if (import.meta.env.DEV) console.log('[track]', name, props)
+  } catch { /* no-op */ }
+}
+
 export function TPAnnouncement() {
   const { t } = useT()
   const [popupOpen, setPopupOpen] = useState(false)
+  const [dismissed, setDismissed] = useState(() => {
+    try { return localStorage.getItem(ANNOUNCE_DISMISS_KEY) === LAUNCH_ID }
+    catch { return false }
+  })
   const barRef = useRef(null)
+  const viewedRef = useRef(false)
 
   useEffect(() => {
     const el = barRef.current
@@ -232,8 +252,18 @@ export function TPAnnouncement() {
     const ro = new ResizeObserver(update)
     ro.observe(el)
     update()
-    return () => ro.disconnect()
-  }, [])
+    return () => {
+      ro.disconnect()
+      // Bar is unmounting: clear the offset so pages below reflow.
+      document.documentElement.style.setProperty('--announce-height', '0px')
+    }
+  }, [dismissed])
+
+  useEffect(() => {
+    if (dismissed || viewedRef.current) return
+    viewedRef.current = true
+    track('announce_view', { id: LAUNCH_ID })
+  }, [dismissed])
 
   useEffect(() => {
     if (!popupOpen) return
@@ -249,21 +279,44 @@ export function TPAnnouncement() {
 
   const openPopup = (e) => {
     e.preventDefault()
+    track('announce_click', { id: LAUNCH_ID })
     setPopupOpen(true)
+  }
+
+  const dismiss = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    try { localStorage.setItem(ANNOUNCE_DISMISS_KEY, LAUNCH_ID) } catch { /* no-op */ }
+    track('announce_dismiss', { id: LAUNCH_ID })
+    setDismissed(true)
+  }
+
+  const onStoreClick = (platform) => () => {
+    track('launch_store_click', { id: LAUNCH_ID, platform })
   }
 
   return (
     <>
-      <a href="#" className="tp-announce" onClick={openPopup} ref={barRef}>
-        <span className="tp-announce-inner">
-          <span className="tp-announce-text">
-            <span className="tp-announce-emoji">🎉</span>
-            <span className="tp-announce-launch">{t('announce.launched')}</span>
-            <span className="tp-announce-body">{t('announce.body')}</span>
+      {!dismissed && (
+        <a href="#" className="tp-announce" onClick={openPopup} ref={barRef}>
+          <span className="tp-announce-inner">
+            <span className="tp-announce-text">
+              <span className="tp-announce-emoji">🎉</span>
+              <span className="tp-announce-launch">{t('announce.launched')}</span>
+              <span className="tp-announce-body">{t('announce.body')}</span>
+            </span>
+            <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
           </span>
-          <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
-        </span>
-      </a>
+          <button
+            type="button"
+            className="tp-announce-close"
+            onClick={dismiss}
+            aria-label={t('launch.close')}
+          >
+            <X size={16} strokeWidth={2.25} />
+          </button>
+        </a>
+      )}
       {popupOpen && (
         <div className="tp-launch-backdrop" onClick={() => setPopupOpen(false)} role="dialog" aria-modal="true" aria-label={t('announce.launched')}>
           <div className="tp-launch-card" onClick={(e) => e.stopPropagation()}>
@@ -276,10 +329,10 @@ export function TPAnnouncement() {
               <h2 className="tp-launch-title">{t('announce.launched')}</h2>
               <p className="tp-launch-copy">{t('launch.body')}</p>
               <div className="tp-launch-stores">
-                <a href={APP_STORE_URL} className="tp-launch-store" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+                <a href={APP_STORE_URL} className="tp-launch-store" onClick={onStoreClick('ios')} aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
                   <img src="/store_appstore.svg" alt="" />
                 </a>
-                <a href={PLAY_STORE_URL} className="tp-launch-store" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+                <a href={PLAY_STORE_URL} className="tp-launch-store" onClick={onStoreClick('android')} aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
                   <img src="/store_googleplay.svg" alt="" />
                 </a>
               </div>

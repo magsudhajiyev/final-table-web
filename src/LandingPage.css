@@ -361,7 +361,7 @@ body.light-theme .db-chip {
 /* ── Navbar ── */
 .tp-nav-wrap {
     position: fixed;
-    top: var(--announce-height, 38px);
+    top: var(--announce-height, 0px);
     left: 0;
     right: 0;
     z-index: 100;
@@ -373,7 +373,10 @@ body.light-theme .db-chip {
 }
 
 /* Announcement bar */
-:root { --announce-height: 38px; }
+/* Default 0 so the nav sits at the top when the bar is absent (dismissed
+   or unmounted). The real bar height is written to :root from JS via a
+   ResizeObserver while the bar is mounted. */
+:root { --announce-height: 0px; }
 
 .tp-announce {
     position: fixed;
@@ -611,6 +614,33 @@ body.light-theme .db-chip {
     .tp-launch-store:hover { transform: none; }
 }
 
+.tp-announce-close {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    color: #0c0c0c;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 160ms ease, background-color 160ms ease;
+}
+.tp-announce-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.08);
+}
+@media (max-width: 768px) {
+    .tp-announce-close { right: 6px; width: 24px; height: 24px; }
+}
+
 .tp-announce-arrow {
     color: #0c0c0c;
     flex-shrink: 0;
@@ -625,8 +655,7 @@ body.light-theme .db-chip {
 }
 
 @media (max-width: 768px) {
-    :root { --announce-height: 44px; }
-    .tp-announce { padding: 6px 16px; }
+    .tp-announce { padding: 6px 36px 6px 16px; }
     .tp-announce-text { font-size: 13px; line-height: 18px; gap: 6px; flex-wrap: wrap; justify-content: center; text-align: center; }
     .tp-announce-emoji { line-height: 18px; }
 }
