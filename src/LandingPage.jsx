@@ -1869,8 +1869,8 @@ function TPBuiltForLive() {
                 <p className="bfl-feature-desc">{t('live.dealer.desc')}</p>
               </div>
               <div className="bfl-dealer-badge">
-                <span className="bfl-dealer-pill">{t('live.dealer.badge')}</span>
-                <span className="bfl-dealer-tag">{t('live.dealer.tag')}</span>
+                <span className="bfl-dealer-badge-em">{t('live.dealer.badge')}:</span>
+                <span className="bfl-dealer-badge-text">{t('live.dealer.tag')}</span>
               </div>
             </div>
             <div className="bfl-card bfl-card-download">

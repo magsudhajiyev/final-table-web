@@ -234,18 +234,13 @@ body.light-theme .bfl-card {
 }
 body.light-theme .bfl-intro-eyebrow { color: rgba(12, 12, 12, 0.55); }
 body.light-theme .bfl-intro-title,
-body.light-theme .bfl-feature-title,
-body.light-theme .bfl-dealer-tag { color: #0c0c0c; }
+body.light-theme .bfl-feature-title { color: #0c0c0c; }
 body.light-theme .bfl-feature-desc { color: rgba(12, 12, 12, 0.72); }
 body.light-theme .bfl-feature-media { background: #F2F2F2; }
 body.light-theme .bfl-card-download {
     background: linear-gradient(90deg, #FFFFFF 0%, #F6F6F6 100%);
 }
 body.light-theme .bfl-download-label { color: rgba(12, 12, 12, 0.72); }
-body.light-theme .bfl-dealer-pill {
-    background: rgba(12, 12, 12, 0.08);
-    color: #0c0c0c;
-}
 
 /* ── Bento animations: invert white strokes/fills to dark for light theme ── */
 
@@ -7268,35 +7263,26 @@ body.light-theme .db-chip {
 .bfl-dealer-badge {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    background: #0c0c0c;
-    border: 1px solid #3a3a3c;
-    border-radius: 999px;
-    padding: 4px 14px 4px 4px;
+    gap: 4px;
+    background: #EBEBF0;
+    border-radius: 12px;
+    padding: 4px 8px;
     align-self: flex-start;
-}
-
-.bfl-dealer-pill {
-    background: rgba(227, 227, 227, 0.21);
-    border-radius: 999px;
-    padding: 4px 14px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 13px;
-    font-weight: 500;
     line-height: 1.4;
-    letter-spacing: 0.5px;
-    color: #ffffff;
+    letter-spacing: -0.3px;
+    color: #0c0c0c;
     white-space: nowrap;
 }
 
-.bfl-dealer-tag {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 13px;
+.bfl-dealer-badge-em {
     font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: -0.5px;
-    color: #ffffff;
-    white-space: nowrap;
+    font-style: italic;
+}
+
+.bfl-dealer-badge-text {
+    font-weight: 400;
 }
 
 .bfl-card-download {
