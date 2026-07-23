@@ -736,6 +736,7 @@ function TPHero() {
       <HeroDots />
       <div className="tp-hero-inner">
         <div className="tp-hero-content">
+          <div className="tp-hero-headline-group">
           <h1 className="tp-hero-h1" ref={h1Ref}>
             {rot ? (
               <>
@@ -770,6 +771,7 @@ function TPHero() {
             </div>
           )}
           <p className="tp-hero-sub">{t('hero.sub')}</p>
+          </div>
           <div className="tp-hero-ctas" id="hero-download">
             <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="tp-hero-store-img" />

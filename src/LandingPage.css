@@ -969,7 +969,7 @@ body.light-theme .db-chip {
     background: #0c0c0c;
     position: relative;
     overflow: hidden;
-    padding: 135px 0 0;
+    padding: 180px 0 0;
 }
 
 .tp-hero-dots {
@@ -1001,6 +1001,14 @@ body.light-theme .db-chip {
     width: 100%;
     max-width: 916px;
     text-align: center;
+}
+
+.tp-hero-headline-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
 }
 
 /* ── Headline ── */
@@ -1129,7 +1137,7 @@ body.light-theme .db-chip {
 .tp-hero-phone-right  { width: 342px; transform: translateX(calc(-50% + 250px)); }
 
 @media (max-width: 1100px) {
-    .tp-hero { padding: 120px 0 0; }
+    .tp-hero { padding: 160px 0 0; }
     .tp-hero-h1 { font-size: 54px; letter-spacing: -2.4px; }
     .tp-hero-phones { height: 480px; }
     .tp-hero-phone-center { width: 320px; }
@@ -1138,7 +1146,7 @@ body.light-theme .db-chip {
 }
 
 @media (max-width: 768px) {
-    .tp-hero { padding: 100px 0 0; }
+    .tp-hero { padding: 160px 0 0; }
     .tp-hero-inner { padding: 0 20px; gap: 48px; }
     .tp-hero-h1 { font-size: 42px; letter-spacing: -1.8px; line-height: 1.1; }
     .tp-hero-sub { font-size: 15px; line-height: 24px; letter-spacing: -0.25px; }
