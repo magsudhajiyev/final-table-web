@@ -26,6 +26,12 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="shortcut icon" href="/favicon.png">
 
+    <!-- Preload hero phone renders — LCP on desktop. Skipped on mobile where
+         they aren't the visual anchor. -->
+    <link rel="preload" as="image" href="/hero_phone_center.png" media="(min-width: 769px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/hero_phone_left.png" media="(min-width: 769px)">
+    <link rel="preload" as="image" href="/hero_phone_right.png" media="(min-width: 769px)">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
