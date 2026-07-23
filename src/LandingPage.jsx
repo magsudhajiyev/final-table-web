@@ -221,6 +221,19 @@ function TPConfetti() {
 export function TPAnnouncement() {
   const { t } = useT()
   const [popupOpen, setPopupOpen] = useState(false)
+  const barRef = useRef(null)
+
+  useEffect(() => {
+    const el = barRef.current
+    if (!el) return
+    const update = () => {
+      document.documentElement.style.setProperty('--announce-height', el.offsetHeight + 'px')
+    }
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    update()
+    return () => ro.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!popupOpen) return
@@ -241,7 +254,7 @@ export function TPAnnouncement() {
 
   return (
     <>
-      <a href="#" className="tp-announce" onClick={openPopup}>
+      <a href="#" className="tp-announce" onClick={openPopup} ref={barRef}>
         <span className="tp-announce-inner">
           <span className="tp-announce-text">
             <span className="tp-announce-emoji">🎉</span>
