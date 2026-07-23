@@ -1143,11 +1143,22 @@ function TPHowItWorks() {
       if (!running) { running = true; rafId = requestAnimationFrame(tick) }
     }
 
+    // Header offset: fixed announcement + navbar height, plus a small breathing gap
+    const HIW_TOP_GAP = 16
+    const readHeaderOffset = () => {
+      const nav = document.querySelector('.tp-nav-wrap')
+      const bottom = nav ? nav.getBoundingClientRect().bottom : 0
+      return Math.max(0, bottom) + HIW_TOP_GAP
+    }
+
     // Scale the fixed 1512x1050 canvas to fit inside the pinned viewport
     const applyScale = () => {
       const canvas = canvasRef.current
       if (!canvas) return
-      const s = Math.min(1, window.innerWidth / 1512, window.innerHeight / 1050)
+      const offset = readHeaderOffset()
+      wrapper.style.setProperty('--hiw-top', offset + 'px')
+      const availH = Math.max(0, window.innerHeight - offset)
+      const s = Math.min(1, window.innerWidth / 1512, availH / 1050)
       canvas.style.transform = `scale(${s.toFixed(4)})`
     }
     const onResize = () => { applyScale(); onScroll() }
@@ -3205,8 +3216,13 @@ export default function LandingPage() {
     if (typeof Lenis === 'undefined') return
     if (window.matchMedia('(pointer: coarse)').matches) return
     const lenis = new Lenis({
-      duration: 1.1,
+      // Snappier feel: tighter lerp for wheel smoothing, shorter duration
+      // for programmatic scrollTo (nav clicks), and a small wheel boost.
+      lerp: 0.14,
+      duration: 0.7,
       easing: t => 1 - Math.pow(1 - t, 3),
+      wheelMultiplier: 1.15,
+      touchMultiplier: 1.5,
     })
     window.__lenis = lenis
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf) }

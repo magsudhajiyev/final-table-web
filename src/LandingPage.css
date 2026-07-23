@@ -4497,8 +4497,8 @@ body.light-theme .db-chip {
 
 .hiw-sticky {
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: var(--hiw-top, 0px);
+    height: calc(100vh - var(--hiw-top, 0px));
     overflow: hidden;
     display: flex;
     align-items: center;
