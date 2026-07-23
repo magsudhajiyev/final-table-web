@@ -132,7 +132,7 @@ const en = {
   'live.dealer.badge': 'Coming Soon',
   'live.dealer.tag': 'Venue Partnership',
   'live.download': 'Download the app:',
-  'bh.title': ['Log hand in three gestures,', 'not in three mintues'],
+  'bh.title': ['Log hand in three gestures,', 'not in three minutes'],
   'bh.body': ['Download the app and start', 'logging your hands right away.'],
   'footer.followUs': 'Follow us on:',
   'footer.copyright': ({ year }) => `© ${year}, Final Table. All rights reserved.`,
