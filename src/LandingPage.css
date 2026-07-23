@@ -2442,6 +2442,13 @@ body.light-theme .db-chip {
 }
 .mf-support a:hover { opacity: 0.85; }
 
+.mf-store-btns {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
 .mf-top-line {
     height: 1px;
     width: 100%;
