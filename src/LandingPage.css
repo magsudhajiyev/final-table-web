@@ -768,6 +768,23 @@ body.light-theme .db-chip {
     display: block;
 }
 
+/* Hidden measuring ghost: same width/typography as the real H1 so wrapping
+   matches. Each variant is absolutely stacked; the wrapper grows to the
+   tallest one. Kept out of flow and non-interactive. */
+.tp-hero-h1-ghost {
+    position: relative;
+    width: 100%;
+    pointer-events: none;
+    visibility: hidden;
+}
+.tp-hero-h1-ghost-variant {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+}
+
 /* Rotating word swap: fixed inline slot; each word slides+fades in on mount
    (React remount via key). Underline hints at the rotating nature. */
 .tp-hero-h1-rot {

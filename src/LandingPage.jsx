@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, forwardRef } from 'react'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import { ThemeToggle, useTheme } from './theme'
@@ -542,6 +542,8 @@ function TPHero() {
   const { t, locale } = useT()
   const heroRef = useRef(null)
   const phonesRef = useRef(null)
+  const h1Ref = useRef(null)
+  const measureRef = useRef(null)
   const rot = HERO_H1_ROTATORS[locale]
   const [rotIdx, setRotIdx] = useState(0)
 
@@ -550,6 +552,28 @@ function TPHero() {
     const id = setInterval(() => setRotIdx(i => (i + 1) % rot.words.length), 2200)
     return () => clearInterval(id)
   }, [rot])
+
+  // Reserve the tallest headline height across every rotating word so the
+  // section never shifts as words swap (some words wrap to an extra line,
+  // e.g. French "en quelques secondes"). Measured off a hidden ghost that
+  // renders all word variants; recomputed on locale change and resize.
+  useLayoutEffect(() => {
+    const h1 = h1Ref.current
+    const measure = measureRef.current
+    if (!h1) return
+    if (!rot || !measure) { h1.style.minHeight = ''; return }
+    const update = () => {
+      h1.style.minHeight = ''
+      let tallest = 0
+      for (const v of measure.querySelectorAll('.tp-hero-h1-ghost-variant')) {
+        tallest = Math.max(tallest, v.offsetHeight)
+      }
+      if (tallest > 0) h1.style.minHeight = tallest + 'px'
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [rot, locale])
 
   useEffect(() => {
     const phones = phonesRef.current
@@ -599,7 +623,7 @@ function TPHero() {
       <HeroDots />
       <div className="tp-hero-inner">
         <div className="tp-hero-content">
-          <h1 className="tp-hero-h1">
+          <h1 className="tp-hero-h1" ref={h1Ref}>
             {rot ? (
               <>
                 <span className="tp-hero-h1-line">
@@ -617,6 +641,21 @@ function TPHero() {
               ))
             )}
           </h1>
+          {rot && (
+            /* Hidden ghost: each full headline variant is stacked in the same
+               spot; the container sizes to the TALLEST variant, which the
+               visible H1 reserves as min-height so it never reflows on swap. */
+            <div className="tp-hero-h1-ghost" aria-hidden="true" ref={measureRef}>
+              {rot.words.map((w, i) => (
+                <h1 key={i} className="tp-hero-h1 tp-hero-h1-ghost-variant">
+                  <span className="tp-hero-h1-line">
+                    {rot.prefix}<span className="tp-hero-h1-rot">{w}</span>{rot.suffix}
+                  </span>
+                  <span className="tp-hero-h1-line">{t('hero.h1')[1]}</span>
+                </h1>
+              ))}
+            </div>
+          )}
           <p className="tp-hero-sub">{t('hero.sub')}</p>
           <div className="tp-hero-ctas">
             <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
