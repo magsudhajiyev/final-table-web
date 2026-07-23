@@ -783,9 +783,11 @@ body.light-theme .db-chip {
 /* Rotating word swap: fixed inline slot; each word slides+fades in on mount
    (React remount via key). Underline hints at the rotating nature. */
 .tp-hero-h1-rot {
-    display: inline-block;
+    /* inline (not inline-block) so the space before it isn't collapsed —
+       otherwise the prefix runs into the green word ("handem segundos").
+       The animated element is the inner .tp-hero-h1-rot-word. */
+    display: inline;
     position: relative;
-    vertical-align: baseline;
     color: #A2F69A;
 }
 .tp-hero-h1-rot-word {
@@ -4220,8 +4222,9 @@ body.light-theme .db-chip {
     background: #0c0c0c;
     color: #ffffff;
     position: relative;
-    /* Tall wrapper: 100vh pinned + 200vh of scroll travel (two transitions) */
-    height: 300vh;
+    /* Tall wrapper: 100vh pinned + one 100vh of scroll travel per transition.
+       4 screens = 3 transitions = 300vh travel + 100vh pin = 400vh. */
+    height: 400vh;
     padding: 0;
 }
 
@@ -4397,9 +4400,10 @@ body.light-theme .db-chip {
     transition: left 500ms cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
 }
-.hiw-nav-highlight[data-pos="0"] { left: 112.3px; }
-.hiw-nav-highlight[data-pos="1"] { left: 211.7px; }
-.hiw-nav-highlight[data-pos="2"] { left: 311.1px; }
+.hiw-nav-highlight[data-pos="0"] { left: 12.9px; }
+.hiw-nav-highlight[data-pos="1"] { left: 112.3px; }
+.hiw-nav-highlight[data-pos="2"] { left: 211.7px; }
+.hiw-nav-highlight[data-pos="3"] { left: 311.1px; }
 
 .hiw-nav-item {
     position: relative;
@@ -4439,6 +4443,7 @@ body.light-theme .db-chip {
 .hiw-nav-vec--users { inset: 18.75% 3.12% 12.39% 3.12%; }
 .hiw-nav-vec--stats { inset: 12.5% 9.38% 15.63% 9.38%; }
 .hiw-nav-vec--clock { inset: 0; }
+.hiw-nav-vec--plus  { inset: 9%; }
 
 /* Desktop text lives outside the scaled canvas so it aligns to the 1400px
    centered grid instead of being pinned to the 1512px canvas edge. */

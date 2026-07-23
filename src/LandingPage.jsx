@@ -868,6 +868,16 @@ function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
 /* ────────────────────────────────────────────────────── */
 /*  HOW IT WORKS  (3-card Figma layout)                   */
 /* ────────────────────────────────────────────────────── */
+/* How-It-Works screens, in animation order. Each has a text key, a color +
+   dashed screenshot, and a nav-tab icon. Reorder this array to reorder the
+   whole animation — the choreography below is data-driven off it. */
+const HIW_SCREENS = [
+  { key: 'hiw',         color: '/hiw2_opponents_color.png', dashed: null,                        navSrc: '/hiw_nav_users.svg', navMod: 'users' },
+  { key: 'hiw.handlog', color: '/hiw2_handlog_color.png',   dashed: '/hiw2_handlog_dashed.png',  navSrc: '/hiw_nav_plus.svg',  navMod: 'plus'  },
+  { key: 'hiw.stats',   color: '/hiw2_stats_color.png',     dashed: '/hiw2_stats_dashed.png',    navSrc: '/hiw_nav_stats.svg', navMod: 'stats' },
+  { key: 'hiw.session', color: '/hiw2_sessions_color.png',  dashed: '/hiw2_sessions_dashed.png', navSrc: '/hiw_nav_clock.svg', navMod: 'clock' },
+]
+
 function TPHowItWorks() {
   const { t } = useT()
   const [active, setActive] = useState(0)
@@ -876,17 +886,14 @@ function TPHowItWorks() {
   const stickyRef = useRef(null)
   const autoRef = useRef(null)
   const canvasRef = useRef(null)
-  const statsDashedRef = useRef(null)
-  const statsColorRef = useRef(null)
-  const sessDashedRef = useRef(null)
-  const sessColorRef = useRef(null)
+  // One color + one dashed ref per screen (index 0's color is the base layer;
+  // its dashed is unused since the first screen never slides in).
+  const colorRefs = useRef([])
+  const dashedRefs = useRef([])
 
-  const stages = [{ key: 'hiw' }, { key: 'hiw.stats' }, { key: 'hiw.session' }]
-  const navTabs = [
-    { src: '/hiw_nav_users.svg', mod: 'users' },
-    { src: '/hiw_nav_stats.svg', mod: 'stats' },
-    { src: '/hiw_nav_clock.svg', mod: 'clock' },
-  ]
+  const N = HIW_SCREENS.length      // number of screens
+  const T = N - 1                   // number of slide-in transitions
+  const stages = HIW_SCREENS
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)')
@@ -913,7 +920,7 @@ function TPHowItWorks() {
       }
       window.addEventListener('resize', applyScale)
       applyScale()
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % 3), 4000)
+      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
       return () => {
         window.removeEventListener('resize', applyScale)
         clearInterval(autoRef.current)
@@ -941,60 +948,67 @@ function TPHowItWorks() {
     const inFrac = (p) => (p >= 0.5 ? 1 : Math.max(0, p) * 0.8)
     const clamp01 = (v) => Math.max(0, Math.min(1, v))
 
-    const pos = { stats: PARK, sess: ENTER, sessOp: 0 }
+    // One animated position + opacity per sliding screen (screens 1..N-1).
+    // Screen 0 is the static base layer. pos[j] is the X of screen j+1.
+    const pos = HIW_SCREENS.slice(1).map((_, j) => ({
+      x: j === 0 ? PARK : ENTER,   // first queued screen parks; the rest wait off-screen
+      op: j === 0 ? 1 : 0,
+    }))
     let rafId = null
     let running = false
     let activeIdx = 0
 
     const apply = () => {
-      const sd = statsDashedRef.current, sc = statsColorRef.current
-      const zd = sessDashedRef.current, zc = sessColorRef.current
-      if (sd) {
-        sd.style.transform = `translateX(${pos.stats.toFixed(2)}px)`
-        sd.style.clipPath = `inset(0 0 ${BOT}px ${Math.max(0, WIN_R - pos.stats).toFixed(2)}px)`
+      for (let j = 0; j < pos.length; j++) {
+        const screenIdx = j + 1
+        const dashed = dashedRefs.current[screenIdx]
+        const color = colorRefs.current[screenIdx]
+        if (dashed) {
+          dashed.style.transform = `translateX(${pos[j].x.toFixed(2)}px)`
+          dashed.style.clipPath = `inset(0 0 ${BOT}px ${Math.max(0, WIN_R - pos[j].x).toFixed(2)}px)`
+          dashed.style.opacity = pos[j].op.toFixed(3)
+        }
+        if (color) color.style.transform = `translateX(${(pos[j].x - WIN_X).toFixed(2)}px)`
       }
-      if (sc) sc.style.transform = `translateX(${(pos.stats - WIN_X).toFixed(2)}px)`
-      if (zd) {
-        zd.style.transform = `translateX(${pos.sess.toFixed(2)}px)`
-        zd.style.clipPath = `inset(0 0 ${BOT}px ${Math.max(0, WIN_R - pos.sess).toFixed(2)}px)`
-        zd.style.opacity = pos.sessOp.toFixed(3)
-      }
-      if (zc) zc.style.transform = `translateX(${(pos.sess - WIN_X).toFixed(2)}px)`
     }
 
     const tick = () => {
       const rect = wrapper.getBoundingClientRect()
       const total = rect.height - window.innerHeight
-      // fi: 0..2 across the two transitions (stats in, then sessions in)
-      const fi = total > 0 ? clamp01(-rect.top / total) * 2 : 0
+      // fi: 0..T across the T slide-in transitions (screen 1 in, then 2, ...)
+      const fi = total > 0 ? clamp01(-rect.top / total) * T : 0
 
-      const tStats = PARK + (WIN_X - PARK) * inFrac(clamp01(fi))
-      let tSess, tSessOp
-      if (fi < 1) {
-        // queued: fade + drift in from the right, driven by the same commit curve
-        // as the slide-in — so when stats snaps into the frame, sessions snaps
-        // forward into the parking slot (same rest gap) and waits there.
-        const q = inFrac(clamp01(fi))
-        tSess = ENTER + (PARK - ENTER) * q
-        tSessOp = q
-      } else {
-        tSess = PARK + (WIN_X - PARK) * inFrac(fi - 1)
-        tSessOp = 1
+      // Each sliding screen j (0-based over the T transitions) is driven by its
+      // own transition window [j, j+1]. Before its window it's queued (parked
+      // once the previous transition commits); during, it slides into the frame.
+      let needsMore = false
+      for (let j = 0; j < pos.length; j++) {
+        let tx, top
+        if (fi >= j + 1) {
+          // fully in
+          tx = WIN_X; top = 1
+        } else if (fi >= j) {
+          // sliding into the frame during its own transition
+          tx = PARK + (WIN_X - PARK) * inFrac(fi - j); top = 1
+        } else if (fi >= j - 1) {
+          // queued: fade + drift from ENTER to PARK, driven by the prior commit curve
+          const q = inFrac(clamp01(fi - (j - 1)))
+          tx = ENTER + (PARK - ENTER) * q; top = q
+        } else {
+          // still waiting off-screen
+          tx = ENTER; top = 0
+        }
+        pos[j].x += (tx - pos[j].x) * LERP
+        pos[j].op += (top - pos[j].op) * LERP
+        if (Math.abs(pos[j].x - tx) > 0.05 || Math.abs(pos[j].op - top) > 0.002) needsMore = true
+        else { pos[j].x = tx; pos[j].op = top }
       }
 
-      const a = fi < 0.5 ? 0 : fi < 1.5 ? 1 : 2
+      // active stage: rounds to the nearest committed screen (0.5 hysteresis)
+      const a = Math.min(N - 1, Math.max(0, Math.round(fi)))
       if (a !== activeIdx) { activeIdx = a; setActive(a) }
 
-      pos.stats += (tStats - pos.stats) * LERP
-      pos.sess += (tSess - pos.sess) * LERP
-      pos.sessOp += (tSessOp - pos.sessOp) * LERP
-      const needsMore =
-        Math.abs(pos.stats - tStats) > 0.05 ||
-        Math.abs(pos.sess - tSess) > 0.05 ||
-        Math.abs(pos.sessOp - tSessOp) > 0.002
-      if (!needsMore) { pos.stats = tStats; pos.sess = tSess; pos.sessOp = tSessOp }
       apply()
-
       if (needsMore) rafId = requestAnimationFrame(tick)
       else running = false
     }
@@ -1027,7 +1041,7 @@ function TPHowItWorks() {
     if (autoRef.current) {
       // Mobile auto-cycle: jump straight to the stage and restart the timer
       clearInterval(autoRef.current)
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % 3), 4000)
+      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
       setActive(i)
       return
     }
@@ -1035,7 +1049,7 @@ function TPHowItWorks() {
     if (!wrapper) return
     const rect = wrapper.getBoundingClientRect()
     const total = rect.height - window.innerHeight
-    const target = window.scrollY + rect.top + (i / 2) * total
+    const target = window.scrollY + rect.top + (i / T) * total
     if (window.__lenis) window.__lenis.scrollTo(target)
     else window.scrollTo({ top: target, behavior: 'smooth' })
   }
@@ -1066,37 +1080,62 @@ function TPHowItWorks() {
         <div className="hiw-text hiw-text--desktop">{textInner}</div>
         <div className="hiw-canvas" ref={canvasRef}>
           {/* Color screens, clipped to the frame's screen window. Stack order = stage order.
-              On mobile they crossfade in place via .is-on instead of sliding. */}
+              On mobile they crossfade in place via .is-on instead of sliding.
+              Screen 0 is the static base; each later screen is parked off to the
+              right until its slide-in transition (initial X: first queued at PARK,
+              the rest at ENTER; the JS choreography drives them from there). */}
           <div className="hiw-clip" aria-hidden="true">
-            <img src="/hiw2_opponents_color.png" alt="" className={`hiw-screen${active === 0 ? ' is-on' : ''}`} />
-            <img ref={statsColorRef} src="/hiw2_stats_color.png" alt="" className={`hiw-screen${active === 1 ? ' is-on' : ''}`} style={{ transform: 'translateX(498.21px)' }} />
-            <img ref={sessColorRef} src="/hiw2_sessions_color.png" alt="" className={`hiw-screen${active === 2 ? ' is-on' : ''}`} style={{ transform: 'translateX(886.21px)' }} />
+            {HIW_SCREENS.map((s, i) => {
+              const parkX = i === 0 ? 0 : i === 1 ? 1032 : 1420
+              return (
+                <img
+                  key={s.key}
+                  ref={el => (colorRefs.current[i] = el)}
+                  src={s.color}
+                  alt=""
+                  className={`hiw-screen${active === i ? ' is-on' : ''}`}
+                  style={i === 0 ? undefined : { transform: `translateX(${(parkX - 533.79).toFixed(2)}px)` }}
+                />
+              )
+            })}
           </div>
 
           {/* Fixed iPhone frame (transparent screen window) */}
           <img src="/hiw2_frame.png" alt="" className="hiw-frame" aria-hidden="true" />
 
-          {/* Dashed screens: visible only right of the window edge (clip-path), slide under the bezel */}
-          <img ref={statsDashedRef} src="/hiw2_stats_dashed.png" alt="" className="hiw-dashed" style={{ transform: 'translateX(1032px)', clipPath: 'inset(0 0 217.3px 0)' }} aria-hidden="true" />
-          <img ref={sessDashedRef} src="/hiw2_sessions_dashed.png" alt="" className="hiw-dashed" style={{ transform: 'translateX(1420px)', clipPath: 'inset(0 0 217.3px 0)', opacity: 0 }} aria-hidden="true" />
+          {/* Dashed screens (screens 1..N-1): visible only right of the window edge
+              (clip-path), slide under the bezel. First queued parks at PARK; rest at ENTER. */}
+          {HIW_SCREENS.slice(1).map((s, j) => {
+            const i = j + 1
+            const parkX = j === 0 ? 1032 : 1420
+            return (
+              <img
+                key={s.key}
+                ref={el => (dashedRefs.current[i] = el)}
+                src={s.dashed}
+                alt=""
+                className="hiw-dashed"
+                style={{ transform: `translateX(${parkX}px)`, clipPath: 'inset(0 0 217.3px 0)', opacity: j === 0 ? 1 : 0 }}
+                aria-hidden="true"
+              />
+            )
+          })}
 
-          {/* App tab bar (Figma 2081:18100) floating over the phone's cut-off bottom */}
+          {/* App tab bar (Figma 2081:18100) floating over the phone's cut-off bottom.
+              One tab per screen, in animation order. */}
           <div className="hiw-nav">
             <div className="hiw-nav-pill" role="tablist" aria-label="How it works stages">
               <span className="hiw-nav-highlight" data-pos={active} />
-              <span className="hiw-nav-item" aria-hidden="true">
-                <span className="hiw-nav-ico"><span className="hiw-nav-vec hiw-nav-vec--home"><img src="/hiw_nav_home.svg" alt="" /></span></span>
-              </span>
-              {navTabs.map((tab, i) => (
+              {HIW_SCREENS.map((s, i) => (
                 <button
-                  key={tab.mod}
+                  key={s.key}
                   type="button"
                   className={`hiw-nav-item hiw-nav-btn${i === active ? ' is-active' : ''}`}
                   onClick={() => jumpTo(i)}
                   aria-selected={i === active}
                   role="tab"
                 >
-                  <span className="hiw-nav-ico"><span className={`hiw-nav-vec hiw-nav-vec--${tab.mod}`}><img src={tab.src} alt="" /></span></span>
+                  <span className="hiw-nav-ico"><span className={`hiw-nav-vec hiw-nav-vec--${s.navMod}`}><img src={s.navSrc} alt="" /></span></span>
                 </button>
               ))}
             </div>
