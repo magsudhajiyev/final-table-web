@@ -16,6 +16,28 @@ import './index.css'
 const path = window.location.pathname
 const handMatch = path.match(/^\/hand\/([a-zA-Z0-9]+)$/)
 
+// Per-route <title> / meta description. The default in index.html covers "/".
+const ROUTE_META = {
+  '/about':          { title: 'About — Final Table',            description: 'Meet the team building Final Table, the live poker tracker for the table.' },
+  '/privacy':        { title: 'Privacy Policy — Final Table',   description: 'How Final Table collects, uses, and protects your data.' },
+  '/terms':          { title: 'Terms of Service — Final Table', description: 'The terms that govern your use of Final Table.' },
+  '/delete-account': { title: 'Delete Account — Final Table',   description: 'Request deletion of your Final Table account and associated data.' },
+  '/admin':          { title: 'Admin — Final Table',            description: 'Final Table admin dashboard.' },
+}
+const routeMeta = handMatch
+  ? { title: 'Shared Hand — Final Table', description: 'View a poker hand shared from Final Table.' }
+  : ROUTE_META[path]
+if (routeMeta) {
+  document.title = routeMeta.title
+  const desc = document.querySelector('meta[name="description"]')
+  if (desc) desc.setAttribute('content', routeMeta.description)
+}
+// Canonical for non-landing routes
+if (routeMeta && !handMatch) {
+  const canonical = document.querySelector('link[rel="canonical"]')
+  if (canonical) canonical.setAttribute('href', `https://www.finaltable.io${path}`)
+}
+
 function App() {
   if (handMatch) return <HandViewer shareId={handMatch[1]} />
   if (path === '/about') return <ThemeProvider><I18nProvider><AboutPage /></I18nProvider></ThemeProvider>

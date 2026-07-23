@@ -5,6 +5,30 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600&display=swap');
 
+/* Scroll reveal: JS adds .in-view when the element enters the viewport.
+   Stagger children by setting inline style --reveal-delay. */
+.observe-me {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+        opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+}
+.observe-me.in-view {
+    opacity: 1;
+    transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    .observe-me,
+    .observe-me.in-view {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
 /* ── Custom scrollbar ── */
 :root {
     --sb-thumb: rgba(0, 0, 0, 0.25);
@@ -579,9 +603,20 @@ body.light-theme .db-chip {
 .tp-launch-store {
     display: inline-flex;
     line-height: 0;
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    border-radius: 8px;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.tp-launch-store:hover { transform: translateY(-2px); }
+.tp-launch-store:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.14);
+}
+.tp-launch-store:active { transform: translateY(0) scale(0.99); }
+.tp-launch-store:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 3px;
+}
 .tp-launch-store img {
     height: 50px;
     width: auto;
@@ -611,8 +646,16 @@ body.light-theme .db-chip {
 }
 @media (prefers-reduced-motion: reduce) {
     .tp-launch-backdrop, .tp-launch-card { animation: none; }
-    .tp-launch-store { transition: none; }
-    .tp-launch-store:hover { transform: none; }
+    .tp-launch-store,
+    .tp-hero-store-btn,
+    .bfl-store-btn,
+    .bh-store-btn,
+    .tp-nav-download-btn { transition: none; }
+    .tp-launch-store:hover,
+    .tp-hero-store-btn:hover,
+    .bfl-store-btn:hover,
+    .bh-store-btn:hover,
+    .tp-nav-download-btn:hover { transform: none; }
 }
 
 .tp-announce-close {
@@ -756,10 +799,23 @@ body.light-theme .db-chip {
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition:
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 180ms ease;
+    will-change: transform;
 }
 
-.tp-nav-download-btn:hover { opacity: 0.85; }
+.tp-nav-download-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.20);
+    background: #f5f5f5;
+}
+.tp-nav-download-btn:active { transform: translateY(0) scale(0.98); }
+.tp-nav-download-btn:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 3px;
+}
 
 /* ── Animated dot-matrix download button (nav) ── */
 .dl-btn-wrap {
@@ -1125,10 +1181,24 @@ body.light-theme .db-chip {
     line-height: 0;
     text-decoration: none;
     flex-shrink: 0;
-    transition: opacity 0.15s ease;
+    border-radius: 10px;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
 }
-
-.tp-hero-store-btn:hover { opacity: 0.85; }
+.tp-hero-store-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32), 0 4px 10px rgba(0, 0, 0, 0.20);
+    filter: brightness(1.06);
+}
+.tp-hero-store-btn:active { transform: translateY(0) scale(0.99); }
+.tp-hero-store-btn:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px rgba(162, 246, 154, 0.25);
+}
 
 .tp-hero-store-img {
     display: block;
@@ -7637,6 +7707,23 @@ body.light-theme .db-chip {
     line-height: 0;
     text-decoration: none;
     flex-shrink: 0;
+    border-radius: 10px;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+.bfl-store-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32), 0 4px 10px rgba(0, 0, 0, 0.20);
+    filter: brightness(1.06);
+}
+.bfl-store-btn:active { transform: translateY(0) scale(0.99); }
+.bfl-store-btn:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px rgba(162, 246, 154, 0.25);
 }
 
 .bfl-store-img {
@@ -7940,6 +8027,23 @@ body.light-theme .db-chip {
     line-height: 0;
     text-decoration: none;
     flex-shrink: 0;
+    border-radius: 10px;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+.bh-store-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32), 0 4px 10px rgba(0, 0, 0, 0.20);
+    filter: brightness(1.06);
+}
+.bh-store-btn:active { transform: translateY(0) scale(0.99); }
+.bh-store-btn:focus-visible {
+    outline: 2px solid #A2F69A;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px rgba(162, 246, 154, 0.25);
 }
 
 .bh-store-img {

@@ -2143,10 +2143,10 @@ function TPBuiltForLive() {
         <div className="bfl-row bfl-row-top">
           <div className="bfl-card bfl-card-intro">
             <div className="bfl-intro-header">
-              <p className="bfl-intro-eyebrow">{t('live.eyebrow')}</p>
+              <p className="bfl-intro-eyebrow observe-me">{t('live.eyebrow')}</p>
               <p className="bfl-intro-title">
                 {t('live.title').map((line, j) => (
-                  <span key={j} className="bfl-intro-title-line">{line}</span>
+                  <span key={j} className="bfl-intro-title-line observe-me" style={{ '--reveal-delay': `${80 + j * 80}ms` }}>{line}</span>
                 ))}
               </p>
             </div>
@@ -2242,12 +2242,12 @@ function TPBottomHero() {
         </h2>
         <img src="/bh_phone_texture.png" alt="" className="bh-phone" aria-hidden="true" />
         <div className="bh-right">
-          <p className="bh-body">
+          <p className="bh-body observe-me">
             {t('bh.body').map((line, i) => (
               <span key={i} className="bh-body-line">{line}</span>
             ))}
           </p>
-          <div className="bh-badges">
+          <div className="bh-badges observe-me" style={{ '--reveal-delay': '120ms' }}>
             <a href={APP_STORE_URL} className="bh-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="bh-store-img" />
             </a>
@@ -2270,14 +2270,15 @@ function TPDiscord() {
         <div className="dc-overlay" aria-hidden="true" />
         <div className="dc-copy">
           <div className="dc-copy-text">
-            <p className="dc-eyebrow">{t('discord.eyebrow')}</p>
+            <p className="dc-eyebrow observe-me">{t('discord.eyebrow')}</p>
             <div className="dc-copy-group">
-              <h2 className="dc-title">{t('discord.title')}</h2>
-              <p className="dc-body">{t('discord.body')}</p>
+              <h2 className="dc-title observe-me" style={{ '--reveal-delay': '80ms' }}>{t('discord.title')}</h2>
+              <p className="dc-body observe-me" style={{ '--reveal-delay': '160ms' }}>{t('discord.body')}</p>
             </div>
           </div>
           <a
-            className="dc-cta"
+            className="dc-cta observe-me"
+            style={{ '--reveal-delay': '240ms' }}
             href="https://discord.gg/finaltable"
             target="_blank"
             rel="noopener noreferrer"
@@ -3330,6 +3331,31 @@ export default function LandingPage() {
     ro.observe(footer)
     update()
     return () => ro.disconnect()
+  }, [])
+
+  // Generic scroll reveal: any element with .observe-me fades + rises into view
+  // once. Elements that scroll past before this mounts are revealed immediately.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.observe-me').forEach(el => el.classList.add('in-view'))
+      return
+    }
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view')
+          obs.unobserve(entry.target)
+        }
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 })
+
+    const nodes = document.querySelectorAll('.observe-me')
+    nodes.forEach(el => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight) el.classList.add('in-view')
+      else obs.observe(el)
+    })
+    return () => obs.disconnect()
   }, [])
 
   return (
