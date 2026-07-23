@@ -34,6 +34,8 @@ const en = {
   'nav.download': 'Download app',
   'nav.downloadIos': 'Download for iOS',
   'nav.downloadAndroid': 'Download for Android',
+  'announce.launched': 'We just launched!',
+  'announce.body': 'Download now and get your first month free',
 
   // How it works section title
   'howSection.sans': 'How it ',
@@ -316,6 +318,8 @@ const pl = {
   'nav.download': 'Pobierz aplikację',
   'nav.downloadIos': 'Pobierz na iOS',
   'nav.downloadAndroid': 'Pobierz na Androida',
+  'announce.launched': 'Właśnie wystartowaliśmy!',
+  'announce.body': 'Pobierz teraz i pierwszy miesiąc masz za darmo',
 
   'howSection.sans': 'Jak to ',
   'howSection.italic': 'działa?',
@@ -577,6 +581,8 @@ const ru = {
   'nav.download': 'Скачать приложение',
   'nav.downloadIos': 'Скачать для iOS',
   'nav.downloadAndroid': 'Скачать для Android',
+  'announce.launched': 'Мы только что запустились!',
+  'announce.body': 'Скачайте сейчас и получите первый месяц бесплатно',
 
   'howSection.sans': 'Как это ',
   'howSection.italic': 'работает?',
@@ -838,6 +844,8 @@ const fr = {
   'nav.download': 'Télécharger l\'app',
   'nav.downloadIos': 'Télécharger pour iOS',
   'nav.downloadAndroid': 'Télécharger pour Android',
+  'announce.launched': 'Nous venons de lancer !',
+  'announce.body': 'Téléchargez maintenant et obtenez votre premier mois gratuit',
 
   'howSection.sans': 'Comment ça ',
   'howSection.italic': 'marche ?',
@@ -1099,6 +1107,8 @@ const es = {
   'nav.download': 'Descargar app',
   'nav.downloadIos': 'Descargar para iOS',
   'nav.downloadAndroid': 'Descargar para Android',
+  'announce.launched': '¡Acabamos de lanzar!',
+  'announce.body': 'Descárgala ahora y consigue tu primer mes gratis',
 
   'howSection.sans': '¿Cómo ',
   'howSection.italic': 'funciona?',
@@ -1360,6 +1370,8 @@ const de = {
   'nav.download': 'App herunterladen',
   'nav.downloadIos': 'Für iOS herunterladen',
   'nav.downloadAndroid': 'Für Android herunterladen',
+  'announce.launched': 'Wir sind live!',
+  'announce.body': 'Jetzt herunterladen und den ersten Monat gratis erhalten',
 
   'howSection.sans': 'So ',
   'howSection.italic': 'funktioniert\'s?',
@@ -1621,6 +1633,8 @@ const pt = {
   'nav.download': 'Baixar app',
   'nav.downloadIos': 'Baixar para iOS',
   'nav.downloadAndroid': 'Baixar para Android',
+  'announce.launched': 'Acabamos de lançar!',
+  'announce.body': 'Baixe agora e ganhe o primeiro mês grátis',
 
   'howSection.sans': 'Como ',
   'howSection.italic': 'funciona?',
@@ -1882,6 +1896,8 @@ const tr = {
   'nav.download': 'Uygulamayı indir',
   'nav.downloadIos': 'iOS için indir',
   'nav.downloadAndroid': 'Android için indir',
+  'announce.launched': 'Yeni yayında!',
+  'announce.body': 'Şimdi indir, ilk ayın bedava olsun',
 
   'howSection.sans': 'Nasıl ',
   'howSection.italic': 'çalışır?',
@@ -2144,6 +2160,8 @@ const uk = {
   'nav.download': 'Завантажити застосунок',
   'nav.downloadIos': 'Завантажити для iOS',
   'nav.downloadAndroid': 'Завантажити для Android',
+  'announce.launched': 'Ми щойно запустилися!',
+  'announce.body': 'Завантажуйте зараз і отримайте перший місяць безкоштовно',
 
   // How it works section title
   'howSection.sans': 'Як це ',
@@ -2424,6 +2442,8 @@ const ro = {
   'nav.download': 'Descarcă aplicația',
   'nav.downloadIos': 'Descarcă pentru iOS',
   'nav.downloadAndroid': 'Descarcă pentru Android',
+  'announce.launched': 'Tocmai am lansat!',
+  'announce.body': 'Descarcă acum și prima lună este gratuită',
 
   // How it works section title
   'howSection.sans': 'Cum ',

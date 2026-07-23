@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, forwardRef } from 'react'
-import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
+import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic, ArrowRight } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import { ThemeToggle, useTheme } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
@@ -168,6 +168,28 @@ function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) 
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
+export function TPAnnouncement() {
+  const { t } = useT()
+  const onClick = (e) => {
+    e.preventDefault()
+    const target = document.getElementById('hero-download')
+    if (window.__lenis && target) window.__lenis.scrollTo(target, { offset: -120 })
+    else if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+  return (
+    <a href="#hero-download" className="tp-announce" onClick={onClick}>
+      <span className="tp-announce-inner">
+        <span className="tp-announce-text">
+          <span className="tp-announce-emoji">🎉</span>
+          <span className="tp-announce-launch">{t('announce.launched')}</span>
+          <span className="tp-announce-body">{t('announce.body')}</span>
+        </span>
+        <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
+      </span>
+    </a>
+  )
+}
+
 export function TPNavbar() {
   const { t, locale, setLocale } = useT()
   const { theme } = useTheme()
@@ -659,7 +681,7 @@ function TPHero() {
             </div>
           )}
           <p className="tp-hero-sub">{t('hero.sub')}</p>
-          <div className="tp-hero-ctas">
+          <div className="tp-hero-ctas" id="hero-download">
             <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="tp-hero-store-img" />
             </a>
@@ -3107,6 +3129,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
+      <TPAnnouncement />
       <TPNavbar />
       <div className="tp-page-body">
         <main>
