@@ -36,6 +36,9 @@ const en = {
   'nav.downloadAndroid': 'Download for Android',
   'announce.launched': 'We just launched!',
   'announce.body': 'Download now and get your first month free',
+  'launch.body': 'Your first month is free. Download the app and start logging your hands right away.',
+  'launch.footer': 'Free for new users · No card required',
+  'launch.close': 'Close',
 
   // How it works section title
   'howSection.sans': 'How it ',
@@ -320,6 +323,9 @@ const pl = {
   'nav.downloadAndroid': 'Pobierz na Androida',
   'announce.launched': 'Właśnie wystartowaliśmy!',
   'announce.body': 'Pobierz teraz i pierwszy miesiąc masz za darmo',
+  'launch.body': 'Twój pierwszy miesiąc jest darmowy. Pobierz aplikację i zacznij zapisywać rozdania od razu.',
+  'launch.footer': 'Bezpłatnie dla nowych użytkowników · Bez karty',
+  'launch.close': 'Zamknij',
 
   'howSection.sans': 'Jak to ',
   'howSection.italic': 'działa?',
@@ -583,6 +589,9 @@ const ru = {
   'nav.downloadAndroid': 'Скачать для Android',
   'announce.launched': 'Мы только что запустились!',
   'announce.body': 'Скачайте сейчас и получите первый месяц бесплатно',
+  'launch.body': 'Первый месяц бесплатно. Скачайте приложение и начните записывать раздачи прямо сейчас.',
+  'launch.footer': 'Бесплатно для новых пользователей · Без карты',
+  'launch.close': 'Закрыть',
 
   'howSection.sans': 'Как это ',
   'howSection.italic': 'работает?',
@@ -846,6 +855,9 @@ const fr = {
   'nav.downloadAndroid': 'Télécharger pour Android',
   'announce.launched': 'Nous venons de lancer !',
   'announce.body': 'Téléchargez maintenant et obtenez votre premier mois gratuit',
+  'launch.body': 'Votre premier mois est gratuit. Téléchargez l’application et commencez à noter vos mains sans attendre.',
+  'launch.footer': 'Gratuit pour les nouveaux utilisateurs · Sans carte',
+  'launch.close': 'Fermer',
 
   'howSection.sans': 'Comment ça ',
   'howSection.italic': 'marche ?',
@@ -1109,6 +1121,9 @@ const es = {
   'nav.downloadAndroid': 'Descargar para Android',
   'announce.launched': '¡Acabamos de lanzar!',
   'announce.body': 'Descárgala ahora y consigue tu primer mes gratis',
+  'launch.body': 'Tu primer mes es gratis. Descarga la app y empieza a registrar tus manos ahora mismo.',
+  'launch.footer': 'Gratis para nuevos usuarios · Sin tarjeta',
+  'launch.close': 'Cerrar',
 
   'howSection.sans': '¿Cómo ',
   'howSection.italic': 'funciona?',
@@ -1372,6 +1387,9 @@ const de = {
   'nav.downloadAndroid': 'Für Android herunterladen',
   'announce.launched': 'Wir sind live!',
   'announce.body': 'Jetzt herunterladen und den ersten Monat gratis erhalten',
+  'launch.body': 'Dein erster Monat ist gratis. Lade die App herunter und tracke deine Hände sofort.',
+  'launch.footer': 'Kostenlos für neue Nutzer · Ohne Kreditkarte',
+  'launch.close': 'Schließen',
 
   'howSection.sans': 'So ',
   'howSection.italic': 'funktioniert\'s?',
@@ -1635,6 +1653,9 @@ const pt = {
   'nav.downloadAndroid': 'Baixar para Android',
   'announce.launched': 'Acabamos de lançar!',
   'announce.body': 'Baixe agora e ganhe o primeiro mês grátis',
+  'launch.body': 'O primeiro mês é grátis. Baixe o app e comece a registrar suas mãos agora mesmo.',
+  'launch.footer': 'Grátis para novos usuários · Sem cartão',
+  'launch.close': 'Fechar',
 
   'howSection.sans': 'Como ',
   'howSection.italic': 'funciona?',
@@ -1898,6 +1919,9 @@ const tr = {
   'nav.downloadAndroid': 'Android için indir',
   'announce.launched': 'Yeni yayında!',
   'announce.body': 'Şimdi indir, ilk ayın bedava olsun',
+  'launch.body': 'İlk ayın ücretsiz. Uygulamayı indir ve ellerini hemen kaydetmeye başla.',
+  'launch.footer': 'Yeni kullanıcılar için ücretsiz · Kart gerekmez',
+  'launch.close': 'Kapat',
 
   'howSection.sans': 'Nasıl ',
   'howSection.italic': 'çalışır?',
@@ -2162,6 +2186,9 @@ const uk = {
   'nav.downloadAndroid': 'Завантажити для Android',
   'announce.launched': 'Ми щойно запустилися!',
   'announce.body': 'Завантажуйте зараз і отримайте перший місяць безкоштовно',
+  'launch.body': 'Перший місяць безкоштовно. Завантажте додаток і починайте фіксувати роздачі одразу.',
+  'launch.footer': 'Безкоштовно для нових користувачів · Без картки',
+  'launch.close': 'Закрити',
 
   // How it works section title
   'howSection.sans': 'Як це ',
@@ -2444,6 +2471,9 @@ const ro = {
   'nav.downloadAndroid': 'Descarcă pentru Android',
   'announce.launched': 'Tocmai am lansat!',
   'announce.body': 'Descarcă acum și prima lună este gratuită',
+  'launch.body': 'Prima ta lună este gratuită. Descarcă aplicația și începe imediat să îți notezi mâinile.',
+  'launch.footer': 'Gratuit pentru utilizatorii noi · Fără card',
+  'launch.close': 'Închide',
 
   // How it works section title
   'howSection.sans': 'Cum ',

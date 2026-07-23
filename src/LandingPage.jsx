@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, forwardRef } from 'react'
-import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic, ArrowRight } from 'lucide-react'
+import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic, ArrowRight, X } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import { ThemeToggle, useTheme } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
@@ -168,25 +168,114 @@ function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) 
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
-export function TPAnnouncement() {
-  const { t } = useT()
-  const onClick = (e) => {
-    e.preventDefault()
-    const target = document.getElementById('hero-download')
-    if (window.__lenis && target) window.__lenis.scrollTo(target, { offset: -120 })
-    else if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+function TPConfetti() {
+  const pieces = useRef(null)
+  if (pieces.current == null) {
+    const COLORS = ['#9e50cf', '#f23c3c', '#de5100', '#a3ff78', '#f5b400', '#3ea6ff', '#ffffff']
+    const COUNT = 70
+    pieces.current = Array.from({ length: COUNT }, (_, i) => {
+      const angle = (Math.random() * Math.PI) - Math.PI / 2 // -90°..+90° (up-and-out)
+      const distance = 140 + Math.random() * 220
+      const dx = Math.cos(angle) * distance
+      const peakY = -80 - Math.random() * 140
+      const fallY = 260 + Math.random() * 260
+      return {
+        key: i,
+        color: COLORS[i % COLORS.length],
+        left: 50 + (Math.random() * 8 - 4), // near center
+        dx: dx.toFixed(1) + 'px',
+        peakY: peakY.toFixed(1) + 'px',
+        fallY: fallY.toFixed(1) + 'px',
+        rot: (Math.random() * 720 - 360).toFixed(0) + 'deg',
+        size: (6 + Math.random() * 6).toFixed(1),
+        delay: (Math.random() * 120).toFixed(0) + 'ms',
+        duration: (1400 + Math.random() * 900).toFixed(0) + 'ms',
+        shape: Math.random() < 0.5 ? 'rect' : 'circle',
+      }
+    })
   }
   return (
-    <a href="#hero-download" className="tp-announce" onClick={onClick}>
-      <span className="tp-announce-inner">
-        <span className="tp-announce-text">
-          <span className="tp-announce-emoji">🎉</span>
-          <span className="tp-announce-launch">{t('announce.launched')}</span>
-          <span className="tp-announce-body">{t('announce.body')}</span>
+    <div className="tp-confetti" aria-hidden="true">
+      {pieces.current.map((p) => (
+        <span
+          key={p.key}
+          className={`tp-confetti-piece tp-confetti-${p.shape}`}
+          style={{
+            left: `${p.left}%`,
+            background: p.color,
+            width: `${p.size}px`,
+            height: p.shape === 'rect' ? `${(parseFloat(p.size) * 1.6).toFixed(1)}px` : `${p.size}px`,
+            animationDelay: p.delay,
+            animationDuration: p.duration,
+            '--tp-confetti-dx': p.dx,
+            '--tp-confetti-peak': p.peakY,
+            '--tp-confetti-fall': p.fallY,
+            '--tp-confetti-rot': p.rot,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+export function TPAnnouncement() {
+  const { t } = useT()
+  const [popupOpen, setPopupOpen] = useState(false)
+
+  useEffect(() => {
+    if (!popupOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') setPopupOpen(false) }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [popupOpen])
+
+  const openPopup = (e) => {
+    e.preventDefault()
+    setPopupOpen(true)
+  }
+
+  return (
+    <>
+      <a href="#" className="tp-announce" onClick={openPopup}>
+        <span className="tp-announce-inner">
+          <span className="tp-announce-text">
+            <span className="tp-announce-emoji">🎉</span>
+            <span className="tp-announce-launch">{t('announce.launched')}</span>
+            <span className="tp-announce-body">{t('announce.body')}</span>
+          </span>
+          <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
         </span>
-        <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
-      </span>
-    </a>
+      </a>
+      {popupOpen && (
+        <div className="tp-launch-backdrop" onClick={() => setPopupOpen(false)} role="dialog" aria-modal="true" aria-label={t('announce.launched')}>
+          <div className="tp-launch-card" onClick={(e) => e.stopPropagation()}>
+            <TPConfetti />
+            <button className="tp-launch-close" onClick={() => setPopupOpen(false)} aria-label={t('launch.close')} type="button">
+              <X size={24} strokeWidth={2} />
+            </button>
+            <div className="tp-launch-body">
+              <div className="tp-launch-emoji" aria-hidden="true">🎉</div>
+              <h2 className="tp-launch-title">{t('announce.launched')}</h2>
+              <p className="tp-launch-copy">{t('launch.body')}</p>
+              <div className="tp-launch-stores">
+                <a href={APP_STORE_URL} className="tp-launch-store" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+                  <img src="/store_appstore.svg" alt="" />
+                </a>
+                <a href={PLAY_STORE_URL} className="tp-launch-store" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+                  <img src="/store_googleplay.svg" alt="" />
+                </a>
+              </div>
+            </div>
+            <p className="tp-launch-footer">{t('launch.footer')}</p>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
