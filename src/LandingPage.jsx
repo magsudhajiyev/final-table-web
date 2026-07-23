@@ -1035,9 +1035,10 @@ function TPHowItWorks() {
     if (!wrapper) return
 
     if (isMobile) {
-      // Mobile: no scroll choreography — stages auto-cycle and screens
-      // crossfade in place (dashed screens are hidden in CSS). The canvas
-      // is scaled so the nav bar (widest element, 690px) spans the viewport.
+      // Mobile: no scroll choreography and no auto-cycle — users tap the
+      // pill nav to move between stages. Screens still crossfade via CSS
+      // when `.is-on` changes. The canvas is scaled so the nav bar
+      // (widest element, 690px) spans the viewport.
       const applyScale = () => {
         const canvas = canvasRef.current
         const sticky = stickyRef.current
@@ -1048,11 +1049,8 @@ function TPHowItWorks() {
       }
       window.addEventListener('resize', applyScale)
       applyScale()
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
       return () => {
         window.removeEventListener('resize', applyScale)
-        clearInterval(autoRef.current)
-        autoRef.current = null
       }
     }
 
@@ -1166,10 +1164,7 @@ function TPHowItWorks() {
   }, [isMobile])
 
   const jumpTo = (i) => {
-    if (autoRef.current) {
-      // Mobile auto-cycle: jump straight to the stage and restart the timer
-      clearInterval(autoRef.current)
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
+    if (isMobile) {
       setActive(i)
       return
     }
