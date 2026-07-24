@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, forwardRef } from 'react'
-import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic } from 'lucide-react'
+import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic, ArrowRight, X } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
 import { ThemeToggle, useTheme } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
@@ -168,6 +168,220 @@ function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) 
 /* ────────────────────────────────────────────────────── */
 /*  NAVBAR                                                */
 /* ────────────────────────────────────────────────────── */
+function TPConfetti() {
+  const pieces = useRef(null)
+  if (pieces.current == null) {
+    const COLORS = ['#9e50cf', '#f23c3c', '#de5100', '#a3ff78', '#f5b400', '#3ea6ff', '#ffffff']
+    const COUNT = 70
+    pieces.current = Array.from({ length: COUNT }, (_, i) => {
+      const angle = (Math.random() * Math.PI) - Math.PI / 2 // -90°..+90° (up-and-out)
+      const distance = 140 + Math.random() * 220
+      const dx = Math.cos(angle) * distance
+      const peakY = -80 - Math.random() * 140
+      const fallY = 260 + Math.random() * 260
+      return {
+        key: i,
+        color: COLORS[i % COLORS.length],
+        left: 50 + (Math.random() * 8 - 4), // near center
+        dx: dx.toFixed(1) + 'px',
+        peakY: peakY.toFixed(1) + 'px',
+        fallY: fallY.toFixed(1) + 'px',
+        rot: (Math.random() * 720 - 360).toFixed(0) + 'deg',
+        size: (6 + Math.random() * 6).toFixed(1),
+        delay: (Math.random() * 120).toFixed(0) + 'ms',
+        duration: (1400 + Math.random() * 900).toFixed(0) + 'ms',
+        shape: Math.random() < 0.5 ? 'rect' : 'circle',
+      }
+    })
+  }
+  return (
+    <div className="tp-confetti" aria-hidden="true">
+      {pieces.current.map((p) => (
+        <span
+          key={p.key}
+          className={`tp-confetti-piece tp-confetti-${p.shape}`}
+          style={{
+            left: `${p.left}%`,
+            background: p.color,
+            width: `${p.size}px`,
+            height: p.shape === 'rect' ? `${(parseFloat(p.size) * 1.6).toFixed(1)}px` : `${p.size}px`,
+            animationDelay: p.delay,
+            animationDuration: p.duration,
+            '--tp-confetti-dx': p.dx,
+            '--tp-confetti-peak': p.peakY,
+            '--tp-confetti-fall': p.fallY,
+            '--tp-confetti-rot': p.rot,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// Bump this when the offer/copy changes to re-show the bar to prior dismissers.
+const LAUNCH_ID = 'launch-2026-07'
+const ANNOUNCE_DISMISS_KEY = 'ft_announce_dismissed'
+
+/**
+ * Fire-and-forget analytics event. Dispatches a CustomEvent on window so any
+ * downstream tool (gtag, plausible, posthog…) can subscribe. Also logs in dev.
+ */
+function track(name, props = {}) {
+  try {
+    window.dispatchEvent(new CustomEvent('ft:track', { detail: { name, ...props } }))
+    if (import.meta.env.DEV) console.log('[track]', name, props)
+  } catch { /* no-op */ }
+}
+
+export function TPAnnouncement() {
+  const { t } = useT()
+  const [popupOpen, setPopupOpen] = useState(false)
+  const [dismissed, setDismissed] = useState(() => {
+    try { return localStorage.getItem(ANNOUNCE_DISMISS_KEY) === LAUNCH_ID }
+    catch { return false }
+  })
+  const barRef = useRef(null)
+  const viewedRef = useRef(false)
+  const cardRef = useRef(null)
+  const returnFocusRef = useRef(null)
+
+  useEffect(() => {
+    const el = barRef.current
+    if (!el) return
+    const update = () => {
+      document.documentElement.style.setProperty('--announce-height', el.offsetHeight + 'px')
+    }
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    update()
+    return () => {
+      ro.disconnect()
+      // Bar is unmounting: clear the offset so pages below reflow.
+      document.documentElement.style.setProperty('--announce-height', '0px')
+    }
+  }, [dismissed])
+
+  useEffect(() => {
+    if (dismissed || viewedRef.current) return
+    viewedRef.current = true
+    track('announce_view', { id: LAUNCH_ID })
+  }, [dismissed])
+
+  useEffect(() => {
+    if (!popupOpen) return
+
+    // Remember where focus was so we can restore it on close.
+    returnFocusRef.current = document.activeElement
+    const card = cardRef.current
+
+    const focusablesIn = (root) => Array.from(
+      root.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(el => el.offsetParent !== null || el === document.activeElement)
+
+    // Move focus into the modal.
+    if (card) {
+      const first = focusablesIn(card)[0]
+      ;(first || card).focus()
+    }
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') { setPopupOpen(false); return }
+      if (e.key !== 'Tab' || !card) return
+      const nodes = focusablesIn(card)
+      if (nodes.length === 0) { e.preventDefault(); return }
+      const first = nodes[0]
+      const last = nodes[nodes.length - 1]
+      const active = document.activeElement
+      if (e.shiftKey) {
+        if (active === first || !card.contains(active)) { e.preventDefault(); last.focus() }
+      } else {
+        if (active === last || !card.contains(active)) { e.preventDefault(); first.focus() }
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+      // Restore focus to whatever opened the modal (announcement anchor).
+      const target = returnFocusRef.current
+      if (target && typeof target.focus === 'function') {
+        try { target.focus({ preventScroll: true }) } catch { target.focus() }
+      }
+    }
+  }, [popupOpen])
+
+  const openPopup = (e) => {
+    e.preventDefault()
+    track('announce_click', { id: LAUNCH_ID })
+    setPopupOpen(true)
+  }
+
+  const dismiss = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    try { localStorage.setItem(ANNOUNCE_DISMISS_KEY, LAUNCH_ID) } catch { /* no-op */ }
+    track('announce_dismiss', { id: LAUNCH_ID })
+    setDismissed(true)
+  }
+
+  const onStoreClick = (platform) => () => {
+    track('launch_store_click', { id: LAUNCH_ID, platform })
+  }
+
+  return (
+    <>
+      {!dismissed && (
+        <a href="#" className="tp-announce" onClick={openPopup} ref={barRef}>
+          <span className="tp-announce-inner">
+            <span className="tp-announce-text">
+              <span className="tp-announce-emoji">🎉</span>
+              <span className="tp-announce-launch">{t('announce.launched')}</span>
+              <span className="tp-announce-body">{t('announce.body')}</span>
+            </span>
+            <ArrowRight className="tp-announce-arrow" size={20} strokeWidth={2} />
+          </span>
+          <button
+            type="button"
+            className="tp-announce-close"
+            onClick={dismiss}
+            aria-label={t('launch.close')}
+          >
+            <X size={16} strokeWidth={2.25} />
+          </button>
+        </a>
+      )}
+      {popupOpen && (
+        <div className="tp-launch-backdrop" onClick={() => setPopupOpen(false)}>
+          <div className="tp-launch-card" onClick={(e) => e.stopPropagation()} ref={cardRef} role="dialog" aria-modal="true" aria-labelledby="tp-launch-title" tabIndex={-1}>
+            <TPConfetti />
+            <button className="tp-launch-close" onClick={() => setPopupOpen(false)} aria-label={t('launch.close')} type="button">
+              <X size={24} strokeWidth={2} />
+            </button>
+            <div className="tp-launch-body">
+              <div className="tp-launch-emoji" aria-hidden="true">🎉</div>
+              <h2 className="tp-launch-title" id="tp-launch-title">{t('announce.launched')}</h2>
+              <p className="tp-launch-copy">{t('launch.body')}</p>
+              <div className="tp-launch-stores">
+                <a href={APP_STORE_URL} className="tp-launch-store" onClick={onStoreClick('ios')} aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+                  <img src="/store_appstore.svg" alt="" />
+                </a>
+                <a href={PLAY_STORE_URL} className="tp-launch-store" onClick={onStoreClick('android')} aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+                  <img src="/store_googleplay.svg" alt="" />
+                </a>
+              </div>
+            </div>
+            <p className="tp-launch-footer">{t('launch.footer')}</p>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export function TPNavbar() {
   const { t, locale, setLocale } = useT()
   const { theme } = useTheme()
@@ -625,6 +839,7 @@ function TPHero() {
       <HeroDots />
       <div className="tp-hero-inner">
         <div className="tp-hero-content">
+          <div className="tp-hero-headline-group">
           <h1 className="tp-hero-h1" ref={h1Ref}>
             {rot ? (
               <>
@@ -659,7 +874,8 @@ function TPHero() {
             </div>
           )}
           <p className="tp-hero-sub">{t('hero.sub')}</p>
-          <div className="tp-hero-ctas">
+          </div>
+          <div className="tp-hero-ctas" id="hero-download">
             <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="tp-hero-store-img" />
             </a>
@@ -909,9 +1125,10 @@ function TPHowItWorks() {
     if (!wrapper) return
 
     if (isMobile) {
-      // Mobile: no scroll choreography — stages auto-cycle and screens
-      // crossfade in place (dashed screens are hidden in CSS). The canvas
-      // is scaled so the nav bar (widest element, 690px) spans the viewport.
+      // Mobile: no scroll choreography and no auto-cycle — users tap the
+      // pill nav to move between stages. Screens still crossfade via CSS
+      // when `.is-on` changes. The canvas is scaled so the nav bar
+      // (widest element, 690px) spans the viewport.
       const applyScale = () => {
         const canvas = canvasRef.current
         const sticky = stickyRef.current
@@ -922,11 +1139,8 @@ function TPHowItWorks() {
       }
       window.addEventListener('resize', applyScale)
       applyScale()
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
       return () => {
         window.removeEventListener('resize', applyScale)
-        clearInterval(autoRef.current)
-        autoRef.current = null
       }
     }
 
@@ -1019,11 +1233,22 @@ function TPHowItWorks() {
       if (!running) { running = true; rafId = requestAnimationFrame(tick) }
     }
 
+    // Header offset: fixed announcement + navbar height, plus a small breathing gap
+    const HIW_TOP_GAP = 16
+    const readHeaderOffset = () => {
+      const nav = document.querySelector('.tp-nav-wrap')
+      const bottom = nav ? nav.getBoundingClientRect().bottom : 0
+      return Math.max(0, bottom) + HIW_TOP_GAP
+    }
+
     // Scale the fixed 1512x1050 canvas to fit inside the pinned viewport
     const applyScale = () => {
       const canvas = canvasRef.current
       if (!canvas) return
-      const s = Math.min(1, window.innerWidth / 1512, window.innerHeight / 1050)
+      const offset = readHeaderOffset()
+      wrapper.style.setProperty('--hiw-top', offset + 'px')
+      const availH = Math.max(0, window.innerHeight - offset)
+      const s = Math.min(1, window.innerWidth / 1512, availH / 1050)
       canvas.style.transform = `scale(${s.toFixed(4)})`
     }
     const onResize = () => { applyScale(); onScroll() }
@@ -1040,10 +1265,7 @@ function TPHowItWorks() {
   }, [isMobile])
 
   const jumpTo = (i) => {
-    if (autoRef.current) {
-      // Mobile auto-cycle: jump straight to the stage and restart the timer
-      clearInterval(autoRef.current)
-      autoRef.current = setInterval(() => setActive(a => (a + 1) % N), 4000)
+    if (isMobile) {
       setActive(i)
       return
     }
@@ -1922,10 +2144,10 @@ function TPBuiltForLive() {
         <div className="bfl-row bfl-row-top">
           <div className="bfl-card bfl-card-intro">
             <div className="bfl-intro-header">
-              <p className="bfl-intro-eyebrow">{t('live.eyebrow')}</p>
+              <p className="bfl-intro-eyebrow observe-me">{t('live.eyebrow')}</p>
               <p className="bfl-intro-title">
                 {t('live.title').map((line, j) => (
-                  <span key={j} className="bfl-intro-title-line">{line}</span>
+                  <span key={j} className="bfl-intro-title-line observe-me" style={{ '--reveal-delay': `${80 + j * 80}ms` }}>{line}</span>
                 ))}
               </p>
             </div>
@@ -2021,12 +2243,12 @@ function TPBottomHero() {
         </h2>
         <img src="/bh_phone_texture.png" alt="" className="bh-phone" aria-hidden="true" />
         <div className="bh-right">
-          <p className="bh-body">
+          <p className="bh-body observe-me">
             {t('bh.body').map((line, i) => (
               <span key={i} className="bh-body-line">{line}</span>
             ))}
           </p>
-          <div className="bh-badges">
+          <div className="bh-badges observe-me" style={{ '--reveal-delay': '120ms' }}>
             <a href={APP_STORE_URL} className="bh-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
               <img src="/store_appstore.svg" alt="" className="bh-store-img" />
             </a>
@@ -2049,14 +2271,15 @@ function TPDiscord() {
         <div className="dc-overlay" aria-hidden="true" />
         <div className="dc-copy">
           <div className="dc-copy-text">
-            <p className="dc-eyebrow">{t('discord.eyebrow')}</p>
+            <p className="dc-eyebrow observe-me">{t('discord.eyebrow')}</p>
             <div className="dc-copy-group">
-              <h2 className="dc-title">{t('discord.title')}</h2>
-              <p className="dc-body">{t('discord.body')}</p>
+              <h2 className="dc-title observe-me" style={{ '--reveal-delay': '80ms' }}>{t('discord.title')}</h2>
+              <p className="dc-body observe-me" style={{ '--reveal-delay': '160ms' }}>{t('discord.body')}</p>
             </div>
           </div>
           <a
-            className="dc-cta"
+            className="dc-cta observe-me"
+            style={{ '--reveal-delay': '240ms' }}
             href="https://discord.gg/finaltable"
             target="_blank"
             rel="noopener noreferrer"
@@ -3085,8 +3308,13 @@ export default function LandingPage() {
     if (typeof Lenis === 'undefined') return
     if (window.matchMedia('(pointer: coarse)').matches) return
     const lenis = new Lenis({
-      duration: 1.1,
+      // Snappier feel: tighter lerp for wheel smoothing, shorter duration
+      // for programmatic scrollTo (nav clicks), and a small wheel boost.
+      lerp: 0.14,
+      duration: 0.7,
       easing: t => 1 - Math.pow(1 - t, 3),
+      wheelMultiplier: 1.15,
+      touchMultiplier: 1.5,
     })
     window.__lenis = lenis
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf) }
@@ -3106,8 +3334,34 @@ export default function LandingPage() {
     return () => ro.disconnect()
   }, [])
 
+  // Generic scroll reveal: any element with .observe-me fades + rises into view
+  // once. Elements that scroll past before this mounts are revealed immediately.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.observe-me').forEach(el => el.classList.add('in-view'))
+      return
+    }
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view')
+          obs.unobserve(entry.target)
+        }
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 })
+
+    const nodes = document.querySelectorAll('.observe-me')
+    nodes.forEach(el => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight) el.classList.add('in-view')
+      else obs.observe(el)
+    })
+    return () => obs.disconnect()
+  }, [])
+
   return (
     <div className="tp-root">
+      <TPAnnouncement />
       <TPNavbar />
       <div className="tp-page-body">
         <main>
