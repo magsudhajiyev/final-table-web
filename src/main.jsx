@@ -48,9 +48,13 @@ function App() {
   return <ThemeProvider><I18nProvider><LandingPage /></I18nProvider></ThemeProvider>
 }
 
+// The greeting intro loader is a marketing flourish; skip it on the admin
+// dashboard so it doesn't replay on every admin open.
+const showLoader = path !== '/admin'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Loader />
+    {showLoader && <Loader />}
     <App />
   </React.StrictMode>
 )

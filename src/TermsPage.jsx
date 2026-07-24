@@ -66,7 +66,7 @@ function LegalNavbar() {
             </div>
           )}
         </div>
-        <a href="/#reserve-form" className="tp-nav-waitlist-btn">
+        <a href="/" className="tp-nav-waitlist-btn">
           {t('nav.cta')}
         </a>
         <button
