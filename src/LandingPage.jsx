@@ -3362,9 +3362,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
-      {/* Launch banner hidden for now — re-enable when ready.
-          (--announce-height defaults to 0px, so the nav sits flush without it.) */}
-      {/* <TPAnnouncement /> */}
+      <TPAnnouncement />
       <TPNavbar />
       <div className="tp-page-body">
         <main>

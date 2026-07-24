@@ -3145,6 +3145,9 @@ body.light-theme .db-chip {
     .mf-hero-card { display: none; }
     .mf-hero-mark { width: 140px; height: 140px; }
     .mf-logo-img { height: 60px; }
+    /* The pill sits on the left in the stacked footer, so anchor the dropdown
+       to the left edge (open rightward) or it runs off-screen and hides flags. */
+    .mf-lang-dropdown { right: auto; left: 0; }
 }
 
 @media (max-width: 480px) {
