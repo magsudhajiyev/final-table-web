@@ -1401,8 +1401,9 @@ function TPNotHud() {
 
   const cards = [
     { titleKey: 'notHud.item1Title', descKey: 'notHud.item1Desc' },
-    { titleKey: 'notHud.item2Title', descKey: 'notHud.item2Desc' },
+    // item3 (Built for fair play) shown before item2 (Locked during sessions)
     { titleKey: 'notHud.item3Title', descKey: 'notHud.item3Desc' },
+    { titleKey: 'notHud.item2Title', descKey: 'notHud.item2Desc' },
   ]
   return (
     <section className="nh-section" data-nav-theme="dark">
