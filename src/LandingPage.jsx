@@ -876,8 +876,8 @@ function LetterReveal({ text, className = '', tag: Tag = 'h2' }) {
 const HIW_SCREENS = [
   { key: 'hiw',         color: '/hiw2_opponents_color.png', dashed: null,                        navSrc: '/hiw_nav_users.svg', navMod: 'users' },
   { key: 'hiw.handlog', color: '/hiw2_handlog_color.png',   dashed: '/hiw2_handlog_dashed.png',  navSrc: '/hiw_nav_plus.svg',  navMod: 'plus'  },
-  { key: 'hiw.stats',   color: '/hiw2_stats_color.png',     dashed: '/hiw2_stats_dashed.png',    navSrc: '/hiw_nav_stats.svg', navMod: 'stats' },
   { key: 'hiw.session', color: '/hiw2_sessions_color.png',  dashed: '/hiw2_sessions_dashed.png', navSrc: '/hiw_nav_clock.svg', navMod: 'clock' },
+  { key: 'hiw.stats',   color: '/hiw2_stats_color.png',     dashed: '/hiw2_stats_dashed.png',    navSrc: '/hiw_nav_stats.svg', navMod: 'stats' },
 ]
 
 function TPHowItWorks() {
@@ -1329,7 +1329,8 @@ function TPBuckleUp() {
   const fillRefs = useRef([])
 
   const features = [
-    { key: 'buckle.stats', image: theme === 'light' ? '/buckle_stats_light.png' : '/buckle_stats.png' },
+    // TODO: swap in a dedicated Ranges screenshot; reusing the stats image for now.
+    { key: 'buckle.ranges', image: theme === 'light' ? '/buckle_stats_light.png' : '/buckle_stats.png' },
     { key: 'buckle.bankroll', image: theme === 'light' ? '/buckle_bankroll_light.png' : '/buckle_bankroll.png' },
     { key: 'buckle.ai', image: theme === 'light' ? '/buckle_ai_light.png' : '/buckle_ai.png' },
   ]
@@ -1647,7 +1648,7 @@ function GestureLoggingAnim() {
             </symbol>
           </defs>
         </svg>
-        <div className="gla-index">FIG. 01 — TOUCH INPUT</div>
+        <div className="gla-index">FIG. 01 · TOUCH INPUT</div>
         <div className="gla-dim">
           <div className="gla-tick gla-tick-top" />
           <div className="gla-shaft" />
@@ -2972,7 +2973,7 @@ function TPFinalCTA() {
                   </div>
                   <div className="fc-field-group">
                     <input className="fc-input" type="email" name="email" placeholder="Enter your email" value={form.email} onChange={handleChange} required />
-                    <p className="fc-hint">Your future sign-in email — this can't be changed later.</p>
+                    <p className="fc-hint">Your future sign-in email. This can't be changed later.</p>
                   </div>
                 </div>
                 <div className="fc-username-section">

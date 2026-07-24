@@ -169,7 +169,7 @@ export default function DeleteAccountPage() {
 
         <h2>1. How to request deletion</h2>
 
-        <h3>Option A — In the app (immediate)</h3>
+        <h3>Option A: In the app (immediate)</h3>
         <ol>
           <li>Open the <strong>Final Table</strong> app and sign in.</li>
           <li>Go to the <strong>Profile</strong> tab.</li>
@@ -178,7 +178,7 @@ export default function DeleteAccountPage() {
         </ol>
         <p>Your account and the data listed below are deleted right away, and you are signed out of the app.</p>
 
-        <h3>Option B — By email (no app needed)</h3>
+        <h3>Option B: By email (no app needed)</h3>
         <ol>
           <li>Email <strong><a href="mailto:contact@finaltable.io">contact@finaltable.io</a></strong> from the email address associated with your Final Table account.</li>
           <li>Use the subject line <strong>"Account deletion request"</strong> and include the email address of the account you want deleted.</li>
@@ -197,14 +197,14 @@ export default function DeleteAccountPage() {
           <li><strong>Bankroll data:</strong> your bankroll amount and goals.</li>
         </ul>
         <p>Data stored locally on your device (offline cache) is removed when you delete the account in-app or uninstall the app.</p>
-        <p><strong>Voice audio:</strong> there are no stored voice recordings to delete. Dealer-mode audio is used only to produce transcripts — the app deletes each short audio segment from your device immediately after transcription, and as described in our <a href="/privacy">Privacy Policy</a>, raw audio is not stored on our servers beyond the time needed to obtain the transcript.</p>
+        <p><strong>Voice audio:</strong> there are no stored voice recordings to delete. Dealer-mode audio is used only to produce transcripts: the app deletes each short audio segment from your device immediately after transcription, and as described in our <a href="/privacy">Privacy Policy</a>, raw audio is not stored on our servers beyond the time needed to obtain the transcript.</p>
 
         <h2>3. What is kept, and why</h2>
         <ul>
-          <li><strong>Subscription and purchase records:</strong> transaction records are held by Apple, Google Play, and RevenueCat under their own retention rules, and we retain related records as needed for legal, tax, and accounting obligations. We cannot delete records held by Apple or Google — you can manage those through your App Store or Google Play account.</li>
+          <li><strong>Subscription and purchase records:</strong> transaction records are held by Apple, Google Play, and RevenueCat under their own retention rules, and we retain related records as needed for legal, tax, and accounting obligations. We cannot delete records held by Apple or Google. You can manage those through your App Store or Google Play account.</li>
           <li><strong>Backups:</strong> deleted data may persist in our encrypted backups for up to <strong>90</strong> days before it is purged.</li>
           <li><strong>De-identified data:</strong> aggregated or de-identified data that can no longer be linked to you (for example, anonymized hand statistics used to improve our analysis features, as described in our <a href="/privacy">Privacy Policy</a>) may be retained.</li>
-          <li><strong>Shared club and event data:</strong> records that belong to a shared club or event — hands logged in a shared dealer session, event results, seat assignments, and rankings — are part of that club's shared history and are not automatically removed, because other members rely on them. After deletion they are no longer linked to a Final Table account. If you own or admin a club, the club and its records are not deleted automatically — email <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> to have a club you own, or specific club records about you, removed.</li>
+          <li><strong>Shared club and event data:</strong> records that belong to a shared club or event (hands logged in a shared dealer session, event results, seat assignments, and rankings) are part of that club's shared history and are not automatically removed, because other members rely on them. After deletion they are no longer linked to a Final Table account. If you own or admin a club, the club and its records are not deleted automatically. Email <a href="mailto:contact@finaltable.io">contact@finaltable.io</a> to have a club you own, or specific club records about you, removed.</li>
         </ul>
 
         <h2>4. Timeline</h2>

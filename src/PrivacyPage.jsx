@@ -174,7 +174,7 @@ export default function PrivacyPage() {
           <li><strong>Controller:</strong> Magsud Hajiyev (sole proprietor)</li>
           <li><strong>Country:</strong> Republic of Azerbaijan</li>
           <li><strong>Contact:</strong> <a href="mailto:contact@finaltable.io">contact@finaltable.io</a></li>
-          <li><strong>App:</strong> Final Table (Poker Friend) — a poker hand tracking and analytics app</li>
+          <li><strong>App:</strong> Final Table (Poker Friend), a poker hand tracking and analytics app</li>
         </ul>
         <p>For the purposes of the EU/UK General Data Protection Regulation (GDPR), Magsud Hajiyev is the <strong>data controller</strong> for personal information processed through the Service.</p>
 
@@ -185,7 +185,7 @@ export default function PrivacyPage() {
 
         <h3>3.1 Information You Provide</h3>
         <ul>
-          <li><strong>Account information:</strong> Email address, display name, password (hashed by Firebase Authentication), and — if you sign in with Google — your Google account identifier and basic profile.</li>
+          <li><strong>Account information:</strong> Email address, display name, password (hashed by Firebase Authentication), and (if you sign in with Google) your Google account identifier and basic profile.</li>
           <li><strong>Poker data:</strong> Hand logs, actions, board cards, hole cards, pot sizes, session details, buy-ins, cash-outs, stack history, bankroll goals, tags, notes, and similar content you create in the app.</li>
           <li><strong>Opponent profiles:</strong> Names, colors, and notes you associate with poker opponents.</li>
           <li><strong>Club / event data:</strong> Club memberships, roles, events, rankings, seat assignments, and any QR-based identifiers you generate or receive.</li>
@@ -231,7 +231,7 @@ export default function PrivacyPage() {
           <li>Respond to support requests.</li>
           <li>Detect, prevent, and investigate fraud, abuse, and security incidents.</li>
           <li>Generate AI-assisted hand and session analysis.</li>
-          <li><strong>Improve our AI models.</strong> Poker hand data (actions, board cards, positions, stack sizes, outcomes) may be <strong>de-identified and aggregated</strong> and used to train, evaluate, and improve the AI features of the Service. De-identified data does not include your name, email, or account identifier. You can opt out — see Section 9.</li>
+          <li><strong>Improve our AI models.</strong> Poker hand data (actions, board cards, positions, stack sizes, outcomes) may be <strong>de-identified and aggregated</strong> and used to train, evaluate, and improve the AI features of the Service. De-identified data does not include your name, email, or account identifier. You can opt out. See Section 9.</li>
           <li>Comply with legal obligations.</li>
         </ol>
         <p><strong>Legal bases (GDPR/UK GDPR):</strong> We rely on (a) performance of a contract to deliver the Service, (b) your consent for voice recording, push notifications, and optional AI-training use, (c) our legitimate interests in securing and improving the Service, and (d) compliance with legal obligations.</p>
@@ -320,7 +320,7 @@ export default function PrivacyPage() {
         <p>For privacy questions, requests, or complaints:</p>
         <p>
           <strong>Magsud Hajiyev</strong><br />
-          Sole Proprietor — Republic of Azerbaijan<br />
+          Sole Proprietor, Republic of Azerbaijan<br />
           Email: <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>
         </p>
 

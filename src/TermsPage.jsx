@@ -173,7 +173,7 @@ export default function TermsPage() {
         <p>You must be at least <strong>18 years old</strong> to use the Service. By using the Service, you represent and warrant that you are 18 or older and have full legal capacity to enter into these Terms in your jurisdiction.</p>
         <p>The Service is not directed to children. If we learn that a person under 18 has registered, we will delete the account.</p>
 
-        <h2>2. The Service — What Final Table Is and Is Not</h2>
+        <h2>2. The Service: What Final Table Is and Is Not</h2>
         <p>Final Table is a <strong>poker tracking, analytics, and club-management tool</strong>. It helps you:</p>
         <ul>
           <li>Log poker hands and sessions.</li>
@@ -207,9 +207,9 @@ export default function TermsPage() {
         <h3>4.1 Plans</h3>
         <p>Final Table offers tiered plans:</p>
         <ul>
-          <li><strong>Free tier</strong> — Limited features, including up to 5 hands per session, 10 opponent profiles, and a 30-day session history window. Limits may change from time to time.</li>
-          <li><strong>Pro</strong> — Unlimited hand logging, unlimited opponents, full history, AI hand analysis, CSV export, advanced statistics. Currently USD $29.99 / month or $249.99 / year.</li>
-          <li><strong>Club</strong> — All Pro features plus dealer voice logging, live event management, real-time sync, QR seat assignments, and club analytics, with up to 10 tables included. Currently USD $39.99 / month or $299.99 / year. Additional tables may be available as an add-on for $9.99 / month per 10 tables.</li>
+          <li><strong>Free tier:</strong> Limited features, including up to 5 hands per session, 10 opponent profiles, and a 30-day session history window. Limits may change from time to time.</li>
+          <li><strong>Pro:</strong> Unlimited hand logging, unlimited opponents, full history, AI hand analysis, CSV export, advanced statistics. Currently USD $29.99 / month or $249.99 / year.</li>
+          <li><strong>Club:</strong> All Pro features plus dealer voice logging, live event management, real-time sync, QR seat assignments, and club analytics, with up to 10 tables included. Currently USD $39.99 / month or $299.99 / year. Additional tables may be available as an add-on for $9.99 / month per 10 tables.</li>
         </ul>
         <p>Promotional offers, such as a 7-day free trial or launch-only lifetime licenses, may be offered from time to time on terms disclosed at purchase.</p>
         <p>Prices, features, and availability may change. Changes will not affect an existing paid term but will apply at renewal.</p>
@@ -239,7 +239,7 @@ export default function TermsPage() {
 
         <h3>5.3 License You Grant Us</h3>
         <p>You grant us a worldwide, non-exclusive, royalty-free license to host, store, reproduce, modify, and display your User Content solely to operate, maintain, and improve the Service, including syncing your data across your devices and sharing it with club members where you have chosen to do so.</p>
-        <p>You also grant us the right to <strong>use de-identified and aggregated poker data</strong> (hand actions, positions, board cards, stack sizes, outcomes — without your name, email, or account identifier) to train, evaluate, and improve the AI features of the Service, as described in our Privacy Policy.</p>
+        <p>You also grant us the right to <strong>use de-identified and aggregated poker data</strong> (hand actions, positions, board cards, stack sizes, outcomes, without your name, email, or account identifier) to train, evaluate, and improve the AI features of the Service, as described in our Privacy Policy.</p>
 
         <h3>5.4 Your Responsibilities</h3>
         <p>You represent that you have all rights necessary to grant the license above and that your User Content:</p>
@@ -308,7 +308,7 @@ export default function TermsPage() {
         <ul>
           <li>The Service will be uninterrupted, error-free, or secure.</li>
           <li>Statistics, AI output, or analytics will be accurate or complete.</li>
-          <li>Data sync or backup will prevent data loss — you are responsible for maintaining your own backups where important.</li>
+          <li>Data sync or backup will prevent data loss. You are responsible for maintaining your own backups where important.</li>
           <li>Voice recognition will correctly transcribe poker actions in all conditions.</li>
         </ul>
         <p>You use the Service <strong>at your own risk</strong>.</p>
@@ -336,7 +336,7 @@ export default function TermsPage() {
         <p>These Terms are governed by the laws of the <strong>Republic of Azerbaijan</strong>, without regard to its conflict of laws rules. The courts of the Republic of Azerbaijan will have exclusive jurisdiction over any dispute, subject to any mandatory consumer protection rights available to you under the law of the country where you reside.</p>
         <p>Nothing in these Terms limits your statutory consumer rights.</p>
 
-        <h2>19. Apple App Store — Additional Terms</h2>
+        <h2>19. Apple App Store: Additional Terms</h2>
         <p>If you obtained the Service from the Apple App Store, the following also apply:</p>
         <ul>
           <li>These Terms are between you and Magsud Hajiyev, not with Apple. Apple is not responsible for the Service or its content.</li>
@@ -348,7 +348,7 @@ export default function TermsPage() {
           <li>Apple and Apple's subsidiaries are <strong>third-party beneficiaries</strong> of these Terms and may enforce them against you.</li>
         </ul>
 
-        <h2>20. Google Play — Additional Terms</h2>
+        <h2>20. Google Play: Additional Terms</h2>
         <p>If you obtained the Service from Google Play, your use is also subject to the Google Play Terms of Service. Billing disputes should be raised with Google first.</p>
 
         <h2>21. Miscellaneous</h2>
@@ -364,7 +364,7 @@ export default function TermsPage() {
         <h2>22. Contact</h2>
         <p>
           <strong>Magsud Hajiyev</strong><br />
-          Sole Proprietor — Republic of Azerbaijan<br />
+          Sole Proprietor, Republic of Azerbaijan<br />
           Email: <a href="mailto:contact@finaltable.io">contact@finaltable.io</a>
         </p>
 
