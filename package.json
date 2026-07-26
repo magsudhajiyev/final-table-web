@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prebuild": "node scripts/gen-sitemap.mjs"
   },
   "keywords": [
     "poker",
@@ -21,6 +22,7 @@
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.8.0",
+    "marked": "^18.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

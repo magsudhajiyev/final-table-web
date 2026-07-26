@@ -7,6 +7,7 @@ import PrivacyPage from './PrivacyPage'
 import TermsPage from './TermsPage'
 import DeleteAccountPage from './DeleteAccountPage'
 import AdminPage from './AdminPage'
+import { BlogIndex, BlogPost } from './BlogPage'
 import Loader from './Loader'
 import { I18nProvider } from './i18n'
 import { ThemeProvider } from './theme'
@@ -15,6 +16,7 @@ import './index.css'
 // Simple path-based routing
 const path = window.location.pathname
 const handMatch = path.match(/^\/hand\/([a-zA-Z0-9]+)$/)
+const blogPostMatch = path.match(/^\/blog\/([a-z0-9-]+)$/)
 
 // Per-route <title> / meta description. The default in index.html covers "/".
 const ROUTE_META = {
@@ -40,6 +42,8 @@ if (routeMeta && !handMatch) {
 
 function App() {
   if (handMatch) return <HandViewer shareId={handMatch[1]} />
+  if (blogPostMatch) return <ThemeProvider><I18nProvider><BlogPost slug={blogPostMatch[1]} /></I18nProvider></ThemeProvider>
+  if (path === '/blog') return <ThemeProvider><I18nProvider><BlogIndex /></I18nProvider></ThemeProvider>
   if (path === '/about') return <ThemeProvider><I18nProvider><AboutPage /></I18nProvider></ThemeProvider>
   if (path === '/privacy') return <I18nProvider><PrivacyPage /></I18nProvider>
   if (path === '/terms') return <I18nProvider><TermsPage /></I18nProvider>
