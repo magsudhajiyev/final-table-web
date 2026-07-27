@@ -1,5 +1,5 @@
 /* Blog — matches the Final Table design system:
-   fonts (Playfair Display headings / Inter body), dark felt palette,
+   fonts (Helvetica Neue headings / Inter body), dark felt palette,
    accent green #4cde78, and the site's store-badge buttons. */
 
 .blog-root {
@@ -11,7 +11,11 @@
   background-image: radial-gradient(ellipse at 50% 0%, rgba(76, 222, 120, 0.06) 0%, transparent 55%);
 }
 
-.blog-list,
+.blog-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 150px 24px 90px;
+}
 .blog-article {
   max-width: 760px;
   margin: 0 auto;
@@ -29,11 +33,11 @@
   margin: 0 0 14px;
 }
 .blog-list-head h1 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
   font-size: 46px;
   line-height: 1.1;
-  letter-spacing: -0.5px;
+  letter-spacing: -2px;
   margin: 0 0 16px;
 }
 .blog-sub { color: #9a9a9a; font-size: 19px; line-height: 1.5; margin: 0; }
@@ -53,10 +57,11 @@
 .blog-card a { display: block; padding: 26px 28px; text-decoration: none; color: inherit; }
 .blog-card-meta { color: #7a7a7a; font-size: 13px; letter-spacing: 0.3px; }
 .blog-card h2 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 600;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
   font-size: 24px;
   line-height: 1.3;
+  letter-spacing: -0.8px;
   margin: 10px 0 10px;
   color: #fff;
 }
@@ -66,23 +71,30 @@
 /* ── Article ── */
 .blog-back { color: #4cde78; text-decoration: none; font-size: 14px; font-weight: 600; }
 .blog-article h1 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
   font-size: 42px;
   line-height: 1.12;
-  letter-spacing: -0.5px;
+  letter-spacing: -1.8px;
   margin: 16px 0 10px;
 }
 .blog-body { margin-top: 34px; font-size: 18px; line-height: 1.75; color: #e2e2e2; }
 .blog-body h2 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 600;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
   font-size: 28px;
-  letter-spacing: -0.3px;
+  letter-spacing: -1px;
   margin: 44px 0 16px;
   color: #fff;
 }
-.blog-body h3 { font-size: 20px; font-weight: 600; margin: 32px 0 10px; color: #fff; }
+.blog-body h3 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  margin: 32px 0 10px;
+  color: #fff;
+}
 .blog-body p { margin: 0 0 20px; }
 .blog-body ul, .blog-body ol { margin: 0 0 22px; padding-left: 24px; }
 .blog-body li { margin: 0 0 10px; }
@@ -128,8 +140,9 @@
   text-align: center;
 }
 .blog-cta h3 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.8px;
   margin: 0 0 10px;
   font-size: 26px;
   color: #fff;
@@ -157,6 +170,431 @@
 .blog-store-btn:focus-visible { outline: 2px solid #a2f69a; outline-offset: 3px; }
 .blog-store-btn img { height: 52px; width: auto; display: block; }
 
+/* ══════════════════════════════════════════════════════════
+   SINGLE POST LAYOUT — breadcrumb across the top, sticky TOC
+   on the left, article body on the right. Related posts and
+   the download CTA live inside the article column.
+════════════════════════════════════════════════════════════ */
+.blog-post-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 140px 24px 90px;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  column-gap: 64px;
+  row-gap: 24px;
+  align-items: start;
+}
+.blog-post-layout .blog-article-with-toc {
+  /* Inside the TOC layout the article isn't the outer container anymore, so
+     drop the fixed max-width and outer padding that the standalone
+     .blog-article rule sets above. */
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Breadcrumb spans both grid columns */
+.blog-crumbs {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #7a7a7a;
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.blog-crumbs a {
+  color: #9a9a9a;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.blog-crumbs a:hover { color: #fff; }
+.blog-crumb-sep { color: #444; flex-shrink: 0; }
+.blog-crumb-current {
+  color: #e2e2e2;
+  /* Keep long titles from wrapping into a second breadcrumb row on desktop. */
+  max-width: 60ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sticky TOC */
+/* align-self: stretch is what actually makes the sticky child work — without
+   it the grid item shrinks to content height and sticky has no room to move
+   because the layout uses align-items: start. */
+.blog-toc { position: relative; align-self: stretch; }
+.blog-toc-sticky {
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.blog-toc-head {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a7a7a;
+  margin: 0;
+}
+.blog-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #1e1e1e;
+}
+.blog-toc-item a {
+  display: block;
+  padding: 6px 12px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #8a8a8a;
+  text-decoration: none;
+  letter-spacing: -0.1px;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.blog-toc-l3 a { padding-left: 24px; font-size: 12.5px; }
+.blog-toc-item a:hover { color: #fff; }
+.blog-toc-item.is-active a {
+  color: #fff;
+  border-left-color: #4cde78;
+}
+
+/* Give headings enough top margin so #anchor scrolls land below the fixed nav */
+.blog-body h2,
+.blog-body h3 { scroll-margin-top: 110px; }
+
+/* ══════════════════════════════════════════════════════════
+   RELATED POSTS — "Read next" grid at end of article
+════════════════════════════════════════════════════════════ */
+.blog-related {
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid #1e1e1e;
+}
+.blog-related-head {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.8px;
+  color: #fff;
+  margin: 0 0 20px;
+}
+.blog-related-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.blog-related-card {
+  border: 1px solid #2c2c2e;
+  border-radius: 12px;
+  background: #161719;
+  overflow: hidden;
+  transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+.blog-related-card:hover {
+  transform: translateY(-3px);
+  border-color: #3f3f42;
+  background: #1a1b1e;
+}
+.blog-related-card a { display: block; text-decoration: none; color: inherit; }
+.blog-related-media {
+  aspect-ratio: 16 / 10;
+  background: #0f1012;
+  overflow: hidden;
+  border-bottom: 1px solid #2c2c2e;
+}
+.blog-related-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.blog-related-card:hover .blog-related-media img { transform: scale(1.03); }
+.blog-related-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.blog-related-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: -0.1px;
+}
+.blog-related-card h4 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: -0.4px;
+  color: #fff;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.blog-related-card .blog-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  margin-top: 2px;
+}
+
+/* Responsive: TOC drops above the article; related grid collapses. */
+@media (max-width: 900px) {
+  .blog-post-layout {
+    grid-template-columns: 1fr;
+    row-gap: 20px;
+    padding-top: 118px;
+  }
+  .blog-toc-sticky {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+    padding: 16px 0;
+    border-bottom: 1px solid #1e1e1e;
+  }
+  .blog-related-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .blog-post-layout { padding-top: 110px; padding-bottom: 60px; }
+  .blog-crumbs { font-size: 12px; }
+  .blog-crumb-current { max-width: 22ch; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   FEATURED CARD — the first post gets a hero-sized promo.
+   Two-column at desktop (media / body), stacks under 800px.
+════════════════════════════════════════════════════════════ */
+.blog-featured {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 0;
+  border: 1px solid #2c2c2e;
+  border-radius: 12px;
+  background: #161719;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 72px;
+  transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+.blog-featured:hover {
+  transform: translateY(-3px);
+  border-color: #3f3f42;
+  background: #1a1b1e;
+}
+.blog-featured-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #0f1012;
+  overflow: hidden;
+}
+.blog-featured-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.blog-featured:hover .blog-featured-media img { transform: scale(1.03); }
+.blog-featured-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0c0c0c;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.blog-featured-body {
+  padding: 44px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+.blog-featured-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: -0.1px;
+}
+.blog-featured-title {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -1.4px;
+  margin: 0;
+  color: #fff;
+}
+.blog-featured-desc {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.1px;
+  margin: 0;
+}
+.blog-featured-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  margin-top: 4px;
+}
+
+/* Shared tag pill + dot separator (used by featured + grid + related cards).
+   Matches the landing-teaser .blg-card-tag exactly. */
+.blog-tag {
+  padding: 4px 10px;
+  border: 1px solid #2c2c2e;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 1;
+}
+.blog-dot { opacity: 0.5; }
+
+/* ══════════════════════════════════════════════════════════
+   LATEST GRID
+════════════════════════════════════════════════════════════ */
+.blog-section-head {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.8px;
+  color: #fff;
+  margin: 0 0 20px;
+}
+.blog-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.blog-grid-card {
+  border: 1px solid #2c2c2e;
+  border-radius: 12px;
+  background: #161719;
+  overflow: hidden;
+  transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+.blog-grid-card:hover {
+  transform: translateY(-3px);
+  border-color: #3f3f42;
+  background: #1a1b1e;
+}
+.blog-grid-card a { display: block; text-decoration: none; color: inherit; }
+.blog-grid-media {
+  aspect-ratio: 16 / 10;
+  background: #0f1012;
+  overflow: hidden;
+  border-bottom: 1px solid #2c2c2e;
+}
+.blog-grid-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.blog-grid-card:hover .blog-grid-media img { transform: scale(1.03); }
+.blog-grid-body {
+  padding: 22px 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.blog-grid-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: -0.1px;
+}
+.blog-grid-card h2 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.6px;
+  margin: 0;
+  color: #fff;
+}
+.blog-grid-card p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.55;
+  letter-spacing: -0.1px;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.blog-grid-card .blog-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .blog-featured { grid-template-columns: 1fr; }
+  .blog-featured-media { aspect-ratio: 16 / 9; }
+  .blog-featured-body { padding: 32px 28px; }
+  .blog-featured-title { font-size: 28px; }
+  .blog-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 640px) {
   .blog-list, .blog-article { padding-top: 118px; }
   .blog-list-head h1 { font-size: 34px; }
@@ -164,6 +602,9 @@
   .blog-body { font-size: 17px; }
   .blog-body h2 { font-size: 24px; }
   .blog-store-btn img { height: 46px; }
+  .blog-featured { margin-bottom: 48px; }
+  .blog-featured-body { padding: 26px 22px; }
+  .blog-featured-title { font-size: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

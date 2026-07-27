@@ -1,8 +1,38 @@
-import { useEffect } from 'react'
-import { TPFooter, TPNavbar } from './LandingPage'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
+import { TPFooter, TPNavbar, BLOG_TAG_BY_SLUG } from './LandingPage'
+import { useT } from './i18n'
 import { posts, getPost } from './lib/blog'
 import './LandingPage.css'
 import './BlogPage.css'
+
+// Parse the post HTML, inject stable IDs on H2/H3, and return the augmented
+// HTML plus a flat TOC list. Runs at mount time in the browser (no SSR
+// needed for this route — /blog/:slug is client-rendered).
+function slugifyHeading(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .slice(0, 80)
+}
+function buildTOC(html) {
+  if (typeof window === 'undefined' || !html) return { html: html || '', toc: [] }
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  const headings = doc.querySelectorAll('h2, h3')
+  const toc = []
+  const seen = new Map()
+  headings.forEach((h) => {
+    const base = slugifyHeading(h.textContent) || 'section'
+    const n = (seen.get(base) || 0) + 1
+    seen.set(base, n)
+    const id = n === 1 ? base : `${base}-${n}`
+    h.setAttribute('id', id)
+    toc.push({ id, text: h.textContent, level: h.tagName === 'H2' ? 2 : 3 })
+  })
+  return { html: doc.body.innerHTML, toc }
+}
 
 const SITE = 'https://www.finaltable.io'
 
@@ -42,6 +72,8 @@ function setMeta({ title, description, canonical, image, jsonLd }) {
 }
 
 export function BlogIndex() {
+  const { t } = useT()
+
   useEffect(() => {
     setMeta({
       title: 'Poker Strategy & Stats Blog — Final Table',
@@ -51,6 +83,10 @@ export function BlogIndex() {
       image: '/og-image.png',
     })
   }, [])
+
+  const featured = posts[0]
+  const rest = posts.slice(1)
+  const tagFor = (slug) => t(`blogTeaser.tag.${BLOG_TAG_BY_SLUG[slug] || 'strategy'}`)
 
   return (
     <div className="blog-root">
@@ -63,20 +99,58 @@ export function BlogIndex() {
             Straight from the people who built the tracker. No fluff, correct math.
           </p>
         </header>
-        <ul className="blog-cards">
-          {posts.map((p) => (
-            <li key={p.slug} className="blog-card">
-              <a href={`/blog/${p.slug}`}>
-                <span className="blog-card-meta">
-                  {fmtDate(p.date)} · {p.readingMinutes} min read
-                </span>
-                <h2>{p.title}</h2>
-                <p>{p.description}</p>
-                <span className="blog-card-link">Read →</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+
+        {featured && (
+          <a href={`/blog/${featured.slug}`} className="blog-featured">
+            <div className="blog-featured-media">
+              <img src={featured.image || '/og-image.png'} alt="" loading="eager" />
+              <span className="blog-featured-badge">Featured</span>
+            </div>
+            <div className="blog-featured-body">
+              <div className="blog-featured-meta">
+                <span className="blog-tag">{tagFor(featured.slug)}</span>
+                <span className="blog-dot" aria-hidden="true">·</span>
+                <span>{fmtDate(featured.date)}</span>
+                <span className="blog-dot" aria-hidden="true">·</span>
+                <span>{t('blogTeaser.minRead', { n: featured.readingMinutes })}</span>
+              </div>
+              <h2 className="blog-featured-title">{featured.title}</h2>
+              <p className="blog-featured-desc">{featured.description}</p>
+              <span className="blog-featured-cta">
+                {t('blogTeaser.read')} <ArrowRight size={16} strokeWidth={2} />
+              </span>
+            </div>
+          </a>
+        )}
+
+        {rest.length > 0 && (
+          <>
+            <h3 className="blog-section-head">Latest posts</h3>
+            <ul className="blog-grid">
+              {rest.map((p) => (
+                <li key={p.slug} className="blog-grid-card">
+                  <a href={`/blog/${p.slug}`}>
+                    <div className="blog-grid-media">
+                      <img src={p.image || '/og-image.png'} alt="" loading="lazy" />
+                    </div>
+                    <div className="blog-grid-body">
+                      <div className="blog-grid-meta">
+                        <span className="blog-tag">{tagFor(p.slug)}</span>
+                        <span className="blog-dot" aria-hidden="true">·</span>
+                        <span>{t('blogTeaser.minRead', { n: p.readingMinutes })}</span>
+                      </div>
+                      <h2>{p.title}</h2>
+                      <p>{p.description}</p>
+                      <span className="blog-card-link">
+                        {t('blogTeaser.read')} <ArrowRight size={14} strokeWidth={2} />
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </main>
       <TPFooter />
     </div>
@@ -85,6 +159,8 @@ export function BlogIndex() {
 
 export function BlogPost({ slug }) {
   const post = getPost(slug)
+  const { t } = useT()
+  const [activeId, setActiveId] = useState(null)
 
   useEffect(() => {
     if (!post) {
@@ -117,6 +193,42 @@ export function BlogPost({ slug }) {
     })
   }, [post])
 
+  const { html, toc } = useMemo(() => buildTOC(post?.html || ''), [post?.html])
+
+  // Scroll-spy: the last heading with top above a small offset is active.
+  useEffect(() => {
+    if (!toc.length) return
+    const OFFSET = 120
+    const onScroll = () => {
+      let current = toc[0]?.id
+      for (const item of toc) {
+        const el = document.getElementById(item.id)
+        if (!el) continue
+        const rect = el.getBoundingClientRect()
+        if (rect.top - OFFSET <= 0) current = item.id
+        else break
+      }
+      setActiveId(current)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [toc])
+
+  const onTocClick = (e, id) => {
+    e.preventDefault()
+    const el = document.getElementById(id)
+    if (!el) return
+    // Lenis is initialized on the landing page but not this route, so use
+    // native smooth-scroll here. scroll-margin-top on headings handles the
+    // fixed-header offset.
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    history.replaceState(null, '', `#${id}`)
+  }
+
+  const related = post ? posts.filter((p) => p.slug !== post.slug).slice(0, 3) : []
+  const tagFor = (s) => t(`blogTeaser.tag.${BLOG_TAG_BY_SLUG[s] || 'strategy'}`)
+
   if (!post) {
     return (
       <div className="blog-root">
@@ -133,38 +245,98 @@ export function BlogPost({ slug }) {
   return (
     <div className="blog-root">
       <TPNavbar />
-      <article className="blog-article">
-        <a className="blog-back" href="/blog">← All posts</a>
-        <p className="blog-card-meta">
-          {fmtDate(post.date)} · {post.readingMinutes} min read
-        </p>
-        <h1>{post.title}</h1>
-        <div className="blog-body" dangerouslySetInnerHTML={{ __html: post.html }} />
-        <div className="blog-cta">
-          <h3>Track your real poker stats</h3>
-          <p>Log hands at the table and see your VPIP, PFR, 3-bet and more — by position. Free to start.</p>
-          <div className="blog-cta-stores">
-            <a
-              className="blog-store-btn"
-              href="https://apps.apple.com/us/app/final-table/id6760188970"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Download on the App Store"
-            >
-              <img src="/store_appstore.svg" alt="Download on the App Store" />
-            </a>
-            <a
-              className="blog-store-btn"
-              href="https://play.google.com/store/apps/details?id=com.finaltable.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Get it on Google Play"
-            >
-              <img src="/store_googleplay.svg" alt="Get it on Google Play" />
-            </a>
+      <div className="blog-post-layout">
+        {/* Breadcrumbs span both columns */}
+        <nav className="blog-crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <ChevronRight size={14} className="blog-crumb-sep" aria-hidden="true" />
+          <a href="/blog">Blog</a>
+          <ChevronRight size={14} className="blog-crumb-sep" aria-hidden="true" />
+          <span className="blog-crumb-current" aria-current="page">{post.title}</span>
+        </nav>
+
+        <aside className="blog-toc" aria-label="Table of contents">
+          <div className="blog-toc-sticky">
+            {toc.length > 0 && (
+              <>
+                <p className="blog-toc-head">On this page</p>
+                <ul className="blog-toc-list">
+                  {toc.map((item) => (
+                    <li key={item.id} className={`blog-toc-item blog-toc-l${item.level}${activeId === item.id ? ' is-active' : ''}`}>
+                      <a href={`#${item.id}`} onClick={(e) => onTocClick(e, item.id)}>{item.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
-        </div>
-      </article>
+        </aside>
+
+        <article className="blog-article blog-article-with-toc">
+          <p className="blog-card-meta">
+            <span className="blog-tag">{tagFor(post.slug)}</span>
+            <span className="blog-dot" aria-hidden="true">·</span>
+            {fmtDate(post.date)}
+            <span className="blog-dot" aria-hidden="true">·</span>
+            {post.readingMinutes} min read
+          </p>
+          <h1>{post.title}</h1>
+          <div className="blog-body" dangerouslySetInnerHTML={{ __html: html }} />
+
+          {related.length > 0 && (
+            <section className="blog-related" aria-labelledby="related-heading">
+              <h3 id="related-heading" className="blog-related-head">Read next</h3>
+              <ul className="blog-related-grid">
+                {related.map((p) => (
+                  <li key={p.slug} className="blog-related-card">
+                    <a href={`/blog/${p.slug}`}>
+                      <div className="blog-related-media">
+                        <img src={p.image || '/og-image.png'} alt="" loading="lazy" />
+                      </div>
+                      <div className="blog-related-body">
+                        <div className="blog-related-meta">
+                          <span className="blog-tag">{tagFor(p.slug)}</span>
+                          <span className="blog-dot" aria-hidden="true">·</span>
+                          <span>{p.readingMinutes} min read</span>
+                        </div>
+                        <h4>{p.title}</h4>
+                        <span className="blog-card-link">
+                          Read <ArrowRight size={14} strokeWidth={2} />
+                        </span>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <div className="blog-cta">
+            <h3>Track your real poker stats</h3>
+            <p>Log hands at the table and see your VPIP, PFR, 3-bet and more — by position. Free to start.</p>
+            <div className="blog-cta-stores">
+              <a
+                className="blog-store-btn"
+                href="https://apps.apple.com/us/app/final-table/id6760188970"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download on the App Store"
+              >
+                <img src="/store_appstore.svg" alt="Download on the App Store" />
+              </a>
+              <a
+                className="blog-store-btn"
+                href="https://play.google.com/store/apps/details?id=com.finaltable.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Get it on Google Play"
+              >
+                <img src="/store_googleplay.svg" alt="Get it on Google Play" />
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
       <TPFooter />
     </div>
   )

@@ -6,7 +6,7 @@ date: 2026-07-27
 updated: 2026-07-27
 author: Final Table
 keywords: ["track poker stats", "live poker tracker", "poker stats app", "poker HUD live", "VPIP tracker"]
-image: /og-image.png
+image: /blog/track-stats.png
 readingMinutes: 6
 ---
 

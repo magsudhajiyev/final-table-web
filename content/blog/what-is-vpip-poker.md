@@ -6,7 +6,7 @@ date: 2026-07-28
 updated: 2026-07-28
 author: Final Table
 keywords: ["what is VPIP", "VPIP poker", "how to calculate VPIP", "good VPIP", "VPIP meaning", "voluntarily put in pot"]
-image: /og-image.png
+image: /blog/vpip.png
 readingMinutes: 6
 ---
 

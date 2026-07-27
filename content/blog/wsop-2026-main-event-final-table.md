@@ -6,7 +6,7 @@ date: 2026-07-27
 updated: 2026-07-27
 author: Final Table
 keywords: ["WSOP 2026 main event", "WSOP final table", "WSOP main event final table", "WSOP 2026 chip counts", "world series of poker 2026"]
-image: /og-image.png
+image: /blog/wsop-2026.png
 readingMinutes: 5
 ---
 

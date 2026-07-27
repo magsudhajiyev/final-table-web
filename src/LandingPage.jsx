@@ -1,6 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useRef, forwardRef } from 'react'
 import { Eye, TrendingUp, Crosshair, Users, Zap, Target, Layers, Mic, ArrowRight, X } from 'lucide-react'
 import { useT, SUPPORTED } from './i18n'
+import { posts as BLOG_POSTS } from './lib/blog'
 import { ThemeToggle, useTheme } from './theme'
 import { FinalTableLogo } from './components/FinalTableLogo'
 import './LandingPage.css'
@@ -2265,6 +2266,72 @@ function TPBottomHero() {
   )
 }
 
+/* ────────────────────────────────────────────────────── */
+/*  BLOG TEASER                                           */
+/* ────────────────────────────────────────────────────── */
+// Editorial tag per post. Kept in-code (not frontmatter) so the landing page
+// can decide its own taxonomy without reshaping the blog content model.
+// Extend when new posts land — falls back to 'blogTeaser.tag.strategy'.
+export const BLOG_TAG_BY_SLUG = {
+  'what-is-vpip-poker': 'strategy',
+  'track-poker-stats-without-laptop': 'product',
+  'wsop-2026-main-event-final-table': 'news',
+}
+
+function TPBlogTeaser() {
+  const { t } = useT()
+  const items = BLOG_POSTS.slice(0, 3)
+  if (items.length === 0) return null
+
+  return (
+    <section className="blg-section" data-nav-theme="dark">
+      <div className="blg-inner">
+        <div className="blg-head">
+          <div className="blg-head-copy">
+            <p className="blg-eyebrow observe-me">{t('blogTeaser.eyebrow')}</p>
+            <h2 className="blg-title observe-me" style={{ '--reveal-delay': '80ms' }}>
+              {t('blogTeaser.title')}
+            </h2>
+          </div>
+          <a className="blg-head-cta observe-me" style={{ '--reveal-delay': '160ms' }} href="/blog">
+            {t('blogTeaser.viewAll')} <ArrowRight size={16} strokeWidth={2} />
+          </a>
+        </div>
+
+        <div className="blg-grid">
+          {items.map((post, i) => {
+            const tagKey = BLOG_TAG_BY_SLUG[post.slug] || 'strategy'
+            return (
+              <a
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="blg-card observe-me"
+                style={{ '--reveal-delay': `${120 + i * 80}ms` }}
+              >
+                <div className="blg-card-media">
+                  <img src={post.image || '/og-image.png'} alt="" loading="lazy" />
+                </div>
+                <div className="blg-card-body">
+                  <div className="blg-card-meta">
+                    <span className="blg-card-tag">{t(`blogTeaser.tag.${tagKey}`)}</span>
+                    <span className="blg-card-dot" aria-hidden="true">·</span>
+                    <span className="blg-card-time">{t('blogTeaser.minRead', { n: post.readingMinutes })}</span>
+                  </div>
+                  <h3 className="blg-card-title">{post.title}</h3>
+                  <p className="blg-card-desc">{post.description}</p>
+                  <span className="blg-card-cta">
+                    {t('blogTeaser.read')} <ArrowRight size={14} strokeWidth={2} />
+                  </span>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function TPDiscord() {
   const { t } = useT()
 
@@ -3373,6 +3440,7 @@ export default function LandingPage() {
           <TPNotHud />
           <TPBuckleUp />
           <TPBuiltForLive />
+          <TPBlogTeaser />
           <TPDiscord />
           <TPBottomHero />
         </main>
