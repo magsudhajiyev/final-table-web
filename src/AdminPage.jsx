@@ -12,7 +12,10 @@ import {
   setInboxEmailStatus, getAllInboxStatuses, markInboxEmailRead,
   signInAdmin, signOutAdmin, onAuthChange, ADMIN_EMAILS
 } from './lib/firebase'
+import { posts as blogPosts } from './lib/blog'
 import './AdminPage.css'
+
+const SITE_URL = 'https://www.finaltable.io'
 
 /* ══════════════════════════════════════════════
    UTILITIES
@@ -1812,6 +1815,191 @@ function InboxTab({ onToast, onMarkRead }) {
 }
 
 /* ══════════════════════════════════════════════
+   BLOG → EMAIL A POST TO SELECTED USERS
+   ══════════════════════════════════════════════ */
+
+// Branded email HTML for a blog post: excerpt + "Read the full article" CTA.
+function buildBlogEmail(post, recipientName) {
+  const url = `${SITE_URL}/blog/${post.slug}`
+  const hi = recipientName ? `Hi ${recipientName},` : 'Hi,'
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0c0c0c;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0c0c0c;padding:32px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#121212;border:1px solid #1e1e1e;border-radius:18px;overflow:hidden;">
+        <tr><td style="padding:32px 36px 8px;">
+          <p style="margin:0 0 4px;color:#4cde78;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;">Final Table Blog</p>
+          <h1 style="margin:0 0 14px;color:#ffffff;font-size:26px;line-height:1.25;">${post.title}</h1>
+          <p style="margin:0 0 22px;color:#c7c7c7;font-size:16px;line-height:1.6;">${hi}</p>
+          <p style="margin:0 0 26px;color:#c7c7c7;font-size:16px;line-height:1.6;">${post.description}</p>
+          <a href="${url}" style="display:inline-block;background:#4cde78;color:#06120b;font-weight:700;font-size:15px;text-decoration:none;padding:13px 26px;border-radius:40px;">Read the full article →</a>
+        </td></tr>
+        <tr><td style="padding:28px 36px 32px;border-top:1px solid #1e1e1e;margin-top:24px;">
+          <p style="margin:0;color:#7a7a7a;font-size:13px;line-height:1.5;">You're receiving this because you have a Final Table account.<br/>
+          <a href="${SITE_URL}" style="color:#4cde78;text-decoration:none;">finaltable.io</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`
+}
+
+function BlogTab({ onToast }) {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selectedSlug, setSelectedSlug] = useState(blogPosts[0]?.slug || '')
+  const [checked, setChecked] = useState(() => new Set())
+  const [search, setSearch] = useState('')
+  const [sending, setSending] = useState(false)
+
+  useEffect(() => {
+    getAppUsers()
+      .then(list => setUsers(list.filter(u => u.email && u.email.includes('@'))))
+      .catch(() => onToast('Failed to load users', 'error'))
+      .finally(() => setLoading(false))
+  }, [onToast])
+
+  const post = blogPosts.find(p => p.slug === selectedSlug) || null
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return users
+    return users.filter(u =>
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.displayName || '').toLowerCase().includes(q))
+  }, [users, search])
+
+  const toggle = (email) => {
+    setChecked(prev => {
+      const next = new Set(prev)
+      next.has(email) ? next.delete(email) : next.add(email)
+      return next
+    })
+  }
+  const allVisibleChecked = filtered.length > 0 && filtered.every(u => checked.has(u.email))
+  const toggleAllVisible = () => {
+    setChecked(prev => {
+      const next = new Set(prev)
+      if (allVisibleChecked) filtered.forEach(u => next.delete(u.email))
+      else filtered.forEach(u => next.add(u.email))
+      return next
+    })
+  }
+
+  const handleSend = async () => {
+    if (!post) { onToast('Pick an article first', 'error'); return }
+    const recipients = users.filter(u => checked.has(u.email))
+    if (recipients.length === 0) { onToast('Select at least one user', 'error'); return }
+    if (!window.confirm(`Send "${post.title}" to ${recipients.length} user${recipients.length > 1 ? 's' : ''}?`)) return
+
+    setSending(true)
+    let ok = 0, fail = 0
+    for (const u of recipients) {
+      try {
+        await sendResendEmail(u.email, {
+          subject: post.title,
+          html: buildBlogEmail(post, (u.displayName || '').split(' ')[0]),
+        })
+        ok++
+      } catch (_) {
+        fail++
+      }
+    }
+    setSending(false)
+    onToast(`Sent to ${ok} user${ok !== 1 ? 's' : ''}${fail ? `, ${fail} failed` : ''}`, fail ? 'error' : 'success')
+    if (!fail) setChecked(new Set())
+  }
+
+  return (
+    <div>
+      <h1 className="adm-page-title">Blog → Email a post</h1>
+      <p style={{ color: '#9a9a9a', fontSize: 14, margin: '0 0 20px' }}>Pick an article, select users, and send it as an email via Resend.</p>
+
+      {blogPosts.length === 0 ? (
+        <p style={{ color: '#9a9a9a' }}>No blog posts found.</p>
+      ) : (
+        <>
+          <label style={{ display: 'block', marginBottom: 6, color: '#c7c7c7', fontSize: 13, fontWeight: 600 }}>Article</label>
+          <select
+            className="adm-email-filter-select"
+            value={selectedSlug}
+            onChange={e => setSelectedSlug(e.target.value)}
+            style={{ width: '100%', maxWidth: 560, marginBottom: 10 }}
+          >
+            {blogPosts.map(p => (
+              <option key={p.slug} value={p.slug}>{p.title}</option>
+            ))}
+          </select>
+
+          {post && (
+            <div style={{ background: '#121212', border: '1px solid #1e1e1e', borderRadius: 12, padding: 16, marginBottom: 20, maxWidth: 560 }}>
+              <p style={{ margin: '0 0 6px', color: '#c7c7c7', fontSize: 14, lineHeight: 1.5 }}>{post.description}</p>
+              <a href={`${SITE_URL}/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#4cde78', fontSize: 13, textDecoration: 'none' }}>
+                /blog/{post.slug} ↗
+              </a>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10, flexWrap: 'wrap' }}>
+            <input
+              className="adm-email-filter-select"
+              placeholder="Search name or email…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ flex: 1, minWidth: 220 }}
+            />
+            <span style={{ color: '#9a9a9a', fontSize: 13 }}>
+              {checked.size} selected · {filtered.length} shown
+            </span>
+          </div>
+
+          {loading ? (
+            <p style={{ color: '#9a9a9a' }}>Loading users…</p>
+          ) : (
+            <div style={{ maxHeight: 380, overflowY: 'auto', border: '1px solid #1e1e1e', borderRadius: 12 }}>
+              <table className="adm-table" style={{ margin: 0 }}>
+                <thead>
+                  <tr>
+                    <th style={{ width: 40 }}>
+                      <input type="checkbox" checked={allVisibleChecked} onChange={toggleAllVisible} aria-label="Select all visible" />
+                    </th>
+                    <th>Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(u => (
+                    <tr key={u.id} onClick={() => toggle(u.email)} style={{ cursor: 'pointer' }}>
+                      <td onClick={e => e.stopPropagation()}>
+                        <input type="checkbox" checked={checked.has(u.email)} onChange={() => toggle(u.email)} />
+                      </td>
+                      <td>{u.displayName || '—'}</td>
+                      <td>{u.email}</td>
+                    </tr>
+                  ))}
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={3} style={{ color: '#9a9a9a', padding: 16 }}>No matching users.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <button
+            className="adm-email-send-btn"
+            style={{ marginTop: 18 }}
+            disabled={sending || checked.size === 0 || !post}
+            onClick={handleSend}
+          >
+            {sending ? 'Sending…' : `Send to ${checked.size} user${checked.size !== 1 ? 's' : ''}`}
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════
    DASHBOARD SHELL
    ══════════════════════════════════════════════ */
 
@@ -1870,6 +2058,7 @@ function Dashboard() {
     { id: 'hands', label: 'Shared Hands' },
     { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
     { id: 'email', label: 'Email' },
+    { id: 'blog', label: 'Blog' },
   ]
 
   const selectTab = (id) => { setActiveTab(id); setMenuOpen(false) }
@@ -1904,6 +2093,7 @@ function Dashboard() {
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}
+        {activeTab === 'blog' && <BlogTab onToast={showToast} />}
       </main>
       {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} key={toast.key} />}
     </div>
