@@ -53,10 +53,22 @@ No code changes. No route to register. No sitemap to edit by hand.
 Ordered by value (search intent × how well only-we-can-answer-it). Work down
 the list. Each is a real thing people search that maps to a product feature.
 
+**Search-validated numbers to cite (from live SERP research, July 2026 —
+so posts match what readers already expect):**
+- **VPIP:** "good" range is 20–28% in 6-max, ~15–20% full ring. Loose vs tight
+  tell. People literally search *"what is a good VPIP"*.
+- **3-bet:** strong players 3-bet ~6–10% in cash games. Search: *"what is a
+  good 3-bet percentage"*.
+- **Sample size:** you need ~500–1,000 hands on a player before their 3-bet%
+  means anything — good honest angle that builds trust.
+- Highest-intent phrasing people actually type: **"what is a good [stat]"**,
+  **"how to calculate [stat]"**, **"[stat] explained"**. Use these verbatim in
+  H1s and H2s.
+
 ### Tier 1 — your wedge (own these first)
 - [x] How to track your poker stats without a laptop  *(published — the money keyword)*
-- [ ] What is VPIP? How to calculate it correctly (and why most get it wrong)
-- [ ] What is a good 3-bet percentage? (by position)
+- [ ] What is VPIP? How to calculate it correctly (and why most get it wrong)  ← cite the 20–28% / 15–20% ranges
+- [ ] What is a good 3-bet percentage? (by position)  ← cite ~6–10%
 - [ ] Live poker vs online: why live players fly blind — and how to fix it
 - [ ] How to read a range grid: what your 13×13 says about your leaks
 
@@ -66,13 +78,23 @@ the list. Each is a real thing people search that maps to a product feature.
 - [ ] Fold to 3-bet: the stat that exposes weak-tight players
 - [ ] Steal percentage & blind defense for live players
 - [ ] What's a good VPIP/PFR ratio? Reading the gap
-- [ ] Poker player types explained: TAG, LAG, Nit, Station, Maniac
+- [ ] Poker player types explained: TAG, LAG, Nit, Station, Maniac  ← we classify these in-app; strong fit
 
 ### Tier 3 — game/lifestyle (wider net, softer intent)
 - [ ] How to run a home poker game that people come back to
 - [ ] Bankroll management for live cash and tournaments
 - [ ] Tracking your tournament ROI: ITM%, average finish, and what they mean
 - [ ] Should you show your hands? Live-poker etiquette and info leaks
+
+### Tier 4 — EVENT / TRENDING (timely traffic spikes — publish BEFORE the event)
+Timely posts catch search spikes competitors miss. Key move: **publish the
+preview a week early so Google has it indexed when searches surge, then update
+it with results.** Refresh the `updated:` date each time — freshness ranks.
+- [x] WSOP 2026 Main Event Final Table preview  *(published — UPDATE with results after Aug 5, 2026)*
+- [ ] WSOP Main Event: biggest final-table hands, analyzed *(after the finale)*
+- [ ] WSOP 2027 schedule / how to satellite in *(publish when the schedule drops)*
+- [ ] Recurring annual angle: every WSOP Main Event final table is a search
+  spike — own the "[year] WSOP final table" preview each July.
 
 ## Distribution (content ranks in months — help it along)
 
