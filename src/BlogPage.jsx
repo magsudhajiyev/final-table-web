@@ -142,10 +142,26 @@ export function BlogPost({ slug }) {
         <div className="blog-body" dangerouslySetInnerHTML={{ __html: post.html }} />
         <div className="blog-cta">
           <h3>Track your real poker stats</h3>
-          <p>Log hands at the table and see your VPIP, PFR, 3-bet and more — by position.</p>
-          <div className="blog-cta-btns">
-            <a href="https://apps.apple.com/us/app/final-table/id6760188970">Download for iOS</a>
-            <a href="https://play.google.com/store/apps/details?id=com.finaltable.app">Get it on Android</a>
+          <p>Log hands at the table and see your VPIP, PFR, 3-bet and more — by position. Free to start.</p>
+          <div className="blog-cta-stores">
+            <a
+              className="blog-store-btn"
+              href="https://apps.apple.com/us/app/final-table/id6760188970"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download on the App Store"
+            >
+              <img src="/store_appstore.svg" alt="Download on the App Store" />
+            </a>
+            <a
+              className="blog-store-btn"
+              href="https://play.google.com/store/apps/details?id=com.finaltable.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Get it on Google Play"
+            >
+              <img src="/store_googleplay.svg" alt="Get it on Google Play" />
+            </a>
           </div>
         </div>
       </article>
