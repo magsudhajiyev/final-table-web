@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, ChevronRight } from 'lucide-react'
-import { TPFooter, TPNavbar, BLOG_TAG_BY_SLUG } from './LandingPage'
+import { TPFooter, TPNavbar, TPBottomHero, BLOG_TAG_BY_SLUG } from './LandingPage'
 import { useT } from './i18n'
 import { posts, getPost } from './lib/blog'
 import './LandingPage.css'
@@ -195,6 +195,32 @@ export function BlogPost({ slug }) {
 
   const { html, toc } = useMemo(() => buildTOC(post?.html || ''), [post?.html])
 
+  // .observe-me reveal: TPBottomHero (and any other landing components we
+  // reuse here) rely on the IntersectionObserver that normally lives inside
+  // <LandingPage/>. On this route that component isn't mounted, so we run the
+  // same observer here — otherwise .observe-me elements stay at opacity: 0.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.observe-me').forEach(el => el.classList.add('in-view'))
+      return
+    }
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view')
+          obs.unobserve(entry.target)
+        }
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 })
+    const nodes = document.querySelectorAll('.observe-me')
+    nodes.forEach(el => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight) el.classList.add('in-view')
+      else obs.observe(el)
+    })
+    return () => obs.disconnect()
+  }, [post?.slug])
+
   // Scroll-spy: the last heading with top above a small offset is active.
   useEffect(() => {
     if (!toc.length) return
@@ -311,32 +337,9 @@ export function BlogPost({ slug }) {
             </section>
           )}
 
-          <div className="blog-cta">
-            <h3>Track your real poker stats</h3>
-            <p>Log hands at the table and see your VPIP, PFR, 3-bet and more — by position. Free to start.</p>
-            <div className="blog-cta-stores">
-              <a
-                className="blog-store-btn"
-                href="https://apps.apple.com/us/app/final-table/id6760188970"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Download on the App Store"
-              >
-                <img src="/store_appstore.svg" alt="Download on the App Store" />
-              </a>
-              <a
-                className="blog-store-btn"
-                href="https://play.google.com/store/apps/details?id=com.finaltable.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Get it on Google Play"
-              >
-                <img src="/store_googleplay.svg" alt="Get it on Google Play" />
-              </a>
-            </div>
-          </div>
         </article>
       </div>
+      <TPBottomHero />
       <TPFooter />
     </div>
   )

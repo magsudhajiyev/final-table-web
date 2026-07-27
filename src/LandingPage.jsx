@@ -2201,7 +2201,7 @@ function TPBuiltForLive() {
 /* ────────────────────────────────────────────────────── */
 /*  DISCORD — JOIN THE COMMUNITY                          */
 /* ────────────────────────────────────────────────────── */
-function TPBottomHero() {
+export function TPBottomHero() {
   const { t } = useT()
   const titleRef = useRef(null)
 
