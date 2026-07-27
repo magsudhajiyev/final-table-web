@@ -25,7 +25,7 @@ No code changes. No route to register. No sitemap to edit by hand.
 | `date`           | yes      | `YYYY-MM-DD`. Publish date.                                       |
 | `updated`        | no       | `YYYY-MM-DD`. Bump when you edit — Google likes fresh dates.      |
 | `keywords`       | no       | Array. The terms you're targeting (for your reference + JSON-LD). |
-| `image`          | no       | OG/social image path. Defaults to `/og-image.png`.               |
+| `image`          | no       | OG/social image path. Defaults to `/og-image-v2.png`.            |
 | `readingMinutes` | no       | Auto-computed from word count if omitted.                         |
 
 ## SEO rules that actually matter (follow these, ignore the myths)

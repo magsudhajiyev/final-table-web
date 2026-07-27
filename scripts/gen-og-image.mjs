@@ -1,4 +1,6 @@
-// Generates public/og-image.png (1200×630) from the site's SVG logo.
+// Generates public/og-image-v2.png (1200×630) from the site's SVG logo.
+// Versioned filename so social-platform caches re-fetch after a change —
+// bump to -v3 (etc.) when the image needs to force-refresh again.
 // Runs before every build so any logo update flows into the share preview
 // automatically. Uses sharp to rasterize a composited SVG.
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -59,6 +61,6 @@ const composite = `<?xml version="1.0" encoding="UTF-8"?>
 
 await sharp(Buffer.from(composite))
   .png()
-  .toFile(join(root, 'public', 'og-image.png'))
+  .toFile(join(root, 'public', 'og-image-v2.png'))
 
-console.log(`og-image.png written: ${W}×${H}`)
+console.log(`og-image-v2.png written: ${W}×${H}`)

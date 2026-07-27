@@ -6,7 +6,7 @@ date: 2026-01-01
 updated: 2026-01-01
 author: Final Table
 keywords: ["primary keyword", "secondary keyword"]
-image: /og-image.png
+image: /og-image-v2.png
 ---
 
 Answer the reader's question in the first two sentences — Google and readers

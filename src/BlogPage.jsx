@@ -80,7 +80,7 @@ export function BlogIndex() {
       description:
         'Guides on poker stats, ranges, and live-game strategy from the team behind Final Table — the live poker tracker.',
       canonical: `${SITE}/blog`,
-      image: '/og-image.png',
+      image: '/og-image-v2.png',
     })
   }, [])
 
@@ -103,7 +103,7 @@ export function BlogIndex() {
         {featured && (
           <a href={`/blog/${featured.slug}`} className="blog-featured">
             <div className="blog-featured-media">
-              <img src={featured.image || '/og-image.png'} alt="" loading="eager" />
+              <img src={featured.image || '/og-image-v2.png'} alt="" loading="eager" />
               <span className="blog-featured-badge">Featured</span>
             </div>
             <div className="blog-featured-body">
@@ -131,7 +131,7 @@ export function BlogIndex() {
                 <li key={p.slug} className="blog-grid-card">
                   <a href={`/blog/${p.slug}`}>
                     <div className="blog-grid-media">
-                      <img src={p.image || '/og-image.png'} alt="" loading="lazy" />
+                      <img src={p.image || '/og-image-v2.png'} alt="" loading="lazy" />
                     </div>
                     <div className="blog-grid-body">
                       <div className="blog-grid-meta">
@@ -317,7 +317,7 @@ export function BlogPost({ slug }) {
                   <li key={p.slug} className="blog-related-card">
                     <a href={`/blog/${p.slug}`}>
                       <div className="blog-related-media">
-                        <img src={p.image || '/og-image.png'} alt="" loading="lazy" />
+                        <img src={p.image || '/og-image-v2.png'} alt="" loading="lazy" />
                       </div>
                       <div className="blog-related-body">
                         <div className="blog-related-meta">

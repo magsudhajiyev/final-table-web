@@ -2309,7 +2309,7 @@ function TPBlogTeaser() {
                 style={{ '--reveal-delay': `${120 + i * 80}ms` }}
               >
                 <div className="blg-card-media">
-                  <img src={post.image || '/og-image.png'} alt="" loading="lazy" />
+                  <img src={post.image || '/og-image-v2.png'} alt="" loading="lazy" />
                 </div>
                 <div className="blg-card-body">
                   <div className="blg-card-meta">

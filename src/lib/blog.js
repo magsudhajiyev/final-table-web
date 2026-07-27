@@ -69,7 +69,7 @@ function parsePost(raw, path) {
     updated: data.updated ? new Date(data.updated) : null,
     author: data.author || 'Final Table',
     keywords: data.keywords || [],
-    image: data.image || '/og-image.png',
+    image: data.image || '/og-image-v2.png',
     readingMinutes: data.readingMinutes || Math.max(1, Math.round(content.split(/\s+/).length / 200)),
     html: marked.parse(content),
   }
