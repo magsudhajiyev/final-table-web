@@ -17,6 +17,7 @@
   "author": "Final Table Team",
   "license": "MIT",
   "dependencies": {
+    "@datafast/ai-crawl": "^1.0.9",
     "firebase": "^12.2.1",
     "firebase-admin": "^14.1.0",
     "flag-icons": "^7.5.0",

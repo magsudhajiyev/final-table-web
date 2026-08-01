@@ -83,6 +83,11 @@ Vercel serverless functions. Secrets live server-side: `RESEND_API_KEY` (Resend 
 
 **Dev/prod duplication gotcha:** `vite.config.js` contains an `apiDevPlugin` that re-implements every `/api/*` endpoint as dev-server middleware, so the admin dashboard works under plain `npm run dev` (no `vercel dev` needed). Any change to an `api/*.js` function must be mirrored in the corresponding middleware in `vite.config.js`, or dev and prod behavior will diverge.
 
+### Analytics (DataFast)
+
+- **Browser:** the cookieless DataFast script in `index.html`. Scroll goals via `data-fast-scroll` attributes on landing/blog sections (thresholds tuned per section height — tall sticky sections can never reach the 0.5 default ratio) and click goals via `data-fast-goal` on every store link, with a `data-fast-goal-placement` param. The script disables itself on localhost.
+- **Bots:** root-level `middleware.js` is Vercel Edge Middleware running `@datafast/ai-crawl` in front of static serving — tracks AI/search/training crawlers (which never run the browser script). Fire-and-forget, never awaited; the matcher excludes `/api` and static assets. Does not run under `npm run dev`.
+
 ### Admin page (`src/AdminPage.jsx`)
 
 Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no password gate anymore). Tabs for waitlist users, nickname claims, contact submissions, shared hands, and live-app users (Firebase Auth list/delete via the `/api` endpoints). Supports CSV export and bulk email through the `/api/*` Resend endpoints (raw HTML or Resend template mode), including sending a blog post as an email to selected users.
