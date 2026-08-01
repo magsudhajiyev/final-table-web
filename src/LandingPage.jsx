@@ -1300,7 +1300,11 @@ function TPHowItWorks() {
   )
 
   return (
-    <section className="hiw-section" id="how-it-works" ref={wrapperRef} data-nav-theme="dark">
+    // data-fast-scroll: DataFast scroll goal (fires once at the visibility
+    // threshold). The observer's ratio can never reach the 0.5 default on
+    // sections taller than ~2 viewports, so tall sections get low thresholds
+    // (this one is 400vh, .bu-section is 220vh+).
+    <section className="hiw-section" id="how-it-works" ref={wrapperRef} data-nav-theme="dark" data-fast-scroll="scroll_to_how_it_works" data-fast-scroll-threshold="0.1">
       {/* Mobile-only copy of the text, outside the scaled canvas so it stays crisp */}
       <div className="hiw-text hiw-text--mobile">{textInner}</div>
       <div className="hiw-sticky" ref={stickyRef}>
@@ -1409,7 +1413,7 @@ function TPNotHud() {
     { titleKey: 'notHud.item2Title', descKey: 'notHud.item2Desc' },
   ]
   return (
-    <section className="nh-section" data-nav-theme="dark">
+    <section className="nh-section" data-nav-theme="dark" data-fast-scroll="scroll_to_not_hud" data-fast-scroll-threshold="0.25">
       <div className="nh-inner">
         <h2 className="nh-title" ref={titleRef}>{t('notHud.title')}</h2>
         <div className="nh-grid" ref={gridRef}>
@@ -1660,7 +1664,7 @@ function TPBuckleUp() {
   }, [features.length])
 
   return (
-    <section ref={sectionRef} id="features" className="bu-section" data-nav-theme="dark">
+    <section ref={sectionRef} id="features" className="bu-section" data-nav-theme="dark" data-fast-scroll="scroll_to_features" data-fast-scroll-threshold="0.15">
       <div className="bu-inner">
         <div className="bu-left">
           <div className="bu-header">
@@ -2143,7 +2147,7 @@ function TPBuiltForLive() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="bfl-section" data-nav-theme="dark">
+    <section ref={sectionRef} className="bfl-section" data-nav-theme="dark" data-fast-scroll="scroll_to_built_for_live" data-fast-scroll-threshold="0.25">
       <div className="bfl-inner">
         <div className="bfl-row bfl-row-top">
           <div className="bfl-card bfl-card-intro">
@@ -2201,7 +2205,10 @@ function TPBuiltForLive() {
 /* ────────────────────────────────────────────────────── */
 /*  DISCORD — JOIN THE COMMUNITY                          */
 /* ────────────────────────────────────────────────────── */
-export function TPBottomHero() {
+// scrollGoal: DataFast goal name for reaching this section — the landing page
+// uses the default; blog posts pass 'read_blog_post' (the CTA sits at the end
+// of every post, so reaching it ≈ read the article).
+export function TPBottomHero({ scrollGoal = 'scroll_to_bottom_cta' }) {
   const { t } = useT()
   const titleRef = useRef(null)
 
@@ -2235,7 +2242,7 @@ export function TPBottomHero() {
   }, [titleLines.length])
 
   return (
-    <section className="bh-section" data-nav-theme="dark">
+    <section className="bh-section" data-nav-theme="dark" data-fast-scroll={scrollGoal} data-fast-scroll-threshold="0.4">
       <div className="bh-inner">
         <h2 className="bh-title bh-title--scrub" ref={titleRef}>
           {titleLines.map((line, i) => (
@@ -2284,7 +2291,7 @@ function TPBlogTeaser() {
   if (items.length === 0) return null
 
   return (
-    <section className="blg-section" data-nav-theme="dark">
+    <section className="blg-section" data-nav-theme="dark" data-fast-scroll="scroll_to_blog_teaser" data-fast-scroll-threshold="0.4">
       <div className="blg-inner">
         <div className="blg-head">
           <div className="blg-head-copy">
@@ -2336,7 +2343,7 @@ function TPDiscord() {
   const { t } = useT()
 
   return (
-    <section className="dc-section" data-nav-theme="dark">
+    <section className="dc-section" data-nav-theme="dark" data-fast-scroll="scroll_to_discord" data-fast-scroll-threshold="0.4">
       <div className="dc-card">
         <div className="dc-overlay" aria-hidden="true" />
         <div className="dc-copy">
