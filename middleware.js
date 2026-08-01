@@ -13,11 +13,26 @@ export const config = {
   ],
 }
 
-export default function middleware(request, context) {
-  // Fire-and-forget: the package detects crawler user agents itself and posts
-  // in the background via context.waitUntil — do not await. Returning nothing
-  // lets the request fall through to normal static serving.
-  trackAICrawlerRequest(request, context, {
-    websiteId: 'dfid_rn8wXaHNsJLmS4WRXBSzj',
-  })
+const DF_CONFIG = { websiteId: 'dfid_rn8wXaHNsJLmS4WRXBSzj', debug: true }
+
+export default async function middleware(request, context) {
+  // Liveness probe: proves the middleware is deployed and routed without
+  // depending on the DataFast dashboard. Harmless to leave in.
+  if (new URL(request.url).pathname === '/__mw-check') {
+    return new Response('mw ok', { status: 200 })
+  }
+
+  if (context && typeof context.waitUntil === 'function') {
+    // Fire-and-forget: the runtime keeps the background DataFast call alive
+    // via context.waitUntil after we return.
+    const result = trackAICrawlerRequest(request, context, DF_CONFIG)
+    if (result.crawler) console.log('[datafast]', JSON.stringify(result))
+  } else {
+    // No waitUntil available — returning immediately would let the runtime
+    // cancel the in-flight send, so await it. Resolves instantly (no network)
+    // for non-crawler traffic.
+    const result = await trackAICrawlerRequest(request, DF_CONFIG)
+    if (result.crawler) console.log('[datafast][awaited]', JSON.stringify(result))
+  }
+  // Fall through to normal static serving.
 }
