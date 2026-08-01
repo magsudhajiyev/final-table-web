@@ -152,11 +152,11 @@ function TPDownloadBtn({ label, iosHref, androidHref, iosLabel, androidLabel }) 
       </button>
       {open && (
         <div className="dl-btn-menu" role="menu">
-          <a href={iosHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)}>
+          <a href={iosHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)} data-fast-goal="click_app_store" data-fast-goal-placement="navbar">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.05 12.53c0-2.13 1.74-3.15 1.82-3.2-1-1.46-2.55-1.66-3.09-1.68-1.31-.13-2.56.77-3.23.77-.67 0-1.7-.75-2.8-.73-1.44.02-2.77.84-3.51 2.12-1.5 2.59-.38 6.42 1.07 8.52.71 1.03 1.55 2.18 2.65 2.14 1.07-.04 1.48-.69 2.77-.69 1.29 0 1.66.69 2.79.67 1.15-.02 1.88-1.04 2.58-2.08.82-1.19 1.15-2.36 1.17-2.42-.03-.01-2.24-.86-2.26-3.42zM15 5.85c.59-.72 1-1.71.89-2.71-.86.04-1.9.58-2.51 1.3-.55.63-1.03 1.65-.9 2.62.96.07 1.94-.49 2.52-1.21z"/></svg>
             {iosLabel}
           </a>
-          <a href={androidHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)}>
+          <a href={androidHref} className="dl-btn-menu-item" target="_blank" rel="noopener noreferrer" role="menuitem" onClick={() => setOpen(false)} data-fast-goal="click_play_store" data-fast-goal-placement="navbar">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.87 3.23a11.5 11.5 0 0 0-9.76 0L5.25 5.9a.4.4 0 0 0-.69.4l1.84 3.18A10.85 10.85 0 0 0 1 18h22a10.85 10.85 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 1.25-1.25c0 .69-.56 1.25-1.25 1.25zm10 0a1.25 1.25 0 1 1 1.25-1.25c0 .69-.56 1.25-1.25 1.25z"/></svg>
             {androidLabel}
           </a>
@@ -367,10 +367,10 @@ export function TPAnnouncement() {
               <h2 className="tp-launch-title" id="tp-launch-title">{t('announce.launched')}</h2>
               <p className="tp-launch-copy">{t('launch.body')}</p>
               <div className="tp-launch-stores">
-                <a href={APP_STORE_URL} className="tp-launch-store" onClick={onStoreClick('ios')} aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+                <a href={APP_STORE_URL} className="tp-launch-store" onClick={onStoreClick('ios')} aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer" data-fast-goal="click_app_store" data-fast-goal-placement="launch_popup">
                   <img src="/store_appstore.svg" alt="" />
                 </a>
-                <a href={PLAY_STORE_URL} className="tp-launch-store" onClick={onStoreClick('android')} aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+                <a href={PLAY_STORE_URL} className="tp-launch-store" onClick={onStoreClick('android')} aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer" data-fast-goal="click_play_store" data-fast-goal-placement="launch_popup">
                   <img src="/store_googleplay.svg" alt="" />
                 </a>
               </div>
@@ -879,10 +879,10 @@ function TPHero() {
           <p className="tp-hero-sub">{t('hero.sub')}</p>
           </div>
           <div className="tp-hero-ctas" id="hero-download">
-            <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+            <a href={APP_STORE_URL} className="tp-hero-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer" data-fast-goal="click_app_store" data-fast-goal-placement="hero">
               <img src="/store_appstore.svg" alt="" className="tp-hero-store-img" />
             </a>
-            <a href={PLAY_STORE_URL} className="tp-hero-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+            <a href={PLAY_STORE_URL} className="tp-hero-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer" data-fast-goal="click_play_store" data-fast-goal-placement="hero">
               <img src="/store_googleplay.svg" alt="" className="tp-hero-store-img" />
             </a>
           </div>
@@ -2187,10 +2187,10 @@ function TPBuiltForLive() {
             <div className="bfl-card bfl-card-download">
               <p className="bfl-download-label">{t('live.download')}</p>
               <div className="bfl-download-badges">
-                <a href={APP_STORE_URL} className="bfl-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+                <a href={APP_STORE_URL} className="bfl-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer" data-fast-goal="click_app_store" data-fast-goal-placement="built_for_live">
                   <img src="/store_appstore.svg" alt="" className="bfl-store-img" />
                 </a>
-                <a href={PLAY_STORE_URL} className="bfl-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+                <a href={PLAY_STORE_URL} className="bfl-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer" data-fast-goal="click_play_store" data-fast-goal-placement="built_for_live">
                   <img src="/store_googleplay.svg" alt="" className="bfl-store-img" />
                 </a>
               </div>
@@ -2205,10 +2205,11 @@ function TPBuiltForLive() {
 /* ────────────────────────────────────────────────────── */
 /*  DISCORD — JOIN THE COMMUNITY                          */
 /* ────────────────────────────────────────────────────── */
-// scrollGoal: DataFast goal name for reaching this section — the landing page
-// uses the default; blog posts pass 'read_blog_post' (the CTA sits at the end
-// of every post, so reaching it ≈ read the article).
-export function TPBottomHero({ scrollGoal = 'scroll_to_bottom_cta' }) {
+// scrollGoal / placement: DataFast goal names for this section — the landing
+// page uses the defaults; blog posts pass scrollGoal='read_blog_post' (the CTA
+// sits at the end of every post, so reaching it ≈ read the article) and
+// placement='blog_post' so store clicks are attributed to the blog.
+export function TPBottomHero({ scrollGoal = 'scroll_to_bottom_cta', placement = 'bottom_hero' }) {
   const { t } = useT()
   const titleRef = useRef(null)
 
@@ -2260,10 +2261,10 @@ export function TPBottomHero({ scrollGoal = 'scroll_to_bottom_cta' }) {
             ))}
           </p>
           <div className="bh-badges observe-me" style={{ '--reveal-delay': '120ms' }}>
-            <a href={APP_STORE_URL} className="bh-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer">
+            <a href={APP_STORE_URL} className="bh-store-btn" aria-label="Download on the App Store" target="_blank" rel="noopener noreferrer" data-fast-goal="click_app_store" data-fast-goal-placement={placement}>
               <img src="/store_appstore.svg" alt="" className="bh-store-img" />
             </a>
-            <a href={PLAY_STORE_URL} className="bh-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer">
+            <a href={PLAY_STORE_URL} className="bh-store-btn" aria-label="Get it on Google Play" target="_blank" rel="noopener noreferrer" data-fast-goal="click_play_store" data-fast-goal-placement={placement}>
               <img src="/store_googleplay.svg" alt="" className="bh-store-img" />
             </a>
           </div>

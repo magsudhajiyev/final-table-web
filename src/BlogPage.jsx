@@ -339,7 +339,7 @@ export function BlogPost({ slug }) {
 
         </article>
       </div>
-      <TPBottomHero scrollGoal="read_blog_post" />
+      <TPBottomHero scrollGoal="read_blog_post" placement="blog_post" />
       <TPFooter />
     </div>
   )

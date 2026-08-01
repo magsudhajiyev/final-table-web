@@ -297,7 +297,7 @@ export default function AboutPage() {
           <div className="about-inner">
             <h2 className="about-h2">{t('about.ctaTitle')}</h2>
             <p className="about-cta-body">{t('about.ctaBody')}</p>
-            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="about-cta-btn">{t('about.ctaBtn')}</a>
+            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="about-cta-btn" data-fast-goal="click_app_store" data-fast-goal-placement="about_cta">{t('about.ctaBtn')}</a>
           </div>
         </section>
 
