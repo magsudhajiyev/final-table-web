@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import {
-  getWaitlistUsers, getNicknameClaims,
-  updateWaitlistUser, deleteWaitlistUser,
-  updateNicknameClaim, deleteNicknameClaim,
+  getWaitlistUsers,
   getAppUsers, updateAppUser, deleteAppUser,
   getUserStats, getUserOpponents, getOpponentStats, getUserSessions, getUserSessionResults, getUserHands,
   getSharedHands, deleteSharedHand,
@@ -344,7 +342,7 @@ function OverviewTab() {
   useEffect(() => {
     (async () => {
       try {
-        const [w, u, h, au] = await Promise.all([getWaitlistUsers(), getNicknameClaims(), getSharedHands(), getAppUsers()])
+        const [h, au] = await Promise.all([getSharedHands(), getAppUsers()])
         const now = new Date()
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
         const weekStart = new Date(todayStart); weekStart.setDate(weekStart.getDate() - 7)
@@ -361,7 +359,7 @@ function OverviewTab() {
         }
         const maxCount = Math.max(...days.map(d => d.count), 1)
 
-        setStats({ waitlist: w.length, nicknames: u.length, users: au.length, hands: h.length, usersToday, usersWeek, days, maxCount })
+        setStats({ users: au.length, hands: h.length, usersToday, usersWeek, days, maxCount })
       } catch (err) { console.error(err) }
       finally { setLoading(false) }
     })()
@@ -374,9 +372,7 @@ function OverviewTab() {
     <>
       <div className="adm-header"><h1 className="adm-page-title">Overview</h1></div>
       <div className="adm-stats-grid">
-        <div className="adm-stat-card"><div className="adm-stat-value">{stats.waitlist}</div><div className="adm-stat-label">Waitlist</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.users}</div><div className="adm-stat-label">App Users</div></div>
-        <div className="adm-stat-card"><div className="adm-stat-value">{stats.nicknames}</div><div className="adm-stat-label">Nickname Claims</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.hands}</div><div className="adm-stat-label">Shared Hands</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersToday}</div><div className="adm-stat-label">New users today</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersWeek}</div><div className="adm-stat-label">New users this week</div></div>
@@ -392,252 +388,6 @@ function OverviewTab() {
           ))}
         </div>
       </div>
-    </>
-  )
-}
-
-/* ══════════════════════════════════════════════
-   WAITLIST TAB
-   ══════════════════════════════════════════════ */
-
-const WAITLIST_FIELDS = [
-  { key: 'email', label: 'Email' },
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
-  { key: 'platform', label: 'Platform', type: 'select', options: ['', 'ios', 'android'] },
-  { key: 'source', label: 'Source' },
-]
-const WAITLIST_CSV_COLS = [
-  { key: 'email', label: 'Email' },
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
-  { key: 'platform', label: 'Platform' },
-  { label: 'Status', get: r => r.isUser ? 'Active User' : 'Waitlist Only' },
-  { key: 'source', label: 'Source' },
-  { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
-]
-
-function WaitlistTab() {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState(null)
-  const [deleting, setDeleting] = useState(null)
-  const [userEmails, setUserEmails] = useState(new Set())
-  const [statusFilter, setStatusFilter] = useState('')
-
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    try {
-      const [w, users] = await Promise.all([getWaitlistUsers(), getAppUsers()])
-      const emails = new Set(users.map(u => (u.email || '').toLowerCase()))
-      setUserEmails(emails)
-      const userNameByEmail = {}
-      users.forEach(u => { if (u.email && u.displayName) userNameByEmail[u.email.toLowerCase()] = u.displayName })
-      const waitlistEmails = new Set(w.map(e => (e.email || '').toLowerCase()))
-      const appOnlyUsers = users
-        .filter(u => u.email && !waitlistEmails.has(u.email.toLowerCase()))
-        .map(u => ({
-          id: `appuser_${u.id}`,
-          email: u.email,
-          firstName: u.displayName ? u.displayName.split(' ')[0] : '',
-          lastName: u.displayName ? u.displayName.split(' ').slice(1).join(' ') : '',
-          platform: '',
-          source: 'app',
-          timestamp: u.createdAt,
-          isUser: true,
-        }))
-      setData([
-        ...w.map(entry => {
-          const isUser = emails.has((entry.email || '').toLowerCase())
-          if (isUser && !entry.firstName && !entry.lastName) {
-            const dn = userNameByEmail[(entry.email || '').toLowerCase()]
-            if (dn) return { ...entry, isUser, firstName: dn.split(' ')[0], lastName: dn.split(' ').slice(1).join(' ') }
-          }
-          return { ...entry, isUser }
-        }),
-        ...appOnlyUsers,
-      ])
-    } catch (err) { console.error(err) }
-    finally { setLoading(false) }
-  }, [])
-  useEffect(() => { fetchData() }, [fetchData])
-
-  const fs = useFilterSort(data, ['email', 'firstName', 'lastName', 'source'])
-
-  const handleBulkDelete = async () => {
-    if (!confirm(`Delete ${fs.selected.size} entries?`)) return
-    await Promise.all([...fs.selected].map(id => deleteWaitlistUser(id)))
-    await fetchData()
-  }
-
-  return (
-    <>
-      <div className="adm-header">
-        <h1 className="adm-page-title">Waitlist</h1>
-        <div className="adm-header-right">
-          <span className="adm-count">{fs.filtered.length} of {data.length}</span>
-          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'waitlist.csv', WAITLIST_CSV_COLS)}>Export CSV</button>
-          <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
-        </div>
-      </div>
-      <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo} onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo} />
-      <div className="adm-email-filters" style={{ marginBottom: 12 }}>
-        <select className="adm-email-filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ width: 'auto' }}>
-          <option value="">All</option>
-          <option value="user">Active Users</option>
-          <option value="not_user">Not Yet Users</option>
-        </select>
-      </div>
-      {fs.selected.size > 0 && <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} />}
-      <div className="adm-table-wrap">
-        <table className="adm-table">
-          <thead>
-            <tr>
-              <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Status</th><th>Source</th>
-              <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {fs.filtered.filter(u => {
-              if (statusFilter === 'user') return u.isUser
-              if (statusFilter === 'not_user') return !u.isUser
-              return true
-            }).map((u, i) => (
-              <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
-                <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
-                <td className="adm-td-num">{i + 1}</td>
-                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td><td>{u.platform || '—'}</td>
-                <td>{u.isUser
-                  ? <span className="adm-status adm-status-approved" style={{ fontSize: 11 }}>Active User</span>
-                  : <span className="adm-status adm-status-pending" style={{ fontSize: 11 }}>Waitlist Only</span>}
-                </td>
-                <td>{u.source || '—'}</td>
-                <td className="adm-td-date">{formatDate(u.timestamp)}</td>
-                <td className="adm-td-actions"><RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)} /></td>
-              </tr>
-            ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="10" className="adm-empty">No entries found</td></tr>}
-          </tbody>
-        </table>
-      </div>
-      {editing && <EditModal title="Edit Waitlist Entry" fields={WAITLIST_FIELDS}
-        initial={{ email: editing.email || '', firstName: editing.firstName || '', lastName: editing.lastName || '', platform: editing.platform || '', source: editing.source || '' }}
-        onSave={async v => { await updateWaitlistUser(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
-      {deleting && <DeleteConfirm label={deleting.email}
-        onConfirm={async () => { await deleteWaitlistUser(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
-    </>
-  )
-}
-
-/* ══════════════════════════════════════════════
-   USERS TAB
-   ══════════════════════════════════════════════ */
-
-const NICKNAME_FIELDS = [
-  { key: 'nickname', label: 'Username' },
-  { key: 'email', label: 'Email' },
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
-  { key: 'platform', label: 'Platform', type: 'select', options: ['', 'ios', 'android'] },
-  { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] },
-]
-const NICKNAME_CSV_COLS = [
-  { key: 'nickname', label: 'Username' },
-  { key: 'email', label: 'Email' },
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
-  { key: 'platform', label: 'Platform' },
-  { key: 'status', label: 'Status' },
-  { label: 'Date', get: r => r.timestamp ? r.timestamp.toISOString() : '' },
-]
-
-function NicknameClaimsTab({ onToast }) {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState(null)
-  const [deleting, setDeleting] = useState(null)
-  const [emailing, setEmailing] = useState(null)
-
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    try { setData(await getNicknameClaims()) } catch (err) { console.error(err) }
-    finally { setLoading(false) }
-  }, [])
-  useEffect(() => { fetchData() }, [fetchData])
-
-  const fs = useFilterSort(data, ['nickname', 'email', 'firstName', 'lastName'], 'status')
-
-  const handleBulkDelete = async () => {
-    if (!confirm(`Delete ${fs.selected.size} entries?`)) return
-    await Promise.all([...fs.selected].map(id => deleteNicknameClaim(id)))
-    await fetchData()
-  }
-  const handleBulkStatus = async (status) => {
-    await Promise.all([...fs.selected].map(id => updateNicknameClaim(id, { status })))
-    await fetchData()
-  }
-
-  return (
-    <>
-      <div className="adm-header">
-        <h1 className="adm-page-title">Nickname Claims</h1>
-        <div className="adm-header-right">
-          <span className="adm-count">{fs.filtered.length} of {data.length}</span>
-          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'nickname_claims.csv', NICKNAME_CSV_COLS)}>Export CSV</button>
-          <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
-        </div>
-      </div>
-      <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo}
-        onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo}
-        statusFilter={fs.statusFilter} statusOptions={['pending', 'approved', 'rejected']} onStatusFilter={fs.setStatusFilter} />
-      {fs.selected.size > 0 && (
-        <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} extraActions={
-          <select className="adm-bulk-status" defaultValue="" onChange={e => { if (e.target.value) handleBulkStatus(e.target.value); e.target.value = '' }}>
-            <option value="" disabled>Set status...</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        } />
-      )}
-      <div className="adm-table-wrap">
-        <table className="adm-table">
-          <thead>
-            <tr>
-              <th className="adm-th-check"><input type="checkbox" checked={fs.selected.size === fs.filtered.length && fs.filtered.length > 0} onChange={fs.toggleAll} /></th>
-              <th>#</th><th>Username</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Platform</th><th>Status</th>
-              <SortableDate label="Date" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {fs.filtered.map((u, i) => (
-              <tr key={u.id} className={fs.selected.has(u.id) ? 'adm-row-selected' : ''}>
-                <td className="adm-td-check"><input type="checkbox" checked={fs.selected.has(u.id)} onChange={() => fs.toggleSelect(u.id)} /></td>
-                <td className="adm-td-num">{i + 1}</td>
-                <td className="adm-td-username">@{u.nickname}</td>
-                <td>{u.email}</td><td>{u.firstName || '—'}</td><td>{u.lastName || '—'}</td>
-                <td>{u.platform || '—'}</td>
-                <td><span className={`adm-status adm-status-${u.status || 'pending'}`}>{u.status || 'pending'}</span></td>
-                <td className="adm-td-date">{formatDate(u.timestamp)}</td>
-                <td className="adm-td-actions">
-                  <RowMenu onEdit={() => setEditing(u)} onDelete={() => setDeleting(u)}
-                    extraItems={[{ label: 'Send Email', onClick: () => setEmailing(u.email) }]} />
-                </td>
-              </tr>
-            ))}
-            {!loading && fs.filtered.length === 0 && <tr><td colSpan="10" className="adm-empty">No entries found</td></tr>}
-          </tbody>
-        </table>
-      </div>
-      {editing && <EditModal title="Edit Nickname Claim" fields={NICKNAME_FIELDS}
-        initial={{ nickname: editing.nickname || '', email: editing.email || '', firstName: editing.firstName || '', lastName: editing.lastName || '', platform: editing.platform || '', status: editing.status || 'pending' }}
-        onSave={async v => { await updateNicknameClaim(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
-      {deleting && <DeleteConfirm label={`@${deleting.nickname}`}
-        onConfirm={async () => { await deleteNicknameClaim(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
-      {emailing && <EmailModal to={emailing} onClose={() => setEmailing(null)} onToast={onToast} />}
     </>
   )
 }
@@ -2463,10 +2213,8 @@ function Dashboard() {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
-    { id: 'waitlist', label: 'Waitlist' },
     { id: 'users', label: 'Users' },
     { id: 'statistics', label: 'Statistics' },
-    { id: 'nicknames', label: 'Nickname Claims' },
     { id: 'hands', label: 'Shared Hands' },
     { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
     { id: 'email', label: 'Email' },
@@ -2499,10 +2247,8 @@ function Dashboard() {
       </aside>
       <main className="adm-main">
         {activeTab === 'overview' && <OverviewTab />}
-        {activeTab === 'waitlist' && <WaitlistTab />}
         {activeTab === 'users' && <AppUsersTab />}
         {activeTab === 'statistics' && <StatisticsTab />}
-        {activeTab === 'nicknames' && <NicknameClaimsTab onToast={showToast} />}
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}
