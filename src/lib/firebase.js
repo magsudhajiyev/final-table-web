@@ -221,6 +221,18 @@ export async function getUserSessionResults(userId) {
   })
 }
 
+// Logged hands live in the poker_hands subcollection of each session. The mobile
+// app embeds any AI analysis directly on the hand doc as `aiAnalysis`.
+export async function getSessionHands(sessionId) {
+  const snap = await getDocs(collection(db, 'poker_sessions', sessionId, 'poker_hands'))
+  return snap.docs
+    .map(d => {
+      const data = d.data()
+      return { id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null }
+    })
+    .sort((a, b) => (Number(a.handNumber) || 0) - (Number(b.handNumber) || 0))
+}
+
 export async function getUserHands(userId) {
   const snap = await getDocs(query(collection(db, 'shared_hands'), where('createdBy', '==', userId)))
   return snap.docs.map(d => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import {
   getWaitlistUsers,
   getAppUsers, updateAppUser, deleteAppUser,
-  getUserStats, getUserOpponents, getOpponentStats, getUserSessions, getUserSessionResults, getUserHands,
+  getUserStats, getUserOpponents, getOpponentStats, getUserSessions, getUserSessionResults, getUserHands, getSessionHands,
   getSharedHands, deleteSharedHand,
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
   saveEmailLog, getEmailLogs,
@@ -483,6 +483,163 @@ const SURVEY_CSV_COLS = [
   { label: 'Completed At', get: r => r.onboardingData?.completedAt?.toDate?.()?.toISOString?.() || '' },
 ]
 
+/* ── Logged hands & AI analysis (poker_sessions/{id}/poker_hands) ── */
+
+// Hole cards are stored as { card1, card2 }; board as { flop:[], turn, river }.
+function holeCards(hand) {
+  const c = hand.ourHoleCards
+  if (!c) return []
+  return [c.card1, c.card2].filter(Boolean)
+}
+function boardCards(hand) {
+  const b = hand.boardCards
+  if (!b) return []
+  return [...(Array.isArray(b.flop) ? b.flop : []), b.turn, b.river].filter(Boolean)
+}
+// A red suit (♥/♦) card renders red; clubs/spades stay light.
+const isRedCard = (card) => /[♥♦]/.test(card || '')
+
+function Card({ card }) {
+  return <span className={`adm-card${isRedCard(card) ? ' adm-card-red' : ''}`}>{card}</span>
+}
+
+// The app double-nests: hand.aiAnalysis.aiAnalysis holds the summary text, while
+// grades/severity/streetBreakdown sit on the outer object.
+function getAiAnalysis(hand) {
+  const outer = hand.aiAnalysis
+  if (!outer) return null
+  return { ...outer, summary: outer.aiAnalysis || {} }
+}
+
+const GRADE_COLOR = (g) => {
+  const c = String(g || '').toUpperCase()[0]
+  if (c === 'A') return '#4ade80'
+  if (c === 'B') return '#a3e635'
+  if (c === 'C') return '#facc15'
+  if (c === 'D') return '#fb923c'
+  if (c === 'F') return '#f87171'
+  return '#888'
+}
+const STREET_ORDER = ['preflop', 'flop', 'turn', 'river']
+
+function AiAnalysisReport({ ai }) {
+  const s = ai.summary || {}
+  const sb = ai.streetBreakdown || {}
+  const analyzedAt = ai.analyzedAt?.toDate?.() || null
+  return (
+    <div className="adm-ai-report">
+      <div className="adm-ai-report-head">
+        <span className="adm-ai-badge">AI analysis</span>
+        {ai.severity && <span className={`adm-ai-severity adm-ai-severity-${ai.severity}`}>{ai.severity}</span>}
+        {typeof ai.correct === 'boolean' && (
+          <span className="adm-ai-verdict" style={{ color: ai.correct ? '#4ade80' : '#f87171' }}>
+            {ai.correct ? '✓ Played well' : '✗ Mistake flagged'}
+          </span>
+        )}
+        {analyzedAt && <span className="adm-ai-when">{formatDate(analyzedAt)}</span>}
+      </div>
+      {s.reasoning && <p className="adm-ai-reasoning">{s.reasoning}</p>}
+      <div className="adm-ai-fields">
+        {s.optimalAction && <div className="adm-ai-field"><span className="adm-ai-field-label">Optimal action</span><span>{s.optimalAction}</span></div>}
+        {s.learningPoint && <div className="adm-ai-field"><span className="adm-ai-field-label">Learning point</span><span>{s.learningPoint}</span></div>}
+        {s.exploitativeAdjustment && <div className="adm-ai-field"><span className="adm-ai-field-label">Exploit adjustment</span><span>{s.exploitativeAdjustment}</span></div>}
+      </div>
+      {Object.keys(sb).length > 0 && (
+        <div className="adm-ai-streets">
+          {STREET_ORDER.filter(st => sb[st]).map(st => (
+            <div key={st} className="adm-ai-street">
+              <div className="adm-ai-street-head">
+                <span className="adm-ai-street-name">{st}</span>
+                <span className="adm-ai-grade" style={{ background: GRADE_COLOR(sb[st].grade) }}>{sb[st].grade || '—'}</span>
+              </div>
+              <p className="adm-ai-street-text">{sb[st].analysis}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function HandRow({ hand }) {
+  const [open, setOpen] = useState(false)
+  const ai = getAiAnalysis(hand)
+  const hole = holeCards(hand)
+  const board = boardCards(hand)
+  const heroWon = hand.winnerId != null && Number(hand.winnerId) === Number(hand.heroSeatNumber)
+  return (
+    <div className="adm-hand">
+      <button className={`adm-hand-summary${open ? ' open' : ''}`} onClick={() => setOpen(o => !o)}>
+        <span className="adm-hand-caret">{open ? '▾' : '▸'}</span>
+        <span className="adm-hand-num">#{hand.handNumber ?? '—'}</span>
+        <span className="adm-hand-cards">{hole.length ? hole.map((c, i) => <Card key={i} card={c} />) : <span className="adm-hand-muted">no cards</span>}</span>
+        <span className="adm-hand-pos">{hand.heroPositionName || '—'}</span>
+        <span className="adm-hand-result" style={{ color: heroWon ? '#4ade80' : '#999' }}>{heroWon ? 'Won' : '—'}</span>
+        <span className="adm-hand-pot">${Number(hand.potAmount || 0).toLocaleString()}</span>
+        {ai && <span className="adm-hand-ai-flag">AI</span>}
+      </button>
+      {open && (
+        <div className="adm-hand-detail">
+          {board.length > 0 && (
+            <div className="adm-hand-board">
+              <span className="adm-hand-board-label">Board</span>
+              {board.map((c, i) => <Card key={i} card={c} />)}
+            </div>
+          )}
+          {ai ? <AiAnalysisReport ai={ai} /> : <p className="adm-hand-noai">No AI analysis for this hand.</p>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// One expandable session. Hands load lazily the first time it's opened so we
+// don't hit every session's subcollection up front.
+function SessionRow({ session, formatMin }) {
+  const [open, setOpen] = useState(false)
+  const [hands, setHands] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const toggle = async () => {
+    const next = !open
+    setOpen(next)
+    if (next && hands == null && !loading) {
+      setLoading(true)
+      try { setHands(await getSessionHands(session.id)) }
+      catch (err) { console.error('getSessionHands error:', err); setHands([]) }
+      finally { setLoading(false) }
+    }
+  }
+
+  const result = session.currentStack != null && session.totalBuyIn != null ? (session.currentStack - session.totalBuyIn) : null
+  const dur = session.startTime && session.endTime ? Math.round((session.endTime - session.startTime) / 60000) : null
+  const handCount = session.handsLogged || session.totalHands || 0
+
+  return (
+    <div className="adm-session">
+      <button className={`adm-session-summary${open ? ' open' : ''}`} onClick={toggle}>
+        <span className="adm-hand-caret">{open ? '▾' : '▸'}</span>
+        <span className="adm-session-name"><strong>{session.sessionName || '—'}</strong></span>
+        <span className={`adm-status adm-status-${session.gameType || 'cash'}`}>{session.gameType || 'cash'}</span>
+        <span className="adm-session-meta">${Number(session.totalBuyIn || session.buyInAmount || 0).toLocaleString()} buy-in</span>
+        <span className="adm-session-result" style={{ color: result > 0 ? '#4ade80' : result < 0 ? '#f87171' : '#888' }}>
+          {result != null ? (result >= 0 ? '+' : '') + '$' + Math.abs(result).toLocaleString() : '—'}
+        </span>
+        <span className="adm-session-meta">{handCount} hand{handCount === 1 ? '' : 's'}</span>
+        <span className="adm-session-meta">{dur != null ? formatMin(dur) : '—'}</span>
+        <span className="adm-session-date">{formatDate(session.startTime)}</span>
+      </button>
+      {open && (
+        <div className="adm-session-hands">
+          {loading && <p className="adm-hand-muted" style={{ padding: '8px 12px' }}>Loading hands…</p>}
+          {!loading && hands && hands.length === 0 && <p className="adm-hand-muted" style={{ padding: '8px 12px' }}>No logged hands in this session.</p>}
+          {!loading && hands && hands.map(h => <HandRow key={h.id} hand={h} />)}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function UserDetailView({ user, onBack }) {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
@@ -608,49 +765,37 @@ function UserDetailView({ user, onBack }) {
         </div>
       )}
 
-      {/* Sessions */}
+      {/* Sessions — each expands to its logged hands (with AI analysis) */}
       {subTab === 'sessions' && (
-        <div className="adm-table-wrap">
-          <table className="adm-table">
-            <thead>
-              <tr><th>Name</th><th>Type</th><th>Buy-In</th><th>Result</th><th>Hands</th><th>Duration</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-              {sessions.map(s => {
-                const result = s.currentStack != null && s.totalBuyIn != null ? (s.currentStack - s.totalBuyIn) : null
-                const dur = s.startTime && s.endTime ? Math.round((s.endTime - s.startTime) / 60000) : null
-                return (
-                  <tr key={s.id}>
-                    <td><strong>{s.sessionName || '—'}</strong></td>
-                    <td><span className={`adm-status adm-status-${s.gameType || 'cash'}`}>{s.gameType || 'cash'}</span></td>
-                    <td>${Number(s.totalBuyIn || s.buyInAmount || 0).toLocaleString()}</td>
-                    <td style={{ color: result > 0 ? '#4ade80' : result < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
-                      {result != null ? (result >= 0 ? '+' : '') + '$' + Math.abs(result).toLocaleString() : '—'}
-                    </td>
-                    <td>{s.handsLogged || s.totalHands || 0}</td>
-                    <td>{dur != null ? formatMin(dur) : '—'}</td>
-                    <td className="adm-td-date">{formatDate(s.startTime)}</td>
-                  </tr>
-                )
-              })}
-              {sessionResults.map(sr => {
-                return (
-                  <tr key={sr.id}>
-                    <td><strong>Tournament Result</strong></td>
-                    <td><span className={`adm-status adm-status-${sr.gameType || 'tournament'}`}>{sr.gameType || 'tournament'}</span></td>
-                    <td>${Number(sr.buyInAmount || 0).toLocaleString()}</td>
-                    <td style={{ color: sr.amount > 0 ? '#4ade80' : sr.amount < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
-                      {sr.amount != null ? (sr.amount >= 0 ? '+' : '') + '$' + Math.abs(sr.amount).toLocaleString() : '—'}
-                    </td>
-                    <td>{sr.finishedPlace ? `#${sr.finishedPlace}${sr.fieldSize ? '/' + sr.fieldSize : ''}` : '—'}</td>
-                    <td>{sr.durationMinutes ? formatMin(sr.durationMinutes) : '—'}</td>
-                    <td className="adm-td-date">{formatDate(sr.timestamp)}</td>
-                  </tr>
-                )
-              })}
-              {sessions.length === 0 && sessionResults.length === 0 && <tr><td colSpan="7" className="adm-empty">No sessions found</td></tr>}
-            </tbody>
-          </table>
+        <div>
+          <div className="adm-session-list">
+            {sessions.map(s => <SessionRow key={s.id} session={s} formatMin={formatMin} />)}
+          </div>
+          {sessionResults.length > 0 && (
+            <div className="adm-table-wrap" style={{ marginTop: 20 }}>
+              <p className="adm-subhead">Tournament results (no hand-by-hand log)</p>
+              <table className="adm-table">
+                <thead>
+                  <tr><th>Type</th><th>Buy-In</th><th>Result</th><th>Finish</th><th>Duration</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {sessionResults.map(sr => (
+                    <tr key={sr.id}>
+                      <td><span className={`adm-status adm-status-${sr.gameType || 'tournament'}`}>{sr.gameType || 'tournament'}</span></td>
+                      <td>${Number(sr.buyInAmount || 0).toLocaleString()}</td>
+                      <td style={{ color: sr.amount > 0 ? '#4ade80' : sr.amount < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
+                        {sr.amount != null ? (sr.amount >= 0 ? '+' : '') + '$' + Math.abs(sr.amount).toLocaleString() : '—'}
+                      </td>
+                      <td>{sr.finishedPlace ? `#${sr.finishedPlace}${sr.fieldSize ? '/' + sr.fieldSize : ''}` : '—'}</td>
+                      <td>{sr.durationMinutes ? formatMin(sr.durationMinutes) : '—'}</td>
+                      <td className="adm-td-date">{formatDate(sr.timestamp)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {sessions.length === 0 && sessionResults.length === 0 && <div className="adm-empty" style={{ padding: 40 }}>No sessions found</div>}
         </div>
       )}
 

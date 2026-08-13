@@ -554,6 +554,93 @@ select.adm-modal-input { appearance: none; cursor: pointer; }
   .adm-bar-label { font-size: 12px; }
 }
 
+/* ── Sessions → hands → AI analysis (user detail) ── */
+.adm-subhead { font-size: 13px; color: #888; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.adm-session-list { display: flex; flex-direction: column; gap: 8px; }
+.adm-session { border: 1px solid #1e1e1e; border-radius: 10px; background: #121212; overflow: hidden; }
+.adm-session-summary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #ddd;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+}
+.adm-session-summary:hover { background: #171717; }
+.adm-session-summary.open { background: #171717; border-bottom: 1px solid #1e1e1e; }
+.adm-session-name { flex: 1; min-width: 120px; color: #eee; }
+.adm-session-result { font-weight: 600; }
+.adm-session-meta { color: #888; white-space: nowrap; }
+.adm-session-date { color: #777; white-space: nowrap; }
+.adm-session-hands { padding: 8px; display: flex; flex-direction: column; gap: 6px; background: #0f0f0f; }
+
+.adm-hand { border: 1px solid #1c1c1c; border-radius: 8px; background: #141414; overflow: hidden; }
+.adm-hand-summary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+}
+.adm-hand-summary:hover { background: #191919; }
+.adm-hand-summary.open { background: #191919; }
+.adm-hand-caret { color: #777; font-size: 11px; width: 12px; flex: 0 0 auto; }
+.adm-hand-num { color: #999; min-width: 38px; font-variant-numeric: tabular-nums; }
+.adm-hand-cards { display: inline-flex; gap: 3px; min-width: 60px; }
+.adm-hand-pos { color: #aaa; min-width: 44px; }
+.adm-hand-result { min-width: 40px; }
+.adm-hand-pot { color: #999; min-width: 60px; font-variant-numeric: tabular-nums; }
+.adm-hand-muted { color: #666; }
+.adm-hand-ai-flag {
+  margin-left: auto;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+  color: #A2F69A; background: rgba(162, 246, 154, 0.12);
+  border: 1px solid rgba(162, 246, 154, 0.25); border-radius: 5px; padding: 2px 6px;
+}
+.adm-hand-detail { padding: 12px 14px; border-top: 1px solid #1c1c1c; background: #101010; }
+.adm-hand-board { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+.adm-hand-board-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 4px; }
+.adm-hand-noai { font-size: 13px; color: #666; margin: 0; }
+
+.adm-card {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 24px; height: 26px; padding: 0 4px;
+  background: #f4f4f0; color: #111;
+  border-radius: 4px; font-size: 13px; font-weight: 600;
+}
+.adm-card-red { color: #d03b3b; }
+
+.adm-ai-report { border-left: 2px solid rgba(162, 246, 154, 0.4); padding-left: 12px; }
+.adm-ai-report-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.adm-ai-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #A2F69A; }
+.adm-ai-severity { font-size: 11px; text-transform: capitalize; padding: 1px 7px; border-radius: 5px; }
+.adm-ai-severity-minor { color: #facc15; background: rgba(250, 204, 21, 0.12); }
+.adm-ai-severity-moderate { color: #fb923c; background: rgba(251, 146, 60, 0.12); }
+.adm-ai-severity-major, .adm-ai-severity-severe { color: #f87171; background: rgba(248, 113, 113, 0.12); }
+.adm-ai-verdict { font-size: 12px; font-weight: 600; }
+.adm-ai-when { font-size: 11px; color: #666; margin-left: auto; }
+.adm-ai-reasoning { font-size: 13.5px; color: #ddd; line-height: 1.55; margin: 0 0 12px; }
+.adm-ai-fields { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.adm-ai-field { display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #cbcbcb; line-height: 1.5; }
+.adm-ai-field-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
+.adm-ai-streets { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.adm-ai-street { background: #161616; border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px 12px; }
+.adm-ai-street-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.adm-ai-street-name { font-size: 12px; font-weight: 600; color: #ddd; text-transform: capitalize; }
+.adm-ai-grade { font-size: 12px; font-weight: 800; color: #111; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; }
+.adm-ai-street-text { font-size: 12.5px; color: #b8b8b8; line-height: 1.5; margin: 0; }
+
 /* ── Chart ── */
 .adm-chart-section { margin-bottom: 32px; }
 .adm-chart-title { font-size: 15px; font-weight: 500; color: #aaa; margin: 0 0 16px; }
