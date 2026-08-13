@@ -522,6 +522,218 @@ const GRADE_COLOR = (g) => {
 }
 const STREET_ORDER = ['preflop', 'flop', 'turn', 'river']
 
+/* ── Anonymized hand-share email ──
+   Opponent names must NEVER appear. Every player is referred to by position
+   only; the sharing user's own seat becomes "Hero". Free-text notes/tags are
+   dropped entirely because they can contain opponent names. */
+
+// Map an action's player to an anonymous label — "Hero" for the current user,
+// otherwise their table position (falling back to seat number, never a name).
+function anonPlayerLabel(action) {
+  if (action.isCurrentUser) return 'Hero'
+  if (action.playerPosition) return action.playerPosition
+  if (action.player != null) return `Seat ${action.player}`
+  return 'Opponent'
+}
+
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+
+// A poker card as an inline HTML chip (email-safe inline styles).
+function cardChipHtml(card) {
+  const red = isRedCard(card)
+  return `<span style="display:inline-block;min-width:22px;text-align:center;padding:3px 5px;margin:0 2px;background:#f4f4f0;border-radius:4px;font-weight:700;font-size:14px;color:${red ? '#d03b3b' : '#111'}">${esc(card)}</span>`
+}
+
+// Build the full anonymized email HTML for one hand.
+function buildHandEmailHtml(hand, { note } = {}) {
+  const ai = getAiAnalysis(hand)
+  const hole = holeCards(hand)
+  const board = boardCards(hand)
+  const gameType = hand.gameType ? titleCase(hand.gameType) : ''
+  const potStr = `$${Number(hand.potAmount || 0).toLocaleString()}`
+
+  // Group actions by street, anonymizing every player reference.
+  const byStreet = { preflop: [], flop: [], turn: [], river: [] }
+  for (const a of (Array.isArray(hand.actions) ? hand.actions : [])) {
+    const street = STREET_ORDER.includes(a.street) ? a.street : 'preflop'
+    const who = anonPlayerLabel(a)
+    const verb = esc(a.action || '')
+    const amt = a.amount != null ? ` $${Number(a.amount).toLocaleString()}` : ''
+    byStreet[street].push({ who, text: `${who} ${verb}${amt}`, hero: !!a.isCurrentUser })
+  }
+
+  const streetRows = STREET_ORDER.filter(st => byStreet[st].length).map(st => {
+    const lines = byStreet[st].map(l =>
+      `<div style="padding:2px 0;color:${l.hero ? '#0c0c0e' : '#555'};font-weight:${l.hero ? 600 : 400}">${esc(l.text)}</div>`
+    ).join('')
+    return `<tr><td style="padding:10px 0;border-top:1px solid #ECEEEC">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#7aa874;margin-bottom:4px">${esc(st)}</div>
+      <div style="font-size:14px;line-height:1.6">${lines}</div>
+    </td></tr>`
+  }).join('')
+
+  const aiBlock = ai ? (() => {
+    const s = ai.summary || {}
+    const sb = ai.streetBreakdown || {}
+    const grades = STREET_ORDER.filter(st => sb[st]).map(st =>
+      `<tr>
+        <td style="padding:8px 12px 8px 0;vertical-align:top;width:70px">
+          <span style="display:inline-block;text-transform:capitalize;font-size:13px;font-weight:600;color:#0c0c0e">${esc(st)}</span>
+          <span style="display:inline-block;margin-left:6px;min-width:20px;text-align:center;padding:1px 6px;border-radius:4px;font-weight:800;font-size:12px;color:#111;background:${GRADE_COLOR(sb[st].grade)}">${esc(sb[st].grade || '—')}</span>
+        </td>
+        <td style="padding:8px 0;font-size:13px;line-height:1.5;color:#444">${esc(sb[st].analysis || '')}</td>
+      </tr>`
+    ).join('')
+    const field = (label, val) => val ? `<p style="margin:0 0 8px;font-size:14px;line-height:1.55;color:#333"><strong style="color:#0c0c0e">${label}:</strong> ${esc(val)}</p>` : ''
+    return `
+      <tr><td style="padding:24px 48px 0" class="mp">
+        <div style="border-top:1px solid #ECEEEC;padding-top:20px">
+          <p style="margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#7aa874">AI analysis</p>
+          ${s.reasoning ? `<p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:#222">${esc(s.reasoning)}</p>` : ''}
+          ${field('Optimal action', s.optimalAction)}
+          ${field('Learning point', s.learningPoint)}
+          ${grades ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px">${grades}</table>` : ''}
+        </div>
+      </td></tr>`
+  })() : ''
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>@media only screen and (max-width:620px){.container{width:100%!important}.mp{padding-left:24px!important;padding-right:24px!important}}</style></head>
+<body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px">
+<table role="presentation" width="680" align="center" cellpadding="0" cellspacing="0" class="container" style="max-width:680px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+  <tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr>
+  <tr><td style="padding:36px 48px 8px" class="mp"><img src="https://finaltable.io/logo.png" alt="Final Table" width="84" style="display:block;width:84px;height:auto"></td></tr>
+  <tr><td style="padding:8px 48px 4px" class="mp"><h1 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#0c0c0e">A hand worth studying</h1></td></tr>
+  ${note ? `<tr><td style="padding:8px 48px 0" class="mp"><p style="margin:0;font-size:15px;line-height:1.6;color:#444">${esc(note)}</p></td></tr>` : ''}
+  <tr><td style="padding:20px 48px 0" class="mp">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px"><tr><td style="padding:16px 20px">
+      <div style="font-size:13px;color:#888;margin-bottom:8px">${esc(gameType)}${gameType ? ' · ' : ''}Pot ${esc(potStr)}</div>
+      <div style="margin-bottom:10px"><span style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-right:8px">Hero</span>${hole.map(cardChipHtml).join('')}<span style="font-size:13px;color:#888;margin-left:8px">(${esc(hand.heroPositionName || '—')})</span></div>
+      ${board.length ? `<div><span style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-right:8px">Board</span>${board.map(cardChipHtml).join('')}</div>` : ''}
+    </td></tr></table>
+  </td></tr>
+  <tr><td style="padding:16px 48px 0" class="mp"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${streetRows}</table></td></tr>
+  ${aiBlock}
+  <tr><td style="padding:28px 48px 36px" class="mp"><div style="border-top:1px solid #ECEEEC;padding-top:16px"><p style="margin:0;font-size:13px;color:#999;line-height:1.6">Shared from Final Table. Opponent identities are hidden — players are shown by position only.<br><a href="https://finaltable.io" style="color:#7aa874;text-decoration:none">finaltable.io</a></p></div></td></tr>
+</table>
+</td></tr></table></body></html>`
+}
+
+function ShareHandModal({ hand, sessionName, onClose, onToast }) {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState(new Set())
+  const [search, setSearch] = useState('')
+  const [note, setNote] = useState('')
+  const [subject, setSubject] = useState(`A hand worth studying${sessionName ? ` — ${sessionName}` : ''}`)
+  const [sending, setSending] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const all = await getAppUsers()
+        setUsers(all.filter(u => u.email))
+      } catch (err) { console.error(err) }
+      finally { setLoading(false) }
+    })()
+  }, [])
+
+  const html = useMemo(() => buildHandEmailHtml(hand, { note }), [hand, note])
+
+  const filtered = useMemo(() => {
+    if (!search) return users
+    const q = search.toLowerCase()
+    return users.filter(u => (u.displayName || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
+  }, [users, search])
+
+  const toggle = (email) => setSelected(s => { const n = new Set(s); n.has(email) ? n.delete(email) : n.add(email); return n })
+  const allVisibleChecked = filtered.length > 0 && filtered.every(u => selected.has(u.email))
+  const toggleAllVisible = () => setSelected(s => {
+    const n = new Set(s)
+    if (allVisibleChecked) filtered.forEach(u => n.delete(u.email))
+    else filtered.forEach(u => n.add(u.email))
+    return n
+  })
+
+  const handleSend = async () => {
+    if (selected.size === 0) { onToast('Select at least one recipient', 'error'); return }
+    setSending(true)
+    const emails = [...selected]
+    let failed = 0
+    for (const email of emails) {
+      try { await sendResendEmail(email, { subject, html }) }
+      catch (err) { console.error('share send error:', err); failed++ }
+      await new Promise(r => setTimeout(r, 100))
+    }
+    setSending(false)
+    if (failed === 0) { onToast(`Hand shared with ${emails.length} user${emails.length !== 1 ? 's' : ''}`, 'success'); onClose() }
+    else onToast(`Sent ${emails.length - failed}/${emails.length} — ${failed} failed`, 'error')
+  }
+
+  return (
+    <div className="adm-modal-overlay" onClick={onClose}>
+      <div className="adm-modal adm-modal-lg" onClick={e => e.stopPropagation()} style={{ maxWidth: 720 }}>
+        <h2 className="adm-modal-title">Share hand #{hand.handNumber ?? ''}</h2>
+        <p style={{ margin: '0 0 16px', fontSize: 13, color: '#888' }}>
+          Opponent names are hidden — recipients see only position names and “Hero”.
+        </p>
+
+        <div className="adm-modal-fields">
+          <label className="adm-modal-label"><span>Subject</span>
+            <input className="adm-modal-input" value={subject} onChange={e => setSubject(e.target.value)} />
+          </label>
+          <label className="adm-modal-label"><span>Note (optional)</span>
+            <textarea className="adm-modal-input adm-modal-textarea" rows={2} value={note}
+              onChange={e => setNote(e.target.value)} placeholder="A short intro shown at the top of the email" />
+          </label>
+        </div>
+
+        <div style={{ margin: '4px 0 8px', display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button className="adm-refresh-btn" onClick={() => setShowPreview(p => !p)}>{showPreview ? 'Hide preview' : 'Preview email'}</button>
+        </div>
+        {showPreview && (
+          <iframe title="preview" srcDoc={html} style={{ width: '100%', height: 340, border: '1px solid #1e1e1e', borderRadius: 8, marginBottom: 12, background: '#fff' }} />
+        )}
+
+        <div className="adm-modal-label" style={{ display: 'block' }}>
+          <span>Recipients</span>
+          <input className="adm-modal-input" placeholder="Search name or email…" value={search}
+            onChange={e => setSearch(e.target.value)} style={{ marginTop: 6 }} />
+        </div>
+        <div style={{ maxHeight: 240, overflowY: 'auto', border: '1px solid #1e1e1e', borderRadius: 8, marginTop: 8 }}>
+          <table className="adm-table" style={{ margin: 0 }}>
+            <thead>
+              <tr>
+                <th style={{ width: 40 }}><input type="checkbox" checked={allVisibleChecked} onChange={toggleAllVisible} aria-label="Select all visible" /></th>
+                <th>Name</th><th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading && <tr><td colSpan={3} style={{ color: '#888', padding: 16 }}>Loading users…</td></tr>}
+              {!loading && filtered.map(u => (
+                <tr key={u.id} onClick={() => toggle(u.email)} style={{ cursor: 'pointer' }}>
+                  <td onClick={e => e.stopPropagation()}><input type="checkbox" checked={selected.has(u.email)} onChange={() => toggle(u.email)} /></td>
+                  <td>{u.displayName || '—'}</td>
+                  <td>{u.email}</td>
+                </tr>
+              ))}
+              {!loading && filtered.length === 0 && <tr><td colSpan={3} style={{ color: '#888', padding: 16 }}>No matching users.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="adm-modal-actions" style={{ marginTop: 16 }}>
+          <button className="adm-modal-cancel" onClick={onClose}>Cancel</button>
+          <button className="adm-modal-save" onClick={handleSend} disabled={sending || selected.size === 0}>
+            {sending ? 'Sending…' : `Share with ${selected.size} user${selected.size !== 1 ? 's' : ''}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AiAnalysisReport({ ai }) {
   const s = ai.summary || {}
   const sb = ai.streetBreakdown || {}
@@ -561,8 +773,9 @@ function AiAnalysisReport({ ai }) {
   )
 }
 
-function HandRow({ hand }) {
+function HandRow({ hand, sessionName, onToast }) {
   const [open, setOpen] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const ai = getAiAnalysis(hand)
   const hole = holeCards(hand)
   const board = boardCards(hand)
@@ -587,15 +800,19 @@ function HandRow({ hand }) {
             </div>
           )}
           {ai ? <AiAnalysisReport ai={ai} /> : <p className="adm-hand-noai">No AI analysis for this hand.</p>}
+          <div className="adm-hand-actions">
+            <button className="adm-hand-share-btn" onClick={() => setSharing(true)}>Share via email</button>
+          </div>
         </div>
       )}
+      {sharing && <ShareHandModal hand={hand} sessionName={sessionName} onClose={() => setSharing(false)} onToast={onToast} />}
     </div>
   )
 }
 
 // One expandable session. Hands load lazily the first time it's opened so we
 // don't hit every session's subcollection up front.
-function SessionRow({ session, formatMin }) {
+function SessionRow({ session, formatMin, onToast }) {
   const [open, setOpen] = useState(false)
   const [hands, setHands] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -633,14 +850,14 @@ function SessionRow({ session, formatMin }) {
         <div className="adm-session-hands">
           {loading && <p className="adm-hand-muted" style={{ padding: '8px 12px' }}>Loading hands…</p>}
           {!loading && hands && hands.length === 0 && <p className="adm-hand-muted" style={{ padding: '8px 12px' }}>No logged hands in this session.</p>}
-          {!loading && hands && hands.map(h => <HandRow key={h.id} hand={h} />)}
+          {!loading && hands && hands.map(h => <HandRow key={h.id} hand={h} sessionName={session.sessionName} onToast={onToast} />)}
         </div>
       )}
     </div>
   )
 }
 
-function UserDetailView({ user, onBack }) {
+function UserDetailView({ user, onBack, onToast }) {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
   const [opponents, setOpponents] = useState([])
@@ -769,7 +986,7 @@ function UserDetailView({ user, onBack }) {
       {subTab === 'sessions' && (
         <div>
           <div className="adm-session-list">
-            {sessions.map(s => <SessionRow key={s.id} session={s} formatMin={formatMin} />)}
+            {sessions.map(s => <SessionRow key={s.id} session={s} formatMin={formatMin} onToast={onToast} />)}
           </div>
           {sessionResults.length > 0 && (
             <div className="adm-table-wrap" style={{ marginTop: 20 }}>
@@ -827,7 +1044,7 @@ function UserDetailView({ user, onBack }) {
   )
 }
 
-function AppUsersTab() {
+function AppUsersTab({ onToast }) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
@@ -850,7 +1067,7 @@ function AppUsersTab() {
     await fetchData()
   }
 
-  if (viewingUser) return <UserDetailView user={viewingUser} onBack={() => setViewingUser(null)} />
+  if (viewingUser) return <UserDetailView user={viewingUser} onBack={() => setViewingUser(null)} onToast={onToast} />
 
   const viewToggle = (
     <div className="adm-email-subtabs" style={{ marginBottom: 16 }}>
@@ -2392,7 +2609,7 @@ function Dashboard() {
       </aside>
       <main className="adm-main">
         {activeTab === 'overview' && <OverviewTab />}
-        {activeTab === 'users' && <AppUsersTab />}
+        {activeTab === 'users' && <AppUsersTab onToast={showToast} />}
         {activeTab === 'statistics' && <StatisticsTab />}
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}

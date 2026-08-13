@@ -612,6 +612,13 @@ select.adm-modal-input { appearance: none; cursor: pointer; }
 .adm-hand-board { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
 .adm-hand-board-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 4px; }
 .adm-hand-noai { font-size: 13px; color: #666; margin: 0; }
+.adm-hand-actions { margin-top: 14px; padding-top: 12px; border-top: 1px solid #1c1c1c; }
+.adm-hand-share-btn {
+  font-size: 13px; font-weight: 500;
+  color: #0c0c0e; background: #A2F69A;
+  border: none; border-radius: 7px; padding: 7px 14px; cursor: pointer;
+}
+.adm-hand-share-btn:hover { background: #b6f7b0; }
 
 .adm-card {
   display: inline-flex; align-items: center; justify-content: center;
