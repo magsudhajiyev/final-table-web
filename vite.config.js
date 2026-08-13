@@ -128,7 +128,22 @@ function apiDevPlugin() {
           const response = await fetch(url.toString(), {
             headers: { 'Authorization': `Bearer ${key}` },
           })
-          const data = await response.text()
+          const raw = await response.text()
+          // Mirror api/list-inbox.js: drop emails from blocked sender domains.
+          const BLOCKED_FROM_DOMAINS = ['focusapps.app']
+          let data = raw
+          try {
+            const json = JSON.parse(raw)
+            if (Array.isArray(json?.data)) {
+              json.data = json.data.filter((email) => {
+                const addr = String(email?.from || '').toLowerCase()
+                return !BLOCKED_FROM_DOMAINS.some((d) => addr.includes('@' + d) || addr.endsWith(d))
+              })
+            }
+            data = JSON.stringify(json)
+          } catch {
+            // Non-JSON (e.g. error body) — pass through untouched.
+          }
           res.statusCode = response.status
           res.setHeader('Content-Type', 'application/json')
           res.end(data)
