@@ -485,6 +485,27 @@ const SURVEY_CSV_COLS = [
 
 /* ── Logged hands & AI analysis (poker_sessions/{id}/poker_hands) ── */
 
+// Money formatting mirrors the in-app hand details / HandViewer: cash games
+// use a "$" prefix, tournaments show plain chip counts with no currency sign.
+const isCashGame = (gameType) => gameType === 'cash'
+function fmtChips(value, gameType) {
+  if (value == null || value === '' || Number(value) <= 0) return '—'
+  const n = Number(value)
+  return isCashGame(gameType) ? `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : n.toLocaleString()
+}
+// Signed result (buy-in vs cash-out etc.), same cash/tournament rule.
+function fmtResult(value, gameType) {
+  if (value == null) return '—'
+  const n = Number(value)
+  const sign = n >= 0 ? '+' : '-'
+  const body = isCashGame(gameType) ? `$${Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 2 })}` : Math.abs(n).toLocaleString()
+  return `${sign}${body}`
+}
+function fmtBlinds(sb, bb, gameType) {
+  if (sb == null && bb == null) return null
+  return isCashGame(gameType) ? `$${sb || 0}/$${bb || 0}` : `${sb || 0}/${bb || 0}`
+}
+
 // Hole cards are stored as { card1, card2 }; board as { flop:[], turn, river }.
 function holeCards(hand) {
   const c = hand.ourHoleCards
@@ -527,8 +548,8 @@ const STREET_ORDER = ['preflop', 'flop', 'turn', 'river']
    only; the sharing user's own seat becomes "Hero". Free-text notes/tags are
    dropped entirely because they can contain opponent names. */
 
-// Map an action's player to an anonymous label — "Hero" for the current user,
-// otherwise their table position (falling back to seat number, never a name).
+// Map a player (by action or seat) to an anonymous label — "Hero" for the
+// current user, otherwise their table position (never a name).
 function anonPlayerLabel(action) {
   if (action.isCurrentUser) return 'Hero'
   if (action.playerPosition) return action.playerPosition
@@ -538,37 +559,82 @@ function anonPlayerLabel(action) {
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 
-// A poker card as an inline HTML chip (email-safe inline styles).
-function cardChipHtml(card) {
+// A poker card as an inline HTML chip (email-safe inline styles), matching the
+// in-app white card with a red/black rank.
+function cardChipHtml(card, { size = 'normal' } = {}) {
   const red = isRedCard(card)
-  return `<span style="display:inline-block;min-width:22px;text-align:center;padding:3px 5px;margin:0 2px;background:#f4f4f0;border-radius:4px;font-weight:700;font-size:14px;color:${red ? '#d03b3b' : '#111'}">${esc(card)}</span>`
+  const w = size === 'tiny' ? 26 : 30
+  const h = size === 'tiny' ? 34 : 40
+  const fs = size === 'tiny' ? 12 : 14
+  return `<span style="display:inline-block;width:${w}px;height:${h}px;line-height:${h}px;text-align:center;margin:0 2px;background:#fff;border:1px solid #e2e2dc;border-radius:5px;font-weight:700;font-size:${fs}px;color:${red ? '#D32F2F' : '#1a1a1a'};vertical-align:middle">${esc(card)}</span>`
 }
 
-// Build the full anonymized email HTML for one hand.
+// Build the full anonymized email HTML for one hand, laid out like the in-app
+// hand details: header, POT/BLINDS/WINNER summary, hero cards, per-street
+// PLAYER/STACK/ACTION/AMT tables, then AI analysis.
 function buildHandEmailHtml(hand, { note } = {}) {
+  const gt = hand.gameType
   const ai = getAiAnalysis(hand)
   const hole = holeCards(hand)
-  const board = boardCards(hand)
-  const gameType = hand.gameType ? titleCase(hand.gameType) : ''
-  const potStr = `$${Number(hand.potAmount || 0).toLocaleString()}`
+  const gameLabel = gt ? titleCase(gt) : ''
+  const potStr = fmtChips(hand.potAmount, gt)
+  const blindsStr = fmtBlinds(hand.smallBlind, hand.bigBlind, gt)
+  const heroSeat = Number(hand.heroSeatNumber)
 
-  // Group actions by street, anonymizing every player reference.
+  // Board cards per street.
+  const b = hand.boardCards || {}
+  const flop = Array.isArray(b.flop) ? b.flop : []
+  const streetBoard = { preflop: [], flop, turn: b.turn ? [b.turn] : [], river: b.river ? [b.river] : [] }
+
+  // Group actions by street. Winner position is resolved anonymously.
   const byStreet = { preflop: [], flop: [], turn: [], river: [] }
+  let winnerPos = null
   for (const a of (Array.isArray(hand.actions) ? hand.actions : [])) {
     const street = STREET_ORDER.includes(a.street) ? a.street : 'preflop'
-    const who = anonPlayerLabel(a)
-    const verb = esc(a.action || '')
-    const amt = a.amount != null ? ` $${Number(a.amount).toLocaleString()}` : ''
-    byStreet[street].push({ who, text: `${who} ${verb}${amt}`, hero: !!a.isCurrentUser })
+    byStreet[street].push(a)
+    if (hand.winnerId != null && Number(a.player) === Number(hand.winnerId)) {
+      winnerPos = a.isCurrentUser ? 'Hero' : (a.playerPosition || null)
+    }
+  }
+  if (winnerPos == null && hand.winnerId != null && Number(hand.winnerId) === heroSeat) winnerPos = 'Hero'
+
+  const actionColor = (action) => {
+    const a = String(action || '').toLowerCase().replace(/[\s-]/g, '')
+    if (a === 'fold') return '#c0392b'
+    if (a === 'call' || a === 'check') return '#0b8f86'
+    if (a === 'raise' || a === 'bet') return '#c77700'
+    if (a === 'allin') return '#c0392b'
+    return '#666'
   }
 
-  const streetRows = STREET_ORDER.filter(st => byStreet[st].length).map(st => {
-    const lines = byStreet[st].map(l =>
-      `<div style="padding:2px 0;color:${l.hero ? '#0c0c0e' : '#555'};font-weight:${l.hero ? 600 : 400}">${esc(l.text)}</div>`
-    ).join('')
-    return `<tr><td style="padding:10px 0;border-top:1px solid #ECEEEC">
-      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#7aa874;margin-bottom:4px">${esc(st)}</div>
-      <div style="font-size:14px;line-height:1.6">${lines}</div>
+  const streetSections = STREET_ORDER.filter(st => byStreet[st].length).map(st => {
+    const rows = byStreet[st].map(a => {
+      const hero = !!a.isCurrentUser
+      const who = anonPlayerLabel(a)
+      const stack = a.playerStack != null ? fmtChips(a.playerStack, gt) : '—'
+      const amt = a.amount != null ? fmtChips(a.amount, gt) : '—'
+      const isWinner = winnerPos && (hero ? winnerPos === 'Hero' : who === winnerPos)
+      return `<tr>
+        <td style="padding:5px 0;font-size:13px;color:${hero ? '#0c7a72' : '#333'};font-weight:${hero ? 600 : 400}">${isWinner ? '🏆 ' : ''}${esc(who)}</td>
+        <td style="padding:5px 0;font-size:12px;color:#999;font-family:'Roboto Mono',monospace">${esc(stack)}</td>
+        <td style="padding:5px 0;font-size:12px;font-weight:600;color:${actionColor(a.action)};text-transform:uppercase">${esc(a.action || '')}</td>
+        <td style="padding:5px 0;font-size:12px;color:#555;font-family:'Roboto Mono',monospace;text-align:right">${esc(amt)}</td>
+      </tr>`
+    }).join('')
+    const boardChips = streetBoard[st].length ? `&nbsp;&nbsp;${streetBoard[st].map(c => cardChipHtml(c, { size: 'tiny' })).join('')}` : ''
+    return `<tr><td style="padding:14px 48px 0" class="mp">
+      <div style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px;overflow:hidden">
+        <div style="padding:10px 16px;background:#F2F4F1;font-size:12px;font-weight:700;letter-spacing:0.08em;color:#5a7a56;text-transform:uppercase">${esc(st)}${boardChips}</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:8px 16px">
+          <tr>
+            <td style="font-size:10px;color:#aaa;letter-spacing:0.05em;padding-bottom:4px">PLAYER</td>
+            <td style="font-size:10px;color:#aaa;letter-spacing:0.05em;padding-bottom:4px">STACK</td>
+            <td style="font-size:10px;color:#aaa;letter-spacing:0.05em;padding-bottom:4px">ACTION</td>
+            <td style="font-size:10px;color:#aaa;letter-spacing:0.05em;padding-bottom:4px;text-align:right">AMT</td>
+          </tr>
+          ${rows}
+        </table>
+      </div>
     </td></tr>`
   }).join('')
 
@@ -597,22 +663,36 @@ function buildHandEmailHtml(hand, { note } = {}) {
       </td></tr>`
   })() : ''
 
+  const summaryCol = (value, label, color) =>
+    `<td width="33%" style="text-align:center;padding:0 6px"><div style="font-size:15px;font-weight:700;color:${color || '#0c7a72'}">${esc(value)}</div><div style="font-size:10px;color:#999;letter-spacing:0.05em;margin-top:2px">${label}</div></td>`
+
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>@media only screen and (max-width:620px){.container{width:100%!important}.mp{padding-left:24px!important;padding-right:24px!important}}</style></head>
 <body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px">
 <table role="presentation" width="680" align="center" cellpadding="0" cellspacing="0" class="container" style="max-width:680px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
   <tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr>
-  <tr><td style="padding:36px 48px 8px" class="mp"><img src="https://finaltable.io/logo.png" alt="Final Table" width="84" style="display:block;width:84px;height:auto"></td></tr>
-  <tr><td style="padding:8px 48px 4px" class="mp"><h1 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#0c0c0e">A hand worth studying</h1></td></tr>
-  ${note ? `<tr><td style="padding:8px 48px 0" class="mp"><p style="margin:0;font-size:15px;line-height:1.6;color:#444">${esc(note)}</p></td></tr>` : ''}
-  <tr><td style="padding:20px 48px 0" class="mp">
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px"><tr><td style="padding:16px 20px">
-      <div style="font-size:13px;color:#888;margin-bottom:8px">${esc(gameType)}${gameType ? ' · ' : ''}Pot ${esc(potStr)}</div>
-      <div style="margin-bottom:10px"><span style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-right:8px">Hero</span>${hole.map(cardChipHtml).join('')}<span style="font-size:13px;color:#888;margin-left:8px">(${esc(hand.heroPositionName || '—')})</span></div>
-      ${board.length ? `<div><span style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-right:8px">Board</span>${board.map(cardChipHtml).join('')}</div>` : ''}
+  <tr><td style="padding:36px 48px 4px" class="mp"><img src="https://finaltable.io/logo.png" alt="Final Table" width="84" style="display:block;width:84px;height:auto"></td></tr>
+  <tr><td style="padding:12px 48px 0" class="mp">
+    <h1 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#0c0c0e">Hand #${esc(hand.handNumber ?? '?')}</h1>
+    <p style="margin:4px 0 0;font-size:13px;color:#888">Position: ${esc(hand.heroPositionName || '?')}${gameLabel ? ` · ${esc(gameLabel)}` : ''}</p>
+  </td></tr>
+  ${note ? `<tr><td style="padding:12px 48px 0" class="mp"><p style="margin:0;font-size:15px;line-height:1.6;color:#444">${esc(note)}</p></td></tr>` : ''}
+  <tr><td style="padding:18px 48px 0" class="mp">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px"><tr><td style="padding:16px 12px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        ${summaryCol(potStr, 'POT')}
+        ${summaryCol(blindsStr || '—', 'BLINDS')}
+        ${summaryCol(winnerPos || '—', 'WINNER', '#b8860b')}
+      </tr></table>
     </td></tr></table>
   </td></tr>
-  <tr><td style="padding:16px 48px 0" class="mp"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${streetRows}</table></td></tr>
+  <tr><td style="padding:16px 48px 0" class="mp">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px"><tr><td style="padding:14px 16px">
+      <div style="font-size:11px;color:#0b8f86;font-weight:600;letter-spacing:0.05em;margin-bottom:8px">YOUR CARDS</div>
+      ${hole.length ? hole.map(c => cardChipHtml(c)).join('') : '<span style="font-size:13px;color:#aaa">Not shown</span>'}
+    </td></tr></table>
+  </td></tr>
+  ${streetSections}
   ${aiBlock}
   <tr><td style="padding:28px 48px 36px" class="mp"><div style="border-top:1px solid #ECEEEC;padding-top:16px"><p style="margin:0;font-size:13px;color:#999;line-height:1.6">Shared from Final Table. Opponent identities are hidden — players are shown by position only.<br><a href="https://finaltable.io" style="color:#7aa874;text-decoration:none">finaltable.io</a></p></div></td></tr>
 </table>
@@ -788,7 +868,7 @@ function HandRow({ hand, sessionName, onToast }) {
         <span className="adm-hand-cards">{hole.length ? hole.map((c, i) => <Card key={i} card={c} />) : <span className="adm-hand-muted">no cards</span>}</span>
         <span className="adm-hand-pos">{hand.heroPositionName || '—'}</span>
         <span className="adm-hand-result" style={{ color: heroWon ? '#4ade80' : '#999' }}>{heroWon ? 'Won' : '—'}</span>
-        <span className="adm-hand-pot">${Number(hand.potAmount || 0).toLocaleString()}</span>
+        <span className="adm-hand-pot">{fmtChips(hand.potAmount, hand.gameType)}</span>
         {ai && <span className="adm-hand-ai-flag">AI</span>}
       </button>
       {open && (
@@ -838,9 +918,9 @@ function SessionRow({ session, formatMin, onToast }) {
         <span className="adm-hand-caret">{open ? '▾' : '▸'}</span>
         <span className="adm-session-name"><strong>{session.sessionName || '—'}</strong></span>
         <span className={`adm-status adm-status-${session.gameType || 'cash'}`}>{session.gameType || 'cash'}</span>
-        <span className="adm-session-meta">${Number(session.totalBuyIn || session.buyInAmount || 0).toLocaleString()} buy-in</span>
+        <span className="adm-session-meta">{fmtChips(session.totalBuyIn || session.buyInAmount, session.gameType)} buy-in</span>
         <span className="adm-session-result" style={{ color: result > 0 ? '#4ade80' : result < 0 ? '#f87171' : '#888' }}>
-          {result != null ? (result >= 0 ? '+' : '') + '$' + Math.abs(result).toLocaleString() : '—'}
+          {result != null ? fmtResult(result, session.gameType) : '—'}
         </span>
         <span className="adm-session-meta">{handCount} hand{handCount === 1 ? '' : 's'}</span>
         <span className="adm-session-meta">{dur != null ? formatMin(dur) : '—'}</span>
@@ -999,9 +1079,9 @@ function UserDetailView({ user, onBack, onToast }) {
                   {sessionResults.map(sr => (
                     <tr key={sr.id}>
                       <td><span className={`adm-status adm-status-${sr.gameType || 'tournament'}`}>{sr.gameType || 'tournament'}</span></td>
-                      <td>${Number(sr.buyInAmount || 0).toLocaleString()}</td>
+                      <td>{fmtChips(sr.buyInAmount, sr.gameType || 'tournament')}</td>
                       <td style={{ color: sr.amount > 0 ? '#4ade80' : sr.amount < 0 ? '#f87171' : '#888', fontWeight: 600 }}>
-                        {sr.amount != null ? (sr.amount >= 0 ? '+' : '') + '$' + Math.abs(sr.amount).toLocaleString() : '—'}
+                        {sr.amount != null ? fmtResult(sr.amount, sr.gameType || 'tournament') : '—'}
                       </td>
                       <td>{sr.finishedPlace ? `#${sr.finishedPlace}${sr.fieldSize ? '/' + sr.fieldSize : ''}` : '—'}</td>
                       <td>{sr.durationMinutes ? formatMin(sr.durationMinutes) : '—'}</td>
@@ -1030,7 +1110,7 @@ function UserDetailView({ user, onBack, onToast }) {
                   <td>{h.sessionName || '—'}</td>
                   <td>{h.heroPositionName || '—'}</td>
                   <td style={{ color: h.result === 'Won' ? '#4ade80' : h.result === 'Lost' ? '#f87171' : '#888', fontWeight: 600 }}>{h.result || '—'}</td>
-                  <td>${Number(h.potAmount || 0).toLocaleString()}</td>
+                  <td>{fmtChips(h.potAmount, h.gameType)}</td>
                   <td>{h.gameType || '—'}</td>
                   <td className="adm-td-date">{formatDate(h.createdAt)}</td>
                 </tr>
