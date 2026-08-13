@@ -664,26 +664,32 @@ const APP_USERS_CSV_COLS = [
 // Known answer labels. Unmapped values fall back to a title-cased raw string,
 // so the UI stays correct if the app adds new options.
 const SURVEY_LABELS = {
-  pokerJourney: { beginner: 'Beginner', regular: 'Regular', pro: 'Pro' },
+  pokerJourney: { fun: 'For fun', beginner: 'Beginner', regular: 'Regular', pro: 'Pro' },
   gameType: { cash: 'Cash', tournament: 'Tournament', both: 'Both' },
   purposes: {
     logging: 'Session logging', opponents: 'Opponent tracking', studying: 'Studying hands',
     ai: 'AI analysis', actions: 'Action tracking', bankroll: 'Bankroll', export: 'Data export',
+    sharing: 'Sharing hands', stacks: 'Stack tracking',
   },
 }
 const titleCase = (s) => String(s).replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 const surveyLabel = (dim, value) => (value == null || value === '') ? '—' : (SURVEY_LABELS[dim]?.[value] || titleCase(value))
-// monthlySessions is a number the app buckets; show a friendly bucket label.
-const sessionsLabel = (n) => {
-  if (n == null || n === '') return '—'
+// monthlySessions is a raw number; group it into ordered buckets so charts
+// don't show a separate slice per exact value. Each bucket has a stable order
+// index so distributions can sort low→high.
+const SESSION_BUCKETS = [
+  { max: 1, order: 0, label: '1 or fewer / month' },
+  { max: 3, order: 1, label: '2–3 / month' },
+  { max: 7, order: 2, label: '4–7 / month' },
+  { max: 15, order: 3, label: '8–15 / month' },
+  { max: Infinity, order: 4, label: '15+ / month' },
+]
+const sessionBucket = (n) => {
   const num = Number(n)
-  if (Number.isNaN(num)) return titleCase(n)
-  if (num <= 1) return '1 or fewer / month'
-  if (num <= 3) return '2–3 / month'
-  if (num <= 7) return '4–7 / month'
-  if (num <= 15) return '8–15 / month'
-  return '15+ / month'
+  if (n == null || n === '' || Number.isNaN(num)) return null
+  return SESSION_BUCKETS.find(b => num <= b.max)
 }
+const sessionsLabel = (n) => sessionBucket(n)?.label ?? '—'
 
 // Count occurrences of a survey answer across users. `multi` handles array
 // fields (purposes). Returns [{ value, label, count }] sorted by count desc.
@@ -700,6 +706,19 @@ function tallySurvey(users, dim, { multi = false, labelFn } = {}) {
   return [...counts.entries()]
     .map(([value, count]) => ({ value, label: labelFn ? labelFn(value) : surveyLabel(dim, value), count }))
     .sort((a, b) => b.count - a.count)
+}
+
+// monthlySessions grouped into ordered buckets (low→high), one row per bucket.
+function tallySessions(users) {
+  const counts = new Map() // order -> { label, count }
+  for (const u of users) {
+    const b = sessionBucket(u.onboardingData?.monthlySessions)
+    if (!b) continue
+    const cur = counts.get(b.order) || { value: b.order, label: b.label, count: 0 }
+    cur.count += 1
+    counts.set(b.order, cur)
+  }
+  return [...counts.values()].sort((a, b) => a.value - b.value)
 }
 
 const SURVEY_CSV_COLS = [
@@ -1057,8 +1076,7 @@ function SurveyResultsView({ users, loading, onViewUser }) {
 
   const journey = useMemo(() => tallySurvey(answered, 'pokerJourney'), [answered])
   const gameType = useMemo(() => tallySurvey(answered, 'gameType'), [answered])
-  const sessions = useMemo(() => tallySurvey(answered, 'monthlySessions', { labelFn: sessionsLabel })
-    .sort((a, b) => Number(a.value) - Number(b.value)), [answered])
+  const sessions = useMemo(() => tallySessions(answered), [answered])
   const purposes = useMemo(() => tallySurvey(answered, 'purposes', { multi: true }), [answered])
 
   const fs = useFilterSort(answered, ['displayName', 'email', 'username'], null, 'createdAt')
@@ -2199,6 +2217,200 @@ function BlogTab({ onToast }) {
 }
 
 /* ══════════════════════════════════════════════
+   STATISTICS TAB
+   ══════════════════════════════════════════════ */
+
+// Categorical palette stepped for the admin dark surface (#141414).
+// Fixed order = the CVD-safety mechanism; never cycle or reorder per chart.
+// Validated: all >= 3:1 on surface, worst adjacent CVD ΔE in the legal floor
+// band — mitigated by the per-slice % labels + legend below.
+const CHART_COLORS = ['#3987e5', '#199e70', '#c98500', '#008300', '#9085e9', '#e66767', '#d55181', '#d95926']
+
+function polarToXY(cx, cy, r, angleDeg) {
+  const a = (angleDeg - 90) * (Math.PI / 180)
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)]
+}
+// Arc path for a donut segment between two angles (degrees, clockwise from top).
+function donutArc(cx, cy, rOuter, rInner, startAngle, endAngle) {
+  const [x1, y1] = polarToXY(cx, cy, rOuter, endAngle)
+  const [x2, y2] = polarToXY(cx, cy, rOuter, startAngle)
+  const [x3, y3] = polarToXY(cx, cy, rInner, startAngle)
+  const [x4, y4] = polarToXY(cx, cy, rInner, endAngle)
+  const large = endAngle - startAngle > 180 ? 1 : 0
+  return `M ${x1} ${y1} A ${rOuter} ${rOuter} 0 ${large} 0 ${x2} ${y2} L ${x3} ${y3} A ${rInner} ${rInner} 0 ${large} 1 ${x4} ${y4} Z`
+}
+
+// A donut/pie chart. `rows` = [{ value, label, count }] (from tallySurvey).
+function PieChart({ title, rows }) {
+  const [hover, setHover] = useState(null)
+  const total = useMemo(() => rows.reduce((s, r) => s + r.count, 0), [rows])
+  const size = 200, cx = 100, cy = 100, rOuter = 92, rInner = 52
+
+  // Precompute segment geometry.
+  const segments = useMemo(() => {
+    let angle = 0
+    return rows.map((r, i) => {
+      const frac = total > 0 ? r.count / total : 0
+      const start = angle
+      const end = angle + frac * 360
+      angle = end
+      return { ...r, i, frac, start, end, color: CHART_COLORS[i % CHART_COLORS.length] }
+    })
+  }, [rows, total])
+
+  if (total === 0) {
+    return (
+      <div className="adm-pie-card">
+        <h3 className="adm-pie-title">{title}</h3>
+        <p className="adm-pie-empty">No answers yet</p>
+      </div>
+    )
+  }
+
+  const active = hover != null ? segments[hover] : null
+
+  return (
+    <div className="adm-pie-card">
+      <h3 className="adm-pie-title">{title}</h3>
+      <div className="adm-pie-body">
+        <div className="adm-pie-svg-wrap">
+          <svg viewBox={`0 0 ${size} ${size}`} className="adm-pie-svg" role="img" aria-label={`${title} distribution`}>
+            {/* Single full-circle segment can't be drawn as an arc; use a ring. */}
+            {segments.length === 1 ? (
+              <circle cx={cx} cy={cy} r={(rOuter + rInner) / 2} fill="none"
+                stroke={segments[0].color} strokeWidth={rOuter - rInner}
+                onMouseEnter={() => setHover(0)} onMouseLeave={() => setHover(null)} />
+            ) : segments.map(s => (
+              <path key={s.value} d={donutArc(cx, cy, rOuter, rInner, s.start, s.end)}
+                fill={s.color} stroke="#141414" strokeWidth="2"
+                opacity={hover != null && hover !== s.i ? 0.35 : 1}
+                style={{ transition: 'opacity 0.15s', cursor: 'default' }}
+                onMouseEnter={() => setHover(s.i)} onMouseLeave={() => setHover(null)} />
+            ))}
+            {/* Per-slice % labels for slices big enough to hold text. */}
+            {segments.filter(s => s.frac >= 0.08).map(s => {
+              const mid = (s.start + s.end) / 2
+              const [lx, ly] = polarToXY(cx, cy, (rOuter + rInner) / 2, mid)
+              return (
+                <text key={`lbl-${s.value}`} x={lx} y={ly} className="adm-pie-slice-label"
+                  textAnchor="middle" dominantBaseline="central">{Math.round(s.frac * 100)}%</text>
+              )
+            })}
+            {/* Center readout: total, or the hovered slice. */}
+            <text x={cx} y={cy - 6} className="adm-pie-center-value" textAnchor="middle">
+              {active ? active.count : total}
+            </text>
+            <text x={cx} y={cy + 14} className="adm-pie-center-label" textAnchor="middle">
+              {active ? `${Math.round(active.frac * 100)}%` : 'total'}
+            </text>
+          </svg>
+        </div>
+        <ul className="adm-pie-legend">
+          {segments.map(s => (
+            <li key={s.value} className={`adm-pie-legend-item${hover === s.i ? ' active' : ''}`}
+              onMouseEnter={() => setHover(s.i)} onMouseLeave={() => setHover(null)}>
+              <span className="adm-pie-legend-swatch" style={{ background: s.color }} />
+              <span className="adm-pie-legend-label">{s.label}</span>
+              <span className="adm-pie-legend-count">{s.count} · {Math.round(s.frac * 100)}%</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+// Horizontal bars for a multi-select dimension (purposes) where each user can
+// pick several — percentages are "share of users who picked this", so they sum
+// past 100% and a pie would misrepresent them.
+function BarChart({ title, subtitle, rows, denom }) {
+  const [hover, setHover] = useState(null)
+  const max = Math.max(1, ...rows.map(r => r.count))
+  return (
+    <div className="adm-pie-card">
+      <h3 className="adm-pie-title">{title}</h3>
+      {subtitle && <p className="adm-bar-subtitle">{subtitle}</p>}
+      {rows.length === 0 ? <p className="adm-pie-empty">No answers yet</p> : (
+        <div className="adm-bars">
+          {rows.map((r, i) => {
+            const pct = denom > 0 ? Math.round((r.count / denom) * 100) : 0
+            return (
+              <div key={r.value} className={`adm-bar-row${hover === i ? ' active' : ''}`}
+                onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
+                <span className="adm-bar-label">{r.label}</span>
+                <div className="adm-bar-track">
+                  <div className="adm-bar-fill" style={{ width: `${(r.count / max) * 100}%`, background: CHART_COLORS[i % CHART_COLORS.length] }} />
+                </div>
+                <span className="adm-bar-value">{r.count} · {pct}%</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function StatisticsTab() {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    try { setData(await getAppUsers()) } catch (err) { console.error(err) }
+    finally { setLoading(false) }
+  }, [])
+  useEffect(() => { fetchData() }, [fetchData])
+
+  const answered = useMemo(() => data.filter(u => u.onboardingData), [data])
+  const completed = useMemo(() => data.filter(u => u.hasCompletedOnboarding), [data])
+
+  const journey = useMemo(() => tallySurvey(answered, 'pokerJourney'), [answered])
+  const gameType = useMemo(() => tallySurvey(answered, 'gameType'), [answered])
+  const sessions = useMemo(() => tallySessions(answered), [answered])
+  const purposes = useMemo(() => tallySurvey(answered, 'purposes', { multi: true }), [answered])
+
+  const completionRate = data.length > 0 ? Math.round((completed.length / data.length) * 100) : 0
+
+  return (
+    <>
+      <div className="adm-header">
+        <h1 className="adm-page-title">Statistics</h1>
+        <div className="adm-header-right">
+          <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
+        </div>
+      </div>
+      <p className="adm-stats-intro">Who our customers are, from the in-app onboarding survey.</p>
+
+      <div className="adm-stats-grid" style={{ marginBottom: 28 }}>
+        <div className="adm-stat-card"><div className="adm-stat-value">{data.length}</div><div className="adm-stat-label">Total users</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{answered.length}</div><div className="adm-stat-label">Answered survey</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{completionRate}%</div><div className="adm-stat-label">Completion rate</div></div>
+      </div>
+
+      {loading ? (
+        <div className="adm-loading">Loading statistics...</div>
+      ) : answered.length === 0 ? (
+        <div className="adm-empty" style={{ padding: 40 }}>No onboarding survey responses yet.</div>
+      ) : (
+        <>
+          <div className="adm-pie-grid">
+            <PieChart title="Poker journey" rows={journey} />
+            <PieChart title="Game type" rows={gameType} />
+            <PieChart title="Sessions per month" rows={sessions} />
+          </div>
+          <div style={{ marginTop: 18 }}>
+            <BarChart title="Why they use Final Table"
+              subtitle="Multi-select — % of the people who answered who picked each reason"
+              rows={purposes} denom={answered.length} />
+          </div>
+        </>
+      )}
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════
    DASHBOARD SHELL
    ══════════════════════════════════════════════ */
 
@@ -2253,6 +2465,7 @@ function Dashboard() {
     { id: 'overview', label: 'Overview' },
     { id: 'waitlist', label: 'Waitlist' },
     { id: 'users', label: 'Users' },
+    { id: 'statistics', label: 'Statistics' },
     { id: 'nicknames', label: 'Nickname Claims' },
     { id: 'hands', label: 'Shared Hands' },
     { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
@@ -2288,6 +2501,7 @@ function Dashboard() {
         {activeTab === 'overview' && <OverviewTab />}
         {activeTab === 'waitlist' && <WaitlistTab />}
         {activeTab === 'users' && <AppUsersTab />}
+        {activeTab === 'statistics' && <StatisticsTab />}
         {activeTab === 'nicknames' && <NicknameClaimsTab onToast={showToast} />}
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
