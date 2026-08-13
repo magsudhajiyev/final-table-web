@@ -659,6 +659,61 @@ const APP_USERS_CSV_COLS = [
   { label: 'Last Login', get: r => r.lastLogin ? r.lastLogin.toISOString() : '' },
 ]
 
+/* ── Onboarding survey (users.onboardingData) ── */
+
+// Known answer labels. Unmapped values fall back to a title-cased raw string,
+// so the UI stays correct if the app adds new options.
+const SURVEY_LABELS = {
+  pokerJourney: { beginner: 'Beginner', regular: 'Regular', pro: 'Pro' },
+  gameType: { cash: 'Cash', tournament: 'Tournament', both: 'Both' },
+  purposes: {
+    logging: 'Session logging', opponents: 'Opponent tracking', studying: 'Studying hands',
+    ai: 'AI analysis', actions: 'Action tracking', bankroll: 'Bankroll', export: 'Data export',
+  },
+}
+const titleCase = (s) => String(s).replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+const surveyLabel = (dim, value) => (value == null || value === '') ? '—' : (SURVEY_LABELS[dim]?.[value] || titleCase(value))
+// monthlySessions is a number the app buckets; show a friendly bucket label.
+const sessionsLabel = (n) => {
+  if (n == null || n === '') return '—'
+  const num = Number(n)
+  if (Number.isNaN(num)) return titleCase(n)
+  if (num <= 1) return '1 or fewer / month'
+  if (num <= 3) return '2–3 / month'
+  if (num <= 7) return '4–7 / month'
+  if (num <= 15) return '8–15 / month'
+  return '15+ / month'
+}
+
+// Count occurrences of a survey answer across users. `multi` handles array
+// fields (purposes). Returns [{ value, label, count }] sorted by count desc.
+function tallySurvey(users, dim, { multi = false, labelFn } = {}) {
+  const counts = new Map()
+  for (const u of users) {
+    const od = u.onboardingData
+    if (!od) continue
+    const raw = od[dim]
+    if (raw == null || raw === '') continue
+    const values = multi ? (Array.isArray(raw) ? raw : [raw]) : [raw]
+    for (const v of values) counts.set(v, (counts.get(v) || 0) + 1)
+  }
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, label: labelFn ? labelFn(value) : surveyLabel(dim, value), count }))
+    .sort((a, b) => b.count - a.count)
+}
+
+const SURVEY_CSV_COLS = [
+  { key: 'displayName', label: 'Display Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'username', label: 'Username' },
+  { label: 'Completed Onboarding', get: r => r.hasCompletedOnboarding ? 'yes' : 'no' },
+  { label: 'Poker Journey', get: r => r.onboardingData ? surveyLabel('pokerJourney', r.onboardingData.pokerJourney) : '' },
+  { label: 'Game Type', get: r => r.onboardingData ? surveyLabel('gameType', r.onboardingData.gameType) : '' },
+  { label: 'Monthly Sessions', get: r => r.onboardingData ? sessionsLabel(r.onboardingData.monthlySessions) : '' },
+  { label: 'Purposes', get: r => (r.onboardingData?.purposes || []).map(p => surveyLabel('purposes', p)).join('; ') },
+  { label: 'Completed At', get: r => r.onboardingData?.completedAt?.toDate?.()?.toISOString?.() || '' },
+]
+
 function UserDetailView({ user, onBack }) {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
@@ -737,6 +792,19 @@ function UserDetailView({ user, onBack }) {
         <div className="adm-stat-card"><div className="adm-stat-value">{opponents.length}</div><div className="adm-stat-label">Opponents</div></div>
         <div className="adm-stat-card"><div className="adm-stat-value">{user.currentBankroll != null ? `$${Number(user.currentBankroll).toLocaleString()}` : '—'}</div><div className="adm-stat-label">Bankroll</div></div>
       </div>
+
+      {/* Onboarding survey answers */}
+      {user.onboardingData && (
+        <div className="adm-survey-detail">
+          <h3 className="adm-survey-detail-title">Onboarding survey</h3>
+          <div className="adm-survey-detail-grid">
+            <div className="adm-survey-detail-item"><span className="adm-survey-detail-label">Poker journey</span><span className="adm-survey-detail-value">{surveyLabel('pokerJourney', user.onboardingData.pokerJourney)}</span></div>
+            <div className="adm-survey-detail-item"><span className="adm-survey-detail-label">Game type</span><span className="adm-survey-detail-value">{surveyLabel('gameType', user.onboardingData.gameType)}</span></div>
+            <div className="adm-survey-detail-item"><span className="adm-survey-detail-label">Sessions / month</span><span className="adm-survey-detail-value">{sessionsLabel(user.onboardingData.monthlySessions)}</span></div>
+            <div className="adm-survey-detail-item"><span className="adm-survey-detail-label">Purposes</span><span className="adm-survey-detail-value">{(user.onboardingData.purposes || []).map(p => surveyLabel('purposes', p)).join(', ') || '—'}</span></div>
+          </div>
+        </div>
+      )}
 
       {/* Sub-tabs */}
       <div className="adm-email-subtabs" style={{ marginBottom: 16 }}>
@@ -851,6 +919,7 @@ function AppUsersTab() {
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [viewingUser, setViewingUser] = useState(null)
+  const [view, setView] = useState('list') // list | survey
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -869,6 +938,29 @@ function AppUsersTab() {
 
   if (viewingUser) return <UserDetailView user={viewingUser} onBack={() => setViewingUser(null)} />
 
+  const viewToggle = (
+    <div className="adm-email-subtabs" style={{ marginBottom: 16 }}>
+      {[{ id: 'list', label: 'Users' }, { id: 'survey', label: 'Survey Results' }].map(t => (
+        <button key={t.id} className={`adm-email-subtab${view === t.id ? ' active' : ''}`} onClick={() => setView(t.id)}>{t.label}</button>
+      ))}
+    </div>
+  )
+
+  if (view === 'survey') {
+    return (
+      <>
+        <div className="adm-header">
+          <h1 className="adm-page-title">Users</h1>
+          <div className="adm-header-right">
+            <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
+          </div>
+        </div>
+        {viewToggle}
+        <SurveyResultsView users={data} loading={loading} onViewUser={setViewingUser} />
+      </>
+    )
+  }
+
   return (
     <>
       <div className="adm-header">
@@ -879,6 +971,7 @@ function AppUsersTab() {
           <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
         </div>
       </div>
+      {viewToggle}
       <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo}
         onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo} />
       {fs.selected.size > 0 && <BulkBar count={fs.selected.size} onDeleteAll={handleBulkDelete} />}
@@ -930,6 +1023,112 @@ function AppUsersTab() {
         onSave={async v => { await updateAppUser(editing.id, v); await fetchData() }} onClose={() => setEditing(null)} />}
       {deleting && <DeleteConfirm label={deleting.displayName || deleting.email || deleting.id}
         onConfirm={async () => { await deleteAppUser(deleting.id); await fetchData() }} onClose={() => setDeleting(null)} />}
+    </>
+  )
+}
+
+/* ── Onboarding survey results (a sub-view of the Users tab) ── */
+
+function SurveyDistribution({ title, rows, total }) {
+  return (
+    <div className="adm-survey-dist">
+      <h3 className="adm-survey-dist-title">{title}</h3>
+      {rows.length === 0
+        ? <p className="adm-survey-dist-empty">No answers yet</p>
+        : rows.map(r => {
+          const pct = total > 0 ? Math.round((r.count / total) * 100) : 0
+          return (
+            <div key={r.value} className="adm-survey-row">
+              <div className="adm-survey-row-head">
+                <span className="adm-survey-row-label">{r.label}</span>
+                <span className="adm-survey-row-count">{r.count} · {pct}%</span>
+              </div>
+              <div className="adm-survey-bar"><div className="adm-survey-bar-fill" style={{ width: `${pct}%` }} /></div>
+            </div>
+          )
+        })}
+    </div>
+  )
+}
+
+function SurveyResultsView({ users, loading, onViewUser }) {
+  const answered = useMemo(() => users.filter(u => u.onboardingData), [users])
+  const completed = useMemo(() => users.filter(u => u.hasCompletedOnboarding), [users])
+
+  const journey = useMemo(() => tallySurvey(answered, 'pokerJourney'), [answered])
+  const gameType = useMemo(() => tallySurvey(answered, 'gameType'), [answered])
+  const sessions = useMemo(() => tallySurvey(answered, 'monthlySessions', { labelFn: sessionsLabel })
+    .sort((a, b) => Number(a.value) - Number(b.value)), [answered])
+  const purposes = useMemo(() => tallySurvey(answered, 'purposes', { multi: true }), [answered])
+
+  const fs = useFilterSort(answered, ['displayName', 'email', 'username'], null, 'createdAt')
+  const completionRate = users.length > 0 ? Math.round((completed.length / users.length) * 100) : 0
+
+  return (
+    <>
+      <div className="adm-stats-grid" style={{ marginBottom: 24 }}>
+        <div className="adm-stat-card"><div className="adm-stat-value">{answered.length}</div><div className="adm-stat-label">Answered survey</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{completed.length}</div><div className="adm-stat-label">Completed onboarding</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{completionRate}%</div><div className="adm-stat-label">Completion rate</div></div>
+      </div>
+
+      <div className="adm-survey-grid">
+        <SurveyDistribution title="Poker journey" rows={journey} total={answered.length} />
+        <SurveyDistribution title="Game type" rows={gameType} total={answered.length} />
+        <SurveyDistribution title="Sessions per month" rows={sessions} total={answered.length} />
+        <SurveyDistribution title="Why they use Final Table" rows={purposes} total={answered.length} />
+      </div>
+
+      <div className="adm-header" style={{ marginTop: 8 }}>
+        <h2 className="adm-page-title" style={{ fontSize: 18 }}>Per-user answers</h2>
+        <div className="adm-header-right">
+          <span className="adm-count">{fs.filtered.length} of {answered.length}</span>
+          <button className="adm-refresh-btn" onClick={() => exportCSV(fs.filtered, 'onboarding-survey.csv', SURVEY_CSV_COLS)}>Export CSV</button>
+        </div>
+      </div>
+      <SearchBar search={fs.search} onSearch={fs.setSearch} dateFrom={fs.dateFrom} dateTo={fs.dateTo}
+        onDateFrom={fs.setDateFrom} onDateTo={fs.setDateTo} />
+      <div className="adm-table-wrap">
+        <table className="adm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Journey</th>
+              <th>Game</th>
+              <th>Sessions/mo</th>
+              <th>Purposes</th>
+              <SortableDate label="Created" sortOrder={fs.sortOrder} onToggle={() => fs.setSortOrder(s => s === 'desc' ? 'asc' : 'desc')} />
+            </tr>
+          </thead>
+          <tbody>
+            {fs.filtered.map((u, i) => {
+              const od = u.onboardingData || {}
+              return (
+                <tr key={u.id} style={{ cursor: 'pointer' }} onClick={() => onViewUser(u)}>
+                  <td className="adm-td-num">{i + 1}</td>
+                  <td>
+                    <div>{u.displayName || u.email || '—'}</div>
+                    {u.username && <div className="adm-td-username" style={{ fontSize: 12 }}>@{u.username}</div>}
+                  </td>
+                  <td>{surveyLabel('pokerJourney', od.pokerJourney)}</td>
+                  <td>{surveyLabel('gameType', od.gameType)}</td>
+                  <td>{sessionsLabel(od.monthlySessions)}</td>
+                  <td>
+                    <div className="adm-survey-tags">
+                      {(od.purposes || []).length === 0
+                        ? '—'
+                        : od.purposes.map(p => <span key={p} className="adm-survey-tag">{surveyLabel('purposes', p)}</span>)}
+                    </div>
+                  </td>
+                  <td className="adm-td-date">{formatDate(u.createdAt)}</td>
+                </tr>
+              )
+            })}
+            {!loading && fs.filtered.length === 0 && <tr><td colSpan="7" className="adm-empty">No survey responses found</td></tr>}
+          </tbody>
+        </table>
+      </div>
     </>
   )
 }

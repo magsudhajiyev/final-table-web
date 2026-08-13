@@ -444,6 +444,58 @@ select.adm-modal-input { appearance: none; cursor: pointer; }
 .adm-stat-value { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 4px; }
 .adm-stat-label { font-size: 13px; color: #777; text-transform: uppercase; letter-spacing: 0.04em; }
 
+/* ── Onboarding survey ── */
+.adm-survey-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.adm-survey-dist {
+  background: #141414;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.adm-survey-dist-title { font-size: 14px; font-weight: 600; color: #ddd; margin: 0 0 14px; }
+.adm-survey-dist-empty { font-size: 13px; color: #666; margin: 0; }
+.adm-survey-row { margin-bottom: 12px; }
+.adm-survey-row:last-child { margin-bottom: 0; }
+.adm-survey-row-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.adm-survey-row-label { font-size: 13px; color: #ccc; }
+.adm-survey-row-count { font-size: 12px; color: #777; font-variant-numeric: tabular-nums; }
+.adm-survey-bar { height: 7px; background: #1e1e1e; border-radius: 4px; overflow: hidden; }
+.adm-survey-bar-fill { height: 100%; background: #A2F69A; border-radius: 4px; transition: width 0.3s; }
+
+.adm-survey-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.adm-survey-tag {
+  display: inline-block;
+  font-size: 11px;
+  color: #bcdeb8;
+  background: rgba(162, 246, 154, 0.1);
+  border: 1px solid rgba(162, 246, 154, 0.2);
+  border-radius: 5px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.adm-survey-detail {
+  background: #141414;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+.adm-survey-detail-title { font-size: 14px; font-weight: 600; color: #ddd; margin: 0 0 14px; }
+.adm-survey-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.adm-survey-detail-item { display: flex; flex-direction: column; gap: 3px; }
+.adm-survey-detail-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.04em; }
+.adm-survey-detail-value { font-size: 14px; color: #eee; }
+
 /* ── Chart ── */
 .adm-chart-section { margin-bottom: 32px; }
 .adm-chart-title { font-size: 15px; font-weight: 500; color: #aaa; margin: 0 0 16px; }
