@@ -82,6 +82,7 @@ Vercel serverless functions. Secrets live server-side: `RESEND_API_KEY` (Resend 
 - `send-welcome.js` — waitlist welcome email; auto-sends the iOS TestFlight beta invite when `platform === 'ios'`. **The email HTML is inlined in this file** — the `.html` files in `src/email-templates/` are only read by the dev middleware (see below), so prod copy changes must be made in `send-welcome.js` itself.
 - `get-email.js`, `list-inbox.js`, `list-templates.js` — Resend read endpoints used by the admin dashboard
 - `list-auth-users.js`, `delete-auth-user.js` — Firebase Auth admin operations (firebase-admin v13+ API), sharing the init helper in `_admin.js`
+- `cron-founder-call.js` — daily Vercel cron (`crons` in `vercel.json`, 09:00 UTC) that emails the founder-call invite ("book a Calendly call, get 3 months free") to users 30–37 days after signup. Dedups via the `founder_call_sends` Firestore collection (doc id = uid) and logs runs to `email_logs`. The email HTML lives in `_founder-call-email.js` and is duplicated in `AdminPage.jsx` `BUILTIN_TEMPLATES` — keep both in sync. Optionally guarded by a `CRON_SECRET` env var.
 
 **Dev/prod duplication gotcha:** `vite.config.js` contains an `apiDevPlugin` that re-implements every `/api/*` endpoint as dev-server middleware, so the admin dashboard works under plain `npm run dev` (no `vercel dev` needed). Any change to an `api/*.js` function must be mirrored in the corresponding middleware in `vite.config.js`, or dev and prod behavior will diverge.
 
