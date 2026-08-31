@@ -24,10 +24,12 @@ This is a **React + Vite SPA** for the **Final Table** poker manager app landing
 - `/about` → `AboutPage`
 - `/privacy`, `/terms` → legal pages
 - `/delete-account` → `DeleteAccountPage` (account-deletion request flow)
-- `/admin` → `AdminPage` (only route that skips the intro `Loader`)
+- `/admin` → `AdminPage`
 - `/hand/:shareId` → `HandViewer` (shared hand replay, reads `shared_hands` Firestore collection)
 
 Most routes are wrapped in `I18nProvider` and (for themed pages) `ThemeProvider`. `vercel.json` rewrites each of these specific paths (not a catch-all) to `/index.html` — **a new route must be added there too** or it 404s in production.
+
+`/reset_password` is **not** a React route: it's the standalone static page `public/reset_password.html` (vercel.json rewrites `/reset_password` to it). It's the Firebase Auth password-reset action page — reads `oobCode`/`apiKey` from the URL and calls the identitytoolkit REST API directly. Styled to match the mobile app (dark, IBM Plex Sans), not the landing page; `noindex`.
 
 ### Landing page (`src/LandingPage.jsx`)
 
@@ -68,7 +70,7 @@ Firebase is imported via the **npm package** (not CDN), config hardcoded in the 
 - `contact_submissions` — contact form entries
 - `shared_hands` — hand replay data written by the mobile app, read by `HandViewer`
 - `users` — the live app's user records; the admin dashboard reads these (synced with Firebase Auth)
-- Live-app data queried by the admin dashboard for user detail/deletion: `opponents`, `poker_sessions`, `session_results` (all keyed by `userId`)
+- Live-app data queried by the admin dashboard for user detail/deletion: `opponents`, `poker_sessions`, `session_results` (all keyed by `userId`). Logged hands live in the `poker_sessions/{id}/poker_hands` subcollection, with any AI analysis embedded on the hand doc as `aiAnalysis`.
 - Admin email tooling: `email_templates`, `email_logs`, `inbox_replies`, `inbox_status`
 
 Also exports admin auth: Google sign-in via Firebase Auth popup, gated by a hardcoded `ADMIN_EMAILS` allowlist.
@@ -90,7 +92,11 @@ Vercel serverless functions. Secrets live server-side: `RESEND_API_KEY` (Resend 
 
 ### Admin page (`src/AdminPage.jsx`)
 
-Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no password gate anymore). Tabs for waitlist users, nickname claims, contact submissions, shared hands, and live-app users (Firebase Auth list/delete via the `/api` endpoints). Supports CSV export and bulk email through the `/api/*` Resend endpoints (raw HTML or Resend template mode), including sending a blog post as an email to selected users.
+Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no password gate anymore). Tabs: Overview, Users, Statistics (onboarding-survey charts), Shared Hands, Inbox (Resend inbox; `api/list-inbox.js` filters out blocked sender domains), and Email. The old Waitlist and Nickname Claims sections were removed from the UI, though their Firestore helpers remain in `firebase.js`.
+
+- **Users tab** — live-app users (Firebase Auth list/delete via the `/api` endpoints) with onboarding survey results. The user detail view lists sessions, each expandable to its logged hands (`poker_hands` subcollection) with AI analysis.
+- **Share a hand via email** — each logged hand has a "Share via email" action; `buildHandEmailHtml` in `AdminPage.jsx` builds a branded replay email mirroring the in-app hand details. Anonymization is enforced there: players appear by table position only, the sharer as "Hero"; names/UIDs/free-text notes never appear. Money is formatted per game type (cash shows `$`, tournaments plain chip counts).
+- Supports CSV export and bulk email through the `/api/*` Resend endpoints (raw HTML or Resend template mode), including sending a blog post as an email to selected users.
 
 ### Animations & scroll
 
