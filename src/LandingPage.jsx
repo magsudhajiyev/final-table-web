@@ -3439,7 +3439,7 @@ export default function LandingPage() {
 
   return (
     <div className="tp-root">
-      <TPAnnouncement />
+      {/* <TPAnnouncement /> */}
       <TPNavbar />
       <div className="tp-page-body">
         <main>
