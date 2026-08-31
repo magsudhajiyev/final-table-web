@@ -643,9 +643,11 @@ function buildHandEmailHtml(hand, { note } = {}) {
     const sb = ai.streetBreakdown || {}
     const grades = STREET_ORDER.filter(st => sb[st]).map(st =>
       `<tr>
-        <td style="padding:8px 12px 8px 0;vertical-align:top;width:70px">
-          <span style="display:inline-block;text-transform:capitalize;font-size:13px;font-weight:600;color:#0c0c0e">${esc(st)}</span>
-          <span style="display:inline-block;margin-left:6px;min-width:20px;text-align:center;padding:1px 6px;border-radius:4px;font-weight:800;font-size:12px;color:#111;background:${GRADE_COLOR(sb[st].grade)}">${esc(sb[st].grade || '—')}</span>
+        <td style="padding:8px 8px 8px 0;vertical-align:top;white-space:nowrap;width:58px">
+          <span style="display:inline-block;text-transform:capitalize;font-size:13px;font-weight:600;line-height:20px;color:#0c0c0e">${esc(st)}</span>
+        </td>
+        <td style="padding:8px 12px 8px 0;vertical-align:top;width:28px">
+          <span style="display:inline-block;min-width:16px;text-align:center;padding:2px 6px;border-radius:5px;font-weight:800;font-size:12px;line-height:16px;color:#111;background:${GRADE_COLOR(sb[st].grade)}">${esc(sb[st].grade || '—')}</span>
         </td>
         <td style="padding:8px 0;font-size:13px;line-height:1.5;color:#444">${esc(sb[st].analysis || '')}</td>
       </tr>`
@@ -676,7 +678,7 @@ function buildHandEmailHtml(hand, { note } = {}) {
     <h1 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#0c0c0e">Hand #${esc(hand.handNumber ?? '?')}</h1>
     <p style="margin:4px 0 0;font-size:13px;color:#888">Position: ${esc(hand.heroPositionName || '?')}${gameLabel ? ` · ${esc(gameLabel)}` : ''}</p>
   </td></tr>
-  ${note ? `<tr><td style="padding:12px 48px 0" class="mp"><p style="margin:0;font-size:15px;line-height:1.6;color:#444">${esc(note)}</p></td></tr>` : ''}
+  ${note ? `<tr><td style="padding:12px 48px 0" class="mp"><p style="margin:0;font-size:15px;line-height:1.6;color:#444">${esc(note).replace(/\n/g, '<br>')}</p></td></tr>` : ''}
   <tr><td style="padding:18px 48px 0" class="mp">
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFBF9;border:1px solid #ECEEEC;border-radius:12px"><tr><td style="padding:16px 12px">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -753,7 +755,7 @@ function ShareHandModal({ hand, sessionName, onClose, onToast }) {
 
   return (
     <div className="adm-modal-overlay" onClick={onClose}>
-      <div className="adm-modal adm-modal-lg" onClick={e => e.stopPropagation()} style={{ maxWidth: 720 }}>
+      <div className="adm-modal adm-modal-lg" onClick={e => e.stopPropagation()} style={{ width: 860 }}>
         <h2 className="adm-modal-title">Share hand #{hand.handNumber ?? ''}</h2>
         <p style={{ margin: '0 0 16px', fontSize: 13, color: '#888' }}>
           Opponent names are hidden — recipients see only position names and “Hero”.
@@ -764,7 +766,7 @@ function ShareHandModal({ hand, sessionName, onClose, onToast }) {
             <input className="adm-modal-input" value={subject} onChange={e => setSubject(e.target.value)} />
           </label>
           <label className="adm-modal-label"><span>Note (optional)</span>
-            <textarea className="adm-modal-input adm-modal-textarea" rows={2} value={note}
+            <textarea className="adm-modal-input adm-modal-textarea" rows={4} value={note}
               onChange={e => setNote(e.target.value)} placeholder="A short intro shown at the top of the email" />
           </label>
         </div>
