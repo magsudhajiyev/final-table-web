@@ -194,5 +194,12 @@ service cloud.firestore {
     match /inbox_status/{docId} {
       allow read, write: if isSuperAdmin();
     }
+
+    // Daily active-user snapshots - written by the stats cron via the Admin
+    // SDK (bypasses rules); admin dashboard reads them for the DAU chart
+    match /daily_stats/{dayId} {
+      allow read: if isSuperAdmin();
+      allow write: if false;
+    }
   }
 }

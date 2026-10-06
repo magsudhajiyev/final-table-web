@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, setDoc, serverTimestamp, query, where, getDocs, doc, getDoc, orderBy, updateDoc, deleteDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, setDoc, serverTimestamp, query, where, getDocs, doc, getDoc, orderBy, updateDoc, deleteDoc, limit, getCountFromServer, Timestamp } from 'firebase/firestore'
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth'
 
 const firebaseConfig = {
@@ -282,6 +282,30 @@ export async function updateEmailTemplate(id, data) {
 }
 
 export async function deleteEmailTemplate(id) { await deleteDoc(doc(db, 'email_templates', id)) }
+
+// Active users — the mobile app heartbeats users/{uid}.lastActiveAt on app open
+// (throttled to ~once/hour). Counts use aggregate queries, so no docs are read.
+export async function getActiveUserCounts() {
+  const now = Date.now()
+  const dayMs = 24 * 60 * 60 * 1000
+  const countSince = async (ms) => {
+    const snap = await getCountFromServer(
+      query(collection(db, 'users'), where('lastActiveAt', '>=', Timestamp.fromMillis(ms)))
+    )
+    return snap.data().count
+  }
+  const [dau, wau, mau] = await Promise.all([
+    countSince(now - dayMs), countSince(now - 7 * dayMs), countSince(now - 30 * dayMs),
+  ])
+  return { dau, wau, mau }
+}
+
+// Daily DAU/WAU/MAU snapshots written by api/cron-daily-stats.js (doc id = YYYY-MM-DD).
+export async function getDailyStats(days = 30) {
+  const q = query(collection(db, 'daily_stats'), orderBy('date', 'desc'), limit(days))
+  const snap = await getDocs(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() })).reverse()
+}
 
 // Email logs
 export async function saveEmailLog(data) {

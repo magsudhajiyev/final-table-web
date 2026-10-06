@@ -6,6 +6,10 @@
     {
       "path": "/api/cron-founder-call",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron-daily-stats",
+      "schedule": "5 0 * * *"
     }
   ],
   "rewrites": [

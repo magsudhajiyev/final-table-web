@@ -4,6 +4,7 @@ import {
   getAppUsers, updateAppUser, deleteAppUser,
   getUserStats, getUserOpponents, getOpponentStats, getUserSessions, getUserSessionResults, getUserHands, getSessionHands,
   getSharedHands, deleteSharedHand,
+  getActiveUserCounts, getDailyStats,
   getEmailTemplates, saveEmailTemplate, updateEmailTemplate, deleteEmailTemplate,
   saveEmailLog, getEmailLogs,
   saveInboxReply, getInboxReplies,
@@ -342,7 +343,14 @@ function OverviewTab() {
   useEffect(() => {
     (async () => {
       try {
-        const [h, au] = await Promise.all([getSharedHands(), getAppUsers()])
+        const [h, au, active, daily] = await Promise.all([
+          getSharedHands(),
+          getAppUsers(),
+          // Zeros until the mobile app ships the lastActiveAt heartbeat.
+          getActiveUserCounts().catch(() => null),
+          // Super-admin-only collection; empty until the daily cron has run.
+          getDailyStats(30).catch(() => []),
+        ])
         const now = new Date()
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
         const weekStart = new Date(todayStart); weekStart.setDate(weekStart.getDate() - 7)
@@ -359,7 +367,13 @@ function OverviewTab() {
         }
         const maxCount = Math.max(...days.map(d => d.count), 1)
 
-        setStats({ users: au.length, hands: h.length, usersToday, usersWeek, days, maxCount })
+        const dauDays = daily.map(d => ({
+          label: new Date(`${d.date}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }),
+          count: d.dau || 0,
+        }))
+        const dauMax = Math.max(...dauDays.map(d => d.count), 1)
+
+        setStats({ users: au.length, hands: h.length, usersToday, usersWeek, days, maxCount, active, dauDays, dauMax })
       } catch (err) { console.error(err) }
       finally { setLoading(false) }
     })()
@@ -376,6 +390,9 @@ function OverviewTab() {
         <div className="adm-stat-card"><div className="adm-stat-value">{stats.hands}</div><div className="adm-stat-label">Shared Hands</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersToday}</div><div className="adm-stat-label">New users today</div></div>
         <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{stats.usersWeek}</div><div className="adm-stat-label">New users this week</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats.active ? stats.active.dau : '—'}</div><div className="adm-stat-label">Active last 24h (DAU)</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats.active ? stats.active.wau : '—'}</div><div className="adm-stat-label">Active last 7d (WAU)</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{stats.active ? stats.active.mau : '—'}</div><div className="adm-stat-label">Active last 30d (MAU)</div></div>
       </div>
       <div className="adm-chart-section">
         <h2 className="adm-chart-title">App user signups — last 30 days</h2>
@@ -387,6 +404,23 @@ function OverviewTab() {
             </div>
           ))}
         </div>
+      </div>
+      <div className="adm-chart-section">
+        <h2 className="adm-chart-title">Daily active users — last 30 days</h2>
+        {stats.dauDays.length === 0 ? (
+          <p style={{ margin: 0, fontSize: 13, color: '#888' }}>
+            No snapshots yet — the daily stats cron fills this in once the app starts reporting activity.
+          </p>
+        ) : (
+          <div className="adm-chart">
+            {stats.dauDays.map((d, i) => (
+              <div key={i} className="adm-chart-col" title={`${d.label}: ${d.count}`}>
+                <div className="adm-chart-bar" style={{ height: `${(d.count / stats.dauMax) * 100}%` }} />
+                {i % 5 === 0 && <span className="adm-chart-label">{d.label}</span>}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   )
@@ -550,11 +584,50 @@ const STREET_ORDER = ['preflop', 'flop', 'turn', 'river']
 
 // Map a player (by action or seat) to an anonymous label — "Hero" for the
 // current user, otherwise their table position (never a name).
-function anonPlayerLabel(action) {
+function anonPlayerLabel(action, posMap) {
   if (action.isCurrentUser) return 'Hero'
+  const corrected = posMap?.get(Number(action.player))
+  if (corrected) return corrected
   if (action.playerPosition) return action.playerPosition
   if (action.player != null) return `Seat ${action.player}`
   return 'Opponent'
+}
+
+// The mobile app sometimes stamps per-action playerPosition labels computed
+// from a stale button seat (seen live: button on seat 1 makes seat 4 UTG, but
+// the actions labeled seat 4 "BB" — everything shifted one seat). The seat
+// geometry it records (buttonPosition + acting seats + hand.heroPositionName)
+// is reliable, so rebuild seat → position from it. Returns null — meaning
+// "keep the recorded labels" — unless the rebuilt map reproduces the
+// hand-level heroPositionName exactly, so hands using a different naming
+// convention are never made worse.
+function correctedPositionMap(hand) {
+  const actions = Array.isArray(hand.actions) ? hand.actions : []
+  const btn = Number(actions.find(a => a.buttonPosition != null)?.buttonPosition ?? hand.buttonPosition)
+  const heroSeat = Number(hand.heroSeatNumber)
+  if (!Number.isFinite(btn) || !Number.isFinite(heroSeat)) return null
+  const seats = [...new Set(actions.map(a => Number(a.player)).filter(Number.isFinite))]
+  if (seats.length < 3 || !seats.includes(heroSeat)) return null
+
+  // Clockwise distance from the button; the ring wraps at the highest seat in play.
+  const ring = Math.max(...seats, btn, Number(hand.playerCount) || 0)
+  const offset = (s) => (s - btn + ring) % ring
+  const ordered = seats.slice().sort((a, b) => offset(a) - offset(b))
+
+  const map = new Map()
+  let rest = ordered
+  if (ordered[0] === btn) { map.set(btn, 'BTN'); rest = ordered.slice(1) }
+  if (rest.length < 2) return null
+  map.set(rest[0], 'SB')
+  map.set(rest[1], 'BB')
+  const early = rest.slice(2)
+  early.forEach((seat, i) => map.set(seat, i === 0 ? 'UTG' : `UTG+${i}`))
+  if (early.length >= 3) {
+    map.set(early[early.length - 1], 'CO')
+    map.set(early[early.length - 2], 'HJ')
+  }
+
+  return map.get(heroSeat) === hand.heroPositionName ? map : null
 }
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
@@ -586,14 +659,16 @@ function buildHandEmailHtml(hand, { note } = {}) {
   const flop = Array.isArray(b.flop) ? b.flop : []
   const streetBoard = { preflop: [], flop, turn: b.turn ? [b.turn] : [], river: b.river ? [b.river] : [] }
 
-  // Group actions by street. Winner position is resolved anonymously.
+  // Group actions by street. Winner position is resolved anonymously, using
+  // geometry-corrected labels when the recorded ones are unreliable.
+  const posMap = correctedPositionMap(hand)
   const byStreet = { preflop: [], flop: [], turn: [], river: [] }
   let winnerPos = null
   for (const a of (Array.isArray(hand.actions) ? hand.actions : [])) {
     const street = STREET_ORDER.includes(a.street) ? a.street : 'preflop'
     byStreet[street].push(a)
     if (hand.winnerId != null && Number(a.player) === Number(hand.winnerId)) {
-      winnerPos = a.isCurrentUser ? 'Hero' : (a.playerPosition || null)
+      winnerPos = a.isCurrentUser ? 'Hero' : (posMap?.get(Number(a.player)) || a.playerPosition || null)
     }
   }
   if (winnerPos == null && hand.winnerId != null && Number(hand.winnerId) === heroSeat) winnerPos = 'Hero'
@@ -610,7 +685,7 @@ function buildHandEmailHtml(hand, { note } = {}) {
   const streetSections = STREET_ORDER.filter(st => byStreet[st].length).map(st => {
     const rows = byStreet[st].map(a => {
       const hero = !!a.isCurrentUser
-      const who = anonPlayerLabel(a)
+      const who = anonPlayerLabel(a, posMap)
       const stack = a.playerStack != null ? fmtChips(a.playerStack, gt) : '—'
       const amt = a.amount != null ? fmtChips(a.amount, gt) : '—'
       const isWinner = winnerPos && (hero ? winnerPos === 'Hero' : who === winnerPos)
@@ -1472,8 +1547,8 @@ const BUILTIN_TEMPLATES = [
     // Screenshot served from public/email/leak-detector.png — deploy before sending.
     id: '__leak_detector__',
     name: 'Leak Detector Announcement',
-    subject: 'New in Final Table: Leak Detector finds what your game is losing to',
-    body: `<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><title>Meet Leak Detector</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]--><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none}body{margin:0;padding:0;width:100%!important;height:100%!important}a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}@media only screen and (max-width:620px){.email-container{width:100%!important;max-width:100%!important}.mobile-padding{padding-left:24px!important;padding-right:24px!important}}</style></head><body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif"><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all">Leak Detector is here — it reads your hands, spots the habits costing you money, and tells you how to fix them.</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" align="center" class="email-container" style="max-width:680px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)"><tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr><tr><td style="padding:40px 48px 24px" class="mobile-padding"><img src="https://finaltable.io/logo.png" alt="Final Table" width="90" style="display:block;width:90px;height:auto"></td></tr><tr><td style="padding:0 48px 16px" class="mobile-padding"><h1 style="margin:0;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:30px;font-weight:700;line-height:1.2;color:#000000;letter-spacing:-0.01em">Every game has leaks.<br>Yours can now find them.</h1></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Hey! We just shipped something we're really excited about: <strong style="color:#000">Leak Detector</strong>.</p><p style="margin:0">It goes through the hands you've logged, compares your numbers against healthy ranges, and tells you — in plain English — which habits are quietly costing you money. Not a wall of stats. An actual read on your game.</p></td></tr><tr><td style="padding:0 48px 28px;text-align:center" class="mobile-padding"><img src="https://finaltable.io/email/leak-detector.png" alt="Leak Detector screen showing a coach's read, detected leaks with healthy ranges, and solid stats" width="320" style="display:inline-block;width:320px;max-width:100%;height:auto;border-radius:16px;border:1px solid #E5E7EB"></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">What it does</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#4B5563" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Coach's read</strong>: One clear takeaway about your biggest improvement area — "this is one fixable habit, not a broken game"</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Detected leaks</strong>: Each stat measured against healthy ranges — like folding to 3-bets 16% when healthy is 35&ndash;68%</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">What's already solid</strong>: It also shows where your game is healthy, so you don't "fix" what isn't broken</td></tr></table></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">One thing it needs: your hands</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Leak Detector runs entirely on the hands you log — each check unlocks once you've logged enough of them, and the more you log, the sharper the read gets.</p><p style="margin:0">So here's our friendly nudge: bring Final Table to your next session and log your hands as you play. A few sessions is all it takes to watch the checks unlock one by one.</p></td></tr><tr><td style="padding:0 48px 32px" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="border-radius:12px;background-color:#A2F69A"><a href="https://finaltable.io" target="_blank" style="display:inline-block;padding:14px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#000000;text-decoration:none;border-radius:12px;letter-spacing:-0.01em">Start Logging Hands &rarr;</a></td></tr></table></td></tr><tr><td style="padding:0 48px 8px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Tried it already? Hit reply and tell us what it found — we read every message.</p></td></tr><tr><td style="padding:8px 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Good luck out there,<br><strong style="color:#000">Magsud &amp; Tural</strong></p></td></tr><tr><td style="background-color:#FAFAFA;padding:28px 48px;border-top:1px solid #E5E7EB" class="mobile-padding"><p style="margin:0 0 6px;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;color:#999;font-style:italic;line-height:1.4">Log a hand in three gestures.<br>Not three minutes.</p><p style="margin:16px 0 0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;color:#999;line-height:1.6">&copy; 2026 Final Table &middot; <a href="https://finaltable.io" style="color:#999;text-decoration:underline">finaltable.io</a><br>Questions? <a href="mailto:contact@finaltable.io" style="color:#999;text-decoration:underline">contact@finaltable.io</a></p></td></tr></table></td></tr></table></body></html>`,
+    subject: 'Coming soon to Final Table: Leak Detector — get your hands ready',
+    body: `<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><title>Meet Leak Detector</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]--><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none}body{margin:0;padding:0;width:100%!important;height:100%!important}a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}@media only screen and (max-width:620px){.email-container{width:100%!important;max-width:100%!important}.mobile-padding{padding-left:24px!important;padding-right:24px!important}}</style></head><body style="margin:0;padding:0;background-color:#F6F8F6;font-family:'Inter',Arial,Helvetica,sans-serif"><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all">Leak Detector is coming — start logging hands now so it can read your game on day one.</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F6F8F6"><tr><td style="padding:40px 16px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" align="center" class="email-container" style="max-width:680px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)"><tr><td style="background:linear-gradient(90deg,#A2F69A,#E0FF96);height:4px;font-size:0;line-height:0">&nbsp;</td></tr><tr><td style="padding:40px 48px 24px" class="mobile-padding"><img src="https://finaltable.io/logo.png" alt="Final Table" width="90" style="display:block;width:90px;height:auto"></td></tr><tr><td style="padding:0 48px 16px" class="mobile-padding"><h1 style="margin:0;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:30px;font-weight:700;line-height:1.2;color:#000000;letter-spacing:-0.01em">Every game has leaks.<br>Yours is about to find them.</h1></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Hey! We're building something we're really excited about: <strong style="color:#000">Leak Detector</strong>. Here's a sneak peek.</p><p style="margin:0">It will go through the hands you've logged, compare your numbers against healthy ranges, and tell you — in plain English — which habits are quietly costing you money. Not a wall of stats. An actual read on your game.</p></td></tr><tr><td style="padding:0 48px 28px;text-align:center" class="mobile-padding"><img src="https://finaltable.io/email/leak-detector.png" alt="Leak Detector screen showing a coach's read, detected leaks with healthy ranges, and solid stats" width="320" style="display:inline-block;width:320px;max-width:100%;height:auto;border-radius:16px;border:1px solid #E5E7EB"></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">What it will do</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#4B5563" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Coach's read</strong>: One clear takeaway about your biggest improvement area — "this is one fixable habit, not a broken game"</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">Detected leaks</strong>: Each stat measured against healthy ranges — like folding to 3-bets 16% when healthy is 35&ndash;68%</td></tr><tr><td style="padding:10px 0;vertical-align:top;width:28px"><span style="display:inline-block;width:20px;height:20px;background-color:#A2F69A;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#000">&#10003;</span></td><td style="padding:10px 0 10px 8px;vertical-align:top;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4B5563"><strong style="color:#000">What's already solid</strong>: It also shows where your game is healthy, so you don't "fix" what isn't broken</td></tr></table></td></tr><tr><td style="padding:0 48px" class="mobile-padding"><div style="border-top:1px solid #E5E7EB;margin:0"></div></td></tr><tr><td style="padding:24px 48px 8px" class="mobile-padding"><p style="margin:0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#000000;text-transform:uppercase;letter-spacing:0.06em">One thing it needs: your hands</p></td></tr><tr><td style="padding:0 48px 24px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0 0 16px">Leak Detector will run entirely on the hands you log — and it can only read hands that exist. Each check unlocks once you've logged enough of them, and the more you log, the sharper the read gets.</p><p style="margin:0">So here's our friendly nudge: start bringing Final Table to your sessions and log your hands as you play. By the time Leak Detector launches, your data will already be there — and instead of starting from zero, you'll open it to a full read on your game from day one.</p></td></tr><tr><td style="padding:0 48px 32px" class="mobile-padding"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="border-radius:12px;background-color:#A2F69A"><a href="https://finaltable.io" target="_blank" style="display:inline-block;padding:14px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#000000;text-decoration:none;border-radius:12px;letter-spacing:-0.01em">Start Logging Hands &rarr;</a></td></tr></table></td></tr><tr><td style="padding:0 48px 8px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Have ideas about what it should catch? Hit reply and tell us — we read every message.</p></td></tr><tr><td style="padding:8px 48px 32px;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#4B5563" class="mobile-padding"><p style="margin:0">Good luck out there,<br><strong style="color:#000">Magsud &amp; Tural</strong></p></td></tr><tr><td style="background-color:#FAFAFA;padding:28px 48px;border-top:1px solid #E5E7EB" class="mobile-padding"><p style="margin:0 0 6px;font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;color:#999;font-style:italic;line-height:1.4">Log a hand in three gestures.<br>Not three minutes.</p><p style="margin:16px 0 0;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;color:#999;line-height:1.6">&copy; 2026 Final Table &middot; <a href="https://finaltable.io" style="color:#999;text-decoration:underline">finaltable.io</a><br>Questions? <a href="mailto:contact@finaltable.io" style="color:#999;text-decoration:underline">contact@finaltable.io</a></p></td></tr></table></td></tr></table></body></html>`,
     builtin: true,
   },
   {

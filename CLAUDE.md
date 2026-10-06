@@ -33,7 +33,7 @@ Most routes are wrapped in `I18nProvider` and (for themed pages) `ThemeProvider`
 
 ### Landing page (`src/LandingPage.jsx`)
 
-This is a ~3400-line monolithic file. All section components are defined inline here with a `TP` prefix. Render order: `TPAnnouncement → TPNavbar → TPHero → TPHowItWorks → TPNotHud → TPBuckleUp → TPBuiltForLive → TPBlogTeaser → TPDiscord → TPBottomHero → TPFooter`. Several other `TP` components exist in the file but are **not rendered** (`TPComparison`, `TPBgSection`, `TPCommunity`, `TPBottomCTA`, `TPProblems`, `TPFeaturesShowcase`, `TPFinalCTA`) — dead sections kept around. `TPNavbar`, `TPFooter`, and `TPBottomHero` are exported and reused by the blog pages. The `LandingPage` default export owns Lenis smooth scroll (skipped on touch devices) and exposes it on `window.__lenis`.
+This is a ~3400-line monolithic file. All section components are defined inline here with a `TP` prefix. Render order: `TPNavbar → TPHero → TPHowItWorks → TPNotHud → TPBuckleUp → TPBuiltForLive → TPBlogTeaser → TPDiscord → TPBottomHero → TPFooter` (`TPAnnouncement` is currently commented out at the top). Several other `TP` components exist in the file but are **not rendered** (`TPComparison`, `TPBgSection`, `TPCommunity`, `TPBottomCTA`, `TPProblems`, `TPFeaturesShowcase`, `TPFinalCTA`) — dead sections kept around. `TPNavbar`, `TPFooter`, and `TPBottomHero` are exported and reused by the blog pages. The `LandingPage` default export owns Lenis smooth scroll (skipped on touch devices) and exposes it on `window.__lenis`.
 
 > **Note:** `src/App.jsx` and `src/components/` (Navbar, Hero, etc.) are not imported by any active route — they are unused legacy code.
 
@@ -51,7 +51,7 @@ Publishing a post = dropping a Markdown file with frontmatter into `content/blog
 
 ### i18n (`src/i18n.jsx`)
 
-All user-facing text lives here. **Always add/update translations for all 9 languages when changing any copy:** `de`, `en`, `es`, `fr`, `pl`, `pt`, `ru`, `tr`, `uk`. (Blog post bodies are the exception — they are English-only Markdown.)
+All user-facing text lives here. **Always add/update translations for all 11 languages when changing any copy:** `de`, `en`, `es`, `fr`, `pl`, `pt`, `ro`, `ru`, `sk`, `tr`, `uk`. (Blog post bodies are the exception — they are English-only Markdown.)
 
 - `I18nProvider` detects locale from `localStorage` (`ft_lang`) or `navigator.language`
 - `useT()` hook returns a translation function `t(key, params?)`
@@ -72,8 +72,9 @@ Firebase is imported via the **npm package** (not CDN), config hardcoded in the 
 - `users` — the live app's user records; the admin dashboard reads these (synced with Firebase Auth)
 - Live-app data queried by the admin dashboard for user detail/deletion: `opponents`, `poker_sessions`, `session_results` (all keyed by `userId`). Logged hands live in the `poker_sessions/{id}/poker_hands` subcollection, with any AI analysis embedded on the hand doc as `aiAnalysis`.
 - Admin email tooling: `email_templates`, `email_logs`, `inbox_replies`, `inbox_status`
+- `daily_stats` — one doc per UTC day (`YYYY-MM-DD`) with `dau`/`wau`/`mau`/`totalUsers`, written by `api/cron-daily-stats.js`; activity is derived from `users/{uid}.lastActiveAt`, a heartbeat the mobile app writes on app open
 
-Also exports admin auth: Google sign-in via Firebase Auth popup, gated by a hardcoded `ADMIN_EMAILS` allowlist.
+Also exports admin auth: Google sign-in via Firebase Auth popup, gated by a hardcoded `ADMIN_EMAILS` allowlist. Note the **two-tier gating**: `ADMIN_EMAILS` only gates the admin UI, while `firestore.rules` grants data access via `isSuperAdmin()`, which checks the single `SUPER_ADMIN_EMAIL` — a non-super admin can sign in but will get permission errors on super-admin-only collections (most admin tooling and `daily_stats`).
 
 ### Serverless API (`api/`)
 
@@ -82,9 +83,10 @@ Vercel serverless functions. Secrets live server-side: `RESEND_API_KEY` (Resend 
 - `send-welcome.js` — waitlist welcome email; auto-sends the iOS TestFlight beta invite when `platform === 'ios'`. **The email HTML is inlined in this file** — the `.html` files in `src/email-templates/` are only read by the dev middleware (see below), so prod copy changes must be made in `send-welcome.js` itself.
 - `get-email.js`, `list-inbox.js`, `list-templates.js` — Resend read endpoints used by the admin dashboard
 - `list-auth-users.js`, `delete-auth-user.js` — Firebase Auth admin operations (firebase-admin v13+ API), sharing the init helper in `_admin.js`
+- `cron-daily-stats.js` — daily Vercel cron (00:05 UTC) that snapshots DAU/WAU/MAU counts (aggregate queries over `users.lastActiveAt`) into `daily_stats/{YYYY-MM-DD}`; feeds the Overview tab's active-user cards and DAU trend chart
 - `cron-founder-call.js` — daily Vercel cron (`crons` in `vercel.json`, 09:00 UTC) that emails the founder-call invite ("book a Calendly call, get 3 months free") to users 30–37 days after signup. Dedups via the `founder_call_sends` Firestore collection (doc id = uid) and logs runs to `email_logs`. The email HTML lives in `_founder-call-email.js` and is duplicated in `AdminPage.jsx` `BUILTIN_TEMPLATES` — keep both in sync. Optionally guarded by a `CRON_SECRET` env var.
 
-**Dev/prod duplication gotcha:** `vite.config.js` contains an `apiDevPlugin` that re-implements every `/api/*` endpoint as dev-server middleware, so the admin dashboard works under plain `npm run dev` (no `vercel dev` needed). Any change to an `api/*.js` function must be mirrored in the corresponding middleware in `vite.config.js`, or dev and prod behavior will diverge.
+**Dev/prod duplication gotcha:** `vite.config.js` contains an `apiDevPlugin` that re-implements the admin-facing `/api/*` endpoints as dev-server middleware, so the admin dashboard works under plain `npm run dev` (no `vercel dev` needed). Any change to an `api/*.js` function must be mirrored in the corresponding middleware in `vite.config.js`, or dev and prod behavior will diverge. The two `cron-*` endpoints are the exception — they are **not** mirrored in dev and only run in prod via Vercel crons.
 
 ### Analytics (DataFast)
 
@@ -95,9 +97,11 @@ Vercel serverless functions. Secrets live server-side: `RESEND_API_KEY` (Resend 
 
 Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no password gate anymore). Tabs: Overview, Users, Statistics (onboarding-survey charts), Shared Hands, Inbox (Resend inbox; `api/list-inbox.js` filters out blocked sender domains), and Email. The old Waitlist and Nickname Claims sections were removed from the UI, though their Firestore helpers remain in `firebase.js`.
 
+- **Overview tab** — signup and shared-hand counts, plus active users: the DAU/WAU/MAU cards are computed live via Firestore aggregate count queries over `users.lastActiveAt` (`getActiveUserCounts`), while the DAU trend chart reads the `daily_stats` cron snapshots (`getDailyStats`). Both degrade gracefully (— / empty state) until the mobile app ships the heartbeat and the cron has run.
 - **Users tab** — live-app users (Firebase Auth list/delete via the `/api` endpoints) with onboarding survey results. The user detail view lists sessions, each expandable to its logged hands (`poker_hands` subcollection) with AI analysis.
-- **Share a hand via email** — each logged hand has a "Share via email" action; `buildHandEmailHtml` in `AdminPage.jsx` builds a branded replay email mirroring the in-app hand details. Anonymization is enforced there: players appear by table position only, the sharer as "Hero"; names/UIDs/free-text notes never appear. Money is formatted per game type (cash shows `$`, tournaments plain chip counts).
+- **Share a hand via email** — each logged hand has a "Share via email" action; `buildHandEmailHtml` in `AdminPage.jsx` builds a branded replay email mirroring the in-app hand details. Anonymization is enforced there: players appear by table position only, the sharer as "Hero"; names/UIDs/free-text notes never appear. Money is formatted per game type (cash shows `$`, tournaments plain chip counts). The mobile app sometimes records per-action `playerPosition` labels shifted by a stale button seat; `correctedPositionMap` rebuilds seat → position from the hand's seat geometry and is used only when it reproduces `heroPositionName` exactly, otherwise the recorded labels are kept.
 - Supports CSV export and bulk email through the `/api/*` Resend endpoints (raw HTML or Resend template mode), including sending a blog post as an email to selected users.
+- **`BUILTIN_TEMPLATES`** — hardcoded announcement emails in `AdminPage.jsx` (founder-call invite, Leak Detector announcement) selectable in the Email tab alongside Resend templates. Images they reference are served from `public/email/` on finaltable.io, so new images must be deployed before the email is sent.
 
 ### Animations & scroll
 
@@ -121,4 +125,4 @@ Google sign-in gate (`ADMIN_EMAILS` allowlist in `firebase.js` — there is no p
 
 - **Never push to remote without explicit user approval.**
 - **Never commit unless explicitly asked.**
-- **Translate every added text** into all 9 languages in `src/i18n.jsx` whenever user-facing copy is added or changed.
+- **Translate every added text** into all 11 languages in `src/i18n.jsx` whenever user-facing copy is added or changed.
