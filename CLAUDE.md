@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run dev      # Start Vite dev server (usually http://localhost:5173)
-npm run build    # prebuild (sitemap + OG image) → Vite build → dist/
+npm run build    # prebuild (sitemap + OG image) → Vite build → scripts/prerender.mjs → dist/
 npm run preview  # Serve the dist/ build locally
 ```
 
@@ -27,7 +27,9 @@ This is a **React + Vite SPA** for the **Final Table** poker manager app landing
 - `/admin` → `AdminPage`
 - `/hand/:shareId` → `HandViewer` (shared hand replay, reads `shared_hands` Firestore collection)
 
-Most routes are wrapped in `I18nProvider` and (for themed pages) `ThemeProvider`. `vercel.json` rewrites each of these specific paths (not a catch-all) to `/index.html` — **a new route must be added there too** or it 404s in production.
+Most routes are wrapped in `I18nProvider` and (for themed pages) `ThemeProvider`. `vercel.json` rewrites each of these specific paths (not a catch-all) — **a new route must be added there too** or it 404s in production.
+
+**Prerendering (`scripts/prerender.mjs`, runs after `vite build`):** the SPA used to serve one identical shell for every route, so crawlers and link-preview bots that don't run JS saw the homepage's title/canonical and an empty `#root`. The script now bakes real HTML per route into `dist/`: `dist/index.html` (homepage), `dist/prerendered/{about,blog,privacy,terms}.html`, `dist/prerendered/blog/<slug>.html` (one per post), plus `dist/prerendered/shell.html` — the untouched SPA shell used for `/hand/*`, `/admin` and `/delete-account`. Each page gets its own title, description, canonical, OG/Twitter tags (and Article JSON-LD for posts) and a plain-HTML copy of its content inside `#root` (visually hidden for JS users, shown with JS disabled; React replaces it on mount). `vercel.json` rewrites point at these files. When you add a **static, indexable route**, add it to `pages` in `prerender.mjs` and to the rewrites; when you add a **blog post**, nothing to do (picked up from `content/blog/`). The homepage's crawler-readable feature list in `homeBody()` is English-only and drawn from the marketing master doc's verified facts — keep it in sync with `public/llms.txt` and the visible page. The generated HTML is build output only; never commit it.
 
 `/reset_password` is **not** a React route: it's the standalone static page `public/reset_password.html` (vercel.json rewrites `/reset_password` to it). It's the Firebase Auth password-reset action page — reads `oobCode`/`apiKey` from the URL and calls the identitytoolkit REST API directly. Styled to match the mobile app (dark, IBM Plex Sans), not the landing page; `noindex`.
 

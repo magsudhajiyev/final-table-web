@@ -19,35 +19,35 @@
     },
     {
       "source": "/hand/:shareId",
-      "destination": "/index.html"
+      "destination": "/prerendered/shell.html"
     },
     {
       "source": "/blog",
-      "destination": "/index.html"
+      "destination": "/prerendered/blog.html"
     },
     {
       "source": "/blog/:slug",
-      "destination": "/index.html"
+      "destination": "/prerendered/blog/:slug.html"
     },
     {
       "source": "/about",
-      "destination": "/index.html"
+      "destination": "/prerendered/about.html"
     },
     {
       "source": "/privacy",
-      "destination": "/index.html"
+      "destination": "/prerendered/privacy.html"
     },
     {
       "source": "/terms",
-      "destination": "/index.html"
+      "destination": "/prerendered/terms.html"
     },
     {
       "source": "/delete-account",
-      "destination": "/index.html"
+      "destination": "/prerendered/shell.html"
     },
     {
       "source": "/admin",
-      "destination": "/index.html"
+      "destination": "/prerendered/shell.html"
     }
   ],
   "headers": [
