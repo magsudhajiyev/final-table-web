@@ -2704,6 +2704,169 @@ function StatisticsTab() {
 }
 
 /* ══════════════════════════════════════════════
+   NOTIFICATIONS TAB — engagement push pipeline
+   ══════════════════════════════════════════════ */
+
+const NOTIF_TYPE_LABELS = {
+  dc_streak_risk: 'Streak saver',
+  dc_today_ready: "Today's challenge",
+  lb_overtaken: 'Overtaken',
+  lb_milestone: 'Milestone',
+  re_engage: 'Comeback',
+}
+const NOTIF_COACH_LABELS = { grinder: 'Duke', professor: 'Prof. Vega', nova: 'Nova', neutral: 'Neutral' }
+
+function notifStatus(r, now) {
+  if (r.cancelled) return { label: 'Cancelled', color: '#777' }
+  if (r.sentAt && r.sentAt > now) return { label: 'Queued', color: '#c98500' }
+  if (r.converted) return { label: 'Converted', color: '#A2F69A' }
+  if (r.playedAt) return { label: 'Played late', color: '#199e70' }
+  if (r.openedAt) return { label: 'Opened', color: '#3987e5' }
+  return { label: 'Sent', color: '#9085e9' }
+}
+
+function fmtDelta(fromMs, toMs) {
+  if (!fromMs || !toMs) return '—'
+  const mins = Math.max(0, Math.round((toMs - fromMs) / 60000))
+  if (mins < 60) return `+${mins}m`
+  return `+${Math.floor(mins / 60)}h${String(mins % 60).padStart(2, '0')}m`
+}
+
+function fmtWhen(ms) {
+  if (!ms) return '—'
+  const d = new Date(ms)
+  return `${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ${d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`
+}
+
+function NotificationsTab() {
+  const [rows, setRows] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [typeFilter, setTypeFilter] = useState('')
+  const [search, setSearch] = useState('')
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/notification-events?limit=500')
+      if (!res.ok) throw new Error((await res.json()).error || `HTTP ${res.status}`)
+      setRows((await res.json()).rows || [])
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+  useEffect(() => { fetchData() }, [fetchData])
+
+  const now = Date.now()
+
+  const filtered = useMemo(() => rows.filter(r =>
+    (!typeFilter || r.type === typeFilter) &&
+    (!search || (r.username || '').toLowerCase().includes(search.toLowerCase()) || (r.uid || '').includes(search))
+  ), [rows, typeFilter, search])
+
+  // Rates are over DELIVERED pushes only — queued and cancelled rows are
+  // not opportunities, counting them would flatter/penalize nothing real.
+  const delivered = useMemo(() => filtered.filter(r => !r.cancelled && r.sentAt && r.sentAt <= now), [filtered, now])
+  const opened = delivered.filter(r => r.openedAt)
+  const converted = delivered.filter(r => r.converted)
+  const pct = (n, d) => (d > 0 ? Math.round((n / d) * 100) : 0)
+  const medianOpenMins = useMemo(() => {
+    const deltas = opened.map(r => (r.openedAt - r.sentAt) / 60000).filter(m => m >= 0).sort((a, b) => a - b)
+    return deltas.length ? Math.round(deltas[Math.floor(deltas.length / 2)]) : null
+  }, [opened])
+
+  const tallyBy = (key, labels) => {
+    const counts = {}
+    for (const r of delivered) counts[r[key]] = (counts[r[key]] || 0) + 1
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([value, count]) => ({ value, label: labels[value] || value, count }))
+  }
+  const byType = useMemo(() => tallyBy('type', NOTIF_TYPE_LABELS), [delivered])
+  const byCoach = useMemo(() => tallyBy('coach', NOTIF_COACH_LABELS), [delivered])
+
+  return (
+    <>
+      <div className="adm-header">
+        <h1 className="adm-page-title">Notifications</h1>
+        <div className="adm-header-right">
+          <button className="adm-refresh-btn" onClick={fetchData} disabled={loading}>{loading ? 'Loading...' : 'Refresh'}</button>
+        </div>
+      </div>
+      <p className="adm-stats-intro">The engagement push pipeline: every scheduled notification and what the user did after it (open → play → converted within 2h).</p>
+
+      <div className="adm-stats-grid" style={{ marginBottom: 28 }}>
+        <div className="adm-stat-card"><div className="adm-stat-value">{delivered.length}</div><div className="adm-stat-label">Delivered</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{opened.length}</div><div className="adm-stat-label">Opened</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{converted.length}</div><div className="adm-stat-label">Converted (2h)</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{pct(opened.length, delivered.length)}%</div><div className="adm-stat-label">Open rate</div></div>
+        <div className="adm-stat-card adm-stat-highlight"><div className="adm-stat-value">{pct(converted.length, delivered.length)}%</div><div className="adm-stat-label">Convert rate</div></div>
+        <div className="adm-stat-card"><div className="adm-stat-value">{medianOpenMins ?? '—'}{medianOpenMins != null ? 'm' : ''}</div><div className="adm-stat-label">Median time to open</div></div>
+      </div>
+
+      {error && <div className="adm-empty" style={{ padding: 20, color: '#e66767' }}>Failed to load: {error}</div>}
+
+      {loading ? (
+        <div className="adm-loading">Loading notification events...</div>
+      ) : rows.length === 0 ? (
+        <div className="adm-empty" style={{ padding: 40 }}>No notification events yet. They appear once users with the engagement flag complete a Daily Challenge and a streak-saver gets scheduled.</div>
+      ) : (
+        <>
+          {delivered.length > 0 && (
+            <div className="adm-pie-grid" style={{ marginBottom: 18 }}>
+              <PieChart title="Delivered by type" rows={byType} />
+              <PieChart title="Delivered by coach" rows={byCoach} />
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
+            <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
+              style={{ background: '#141414', color: '#fff', border: '1px solid #1e1e1e', borderRadius: 8, padding: '8px 10px' }}>
+              <option value="">All types</option>
+              {Object.entries(NOTIF_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            </select>
+            <input placeholder="Search username / uid" value={search} onChange={e => setSearch(e.target.value)}
+              style={{ background: '#141414', color: '#fff', border: '1px solid #1e1e1e', borderRadius: 8, padding: '8px 10px', flex: 1, maxWidth: 280 }} />
+            <span style={{ color: '#777', fontSize: 13 }}>{filtered.length} events</span>
+          </div>
+
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Sent</th><th>User</th><th>Type</th><th>Coach</th>
+                  <th>Opened</th><th>Played</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(r => {
+                  const s = notifStatus(r, now)
+                  return (
+                    <tr key={r.id}>
+                      <td>{fmtWhen(r.sentAt)}</td>
+                      <td>{r.username || (r.uid ? `${r.uid.slice(0, 8)}…` : '—')}</td>
+                      <td>{NOTIF_TYPE_LABELS[r.type] || r.type}</td>
+                      <td>{NOTIF_COACH_LABELS[r.coach] || r.coach}</td>
+                      <td>{r.openedAt ? `${fmtWhen(r.openedAt)} (${fmtDelta(r.sentAt, r.openedAt)})` : '—'}</td>
+                      <td>{r.playedAt ? `${fmtWhen(r.playedAt)} (${fmtDelta(r.sentAt, r.playedAt)})` : '—'}</td>
+                      <td><span style={{ color: s.color, border: `1px solid ${s.color}44`, borderRadius: 6, padding: '2px 8px', fontSize: 12 }}>{s.label}</span></td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </>
+  )
+}
+
+/* ══════════════════════════════════════════════
    DASHBOARD SHELL
    ══════════════════════════════════════════════ */
 
@@ -2758,6 +2921,7 @@ function Dashboard() {
     { id: 'overview', label: 'Overview' },
     { id: 'users', label: 'Users' },
     { id: 'statistics', label: 'Statistics' },
+    { id: 'notifications', label: 'Notifications' },
     { id: 'hands', label: 'Shared Hands' },
     { id: 'inbox', label: 'Inbox', badge: inboxCount || null },
     { id: 'email', label: 'Email' },
@@ -2792,6 +2956,7 @@ function Dashboard() {
         {activeTab === 'overview' && <OverviewTab />}
         {activeTab === 'users' && <AppUsersTab onToast={showToast} />}
         {activeTab === 'statistics' && <StatisticsTab />}
+        {activeTab === 'notifications' && <NotificationsTab />}
         {activeTab === 'hands' && <SharedHandsTab />}
         {activeTab === 'inbox' && <InboxTab onToast={showToast} onMarkRead={() => setInboxCount(prev => Math.max(0, prev - 1))} />}
         {activeTab === 'email' && <EmailTab onToast={showToast} />}

@@ -21,10 +21,90 @@ async function getFirebaseAuth() {
   return adminAuth
 }
 
+let adminDb = null
+async function getFirebaseDb() {
+  if (adminDb) return adminDb
+  const admin = await import('firebase-admin')
+  if (admin.getApps().length === 0) {
+    const env = loadEnv('', process.cwd(), '')
+    const serviceAccount = env.FIREBASE_SERVICE_ACCOUNT_KEY
+    if (serviceAccount) {
+      admin.initializeApp({ credential: admin.cert(JSON.parse(serviceAccount)) })
+    } else {
+      admin.initializeApp({ projectId: 'poker-tracker-52df8' })
+    }
+  }
+  const { getFirestore } = await import('firebase-admin/firestore')
+  adminDb = getFirestore()
+  return adminDb
+}
+
 function apiDevPlugin() {
   return {
     name: 'api-dev',
     configureServer(server) {
+      // Mirror api/notification-events.js for local dev.
+      server.middlewares.use('/api/notification-events', async (req, res) => {
+        if (req.method !== 'GET') {
+          res.statusCode = 405
+          return res.end(JSON.stringify({ error: 'Method not allowed' }))
+        }
+        try {
+          const db = await getFirebaseDb()
+          const q = new URL(req.url, 'http://localhost').searchParams
+          const limit = Math.min(parseInt(q.get('limit'), 10) || 300, 1000)
+          const type = q.get('type')
+          const uid = q.get('uid')
+
+          const snap = await db.collection('notification_events')
+            .orderBy('createdAt', 'desc').limit(limit).get()
+          const ms = (t) => (t && typeof t.toMillis === 'function' ? t.toMillis() : null)
+          let rows = snap.docs.map((d) => {
+            const x = d.data()
+            return {
+              id: d.id,
+              uid: x.uid || null,
+              type: x.type || 'unknown',
+              coach: x.coach || 'neutral',
+              variantId: x.variantId ?? null,
+              source: x.source || 'server',
+              scheduledHourLocal: x.scheduledHourLocal ?? null,
+              dayKey: x.dayKey || null,
+              sentAt: ms(x.sentAt),
+              createdAt: ms(x.createdAt),
+              openedAt: ms(x.openedAt),
+              playedAt: ms(x.playedAt),
+              cancelledAt: ms(x.cancelledAt),
+              cancelled: x.cancelled === true,
+              converted: x.convertedWithin2h === true,
+            }
+          })
+          if (type) rows = rows.filter((r) => r.type === type)
+          if (uid) rows = rows.filter((r) => r.uid === uid)
+
+          const uids = [...new Set(rows.map((r) => r.uid).filter(Boolean))]
+          const names = {}
+          for (let i = 0; i < uids.length; i += 100) {
+            const chunk = uids.slice(i, i + 100)
+            const docs = await db.getAll(...chunk.map((u) => db.collection('users').doc(u)))
+            for (const doc of docs) {
+              if (doc.exists) {
+                const u = doc.data()
+                names[doc.id] = u.username || u.displayName || null
+              }
+            }
+          }
+          for (const r of rows) r.username = names[r.uid] || null
+
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ rows }))
+        } catch (err) {
+          console.error('[notification-events]', err.message)
+          res.statusCode = 500
+          res.end(JSON.stringify({ error: err.message }))
+        }
+      })
+
       server.middlewares.use('/api/list-auth-users', async (req, res) => {
         if (req.method !== 'GET') {
           res.statusCode = 405

@@ -10,6 +10,10 @@
     {
       "path": "/api/cron-daily-stats",
       "schedule": "5 0 * * *"
+    },
+    {
+      "path": "/api/cron-send-times",
+      "schedule": "20 0 * * *"
     }
   ],
   "rewrites": [
